@@ -4,11 +4,16 @@
 
 #include <boost/numeric/ublas/vector.hpp>
 #include <boost/numeric/ublas/io.hpp>
-#include <boost/lexical_cast.hpp>
 
 using namespace boost::numeric::ublas;
 using std::cout;
 
+/**
+* DQ Default constructor, dont need parameters.
+*
+* Returns a DQ object with null primary and dual part. All elements of 'q' vector are 0.
+* To create a DQ object using this, type: 'DQ dq_object();' or even 'DQ dq_object;'
+*/
 DQ::DQ() {
     q.resize(8);
     for(int n = 0; n < 8; n++){
@@ -16,9 +21,15 @@ DQ::DQ() {
 	}
 };
 
-/*
-* DQ(vector <double> v)
-* Creates a DQ object with primary and dual part filled by scalars of a double boost vector.
+/**
+* DQ constructor using boost vector
+*
+* Returns a DQ object with the values of elements equal to the values of elements from a vector 'v' passed to constructor.
+* To create a DQ object using this, type: 'DQ dq_object(v);' where 'v' is the double boost vector.
+* if 'v' size is bigger than 8, the constructor catches only the 8 eight firs elements of 'v' and distributes on 'vector q'.
+* If 'v' size is smaller than 8, the constructor catches the elements of 'v', distributes on 'vector q' and complete the
+* rest with zeros. Remember that the first 4 elements are of primary part and the last 4 are of dual part of the quaternion.
+* \param vector <double> v contain the values to copied to the attribute q.
 */
 DQ::DQ(vector <double> v) {
     q.resize(8);
@@ -35,18 +46,16 @@ DQ::DQ(vector <double> v) {
 	}
 	else
 		//error
-		cout << "\n" << "ERROR: VECTOR V SIZE NEEDS TO BE 8, 4 OR 1";
+		cout << "\n" << "WARNING: VECTOR V SIZE IS RECOMMENDED TO BE 8, 4 OR 1";
 };
 
-DQ::DQ(double scalar) {
-    q.resize(8);
-    for(int n = 0; n < 8; n++) {
-        q(n) = 0;
-    }
-    if( fabs(scalar) >= DQ::threshold())
-    q(0) = scalar;
-};
-
+/**
+* DQ constructor using 8 scalar elements
+*
+* Returns a DQ object with the values of vector q equal to the values of the 8 parameters 'q0' to 'q8' passed to constructor.
+* To create a DQ object using this, type: 'DQ dq_object(q0,q1,q2,q3,q4,q5,q6,q7);' where 'qn' is a double type scalar.
+* \param double q0,q1,q2,q3,q4,q5,q6 and q7 are the values to be copied to the member 'q'.
+*/
 DQ::DQ(double q0,double q1,double q2,double q3,double q4,double q5,double q6,double q7) {
     q.resize(8);
     q(0) = q0;
@@ -62,191 +71,234 @@ DQ::DQ(double q0,double q1,double q2,double q3,double q4,double q5,double q6,dou
                 q(n) = 0;
         }
 };
-/*
-* ~DQ()
-* Destructor
+
+/**
+* DQ constructor using 4 scalar elements
+*
+* Returns a DQ object with the first four values of vector q equal to the values of the 4 parameters 'q0' to 'q4' passed to constructor.
+* This represents a quaternion in a dual quaternion form since the last four elements are set to 0.
+* To create a DQ object using this, type: 'DQ dq_object(q0,q1,q2,q3);' where 'qn' is a double type scalar.
+* \param double q0,q1,q2 and q3 are values to be copied to the member 'q' four first positions.
+*/
+DQ::DQ(double q0,double q1,double q2,double q3) {
+    q.resize(8);
+    q(0) = q0;
+    q(1) = q1;
+    q(2) = q2;
+    q(3) = q3;
+    q(4) = 0;
+    q(5) = 0;
+    q(6) = 0;
+    q(7) = 0;
+    for(int n = 0; n < 4; n++) {
+            if(fabs(q(n)) < DQ::threshold() )
+                q(n) = 0;
+        }
+};
+
+/**
+* DQ constructor using a scalar element
+*
+* Returns a DQ object with the first values of vector q equal to the value of the parameter 'scalar' passed to constructor.
+* This represents a scalar in a dual quaternion form since the last seven elements ara set to 0.
+* To create a DQ object using this, type: 'DQ dq_object(scalar);'.
+* \param double scalar is the value to be copied to the member 'q' first position.
+*/
+DQ::DQ(double scalar) {
+    q.resize(8);
+    for(int n = 0; n < 8; n++) {
+        q(n) = 0;
+    }
+    if( fabs(scalar) >= DQ::threshold())
+    q(0) = scalar;
+};
+
+/**
+* DQ Destructor
+*
+* Deletes from memory the DQ object caller. To use this destructor, type: 'dq_object.~DQ();'. Dont need parameters.
 */
 DQ::~DQ(){};
 
 
 // Public constant methods
 
+/**
+* Returns a constant DQ object representing the dual unit epsilon.
+*
+* Creates a dual quaternion with values (0,0,0,0,1,0,0,0) and return. To use this member function, type: 'dq_object.E();'.
+* \return A constant DQ object.
+* \sa DQ(double q0,double q1,double q2,double q3,double q4,double q5,double q6,double q7).
+*/
 DQ const DQ::E() {
-	return set_E();
+	return DQ(0,0,0,0,1,0,0,0);
+};
+/**
+* Returns a constant DQ object representing the dual unit epsilon.
+* Actually this function does the same as E() changing only the way of calling, which is DQ::E(dq_object).
+*/
+DQ const DQ::E(DQ dq) {
+ return dq.E();
 };
 
+/**
+* Returns a constant DQ object representing the imaginary unit 'i'.
+*
+* Creates a dual quaternion with values (0,1,0,0,0,0,0,0) and return. To use this member function, type: 'dq_object.i();'.
+* \return A constant DQ object.
+* \sa DQ(double q0,double q1,double q2,double q3).
+*/
 DQ const DQ::i() {
-	return set_i();
+	return DQ(0,1,0,0);
+};
+/**
+* Returns a constant DQ object representing the imaginary unit 'i'.
+* Actually this function does the same as i() changing only the way of calling, which is DQ::i(dq_object).
+*/
+DQ const DQ::i(DQ dq) {
+ return dq.i();
 };
 
+/**
+* Returns a constant DQ object representing the imaginary unit 'j'.
+*
+* Creates a dual quaternion with values (0,0,1,0,0,0,0,0) and return. To use this member function, type: 'dq_object.j();'.
+* \return A constant DQ object.
+* \sa DQ(double q0,double q1,double q2,double q3).
+*/
 DQ const DQ::j() {
-	return set_j();
+	return DQ(0,0,1,0);
+};
+/**
+* Returns a constant DQ object representing the imaginary unit 'j'.
+* Actually this function does the same as j() changing only the way of calling, which is DQ::j(dq_object).
+*/
+DQ const DQ::j(DQ dq) {
+ return dq.j();
 };
 
+/**
+* Returns a constant DQ object representing the imaginary unit 'k'.
+*
+* Creates a dual quaternion with values (0,0,0,1,0,0,0,0) and return. To use this member function, type: 'dq_object.k();'.
+* \return A constant DQ object.
+* \sa DQ(double q0,double q1,double q2,double q3).
+*/
 DQ const DQ::k() {
-	return set_k();
+	return DQ(0,0,0,1);
+};
+/**
+* Returns a constant DQ object representing the imaginary unit 'k'.
+* Actually this function does the same as k() changing only the way of calling, which is DQ::k(dq_object).
+*/
+DQ const DQ::k(DQ dq) {
+ return dq.k();
 };
 
+/**
+* Returns a constant DQ object representing the primary part of the DQ object caller.
+*
+* Creates a dual quaternion with values (q(0),q(1),q(2),q(3),0,0,0,0) and return. The q elements are from the DQ object caller.
+* To use this member function, type: 'dq_object.P();'.
+* \return A constant DQ object.
+* \sa DQ(double q0,double q1,double q2,double q3).
+*/
 DQ const DQ::P() {
-    return set_P();
+    return DQ(q(0),q(1),q(2),q(3));
+};
+/**
+* Returns a constant DQ object representing the primary part of the DQ object caller.
+* Actually this function does the same as P() changing only the way of calling, which is DQ::P(dq_object).
+*/
+DQ const DQ::P(DQ dq) {
+ return dq.P();
 };
 
+/**
+* Returns a constant DQ object representing the dual part of the DQ object caller.
+*
+* Creates a dual quaternion with values (q(4),q(5),q(6),q(7),0,0,0,0) and return. The q elements are from the DQ object caller.
+* To use this member function, type: 'dq_object.D();'.
+* \return A constant DQ object.
+* \sa DQ(double q0,double q1,double q2,double q3).
+*/
 DQ const DQ::D() {
-    return set_D();
+    return DQ(q(4),q(5),q(6),q(7));
+};
+/**
+* Returns a constant DQ object representing the dual part of the DQ object caller.
+* Actually this function does the same as D() changing only the way of calling, which is DQ::D(dq_object).
+*/
+DQ const DQ::D(DQ dq) {
+ return dq.D();
 };
 
+/**
+* Returns a constant DQ object representing the real part of the DQ object caller.
+*
+* Creates a dual quaternion with values (q(0),0,0,0,q(4),0,0,0) and return. The q elements are from the DQ object caller.
+* To use this member function, type: 'dq_object.Re();'.
+* \return A constant DQ object.
+* \sa DQ(double q0,double q1,double q2,double q3,double q4,double q5,double q6,double q7).
+*/
 DQ const DQ::Re() {
-    return set_Re();
+    return DQ(q(0),0,0,0,q(4),0,0,0);
+};
+/**
+* Returns a constant DQ object representing the real part of the DQ object caller.
+* Actually this function does the same as Re() changing only the way of calling, which is DQ::Re(dq_object).
+*/
+DQ const DQ::Re(DQ dq) {
+ return dq.Re();
 };
 
+/**
+* Returns a constant DQ object representing the imaginary part of the DQ object caller.
+*
+* Creates a dual quaternion with values (0,q(1),q(2),q(3),0,q(5),q(6),q(7)) and return. The q elements are from the DQ object caller.
+* To use this member function, type: 'dq_object.Im();'.
+* \return A constant DQ object.
+* \sa DQ(double q0,double q1,double q2,double q3,double q4,double q5,double q6,double q7).
+*/
 DQ const DQ::Im() {
-    return set_Im();
+    return DQ(0,q(1),q(2),q(3),0,q(5),q(6),q(7));
+};
+/**
+* Returns a constant DQ object representing the imaginary part of the DQ object caller.
+* Actually this function does the same as Im() changing only the way of calling, which is DQ::Im(dq_object).
+*/
+DQ const DQ::Im(DQ dq) {
+ return dq.Im();
 };
 
+/**
+* Returns a constant DQ object representing the conjugate of the DQ object caller.
+*
+* Creates a dual quaternion with values (q(0),-q(1),-q(2),-q(3),q(4),-q(5),-q(6),-q(7)) and return.
+* The q elements are from the DQ object caller. To use this member function, type: 'dq_object.conj();'.
+* \return A constant DQ object.
+* \sa DQ(double q0,double q1,double q2,double q3,double q4,double q5,double q6,double q7).
+*/
 DQ const DQ::conj() {
-    return set_conj();
+    return DQ(q(0),-q(1),-q(2),-q(3),q(4),-q(5),-q(6),-q(7));
+};
+/**
+* Returns a constant DQ object representing the conjugate of the DQ object caller.
+* Actually this function does the same as conj() changing only the way of calling, which is DQ::conj(dq_object).
+*/
+DQ const DQ::conj(DQ dq) {
+ return dq.conj();
 };
 
+/**
+* Returns a constant DQ object representing the norm of the DQ object caller.
+*
+* Creates a dual quaternion with calculated values for the norm and return a DQ object.
+* To use this member function, type: 'dq_object.norm();'.
+* \return A constant DQ object.
+* \sa DQ().
+*/
 DQ const DQ::norm() {
-    return set_norm();
-};
-
-DQ const DQ::inv() {
-    return set_inv();
-};
-
-DQ const DQ::translation() {
-    return set_translation();
-};
-
-DQ const DQ::rotation_axis() {
-    return set_rotation_axis();
-};
-
-DQ const DQ::log() {
-    return set_log();
-};
-
-DQ const DQ::exp() {
-    return set_exp();
-};
-
-matrix <double> const DQ::Hplus4() {
-    return set_Hplus4();
-};
-
-matrix <double> const DQ::Hminus4() {
-    return set_Hminus4();
-};
-
-matrix <double> const DQ::Hplus8() {
-    return set_Hplus8();
-};
-
-matrix <double> const DQ::Hminus8() {
-    return set_Hminus8();
-};
-
-matrix <double> const DQ::vec4() {
-    return set_vec4();
-};
-
-matrix <double> const DQ::vec8() {
-    return set_vec8();
-};
-
-
-// Private methods: these are the auxiliar methods used by the public methods.
-
-DQ DQ::set_E() {
-    vector <double> v(8);
-    for(int n = 0; n < 8; n++){
-        v(n) = 0;
-    }
-    v(4) = 1;
-    return DQ(v);
-};
-
-DQ DQ::set_i() {
-    vector <double> v(8);
-    for(int n = 0; n < 8; n++){
-        v(n) = 0;
-    }
-    v(1) = 1;
-    return DQ(v);
-};
-
-DQ DQ::set_j() {
-    vector <double> v(8);
-    for(int n = 0; n < 8; n++){
-        v(n) = 0;
-    }
-    v(2) = 1;
-    return DQ(v);
-};
-
-DQ DQ::set_k() {
-    vector <double> v(8);
-    for(int n = 0; n < 8; n++){
-        v(n) = 0;
-    }
-    v(3) = 1;
-    return DQ(v);
-};
-
-DQ DQ::set_P() {
-    vector <double> v(8);
-    for(int n = 0; n < 4; n++){
-        v(n) = q(n);
-	}
-	for(int n = 4; n < 8; n++){
-        v(n) = 0;
-	}
-    return DQ(v);
-};
-
-DQ DQ::set_D() {
-    vector <double> v(8);
-    for(int n = 0; n < 4; n++){
-        v(n) = q(n+4);
-	}
-		for(int n = 4; n < 8; n++){
-        v(n) = 0;
-	}
-    return DQ(v);
-};
-
-DQ DQ::set_Re() {
-    vector <double> v(8);
-    for(int n = 0; n < 8; n++){
-        v(n) = 0;
-	}
-	v(0) = q(0);
-	v(4) = q(4);
-    return DQ(v);
-};
-
-DQ DQ::set_Im() {
-    vector <double> v(8);
-    for(int n = 0; n < 8; n++){
-        v(n) = q(n);
-	}
-	v(0) = 0;
-	v(4) = 0;
-	return DQ(v);
-};
-
-DQ DQ::set_conj() {
-    vector <double> v(8);
-    for(int n = 0; n < 8; n++){
-        v(n) = -q(n);
-	}
-	v(0) = q(0);
-	v(4) = q(4);
-	return DQ(v);
-};
-
-DQ DQ::set_norm() {
     DQ aux;
     DQ norm;
 
@@ -254,101 +306,262 @@ DQ DQ::set_norm() {
         aux.q(n) = q(n);
 	}
 	if(aux.P() == 0)  //Primary == 0
-         return norm;
+         return norm; // norm = 0
     else {
-        aux = aux.conj() * aux;
-        aux.q(1) = sqrt(aux.q(1));
-        aux.q(5) = aux.q(5)/(2*aux.q(1));
+        // norm calculation
+        norm = aux.conj() * aux;
+        norm.q(1) = sqrt(norm.q(1));
+        norm.q(5) = norm.q(5)/(2*norm.q(1));
 
+        // using threshold to verify zero values in DQ to be returned
         for(int n = 0; n < 8; n++) {
-            if(fabs(aux.q(n)) < DQ::threshold() )
-                aux.q(n) = 0;
+            if(fabs(norm.q(n)) < DQ::threshold() )
+                norm.q(n) = 0;
         }
-        norm = aux;
+
         return norm;
     }
 };
+/**
+* Returns a constant DQ object representing the norm of the DQ object caller.
+* Actually this function does the same as norm() changing only the way of calling, which is DQ::norm(dq_object).
+*/
+DQ const DQ::norm(DQ dq) {
+ return dq.norm();
+};
 
-DQ DQ::set_inv() {
+/**
+* Returns a constant DQ object representing the inverse of the DQ object caller.
+*
+* Creates a dual quaternion with calculated values for the inverse and return a DQ object.
+* To use this member function, type: 'dq_object.inv();'.
+* \return A constant DQ object.
+* \sa DQ(), DQ(double q0,double q1,double q2,double q3,double q4,double q5,double q6,double q7).
+*/
+DQ const DQ::inv() {
     DQ aux;
     DQ aux2;
 
     for(int n = 0; n < 8; n++) {
         aux.q(n) = q(n);
 	}
+	//inverse calculation
 	aux2 = aux * aux.conj(); //(dq norm)^2
 	DQ inv((1/aux2.q(0)),0,0,0,(-aux2.q(4)/(aux2.q(0)*aux2.q(0))),0,0,0);
+    inv = (aux.conj() * inv);
 
-	return (aux.conj() * inv);
+    // using threshold to verify zero values in DQ to be returned
+    for(int n = 0; n < 8; n++) {
+        if(fabs(inv.q(n)) < DQ::threshold() )
+            inv.q(n) = 0;
+    }
+
+	return inv;
+};
+/**
+* Returns a constant DQ object representing the inverse of the DQ object caller.
+* Actually this function does the same as inv() changing only the way of calling, which is DQ::inv(dq_object).
+*/
+DQ const DQ::inv(DQ dq) {
+ return dq.inv();
 };
 
-DQ DQ::set_translation() {
+/**
+* Returns a constant DQ object representing the translation part of the unit DQ object caller.
+*
+* Creates a dual quaternion with calculated values for the translation part and return a DQ object.
+* To use this member function, type: 'dq_object.translation();'.
+* \return A constant DQ object.
+* \sa DQ().
+*/
+DQ const DQ::translation() {
     DQ aux;
-    DQ aux2;
+    DQ translation;
 
     for(int n = 0; n < 8; n++) {
         aux.q(n) = q(n);
 	}
+    //TODO: Generate a message error here if condition is not satisfied
+	// Verify if the object caller is a unit DQ
 	if (aux.norm() != 1) {
         cout << "ERROR IN OPERATION: NOT A UNIT DUAL QUATERNION";
         return aux;
     }
-    else {
-        aux2 = aux.P();
-        return (2 * aux.D() * aux2.conj() );
-    }
 
-};
-
-DQ DQ::set_rotation_axis() {
-    DQ aux;
-    for(int n = 0; n < 8; n++) {
-        aux.q(n) = q(n);
-	}
-	if (aux.norm() != 1) {
-        cout << "ERROR IN OPERATION: NOT A UNIT DUAL QUATERNION";
-        return aux;
-    }
     else {
-        double phi = acos(aux.q(0));
-        if(phi == 0)
-            return aux.k();
-        else {
-            aux = aux.P();
-            return ( aux.Im() * (1/sin(phi)) );
+        //translation part calculation
+        translation = aux.P();
+        translation = (2 * aux.D() * translation.conj() );
+
+        // using threshold to verify zero values in DQ to be returned
+        for(int n = 0; n < 8; n++) {
+            if(fabs(translation.q(n)) < DQ::threshold() )
+                translation.q(n) = 0;
         }
+
+        return translation;
     }
 };
-
-DQ DQ::set_log() {
-    DQ aux;
-    for(int n = 0; n < 8; n++) {
-        aux.q(n) = q(n);
-	}
-	if (aux.norm() != 1) {
-        cout << "ERROR IN OPERATION: NOT A UNIT DUAL QUATERNION";
-        return aux;
-    }
-    else {
-        DQ p = acos(aux.q(0)) * aux.rotation_axis();
-        DQ d = 0.5 * aux.translation();
-        DQ lg(p.q(0),p.q(1),p.q(2),p.q(3),d.q(0),d.q(1),d.q(2),d.q(3));
-        return lg;
-    }
+/**
+* Returns a constant DQ object representing the translation part of the unit DQ object caller.
+* Actually this function does the same as translation() changing only the way of calling, which is DQ::translation(dq_object).
+*/
+DQ const DQ::translation(DQ dq) {
+ return dq.translation();
 };
 
-DQ DQ::set_exp() {
+/**
+* Returns a constant DQ object representing the rotation axis of the unit DQ object caller.
+*
+* Creates a dual quaternion with calculated values for the rotation axis and return a DQ object.
+* To use this member function, type: 'dq_object.rot_axis();'.
+* \return A constant DQ object.
+* \sa DQ().
+*/
+DQ const DQ::rot_axis() {
     DQ dq;
-    DQ phi;
-    DQ prim;
+    DQ rot_axis;
     for(int n = 0; n < 8; n++) {
         dq.q(n) = q(n);
 	}
+    //TODO: Generate a message error here if condition is not satisfied
+	// Verify if the object caller is a unit DQ
 	if (dq.norm() != 1) {
         cout << "ERROR IN OPERATION: NOT A UNIT DUAL QUATERNION";
         return dq;
     }
+
     else {
+        double phi = acos(dq.q(0));
+        if(phi == 0)
+            return rot_axis.k(); // DQ(0,0,0,1). This is only a convention;
+        else {
+            //rotation axis calculation
+            rot_axis = dq.P();
+            rot_axis = ( rot_axis.Im() * (1/sin(phi)) );
+
+            // using threshold to verify zero values in DQ to be returned
+            for(int n = 0; n < 8; n++) {
+                if(fabs(rot_axis.q(n)) < DQ::threshold() )
+                    rot_axis.q(n) = 0;
+            }
+
+            return rot_axis;
+        }
+    }
+};
+/**
+* Returns a constant DQ object representing the rotation axis of the unit DQ object caller.
+* Actually this function does the same as rot_axis() changing only the way of calling, which is DQ::rot_axis(dq_object).
+*/
+DQ const DQ::rot_axis(DQ dq) {
+ return dq.rot_axis();
+};
+
+/**
+* Returns a constant double value representing the rotation angle in rad/s of the unit DQ object caller.
+*
+* Creates a double value with calculated rotation angle of a unit DQ object and return this angle in rad/s unit.
+* To use this member function, type: 'dq_object.rot_angle();'.
+* \return A constant double value.
+* \sa DQ().
+*/
+double const DQ::rot_angle() {
+    DQ dq;
+    double rot_angle;
+    for(int n = 0; n < 8; n++) {
+        dq.q(n) = q(n);
+	}
+    //TODO: Generate a message error here if condition is not satisfied
+	// Verify if the object caller is a unit DQ
+	if (dq.norm() != 1) {
+        cout << "ERROR IN OPERATION: NOT A UNIT DUAL QUATERNION";
+        return 0;
+    }
+
+    else {
+        //Rotation angle calculation
+        rot_angle = 2*acos(dq.q(0));
+
+        return rot_angle;
+    }
+};
+/**
+* Returns a constant double value representing the rotation angle in rad/s of the unit DQ object caller.
+* Actually this function does the same as rot_angle() changing only the way of calling, which is DQ::rot_angle(dq_object).
+*/
+DQ const DQ::rot_angle(DQ dq) {
+ return dq.rot_angle();
+};
+
+/**
+* Returns a constant DQ object representing the logaritm of the unit DQ object caller.
+*
+* Creates a dual quaternion with calculated values for the logaritm and return a DQ object.
+* To use this member function, type: 'dq_object.log();'.
+* \return A constant DQ object.
+* \sa DQ(), DQ(double q0,double q1,double q2,double q3,double q4,double q5,double q6,double q7).
+*/
+DQ const DQ::log() {
+    DQ aux;
+    for(int n = 0; n < 8; n++) {
+        aux.q(n) = q(n);
+	}
+    //TODO: Generate a message error here if condition is not satisfied
+	// Verify if the object caller is a unit DQ
+	if (aux.norm() != 1) {
+        cout << "ERROR IN OPERATION: NOT A UNIT DUAL QUATERNION";
+        return aux;
+    }
+
+    else {
+        // log calculation
+        DQ p = acos(aux.q(0)) * aux.rot_axis(); //primary
+        DQ d = 0.5 * aux.translation(); //dual
+        DQ log(p.q(0),p.q(1),p.q(2),p.q(3),d.q(0),d.q(1),d.q(2),d.q(3));
+
+        // using threshold to verify zero values in DQ to be returned
+        for(int n = 0; n < 8; n++) {
+            if(fabs(log.q(n)) < DQ::threshold() )
+                log.q(n) = 0;
+        }
+
+        return log;
+    }
+};
+/**
+* Returns a constant DQ object representing the log of the unit DQ object caller.
+* Actually this function does the same as log() changing only the way of calling, which is DQ::log(dq_object).
+*/
+DQ const DQ::log(DQ dq) {
+ return dq.log();
+};
+
+/**
+* Returns a constant DQ object representing the exponential of the unit DQ object caller.
+*
+* Creates a dual quaternion with calculated values for the exponential and return a DQ object.
+* To use this member function, type: 'dq_object.exp();'.
+* \return A constant DQ object.
+* \sa DQ().
+*/
+DQ const DQ::exp() {
+        DQ dq;
+    DQ phi;
+    DQ prim;
+    DQ exp;
+    for(int n = 0; n < 8; n++) {
+        dq.q(n) = q(n);
+	}
+    //TODO: Generate a message error here if condition is not satisfied
+	// Verify if the object caller is a unit DQ
+	if (dq.norm() != 1) {
+        cout << "ERROR IN OPERATION: NOT A UNIT DUAL QUATERNION";
+        return dq;
+    }
+
+    else {
+    // exponential calculation
     phi = dq.P();
     phi = dq.norm();
         if(phi != 0)
@@ -359,18 +572,135 @@ DQ DQ::set_exp() {
         }
 
         if(prim.q(0) < 0)
-            return ( -1*(prim + prim.E()*dq.D()*prim) );
+            exp = ( -1*(prim + prim.E()*dq.D()*prim) );
         else
-            return ( prim + prim.E()*dq.D()*prim );
+            exp = ( prim + prim.E()*dq.D()*prim );
+
+        // using threshold to verify zero values in DQ to be returned
+        for(int n = 0; n < 8; n++) {
+            if(fabs(exp.q(n)) < DQ::threshold() )
+                exp.q(n) = 0;
+        }
+
+        return exp;
     }
 };
-
-double DQ::threshold() {
-	const double threshold = 0.000000000001;
-	return threshold;
+/**
+* Returns a constant DQ object representing the exponential of the unit DQ object caller.
+* Actually this function does the same as exp() changing only the way of calling, which is DQ::exp(dq_object).
+*/
+DQ const DQ::exp(DQ dq) {
+ return dq.exp();
 };
 
-matrix <double> DQ::set_Hplus4() {
+/**
+* Returns a constant DQ object representing the tplus operator applied to the unit DQ object caller.
+*
+* Creates a dual quaternion with calculated values for the tplus operation and return a DQ object.
+* To use this member function, type: 'dq_object.tplus();'.
+* \return A constant DQ object.
+* \sa DQ().
+*/
+DQ const DQ::tplus() {
+        DQ dq;
+    DQ tplus;
+    for(int n = 0; n < 8; n++) {
+        dq.q(n) = q(n);
+	}
+    //TODO: Generate a message error here if condition is not satisfied
+	// Verify if the object caller is a unit DQ
+	if (dq.norm() != 1) {
+        cout << "ERROR IN OPERATION: NOT A UNIT DUAL QUATERNION";
+        return dq;
+    }
+
+    else {
+    // tplus operator calculation
+    tplus = dq.P();
+    tplus = dq * tplus.conj();
+
+    // using threshold to verify zero values in DQ to be returned
+    for(int n = 0; n < 8; n++) {
+        if(fabs(tplus.q(n)) < DQ::threshold() )
+            tplus.q(n) = 0;
+    }
+
+    return tplus;
+    }
+};
+/**
+* Returns a constant DQ object representing the tplus operator applied to the unit DQ object caller.
+* Actually this function does the same as tplus() changing only the way of calling, which is DQ::tplus(dq_object).
+*/
+DQ const DQ::tplus(DQ dq) {
+ return dq.tplus();
+};
+
+/**
+* Returns a constant DQ object representing the inverse of the unit DQ object caller under decompositional multiplication.
+*
+* Creates a dual quaternion with calculated values for the inverse using the tplus operator and return a DQ object.
+* To use this member function, type: 'dq_object.pinv();'.
+* \return A constant DQ object.
+* \sa DQ().
+*/
+DQ const DQ::pinv() {
+    DQ dq;
+    DQ pinv;
+    DQ tinv;
+    for(int n = 0; n < 8; n++) {
+        dq.q(n) = q(n);
+	}
+    //TODO: Generate a message error here if condition is not satisfied
+	// Verify if the object caller is a unit DQ
+	if (dq.norm() != 1) {
+        cout << "ERROR IN OPERATION: NOT A UNIT DUAL QUATERNION";
+        return dq;
+    }
+
+    else {
+    // inverse calculation under decompositional multiplication
+    tinv = dq.conj();
+    tinv = tinv.tplus() * dq.tplus();
+    pinv = tinv.conj() * dq.conj();
+
+    // using threshold to verify zero values in DQ to be returned
+    for(int n = 0; n < 8; n++) {
+        if(fabs(pinv.q(n)) < DQ::threshold() )
+            pinv.q(n) = 0;
+    }
+
+    return pinv;
+    }
+};
+/**
+* Returns a constant DQ object representing the inverse of the unit DQ object caller under decompositional multiplication.
+* Actually this function does the same as pinv() changing only the way of calling, which is DQ::pinv(dq_object).
+*/
+DQ const DQ::pinv(DQ dq) {
+ return dq.pinv();
+};
+
+/**
+* Returns a constant DQ object representing the result of decompositional multiplication between two DQ objects.
+*
+* To use this member function, type: 'DQ::dec_mult(dq_object1, dq_object2);'.
+* \return A constant DQ object.
+*/
+DQ const DQ::dec_mult(DQ dq1, DQ dq2) {
+ DQ dec_mult = dq2.tplus()*dq1.tplus()*dq2.P()*dq1.P();
+ return dec_mult;
+};
+
+/**
+* Returns a constant 4x4 double boost matrix representing the Hamilton operator H+ of primary part of the DQ object caller.
+*
+* Creates a 4x4 Boost matrix, fill it with values based on the elements q(0) to q(4) and return the matrix H+.
+* This operator is applied only for the primary part of DQ. This is the same as consider the DQ object a quaternion.
+* To use this member function, type: 'dq_object.Hplus4();'.
+* \return A constant boost::numeric::ublas::matrix <double> (4,4).
+*/
+matrix <double> const DQ::Hplus4() {
     matrix <double> op_Hplus4(4,4);
     op_Hplus4(0,0) = q(0); op_Hplus4(0,1) = -q(1); op_Hplus4(0,2) = -q(2); op_Hplus4(0,3) = -q(3);
     op_Hplus4(1,0) = q(1); op_Hplus4(1,1) =  q(0); op_Hplus4(1,2) = -q(3); op_Hplus4(1,3) =  q(2);
@@ -378,8 +708,23 @@ matrix <double> DQ::set_Hplus4() {
     op_Hplus4(3,0) = q(3); op_Hplus4(3,1) = -q(2); op_Hplus4(3,2) =  q(1); op_Hplus4(3,3) =  q(0);
     return op_Hplus4;
 };
+/**
+* Returns a constant 4x4 double boost matrix representing the Hamilton operator H+ of primary part of the DQ object caller.
+* Actually this function does the same as Hplus4() changing only the way of calling, which is DQ::Hplus4(dq_object).
+*/
+matrix <double> const DQ::Hplus4(DQ dq) {
+ return dq.Hplus4();
+};
 
-matrix <double> DQ::set_Hminus4() {
+/**
+* Returns a constant 4x4 double boost matrix representing the Hamilton operator H- of primary part of the DQ object caller.
+*
+* Creates a 4x4 Boost matrix, fill it with values based on the elements q(0) to q(4) and return the matrix H-.
+* This operator is applied only for the primary part of DQ. This is the same as consider the DQ object a quaternion.
+* To use this member function, type: 'dq_object.Hminus4();'.
+* \return A constant boost::numeric::ublas::matrix <double> (4,4).
+*/
+matrix <double> const DQ::Hminus4() {
     matrix <double> op_Hminus4(4,4);
     op_Hminus4(0,0) = q(0); op_Hminus4(0,1) = -q(1); op_Hminus4(0,2) = -q(2); op_Hminus4(0,3) = -q(3);
     op_Hminus4(1,0) = q(1); op_Hminus4(1,1) =  q(0); op_Hminus4(1,2) =  q(3); op_Hminus4(1,3) = -q(2);
@@ -387,8 +732,22 @@ matrix <double> DQ::set_Hminus4() {
     op_Hminus4(3,0) = q(3); op_Hminus4(3,1) =  q(2); op_Hminus4(3,2) = -q(1); op_Hminus4(3,3) =  q(0);
     return op_Hminus4;
 };
+/**
+* Returns a constant 4x4 double boost matrix representing the Hamilton operator H- of primary part of the DQ object caller.
+* Actually this function does the same as Hminus4() changing only the way of calling, which is DQ::Hminus4(dq_object).
+*/
+matrix <double> const DQ::Hminus4(DQ dq) {
+ return dq.Hminus4();
+};
 
-matrix <double> DQ::set_Hplus8() {
+/**
+* Returns a constant 8x8 double boost matrix representing the Hamilton operator H+ of the DQ object caller.
+*
+* Creates a 8x8 Boost matrix, fill it with values based on the elements q(0) to q(8) and return the matrix H+.
+* To use this member function, type: 'dq_object.Hplus8();'.
+* \return A constant boost::numeric::ublas::matrix <double> (8,8).
+*/
+matrix <double> const DQ::Hplus8() {
     matrix <double> op_Hplus8(8,8);
     op_Hplus8(0,0) = q(0); op_Hplus8(0,1) = -q(1); op_Hplus8(0,2) = -q(2); op_Hplus8(0,3) = -q(3);
     op_Hplus8(1,0) = q(1); op_Hplus8(1,1) =  q(0); op_Hplus8(1,2) = -q(3); op_Hplus8(1,3) =  q(2);
@@ -411,8 +770,22 @@ matrix <double> DQ::set_Hplus8() {
     op_Hplus8(7,4) = q(3); op_Hplus8(7,5) = -q(2); op_Hplus8(7,6) =  q(1); op_Hplus8(7,7) =  q(0);
     return op_Hplus8;
 };
+/**
+* Returns a constant 8x8 double boost matrix representing the Hamilton operator H+ of the DQ object caller.
+* * Actually this function does the same as Hplus8() changing only the way of calling, which is DQ::Hplus8(dq_object).
+*/
+matrix <double> const DQ::Hplus8(DQ dq) {
+ return dq.Hplus8();
+};
 
-matrix <double> DQ::set_Hminus8() {
+/**
+* Returns a constant 8x8 double boost matrix representing the Hamilton operator H- of the DQ object caller.
+*
+* Creates a 8x8 Boost matrix, fill it with values based on the elements q(0) to q(8) and return the matrix H-.
+* To use this member function, type: 'dq_object.Hminus8();'.
+* \return A constant boost::numeric::ublas::matrix <double> (8,8).
+*/
+matrix <double> const DQ::Hminus8() {
     matrix <double> op_Hminus8(8,8);
     op_Hminus8(0,0) = q(0); op_Hminus8(0,1) = -q(1); op_Hminus8(0,2) = -q(2); op_Hminus8(0,3) = -q(3);
     op_Hminus8(1,0) = q(1); op_Hminus8(1,1) =  q(0); op_Hminus8(1,2) =  q(3); op_Hminus8(1,3) = -q(2);
@@ -435,8 +808,23 @@ matrix <double> DQ::set_Hminus8() {
     op_Hminus8(7,4) = q(3); op_Hminus8(7,5) =  q(2); op_Hminus8(7,6) = -q(1); op_Hminus8(7,7) =  q(0);
     return op_Hminus8;
 };
+/**
+* Returns a constant 8x8 double boost matrix representing the Hamilton operator H- of the DQ object caller.
+* * Actually this function does the same as Hminus8() changing only the way of calling, which is DQ::Hminus8(dq_object).
+*/
+matrix <double> const DQ::Hminus8(DQ dq) {
+ return dq.Hminus8();
+};
 
-matrix <double> DQ::set_vec4() {
+/**
+* Returns a constant 4x1 double Boost matrix representing the 'vec' operator of primary part of the DQ object caller.
+*
+* Creates a 4x1 Boost matrix, fill it with values based on the elements q(0) to q(4) and return the column matrix vec4.
+* This operator is applied only for the primary part of DQ. This is the same as consider the DQ object a quaternion.
+* To use this member function, type: 'dq_object.vec4();'.
+* \return A constant boost::numeric::ublas::matrix <double> (4,1).
+*/
+matrix <double> const DQ::vec4() {
     matrix <double> op_vec4(4,1);
     op_vec4(0,0) = q(0);
     op_vec4(1,0) = q(1);
@@ -444,8 +832,22 @@ matrix <double> DQ::set_vec4() {
     op_vec4(3,0) = q(3);
     return op_vec4;
 };
+/**
+* Returns a constant 4x1 double Boost matrix representing the 'vec' operator of primary part of the DQ object caller.
+* Actually this function does the same as vec4() changing only the way of calling, which is DQ::vec4(dq_object).
+*/
+matrix <double> const DQ::vec4(DQ dq) {
+    return dq.vec4();
+};
 
-matrix <double> DQ::set_vec8() {
+/**
+* Returns a constant 8x1 double boost matrix representing the 'vec' operator of the DQ object caller.
+*
+* Creates a *x1 Boost matrix, fill it with values based on the elements q(0) to q(8) and return the column matrix vec8.
+* To use this member function, type: 'dq_object.vec8();'.
+* \return A constant boost::numeric::ublas::matrix <double> (8,1).
+*/
+matrix <double> const DQ::vec8() {
     matrix <double> op_vec8(8,1);
     op_vec8(0,0) = q(0);
     op_vec8(1,0) = q(1);
@@ -457,21 +859,32 @@ matrix <double> DQ::set_vec8() {
     op_vec8(7,0) = q(7);
     return op_vec8;
 };
+/**
+* Returns a constant 8x1 double boost matrix representing the 'vec' operator of the DQ object caller.
+* Actually this function does the same as vec8() changing only the way of calling, which is DQ::vec8(dq_object).
+*/
+matrix <double> const DQ::vec8(DQ dq) {
+ return dq.vec8();
+};
 
-void DQ::display() {
-    vector <double> v(8);
-    for(int n = 0; n < 8; n++){
-        v(n) = q(n);
-	}
-	DQ dq(v);
+/**
+* Display DQ object caller.
+*
+* Concatenate the strings generated by the build_string function with other string elements to display correctly, the DQ object caller
+* including it's object name, the primary and dual parts. The DQ object is displayed in the following standard form:
+* dq_object = (q(0) + q(1)*i + q(2)*j + q(3)*k) + dual_unit_E*(q(4) + q(5)*i + q(6)*j + q(7)*k). To use this member funtion correctly
+* and comfortably, type DISPLAY(dq_object). Where 'DISPLAY" must be upper case because it's a defined macro created to facilitate the use.
+* \param name is the name of the DQ object passed to function (using DISPLAY macro could be skipped)
+* \param dq is the dual quaternion to be displayed.
+*/
+void DQ::display(char *name, DQ dq) {
 
 	has_primary_element = 0;
 	has_dual_element = 0;
-    //disp([inputname(1),' = ']) EXIBE O NOME DO DQ, ACHAR UMA FUNC CORRESP EM C++
     std::string s, sd;
 
-    s = build_string(dq,0);
-    sd = build_string(dq,4);
+    s = DQ::build_string(dq,0);
+    sd = DQ::build_string(dq,4);
 
     if (has_primary_element == 1) {
         s = "(" + s + ")";
@@ -491,11 +904,22 @@ void DQ::display() {
 
     if ((has_primary_element + has_dual_element) == 0)
         s = "0";
-    cout << " = " << s << sd << "\n";
+    cout << name << " = " << s << sd << "\n";
 };
 
+/**
+* Constructs and Returns a string to be displayed representing a part of the DQ object caller.
+*
+* Creates a string used by the display() member function which contains, parentesis, the imaginary units, and the elements scalar
+* values of the primary or dual part of the dual quaternion. The part being constructed is defined by a shift variable.
+* \param dq is the dual quaternion to be displayed.
+* \param shift is an integer that shifts the focus to the part which the display string is being constructed (primary or dual).
+* \return A std::string.
+* \sa display().
+*/
 std::string DQ::build_string(DQ dq, int shift) {
     std::string s, aux;
+    char buffer_number[32];
     s = "";
     aux = " ijk";
 
@@ -508,16 +932,20 @@ std::string DQ::build_string(DQ dq, int shift) {
             else if (has_element != 0)
                 s = s + " + ";
 
-            if (n == 0)
-                s = s + boost::lexical_cast<std::string>(fabs(dq.q(n+shift) ) );
-            else
-                s = s + boost::lexical_cast<std::string>(fabs(dq.q(n+shift) ) ) + aux[n];
+            if (n == 0) {
+                sprintf(buffer_number, "%1.5g", fabs(dq.q(n+shift) ) ); //coverts DQ element to string
+                s = s + buffer_number; //concatenate the real number to string generated yet
+            }
+            else {
+                sprintf(buffer_number, "%1.5g", fabs(dq.q(n+shift) ) ); //coverts DQ element to string
+                s = s + buffer_number + aux[n]; //concatenate the imaginary number to string generated yet
+            }
 
-            if (shift == 0) {
+            if (shift == 0) { //mounting primary part
             has_primary_element = 1;
             has_element = 1;
             }
-            else {
+            else { //mounting dual part
             has_dual_element = 1;
             has_element = 1;
             }
@@ -526,9 +954,30 @@ std::string DQ::build_string(DQ dq, int shift) {
     return s;
 };
 
+/**
+* Returns a scalar value to be used as a threshold in some internal operations
+*
+* Creates a double type constant with the value 0.000000000001 or 10e-12. In several definitions inside the class member functions
+* this number is used to verify if a value should be considered zero or not.
+* \return A const double value.
+*/
+double DQ::threshold() {
+	const double threshold = 0.000000000001;
+	return threshold;
+};
+
 //Overloaded operators definitions
 
-//Operator (+) Overload
+/**
+* Operator (+) overload for the sum of two DQ objects.
+*
+* This friend function realizes the sum of two DQ objects and returns the result on another DQ object which is created with default
+* constructor and have the vector 'q' modified acording to the operation.
+* \param dq1 is the first DQ object in the operation.
+* \param dq2 is the second DQ object in the operation.
+* \return A DQ object.
+* \sa DQ(), threshold().
+*/
 DQ operator+(DQ dq1, DQ dq2) {
     DQ dq;
     for(int n = 0; n<8; n++) {
@@ -541,37 +990,109 @@ DQ operator+(DQ dq1, DQ dq2) {
     return dq;
 };
 
-//Overload (+) for int type scalar
+
+/**
+* Operator (+) overload for the sum of a DQ object and an integer scalar
+*
+* This friend function realizes the sum of a DQ object and an integer scalar and returns the result on another DQ object.
+* A DQ object is created by the DQ constructor using a scalar element and then the operation is made between two DQ objects.
+* \param dq is the DQ object in the operation.
+* \param scalar is an integer scalar involved in operation.
+* \return A DQ object.
+* \sa DQ(double scalar), operator+(DQ dq1, DQ dq2).
+*/
 DQ operator+(DQ dq, int scalar) {
     DQ dq_scalar(scalar);
     return (dq + dq_scalar);
 };
+
+/**
+* Operator (+) overload for the sum of an integer scalar and DQ object
+*
+* This friend function realizes the sum of an integer scalar and a DQ object and returns the result on another DQ object.
+* A DQ object is created by the DQ constructor using a scalar element and then the operation is made between two DQ objects.
+* \param scalar is an integer scalar involved in operation.
+* \param dq is the DQ object in the operation.
+* \return A DQ object.
+* \sa DQ(double scalar), operator+(DQ dq1, DQ dq2).
+*/
 DQ operator+(int scalar, DQ dq) {
     DQ dq_scalar(scalar);
     return (dq_scalar + dq);
 };
 
-//Overload (+) for float type scalar
+/**
+* Operator (+) overload for the sum of a DQ object and a float scalar
+*
+* This friend function realizes the sum of a DQ object and a float scalar and returns the result on another DQ object.
+* A DQ object is created by the DQ constructor using a scalar element and then the operation is made between two DQ objects.
+* \param dq is the DQ object in the operation.
+* \param scalar is a float scalar involved in operation.
+* \return A DQ object.
+* \sa DQ(double scalar), operator+(DQ dq1, DQ dq2).
+*/
 DQ operator+(DQ dq, float scalar) {
     DQ dq_scalar(scalar);
     return (dq + dq_scalar);
 };
+
+/**
+* Operator (+) overload for the sum of a float scalar and DQ object
+*
+* This friend function realizes the sum of a float scalar and a DQ object and returns the result on another DQ object.
+* A DQ object is created by the DQ constructor using a scalar element and then the operation is made between two DQ objects.
+* \param scalar is a float scalar involved in operation.
+* \param dq is the DQ object in the operation.
+* \return A DQ object.
+* \sa DQ(double scalar), operator+(DQ dq1, DQ dq2).
+*/
 DQ operator+(float scalar, DQ dq) {
     DQ dq_scalar(scalar);
     return (dq_scalar + dq);
 };
 
-//Overload (+) for double type scalar
+/**
+* Operator (+) overload for the sum of a DQ object and a double scalar
+*
+* This friend function realizes the sum of a DQ object and a double scalar and returns the result on another DQ object.
+* A DQ object is created by the DQ constructor using a scalar element and then the operation is made between two DQ objects.
+* \param dq is the DQ object in the operation.
+* \param scalar is a double scalar involved in operation.
+* \return A DQ object.
+* \sa DQ(double scalar), operator+(DQ dq1, DQ dq2).
+*/
 DQ operator+(DQ dq, double scalar) {
     DQ dq_scalar(scalar);
     return (dq + dq_scalar);
 };
+
+/**
+* Operator (+) overload for the sum of a double scalar and DQ object
+*
+* This friend function realizes the sum of a double scalar and a DQ object and returns the result on another DQ object.
+* A DQ object is created by the DQ constructor using a scalar element and then the operation is made between two DQ objects.
+* \param scalar is a double scalar involved in operation.
+* \param dq is the DQ object in the operation.
+* \return A DQ object.
+* \sa DQ(double scalar), operator+(DQ dq1, DQ dq2).
+*/
 DQ operator+(double scalar, DQ dq) {
     DQ dq_scalar(scalar);
     return (dq_scalar + dq);
 };
 
 // Operator (-) overload
+
+/**
+* Operator (-) overload to subtract one DQ object of other.
+*
+* This friend function do the subtraction of a DQ object in other and returns the result on another DQ object which
+* is created with default constructor and have the vector 'q' modified acording to the operation.
+* \param dq1 is the first DQ object in the operation.
+* \param dq2 is the second DQ object in the operation.
+* \return A DQ object.
+* \sa DQ(), threshold().
+*/
 DQ operator-(DQ dq1, DQ dq2){
     DQ dq;
     for(int n = 0; n<8; n++) {
@@ -584,37 +1105,108 @@ DQ operator-(DQ dq1, DQ dq2){
     return dq;
 };
 
-// Overload (-) for int type scalar
-DQ operator-(DQ dq, int scalar){
+/**
+* Operator (-) overload to subtract an integer scalar of one DQ object.
+*
+* This friend function realizes the subtraction of a integer scalar in one DQ object. and returns the result on another DQ object.
+* A DQ object is created by the DQ constructor using a scalar element and then the operation is made between two DQ objects.
+* \param dq is the DQ object in the operation.
+* \param scalar is the integer scalar involved in operation.
+* \return A DQ object.
+* \sa DQ(double scalar), operator-(DQ dq1, DQ dq2).
+*/
+DQ operator-(DQ dq, int scalar) {
     DQ dq_scalar(scalar);
     return (dq - dq_scalar);
 };
+
+/**
+* Operator (-) overload to subtract a DQ object of one integer scalar.
+*
+* This friend function realizes the subtraction of a DQ object in one integer scalar. and returns the result on another DQ object.
+* A DQ object is created by the DQ constructor using a scalar element and then the operation is made between two DQ objects.
+* \param scalar is the integer scalar involved in operation.
+* \param dq is the DQ object in the operation.
+* \return A DQ object.
+* \sa DQ(double scalar), operator-(DQ dq1, DQ dq2).
+*/
 DQ operator-(int scalar, DQ dq){
     DQ dq_scalar(scalar);
     return (dq_scalar - dq);
 };
 
-//Overload (-) for float type scalar
+/**
+* Operator (-) overload to subtract an float scalar of one DQ object.
+*
+* This friend function realizes the subtraction of a float scalar in one DQ object. and returns the result on another DQ object.
+* A DQ object is created by the DQ constructor using a scalar element and then the operation is made between two DQ objects.
+* \param dq is the DQ object in the operation.
+* \param scalar is the float scalar involved in operation.
+* \return A DQ object.
+* \sa DQ(double scalar), operator-(DQ dq1, DQ dq2).
+*/
 DQ operator-(DQ dq, float scalar){
     DQ dq_scalar(scalar);
     return (dq - dq_scalar);
 };
+
+/**
+* Operator (-) overload to subtract a DQ object of one float scalar.
+*
+* This friend function realizes the subtraction of a DQ object in one float scalar. and returns the result on another DQ object.
+* A DQ object is created by the DQ constructor using a scalar element and then the operation is made between two DQ objects.
+* \param scalar is the float scalar involved in operation.
+* \param dq is the DQ object in the operation.
+* \return A DQ object.
+* \sa DQ(double scalar), operator-(DQ dq1, DQ dq2).
+*/
 DQ operator-(float scalar, DQ dq){
     DQ dq_scalar(scalar);
     return (dq_scalar - dq);
 };
 
-//Overload (-) for double type scalar
+/**
+* Operator (-) overload to subtract an double scalar of one DQ object.
+*
+* This friend function realizes the subtraction of a double scalar in one DQ object. and returns the result on another DQ object.
+* A DQ object is created by the DQ constructor using a scalar element and then the operation is made between two DQ objects.
+* \param dq is the DQ object in the operation.
+* \param scalar is the double scalar involved in operation.
+* \return A DQ object.
+* \sa DQ(double scalar), operator-(DQ dq1, DQ dq2).
+*/
 DQ operator-(DQ dq, double scalar){
     DQ dq_scalar(scalar);
     return (dq - dq_scalar);
 };
+
+/**
+* Operator (-) overload to subtract a DQ object of one double scalar.
+*
+* This friend function realizes the subtraction of a DQ object in one double scalar. and returns the result on another DQ object.
+* A DQ object is created by the DQ constructor using a scalar element and then the operation is made between two DQ objects.
+* \param scalar is the double scalar involved in operation.
+* \param dq is the DQ object in the operation.
+* \return A DQ object.
+* \sa DQ(double scalar), operator-(DQ dq1, DQ dq2).
+*/
 DQ operator-(double scalar, DQ dq){
     DQ dq_scalar(scalar);
     return (dq_scalar - dq);
 };
 
 // Operator (*) overload
+
+/**
+* Operator (*) overload for the standard multiplication of two DQ objects.
+*
+* This friend function do the standard multiplication of two DQ objects and returns the result on another DQ object which
+* is created with default constructor and have the vector 'q' modified acording to the operation.
+* \param dq1 is the first DQ object in the operation.
+* \param dq2 is the second DQ object in the operation.
+* \return A DQ object.
+* \sa DQ(), D(), P(), threshold().
+*/
 DQ operator*(DQ dq1, DQ dq2){
     DQ dq;
 
@@ -641,37 +1233,107 @@ DQ operator*(DQ dq1, DQ dq2){
     return dq;
 };
 
-// Overload (*) for int type scalar
-DQ operator*(DQ dq, int scalar){
+/**
+* Operator (*) overload for the multiplication of a DQ object and an integer scalar
+*
+* This friend function realizes the multiplication of a DQ object and an integer scalar and returns the result on another DQ object.
+* A DQ object is created by the DQ constructor using a scalar element and then the operation is made between two DQ objects.
+* \param dq is the DQ object in the operation.
+* \param scalar is an integer scalar involved in operation.
+* \return A DQ object.
+* \sa DQ(double scalar), operator*(DQ dq1, DQ dq2).
+*/
+DQ operator*(DQ dq, int scalar) {
     DQ dq_scalar(scalar);
     return (dq * dq_scalar);
 };
-DQ operator*(int scalar, DQ dq){
+
+/**
+* Operator (*) overload for the multiplication of an integer scalar and DQ object
+*
+* This friend function realizes the multiplication of an integer scalar and a DQ object and returns the result on another DQ object.
+* A DQ object is created by the DQ constructor using a scalar element and then the operation is made between two DQ objects.
+* \param scalar is an integer scalar involved in operation.
+* \param dq is the DQ object in the operation.
+* \return A DQ object.
+* \sa DQ(double scalar), operator*(DQ dq1, DQ dq2).
+*/
+DQ operator*(int scalar, DQ dq) {
     DQ dq_scalar(scalar);
     return (dq_scalar * dq);
 };
 
-// Overload (*) for float type scalar
-DQ operator*(DQ dq, float scalar){
+/**
+* Operator (*) overload for the multiplication of a DQ object and a float scalar
+*
+* This friend function realizes the multiplication of a DQ object and a float scalar and returns the result on another DQ object.
+* A DQ object is created by the DQ constructor using a scalar element and then the operation is made between two DQ objects.
+* \param dq is the DQ object in the operation.
+* \param scalar is a float scalar involved in operation.
+* \return A DQ object.
+* \sa DQ(double scalar), operator*(DQ dq1, DQ dq2).
+*/
+DQ operator*(DQ dq, float scalar) {
     DQ dq_scalar(scalar);
     return (dq * dq_scalar);
 };
+
+/**
+* Operator (*) overload for the multiplication of a float scalar and DQ object
+*
+* This friend function realizes the multiplication of a float scalar and a DQ object and returns the result on another DQ object.
+* A DQ object is created by the DQ constructor using a scalar element and then the operation is made between two DQ objects.
+* \param scalar is a float scalar involved in operation.
+* \param dq is the DQ object in the operation.
+* \return A DQ object.
+* \sa DQ(double scalar), operator*(DQ dq1, DQ dq2).
+*/
 DQ operator*(float scalar, DQ dq){
     DQ dq_scalar(scalar);
     return (dq_scalar * dq);
 };
 
-// Overload (*) for double type scalar
+/**
+* Operator (*) overload for the multiplication of a DQ object and an double scalar
+*
+* This friend function realizes the multiplication of a DQ object and an double scalar and returns the result on another DQ object.
+* A DQ object is created by the DQ constructor using a scalar element and then the operation is made between two DQ objects.
+* \param dq is the DQ object in the operation.
+* \param scalar is an double scalar involved in operation.
+* \return A DQ object.
+* \sa DQ(double scalar), operator*(DQ dq1, DQ dq2).
+*/
 DQ operator*(DQ dq, double scalar){
     DQ dq_scalar(scalar);
     return (dq * dq_scalar);
 };
+
+/**
+* Operator (*) overload for the multiplication of an double scalar and DQ object
+*
+* This friend function realizes the multiplication of an double scalar and a DQ object and returns the result on another DQ object.
+* A DQ object is created by the DQ constructor using a scalar element and then the operation is made between two DQ objects.
+* \param scalar is an double scalar involved in operation.
+* \param dq is the DQ object in the operation.
+* \return A DQ object.
+* \sa DQ(double scalar), operator*(DQ dq1, DQ dq2).
+*/
 DQ operator*(double scalar, DQ dq) {
     DQ dq_scalar(scalar);
     return (dq_scalar * dq);
 };
 
 // Operator (==) overload
+
+/**
+* Operator (==) overload for the comparison between two DQ objects.
+*
+* This function do the comparison of two DQ objects. One is the DQ object caller, the first member in operation.
+* The result is returned as a boolean variable. True, means that both DQ objects are equal.
+* \param dq2 is the second DQ object in the operation.
+* \return A boolean variable.
+* \sa threshold().
+*/
 bool DQ::operator==(DQ dq2) {
     for(int n = 0; n<8; n++) {
         if(fabs(q(n) - dq2.q(n)) > DQ::threshold() )
@@ -680,40 +1342,113 @@ bool DQ::operator==(DQ dq2) {
     return true; //elements of Dual Quaternion equal to scalar
 };
 
-// Overload (==) for int type scalar
+/**
+* Operator (==) overload for the comparison between a DQ object and an integer scalar.
+*
+* This function do the comparison between a DQ object and an integer scalar. The scalar is transformed in a DQ object and then
+* the comparison between two DQ objects is executed. The result is returned as a boolean variable. True, means that both
+* DQ objects are equal and thus the DQ object is equal to the scalar.
+* \param dq is the DQ object in the operation.
+* \param scalar is an integer scalar involved in operation
+* \return A boolean variable.
+* \sa DQ(double scalar), operator==(DQ dq2).
+*/
 bool operator==(DQ dq, int scalar) {
     DQ dq_scalar(scalar);
     return (dq == dq_scalar);
 };
 
+/**
+* Operator (==) overload for the comparison between an integer scalar and a DQ object
+*
+* This function do the comparison between a DQ object and an integer scalar. The scalar is transformed in a DQ object and then
+* the comparison between two DQ objects is executed. The result is returned as a boolean variable. True, means that both
+* DQ objects are equal and thus the DQ object is equal to the scalar.
+* \param scalar is an integer scalar involved in operation
+* \param dq is the DQ object in the operation.
+* \return A boolean variable.
+* \sa DQ(double scalar), operator==(DQ dq2).
+*/
 bool operator==(int scalar, DQ dq) {
     DQ dq_scalar(scalar);
     return (dq_scalar == dq);
 };
 
-// Overload (==) for float type scalar
+/**
+* Operator (==) overload for the comparison between a DQ object and a float scalar.
+*
+* This function do the comparison between a DQ object and a float scalar. The scalar is transformed in a DQ object and then
+* the comparison between two DQ objects is executed. The result is returned as a boolean variable. True, means that both
+* DQ objects are equal and thus the DQ object is equal to the scalar.
+* \param dq is the DQ object in the operation.
+* \param scalar is a float scalar involved in operation
+* \return A boolean variable.
+* \sa DQ(double scalar), operator==(DQ dq2).
+*/
 bool operator==(DQ dq, float scalar) {
     DQ dq_scalar(scalar);
     return (dq == dq_scalar);
 };
 
+/**
+* Operator (==) overload for the comparison between a float scalar and a DQ object
+*
+* This function do the comparison between a DQ object and a float scalar. The scalar is transformed in a DQ object and then
+* the comparison between two DQ objects is executed. The result is returned as a boolean variable. True, means that both
+* DQ objects are equal and thus the DQ object is equal to the scalar.
+* \param scalar is a float scalar involved in operation
+* \param dq is the DQ object in the operation.
+* \return A boolean variable.
+* \sa DQ(double scalar), operator==(DQ dq2).
+*/
 bool operator==(float scalar, DQ dq) {
     DQ dq_scalar(scalar);
     return (dq_scalar == dq);
 };
 
-// Overload (==) for double type scalar
+/**
+* Operator (==) overload for the comparison between a DQ object and a double scalar.
+*
+* This function do the comparison between a DQ object and a double scalar. The scalar is transformed in a DQ object and then
+* the comparison between two DQ objects is executed. The result is returned as a boolean variable. True, means that both
+* DQ objects are equal and thus the DQ object is equal to the scalar.
+* \param dq is the DQ object in the operation.
+* \param scalar is an double scalar involved in operation
+* \return A boolean variable.
+* \sa DQ(double scalar), operator==(DQ dq2).
+*/
 bool operator==(DQ dq, double scalar) {
     DQ dq_scalar(scalar);
     return (dq == dq_scalar);
 };
 
+/**
+* Operator (==) overload for the comparison between a double scalar and a DQ object
+*
+* This function do the comparison between a DQ object and a double scalar. The scalar is transformed in a DQ object and then
+* the comparison between two DQ objects is executed. The result is returned as a boolean variable. True, means that both
+* DQ objects are equal and thus the DQ object is equal to the scalar.
+* \param scalar is a double scalar involved in operation
+* \param dq is the DQ object in the operation.
+* \return A boolean variable.
+* \sa DQ(double scalar), operator==(DQ dq2).
+*/
 bool operator==(double scalar, DQ dq) {
     DQ dq_scalar(scalar);
     return (dq_scalar == dq);
 };
 
 // Operator (!=) overload
+
+/**
+* Operator (!=) overload for the comparison between two DQ objects.
+*
+* This function do the comparison of two DQ objects. One is the DQ object caller, the first member in operation.
+* The result is returned as a boolean variable. True, means that DQ objects are not equal.
+* \param dq2 is the second DQ object in the operation.
+* \return A boolean variable.
+* \sa threshold().
+*/
 bool DQ::operator!=(DQ dq2) {
     for(int n = 0; n<8; n++){
         if(fabs(q(n) - dq2.q(n)) > DQ::threshold() )
@@ -722,40 +1457,104 @@ bool DQ::operator!=(DQ dq2) {
     return false; //elements of Dual Quaternion equal to scalar
 };
 
-// Overload (!=) for int type scalar
+/**
+* Operator (!=) overload for the comparison between a DQ object and an integer scalar.
+*
+* This friend function do the comparison between a DQ object and an integer scalar. The scalar is transformed in a DQ object and then
+* the comparison between two DQ objects is executed. The result is returned as a boolean variable. True, means that DQ objects
+* are not equal and thus the DQ object isn't equal to the scalar.
+* \param dq is the DQ object in the operation.
+* \param scalar is an integer scalar involved in operation
+* \return A boolean variable.
+* \sa DQ(double scalar), operator!=(DQ dq2).
+*/
 bool operator!=(DQ dq, int scalar) {
     DQ dq_scalar(scalar);
-    return (dq == dq_scalar);
+    return (dq != dq_scalar);
 };
 
+/**
+* Operator (!=) overload for the comparison between an integer scalar and a DQ object
+*
+* This function do the comparison between a DQ object and an integer scalar. The scalar is transformed in a DQ object and then
+* the comparison between two DQ objects is executed. The result is returned as a boolean variable. True, means that DQ objects
+* are not equal and thus the DQ object isn't equal to the scalar.
+* \param scalar is an integer scalar involved in operation
+* \param dq is the DQ object in the operation.
+* \return A boolean variable.
+* \sa DQ(double scalar), operator!=(DQ dq2).
+*/
 bool operator!=(int scalar, DQ dq) {
     DQ dq_scalar(scalar);
     return (dq_scalar != dq);
 };
 
-// Overload (!=) for float type scalar
+/**
+* Operator (!=) overload for the comparison between a DQ object and a float scalar.
+*
+* This friend function do the comparison between a DQ object and a float scalar. The scalar is transformed in a DQ object and then
+* the comparison between two DQ objects is executed. The result is returned as a boolean variable. True, means that DQ objects
+* are not equal and thus the DQ object isn't equal to the scalar.
+* \param dq is the DQ object in the operation.
+* \param scalar is a float scalar involved in operation
+* \return A boolean variable.
+* \sa DQ(double scalar), operator!=(DQ dq2).
+*/
 bool operator!=(DQ dq, float scalar) {
     DQ dq_scalar(scalar);
-    return (dq == dq_scalar);
+    return (dq != dq_scalar);
 };
 
+/**
+* Operator (!=) overload for the comparison between a float scalar and a DQ object
+*
+* This function do the comparison between a DQ object and a float scalar. The scalar is transformed in a DQ object and then
+* the comparison between two DQ objects is executed. The result is returned as a boolean variable. True, means that DQ objects
+* are not equal and thus the DQ object isn't equal to the scalar.
+* \param scalar is a float scalar involved in operation
+* \param dq is the DQ object in the operation.
+* \return A boolean variable.
+* \sa DQ(double scalar), operator!=(DQ dq2).
+*/
 bool operator!=(float scalar, DQ dq) {
     DQ dq_scalar(scalar);
     return (dq_scalar != dq);
 };
 
-// Overload (!=) for double type scalar
+/**
+* Operator (!=) overload for the comparison between a DQ object and a double scalar.
+*
+* This friend function do the comparison between a DQ object and a double scalar. The scalar is transformed in a DQ object and then
+* the comparison between two DQ objects is executed. The result is returned as a boolean variable. True, means that DQ objects
+* are not equal and thus the DQ object isn't equal to the scalar.
+* \param dq is the DQ object in the operation.
+* \param scalar is a double scalar involved in operation
+* \return A boolean variable.
+* \sa DQ(double scalar), operator!=(DQ dq2).
+*/
 bool operator!=(DQ dq, double scalar) {
     DQ dq_scalar(scalar);
-    return (dq == dq_scalar);
+    return (dq != dq_scalar);
 };
 
+/**
+* Operator (!=) overload for the comparison between a double scalar and a DQ object
+*
+* This function do the comparison between a DQ object and a double scalar. The scalar is transformed in a DQ object and then
+* the comparison between two DQ objects is executed. The result is returned as a boolean variable. True, means that DQ objects
+* are not equal and thus the DQ object isn't equal to the scalar.
+* \param scalar is a double scalar involved in operation
+* \param dq is the DQ object in the operation.
+* \return A boolean variable.
+* \sa DQ(double scalar), operator!=(DQ dq2).
+*/
 bool operator!=(double scalar, DQ dq) {
     DQ dq_scalar(scalar);
     return (dq_scalar != dq);
 };
 
 DQ operator^(DQ dq1, double m) {
+    //TODO: Generate a message error here if condition is not satisfied
     if (dq1.norm() != 1) {
         cout << "ERROR IN OPERATION: NOT A UNIT DUAL QUATERNION";
         return dq1;
