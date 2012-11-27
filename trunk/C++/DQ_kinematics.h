@@ -11,25 +11,52 @@
 
 using namespace boost::numeric::ublas;
 
+/**
+* This class DQ_kinematics represents a kinematic model of a robotic system using dual quaternions concept.
+*
+* TODO: REDEFINE THIS DEFINITION OF THE CLASS
+* In the class definition are declared different constructors for the Dual Quaternion object, the public methods which can be called
+* by the object, the operators overload functions e also auxiliar functions and variables to intermediate the operations of the
+* public methods. Most of the methods returns a constant Dual Quaternion object, which depends of the object caller such as primary
+* and dual parts or not, being the same for any caller such as the imaginary parts. Some methods returns a constant boost matrix class
+* object which depends of object caller too. And there is a method for display in the console, the DQ object caller.
+* \author Mateus Rodrigues Martins (martinsrmateus@gmail.com)
+* \since 11/2012
+* \version 1.0
+*/
 class DQ_kinematics{
 
+    // private attributtes
     private:
+
+    //Para uso nas funções Jacobian...
     matrix <double> dq_kin;
     DQ curr_base;
-//    Properties for interfacing with Robotics Toolbox
-//    name;
-//    robot_RT;
-    private:
-    // Auxiliar variables used in methods display() and build_string() for correctly display the DQ object
+    DQ curr_effector;
+    // TODO: IMPLEMENT THESE VARIABLES REGARDING ROBOTICS TOOLBOX
+    // Properties for interfacing with Robotics Toolbox
+    // name;
+    // robot_RT;
     std::string aux_type;
 
+
+    // public methods
     public:
+    // Class constructors: Creates a Dual Quaternion as a DQ object.
 
     DQ_kinematics(matrix <double> A);
 
     DQ_kinematics(matrix <double> A, std::string type);
 
     ~DQ_kinematics();
+
+
+    /*
+    * Public constant methods: Can be called by DQ_kinematics objects.
+    * To use these methods, type: 'dq_object.method_name();' where 'method_name' is the name of one of the methods below.
+    * Or in another way type: 'DQ::method_name(dq_object);' that works well too.
+    * These ways of calling function can't be applied to display() method that uses a macro called DISPLAY.
+    */
 
     int const links();
     static int const links(DQ_kinematics param_dq_kin);
@@ -58,6 +85,9 @@ class DQ_kinematics{
     DQ const base();
     static DQ const base(DQ_kinematics param_dq_kin);
 
+    DQ const effector();
+    static DQ const effector(DQ_kinematics param_dq_kin);
+
     static matrix <double> const C8();
     static matrix <double> const C8(DQ_kinematics param_dq_kin);
 
@@ -67,6 +97,14 @@ class DQ_kinematics{
     DQ const set_base(DQ new_base);
     static DQ const set_base(DQ_kinematics param_dq_kin, DQ new_base);
 
+    DQ const set_effector(DQ new_effector);
+    static DQ const set_effector(DQ_kinematics param_dq_kin, DQ new_effector);
+
+    DQ const raw_fkm(vector <double> theta_vec);
+    static DQ const raw_fkm(DQ_kinematics param_dq_kin, vector <double> theta_vec);
+    DQ const raw_fkm(vector <double> theta_vec, int ith);
+    static DQ const raw_fkm(DQ_kinematics param_dq_kin, vector <double> theta_vec, int ith);
+
     DQ const fkm(vector <double> theta_vec);
     static DQ const fkm(DQ_kinematics param_dq_kin, vector <double> theta_vec);
     DQ const fkm(vector <double> theta_vec, int ith);
@@ -75,8 +113,8 @@ class DQ_kinematics{
     DQ const dh2dq(double theta_ang, int link_i);
     static DQ const dh2dq(DQ_kinematics param_dq_kin, double theta_ang, int link_i);
 
-    DQ const get_p(vector <double> q);
-    static DQ const get_p(DQ_kinematics param_dq_kin, vector <double> q);
+    DQ const get_z(vector <double> q);
+    static DQ const get_z(DQ_kinematics param_dq_kin, vector <double> q);
 
     matrix <double> const jacobian(vector <double> theta_vec);
     static matrix <double> const jacobian(DQ_kinematics param_dq_kin, vector <double> theta_vec);
