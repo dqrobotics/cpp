@@ -15,11 +15,11 @@ using namespace boost::numeric::ublas;
 * This class DQ_kinematics represents a kinematic model of a robotic system using dual quaternions concept.
 *
 * TODO: REDEFINE THIS DEFINITION OF THE CLASS
-* In the class definition are declared different constructors for the Dual Quaternion object, the public methods which can be called
-* by the object, the operators overload functions e also auxiliar functions and variables to intermediate the operations of the
-* public methods. Most of the methods returns a constant Dual Quaternion object, which depends of the object caller such as primary
-* and dual parts or not, being the same for any caller such as the imaginary parts. Some methods returns a constant boost matrix class
-* object which depends of object caller too. And there is a method for display in the console, the DQ object caller.
+* In the class definition are declared different constructors for the Dual Quaternion Kinematics object, the public methods which
+* can be called by the object and also auxiliar functions and variables to intermediate the operations of the public methods.
+* Some methods return a constant Dual Quaternion object, some return a constant boost vector class and some return a constant boost
+* matrix class. But, all of then depends of the object caller. For displaying the results of methods, the DISPLAY and MATRIX functions
+* of DQ class (also provided with this class) can be used.
 * \author Mateus Rodrigues Martins (martinsrmateus@gmail.com)
 * \since 11/2012
 * \version 1.0
@@ -53,9 +53,9 @@ class DQ_kinematics{
 
     /*
     * Public constant methods: Can be called by DQ_kinematics objects.
-    * To use these methods, type: 'dq_object.method_name();' where 'method_name' is the name of one of the methods below.
-    * Or in another way type: 'DQ::method_name(dq_object);' that works well too.
-    * These ways of calling function can't be applied to display() method that uses a macro called DISPLAY.
+    * To use these methods, type: 'dq_kinematics_object.method_name();' where 'method_name' is the name of one of the methods below.
+    * Or in another way type: 'DQ_kinematics::method_name(dq_kinematics_object);' that works well too.
+    * For displaying the results of methods, the DISPLAY and MATRIX functions of DQ class can be used
     */
 
     int const links();
@@ -124,6 +124,7 @@ class DQ_kinematics{
 
     static matrix <double> const jacobd(matrix <double> param_jacobian, vector <double> x);
     static matrix <double> const jacobd(DQ_kinematics param_dq_kin, matrix <double> param_jacobian, vector <double> x);
+
 };
 
 #endif // DQ_KINEMATICS_H_INCLUDED

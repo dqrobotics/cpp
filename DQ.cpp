@@ -1,5 +1,6 @@
 #include "DQ.h"
 #include <iostream>
+#include <iomanip>
 #include<math.h>
 
 #include <boost/numeric/ublas/vector.hpp>
@@ -310,8 +311,8 @@ DQ const DQ::norm() {
     else {
         // norm calculation
         norm = aux.conj() * aux;
-        norm.q(1) = sqrt(norm.q(1));
-        norm.q(5) = norm.q(5)/(2*norm.q(1));
+        norm.q(0) = sqrt(norm.q(0));
+        norm.q(4) = norm.q(4)/(2*norm.q(4));
 
         // using threshold to verify zero values in DQ to be returned
         for(int n = 0; n < 8; n++) {
@@ -370,6 +371,7 @@ DQ const DQ::inv(DQ dq) {
 * Returns a constant DQ object representing the translation part of the unit DQ object caller.
 *
 * Creates a dual quaternion with calculated values for the translation part and return a DQ object.
+* Assuming  dq=r + DQ.E * p * r * (0.5), the return is p.
 * To use this member function, type: 'dq_object.translation();'.
 * \return A constant DQ object.
 * \sa DQ().
@@ -383,12 +385,11 @@ DQ const DQ::translation() {
 	}
     //TODO: Generate a message error here if condition is not satisfied
 	// Verify if the object caller is a unit DQ
-	if (aux.norm() != 1) {
-        cout << "ERROR IN OPERATION: NOT A UNIT DUAL QUATERNION";
-        return aux;
-    }
+	try {
+        if (aux.norm() != 1) {
+            throw 1;
+        }
 
-    else {
         //translation part calculation
         translation = aux.P();
         translation = (2 * aux.D() * translation.conj() );
@@ -400,7 +401,12 @@ DQ const DQ::translation() {
         }
 
         return translation;
-    }
+	}
+	catch (int i) {
+        std::cerr << "ERROR IN TRANSLATION OPERATION: NOT A UNIT DUAL QUATERNION \n";
+        system("PAUSE");
+        return EXIT_FAILURE;
+	}
 };
 /**
 * Returns a constant DQ object representing the translation part of the unit DQ object caller.
@@ -411,7 +417,7 @@ DQ const DQ::translation(DQ dq) {
 };
 
 /**
-* Returns a constant DQ object representing the rotation axis of the unit DQ object caller.
+* Returns a constant DQ object representing the rotation axis (nx*i + ny*j + nz*k) of the unit DQ object caller.
 *
 * Creates a dual quaternion with calculated values for the rotation axis and return a DQ object.
 * To use this member function, type: 'dq_object.rot_axis();'.
@@ -427,7 +433,7 @@ DQ const DQ::rot_axis() {
     //TODO: Generate a message error here if condition is not satisfied
 	// Verify if the object caller is a unit DQ
 	if (dq.norm() != 1) {
-        cout << "ERROR IN OPERATION: NOT A UNIT DUAL QUATERNION";
+        cout << "ERROR IN ROT_AXIS OPERATION: NOT A UNIT DUAL QUATERNION \n";
         return dq;
     }
 
@@ -475,7 +481,7 @@ double const DQ::rot_angle() {
     //TODO: Generate a message error here if condition is not satisfied
 	// Verify if the object caller is a unit DQ
 	if (dq.norm() != 1) {
-        cout << "ERROR IN OPERATION: NOT A UNIT DUAL QUATERNION";
+        cout << "ERROR IN ROT_ANGLE OPERATION: NOT A UNIT DUAL QUATERNION \n";
         return 0;
     }
 
@@ -510,7 +516,7 @@ DQ const DQ::log() {
     //TODO: Generate a message error here if condition is not satisfied
 	// Verify if the object caller is a unit DQ
 	if (aux.norm() != 1) {
-        cout << "ERROR IN OPERATION: NOT A UNIT DUAL QUATERNION";
+        cout << "ERROR IN LOG OPERATION: NOT A UNIT DUAL QUATERNION \n";
         return aux;
     }
 
@@ -555,12 +561,12 @@ DQ const DQ::exp() {
 	}
     //TODO: Generate a message error here if condition is not satisfied
 	// Verify if the object caller is a unit DQ
-	if (dq.norm() != 1) {
-        cout << "ERROR IN OPERATION: NOT A UNIT DUAL QUATERNION";
-        return dq;
-    }
+//	if (dq.norm() != 1) {
+//        cout << "ERROR IN EXP OPERATION: NOT A UNIT DUAL QUATERNION \n";
+//        return dq;
+//    }
 
-    else {
+//    else {
     // exponential calculation
     phi = dq.P();
     phi = dq.norm();
@@ -583,7 +589,7 @@ DQ const DQ::exp() {
         }
 
         return exp;
-    }
+//    }
 };
 /**
 * Returns a constant DQ object representing the exponential of the unit DQ object caller.
@@ -610,7 +616,7 @@ DQ const DQ::tplus() {
     //TODO: Generate a message error here if condition is not satisfied
 	// Verify if the object caller is a unit DQ
 	if (dq.norm() != 1) {
-        cout << "ERROR IN OPERATION: NOT A UNIT DUAL QUATERNION";
+        cout << "ERROR IN TPLUS OPERATION: NOT A UNIT DUAL QUATERNION \n";
         return dq;
     }
 
@@ -654,7 +660,7 @@ DQ const DQ::pinv() {
     //TODO: Generate a message error here if condition is not satisfied
 	// Verify if the object caller is a unit DQ
 	if (dq.norm() != 1) {
-        cout << "ERROR IN OPERATION: NOT A UNIT DUAL QUATERNION";
+        cout << "ERROR IN PINV OPERATION: NOT A UNIT DUAL QUATERNION \n";
         return dq;
     }
 
@@ -843,7 +849,7 @@ matrix <double> const DQ::vec4(DQ dq) {
 /**
 * Returns a constant 8x1 double boost matrix representing the 'vec' operator of the DQ object caller.
 *
-* Creates a *x1 Boost matrix, fill it with values based on the elements q(0) to q(8) and return the column matrix vec8.
+* Creates a 8x1 Boost matrix, fill it with values based on the elements q(0) to q(8) and return the column matrix vec8.
 * To use this member function, type: 'dq_object.vec8();'.
 * \return A constant boost::numeric::ublas::matrix <double> (8,1).
 */
@@ -867,6 +873,44 @@ matrix <double> const DQ::vec8(DQ dq) {
  return dq.vec8();
 };
 
+/** Returns the Generilized Jacobian; that it, the Jacobian that satisfies the relation Geometric_Jacobian = G * DQ_Jacobian.
+* To use this member function type: 'dq_object.jacobG(x_E).
+* \param DQ x_E is the dual position quaternion
+* \return A constant boost::numeric::ublas::matrix <double>
+*/
+matrix <double> const DQ::jacobG(DQ x_E) {
+    matrix <double> jacobGen(8,8);
+    jacobGen(0,0) = x_E.q(4); jacobGen(0,1) =  x_E.q(5); jacobGen(0,2) =  x_E.q(6); jacobGen(0,3) =  x_E.q(7);
+    jacobGen(1,0) = x_E.q(5); jacobGen(1,1) = -x_E.q(4); jacobGen(1,2) =  x_E.q(7); jacobGen(1,3) = -x_E.q(6);
+    jacobGen(2,0) = x_E.q(6); jacobGen(2,1) = -x_E.q(7); jacobGen(2,2) = -x_E.q(4); jacobGen(2,3) =  x_E.q(5);
+    jacobGen(3,0) = x_E.q(7); jacobGen(3,1) =  x_E.q(6); jacobGen(3,2) = -x_E.q(5); jacobGen(3,3) = -x_E.q(4);
+
+    jacobGen(0,4) =  x_E.q(0); jacobGen(0,5) =  x_E.q(1); jacobGen(0,6) =  x_E.q(2); jacobGen(0,7) =  x_E.q(3);
+    jacobGen(1,4) = -x_E.q(1); jacobGen(1,5) =  x_E.q(0); jacobGen(1,6) = -x_E.q(3); jacobGen(1,7) =  x_E.q(2);
+    jacobGen(2,4) = -x_E.q(2); jacobGen(2,5) =  x_E.q(3); jacobGen(2,6) =  x_E.q(0); jacobGen(2,7) = -x_E.q(1);
+    jacobGen(3,4) = -x_E.q(3); jacobGen(3,5) = -x_E.q(2); jacobGen(3,6) =  x_E.q(1); jacobGen(3,7) =  x_E.q(0);
+
+    jacobGen(4,0) =  x_E.q(0); jacobGen(4,1) =  x_E.q(1); jacobGen(4,2) =  x_E.q(2); jacobGen(4,3) =  x_E.q(3);
+    jacobGen(5,0) = -x_E.q(1); jacobGen(5,1) =  x_E.q(0); jacobGen(5,2) = -x_E.q(3); jacobGen(5,3) =  x_E.q(2);
+    jacobGen(6,0) = -x_E.q(2); jacobGen(6,1) =  x_E.q(3); jacobGen(6,2) =  x_E.q(0); jacobGen(6,3) = -x_E.q(1);
+    jacobGen(7,0) = -x_E.q(3); jacobGen(7,1) = -x_E.q(2); jacobGen(7,2) =  x_E.q(1); jacobGen(7,3) =  x_E.q(0);
+
+    jacobGen(4,4) = 0; jacobGen(4,5) = 0; jacobGen(4,6) = 0; jacobGen(4,7) = 0;
+    jacobGen(5,4) = 0; jacobGen(5,5) = 0; jacobGen(5,6) = 0; jacobGen(5,7) = 0;
+    jacobGen(6,4) = 0; jacobGen(6,5) = 0; jacobGen(6,6) = 0; jacobGen(6,7) = 0;
+    jacobGen(7,4) = 0; jacobGen(7,5) = 0; jacobGen(7,6) = 0; jacobGen(7,7) = 0;
+
+    return 2*jacobGen;
+};
+
+/** Returns the Generilized Jacobian; that it, the Jacobian that satisfies the relation Geometric_Jacobian = G * DQ_Jacobian.
+* Actually this function does the same as jacobG(theta_vec) changing only the way of calling, which is
+* DQ::jacobG(dq_object, x_E).
+*/
+matrix <double> const DQ::jacobG(DQ param_dq, DQ x_E) {
+    return param_dq.jacobG(x_E);
+};
+
 /**
 * Display DQ object caller.
 *
@@ -874,7 +918,7 @@ matrix <double> const DQ::vec8(DQ dq) {
 * including it's object name, the primary and dual parts. The DQ object is displayed in the following standard form:
 * dq_object = (q(0) + q(1)*i + q(2)*j + q(3)*k) + dual_unit_E*(q(4) + q(5)*i + q(6)*j + q(7)*k). To use this member funtion correctly
 * and comfortably, type DISPLAY(dq_object). Where 'DISPLAY" must be upper case because it's a defined macro created to facilitate the use.
-* \param name is the name of the DQ object passed to function (using DISPLAY macro could be skipped)
+* \param name is the name of the DQ object passed to function (using DISPLAY macro this could be ignored)
 * \param dq is the dual quaternion to be displayed.
 */
 void DQ::display(char *name, DQ dq) {
@@ -906,6 +950,91 @@ void DQ::display(char *name, DQ dq) {
         s = "0";
     cout << name << " = " << s << sd << "\n";
 };
+
+/**
+* Display a boost matrix representing Hamilton or vec operators.
+*
+* This function just displays the boost matrix in a good form of visualisation. To use this member funtion correctly and comfortably,
+* type MATRIX(matrix <double> H_or_vec). Where 'MATRIX" must be upper case because it's a defined macro created to facilitate the use.
+* \param name is the name of the matrix passed to function (using MATRIX macro this could be ignored)
+* \param &H_or_vec is a reference to the matrix to be displayed.
+*/
+void DQ::display(char *name, matrix <double> &H_or_vec) {
+
+    cout << name << " = \n";
+    for(unsigned int line = 0; line < H_or_vec.size1() ; line++) {
+        for(unsigned int column = 0; column < H_or_vec.size2() ; column++) {
+            cout << "\t" << std::setw(10) << std::left << H_or_vec(line, column);
+        }
+        cout << "\n";
+    }
+    cout << "\n";
+};
+
+/**
+* Display a boost vector as a boost matrix 1xn.
+*
+* This function just displays the boost vector in a good form of visualisation. To use this member funtion correctly and comfortably,
+* type MATRIX(vector <double> vec). Where 'MATRIX" must be upper case because it's a defined macro created to facilitate the use.
+* \param name is the name of the vector passed to function (using MATRIX macro this could be ignored)
+* \param &vec is a reference to the vector to be displayed.
+*/
+void DQ::display(char *name, vector <double> &vec) {
+
+    cout << name << " = \n";
+    matrix <double> vec_line (1,vec.size());
+    for(unsigned int col = 0; col < vec.size() ; col++) {
+	vec_line(0,col) = vec(col);
+    }
+    for(unsigned int line = 0; line < vec_line.size1() ; line++) {
+        for(unsigned int column = 0; column < vec_line.size2() ; column++) {
+            cout << "\t" << std::setw(10) << std::left << vec_line(line, column);
+        }
+        cout << "\n";
+    }
+    cout << "\n";
+};
+
+/**
+* Unit Dual Quaternion constructor.
+*
+* Returns a DQ object with unitary norm defined as DQ h = r + DQ::E(r)*0.5*p*r. Where, r is a rotation quatérnion composed by a
+* rotation angle and rotation axis. and p is a translation quatérnion composed by three displacements on the three coordinates x,y and z.
+* To create a DQ object using this, type: 'unit_DQ_h = DQ::unitDQ(PI/4, 0,0,1, 2.2,0,2.457);' for example.
+* \param rot_angle is the angle rotation of the unit DQ.
+* \param x_axis, y_axis and z_axis are the axis which are rotated
+* \param x_trans, y_trans and z_trans are the displacements of translation on the respective axis x, y and/or z.
+* \return A DQ object.
+*/
+DQ DQ::unitDQ(double rot_angle, int x_axis,int y_axis,int z_axis, double x_trans,double y_trans, double z_trans) {
+    if ((x_axis != 0 && x_axis != 1) || (y_axis != 0 && y_axis != 1) || (z_axis != 0 && z_axis != 1)) {
+        cout << "ERROR IN ROTATION ANGLE CHOOSE: X, Y AND Z AXIS PARAMETERS MUST BE 1 OR 0 \n";
+        return DQ(0);
+    }
+    vector <double> axis(4), translation(4);
+    axis(0) = 0;
+    axis(1) = x_axis;
+    axis(2) = y_axis;
+    axis(3) = z_axis;
+
+    translation(0) = 0;
+    translation(1) = x_trans;
+    translation(2) = y_trans;
+    translation(3) = z_trans;
+
+    DQ r = cos(rot_angle/2) + sin(rot_angle/2)*DQ(axis);
+    DQ p = DQ(translation);
+    DQ h = r + DQ::E(r)*0.5*p*r;
+
+    // using threshold to verify zero values in DQ to be returned
+    for(int n = 0; n < 8; n++) {
+        if(fabs(h.q(n)) < DQ::threshold() )
+            h.q(n) = 0;
+    }
+    return h;
+};
+
+//Private auxiliar functions
 
 /**
 * Constructs and Returns a string to be displayed representing a part of the DQ object caller.
@@ -1553,10 +1682,22 @@ bool operator!=(double scalar, DQ dq) {
     return (dq_scalar != dq);
 };
 
+// Operator (^) overload
+
+/**
+* Operator (^) overload for the potentiation operation of a DQ objects.
+*
+* This friend function do the raises a DQ object by the m-th power and returns the result on another DQ object which
+* elements are correctly calculated
+* \param dq1 is the DQ object in the operation.
+* \param m is the double value representing the power.
+* \return A DQ object.
+* \sa DQ(), log(), exp() threshold().
+*/
 DQ operator^(DQ dq1, double m) {
     //TODO: Generate a message error here if condition is not satisfied
     if (dq1.norm() != 1) {
-        cout << "ERROR IN OPERATION: NOT A UNIT DUAL QUATERNION";
+        cout << "ERROR IN MPOWER OPERATION: NOT A UNIT DUAL QUATERNION \n";
         return dq1;
     }
     else {

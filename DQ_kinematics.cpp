@@ -22,15 +22,26 @@ using std::cout;
 * \param matrix <double> A contain the Denavit-Hartenberg parameters for the kinematic model.
 */
 DQ_kinematics::DQ_kinematics(matrix <double> A) {
-    dq_kin.resize(A.size1(), A.size2());
-    for(unsigned int i = 0; i < A.size1(); i++) {
-        for(unsigned int j = 0; j < A.size2(); j++) {
-        dq_kin(i,j) = A(i,j);
+    try {
+        if (A.size1() != 4 && A.size1() != 5) {
+            throw 1;
         }
-    }
-    aux_type = "standard";
-    curr_base = DQ(1);
-    curr_effector = DQ(1);
+
+        dq_kin.resize(A.size1(), A.size2());
+        for(unsigned int i = 0; i < A.size1(); i++) {
+            for(unsigned int j = 0; j < A.size2(); j++) {
+                dq_kin(i,j) = A(i,j);
+            }
+        }
+        aux_type = "standard";
+        curr_base = DQ(1);
+        curr_effector = DQ(1);
+        }
+
+    catch (int i) {
+        std::cerr << "ERROR: DH Parameters matrix must be 4xn or 5xn. \n";
+        system("PAUSE");
+        }
 };
 
 /**
@@ -48,15 +59,24 @@ DQ_kinematics::DQ_kinematics(matrix <double> A) {
 * \param std::string type contain the convention used in Denavit_Hartenberg.
 */
 DQ_kinematics::DQ_kinematics(matrix <double> A, std::string type) {
+    curr_base = DQ(1);
+    curr_effector = DQ(1);
+
+    if (A.size1() != 4 && A.size1() != 5) {
+        std::cerr << "ERROR: DH Parameters matrix must be 4xn or 5xn. \n";
+        system("PAUSE");
+    }
     dq_kin.resize(A.size1(), A.size2());
     for(unsigned int i = 0; i < A.size1(); i++) {
         for(unsigned int j = 0; j < A.size2(); j++) {
-        dq_kin(i,j) = A(i,j);
+            dq_kin(i,j) = A(i,j);
         }
     }
+    if (type != "standard" && type != "modified") {
+        std::cerr << "ERROR: DH convention must be standard or modified. Write it correctly \n";
+        system("PAUSE");
+    }
     aux_type = type;
-    curr_base = DQ(1);
-    curr_effector = DQ(1);
 };
 
 /**
@@ -87,7 +107,7 @@ int const DQ_kinematics::links(DQ_kinematics param_dq_kin) {
 };
 
 /**
-* Returns a constant vector representing the theta joint angles of a robotic system DQ_kinematics object.
+* Returns a constant vector representing the theta joint angles offset of a robotic system DQ_kinematics object.
 * It gets the first row of matrix 'A', passed to constructor and stored in the private attributte dq_kin.
 * To use this member function, type: 'dq_kin_object.theta();'.
 * \return A constant boost::numeric::ublas::vector <double> (number of links).
@@ -101,7 +121,7 @@ vector <double> const DQ_kinematics::theta() {
 };
 
 /**
-* Returns a constant vector representing the theta joint angles of a robotic system DQ_kinematics object.
+* Returns a constant vector representing the theta joint angles offset of a robotic system DQ_kinematics object.
 * Actually this function does the same as theta() changing only the way of calling, which is DQ::theta(dq_kin_object).
 */
 vector <double> const DQ_kinematics::theta(DQ_kinematics param_dq_kin) {
@@ -308,7 +328,7 @@ matrix <double> const DQ_kinematics::C8() {
     diag_C8(6,0) = 0; diag_C8(6,1) = 0; diag_C8(6,2) = 0; diag_C8(6,3) = 0;
     diag_C8(7,0) = 0; diag_C8(7,1) = 0; diag_C8(7,2) = 0; diag_C8(7,3) = 0;
 
-    diag_C8(4,4) = -1; diag_C8(4,5) = 0; diag_C8(4,6) = 0; diag_C8(4,7) = 0;
+    diag_C8(4,4) = 1; diag_C8(4,5) = 0; diag_C8(4,6) = 0; diag_C8(4,7) = 0;
     diag_C8(5,4) = 0; diag_C8(5,5) = -1; diag_C8(5,6) = 0; diag_C8(5,7) = 0;
     diag_C8(6,4) = 0; diag_C8(6,5) = 0; diag_C8(6,6) = -1; diag_C8(6,7) = 0;
     diag_C8(7,4) = 0; diag_C8(7,5) = 0; diag_C8(7,6) = 0; diag_C8(7,7) = -1;
@@ -394,7 +414,7 @@ DQ const DQ_kinematics::set_effector(DQ_kinematics param_dq_kin, DQ new_effector
 * \return A constant DQ object.
 */
 DQ const DQ_kinematics::raw_fkm(vector <double> theta_vec) {
-    DQ_kinematics aux_dq_kin(dq_kin);
+    DQ_kinematics aux_dq_kin(dq_kin, aux_type);
     if((int)theta_vec.size() != (aux_dq_kin.links() - aux_dq_kin.n_dummy()) ) {
         //erro
         cout << "\n INCORRECT NUMBER OF JOINT VARIABLES \n";
@@ -431,7 +451,7 @@ DQ const DQ_kinematics::raw_fkm(DQ_kinematics param_dq_kin, vector <double> thet
 * \return A constant DQ object.
 */
 DQ const DQ_kinematics::raw_fkm(vector <double> theta_vec, int ith) {
-    DQ_kinematics aux_dq_kin(dq_kin);
+    DQ_kinematics aux_dq_kin(dq_kin, aux_type);
     if((int)theta_vec.size() != (aux_dq_kin.links() - aux_dq_kin.n_dummy()) ) {
         //erro
         cout << "\n INCORRECT NUMBER OF JOINT VARIABLES \n";
@@ -466,7 +486,7 @@ DQ const DQ_kinematics::raw_fkm(DQ_kinematics param_dq_kin, vector <double> thet
 * \return A constant DQ object.
 */
 DQ const DQ_kinematics::fkm(vector <double> theta_vec) {
-    DQ_kinematics aux_dq_kin(dq_kin);
+    DQ_kinematics aux_dq_kin(dq_kin, aux_type);
     DQ q = aux_dq_kin.base() * aux_dq_kin.raw_fkm(theta_vec) * aux_dq_kin.effector();
     return q;
 };
@@ -488,7 +508,7 @@ DQ const DQ_kinematics::fkm(DQ_kinematics param_dq_kin, vector <double> theta_ve
 * \return A constant DQ object.
 */
 DQ const DQ_kinematics::fkm(vector <double> theta_vec, int ith) {
-    DQ_kinematics aux_dq_kin(dq_kin);
+    DQ_kinematics aux_dq_kin(dq_kin, aux_type);
     DQ q = aux_dq_kin.base() * aux_dq_kin.raw_fkm(theta_vec, ith) * aux_dq_kin.effector();
     return q;
 };
@@ -509,7 +529,7 @@ DQ const DQ_kinematics::fkm(DQ_kinematics param_dq_kin, vector <double> theta_ve
 * \return A constant DQ object
 */
 DQ const DQ_kinematics::dh2dq(double theta_ang, int link_i) {
-    DQ_kinematics aux_dq_kin(dq_kin);
+    DQ_kinematics aux_dq_kin(dq_kin, aux_type);
     vector <double> q(8);
     link_i = link_i - 1;
 
@@ -583,7 +603,7 @@ DQ const DQ_kinematics::get_z(DQ_kinematics param_dq_kin, vector <double> q) {
 * \return A constant boost::numeric::ublas::matrix <double> (8,links - n_dummy).
 */
 matrix <double> const DQ_kinematics::jacobian(vector <double> theta_vec) {
-    DQ_kinematics aux_dq_kin(dq_kin);
+    DQ_kinematics aux_dq_kin(dq_kin, aux_type);
     DQ q_effector = aux_dq_kin.raw_fkm(theta_vec);
 
     DQ z;
@@ -600,9 +620,9 @@ matrix <double> const DQ_kinematics::jacobian(vector <double> theta_vec) {
     for(int i = 0; i < aux_dq_kin.links(); i++) {
 
             // Use the standard DH convention
-            if(aux_dq_kin.convention() == "standard")
+            if(aux_dq_kin.convention() == "standard") {
                 z = aux_dq_kin.get_z(q.q);
-
+            }
             // Use the modified DH convention
             else {
                 DQ w(0, 0, -sin(aux_dq_kin.alpha()(i)), cos(aux_dq_kin.alpha()(i)), 0, 0, -aux_dq_kin.a()(i)*cos(aux_dq_kin.alpha()(i)), -aux_dq_kin.a()(i)*sin(aux_dq_kin.alpha()(i)));

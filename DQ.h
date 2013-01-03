@@ -14,7 +14,7 @@ using namespace boost::numeric::ublas;
 * This class DQ represents a Dual Quaternion.
 *
 * In the class definition are declared different constructors for the Dual Quaternion object, the public methods which can be called
-* by the object, the operators overload functions e also auxiliar functions and variables to intermediate the operations of the
+* by the object, the operators overload functions and also auxiliar functions and variables to intermediate the operations of the
 * public methods. Most of the methods returns a constant Dual Quaternion object, which depends of the object caller such as primary
 * and dual parts or not, being the same for any caller such as the imaginary parts. Some methods returns a constant boost matrix class
 * object which depends of object caller too. And there is a method for display in the console, the DQ object caller.
@@ -33,6 +33,7 @@ class DQ{
 	* \sa DQ(), DQ(vector <double> v), DQ(const DQ& dq), DQ(double scalar), DQ(double q1,double q2,double q3,double q4,double q5,double q6,double q7,double q8);
 	*/
 	vector <double> q;
+
     // private attributes
     private:
     // Auxiliar variables used in methods display() and build_string() for correctly display the DQ object
@@ -62,16 +63,16 @@ class DQ{
     * These ways of calling function can't be applied to display() method that uses a macro called DISPLAY.
     */
 
-    DQ const E();
+    static DQ const E();
     static DQ const E(DQ dq);
 
-    DQ const i();
+    static DQ const i();
     static DQ const i(DQ dq);
 
-    DQ const j();
+    static DQ const j();
     static DQ const j(DQ dq);
 
-    DQ const k();
+    static DQ const k();
     static DQ const k(DQ dq);
 
     DQ const P();
@@ -136,10 +137,16 @@ class DQ{
     matrix <double> const vec8();
     static matrix <double> const vec8(DQ dq);
 
-    #define DISPLAY(dq) dq.display(#dq,dq)
-    void display(char *name, DQ dq);
+    matrix <double> const jacobG(DQ x_E);
+    static matrix <double> const jacobG(DQ param_dq, DQ x_E);
 
-    //void display();
+    #define DISPLAY(dq) dq.display(#dq,dq) //for calling display function more easily
+    void display(char *name, DQ dq);
+    #define MATRIX(mat) DQ::display(#mat, mat) //for calling display function more easily
+    static void display(char *name, matrix <double> &H_or_vec);
+    static void display(char *name, vector <double> &vec);
+
+    static DQ unitDQ(double rot_angle, int x_axis,int y_axis,int z_axis, double x_trans,double y_trans, double z_trans);
 
     private:
     /*
