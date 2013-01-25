@@ -964,6 +964,8 @@ void DQ::display(char *name, matrix <double> &H_or_vec) {
     cout << name << " = \n";
     for(unsigned int line = 0; line < H_or_vec.size1() ; line++) {
         for(unsigned int column = 0; column < H_or_vec.size2() ; column++) {
+            if(fabs(H_or_vec(line, column)) < DQ::threshold() )
+            H_or_vec(line, column) = 0;
             cout << "\t" << std::setw(10) << std::left << H_or_vec(line, column);
         }
         cout << "\n";
@@ -988,6 +990,8 @@ void DQ::display(char *name, vector <double> &vec) {
     }
     for(unsigned int line = 0; line < vec_line.size1() ; line++) {
         for(unsigned int column = 0; column < vec_line.size2() ; column++) {
+            if(fabs(vec_line(line, column)) < DQ::threshold() )
+            vec_line(line, column) = 0;
             cout << "\t" << std::setw(10) << std::left << vec_line(line, column);
         }
         cout << "\n";

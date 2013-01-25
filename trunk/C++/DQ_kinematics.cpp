@@ -487,7 +487,7 @@ DQ const DQ_kinematics::raw_fkm(DQ_kinematics param_dq_kin, vector <double> thet
 */
 DQ const DQ_kinematics::fkm(vector <double> theta_vec) {
     DQ_kinematics aux_dq_kin(dq_kin, aux_type);
-    DQ q = aux_dq_kin.base() * aux_dq_kin.raw_fkm(theta_vec) * aux_dq_kin.effector();
+    DQ q = curr_base * aux_dq_kin.raw_fkm(theta_vec) * curr_effector;
     return q;
 };
 
@@ -509,7 +509,7 @@ DQ const DQ_kinematics::fkm(DQ_kinematics param_dq_kin, vector <double> theta_ve
 */
 DQ const DQ_kinematics::fkm(vector <double> theta_vec, int ith) {
     DQ_kinematics aux_dq_kin(dq_kin, aux_type);
-    DQ q = aux_dq_kin.base() * aux_dq_kin.raw_fkm(theta_vec, ith) * aux_dq_kin.effector();
+    DQ q = curr_base * aux_dq_kin.raw_fkm(theta_vec, ith) * curr_effector;
     return q;
 };
 
@@ -643,8 +643,8 @@ matrix <double> const DQ_kinematics::jacobian(vector <double> theta_vec) {
     }
     // Takes the base's displacement into account
     matrix <double> aux_J(8,8);
-    aux_J = DQ::Hminus8(aux_dq_kin.effector());
-    aux_J = prod(DQ::Hplus8(aux_dq_kin.base()), aux_J);
+    aux_J = DQ::Hminus8(curr_effector);
+    aux_J = prod(DQ::Hplus8(curr_base), aux_J);
     J = prod(aux_J, J);
     return J;
 };
@@ -701,7 +701,12 @@ matrix <double> const DQ_kinematics::jacobd(matrix <double> param_jacobian, vect
     DQ dq_x(x);
     DQ p = DQ::translation(dq_x);
     matrix <double> Jp = DQ_kinematics::jacobp(param_jacobian, x);
-    matrix <double> Jd = 2 * prod(DQ::vec4(p), Jp);
+    matrix <double> vec4p_T(1,4);
+    for (int i = 0; i < 4; i++) {
+        vec4p_T(0,i) = DQ::vec4(p)(i,0);
+    }
+    matrix <double> Jd = 2 * prod(vec4p_T, Jp);
+
     return Jd;
 };
 
