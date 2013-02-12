@@ -1,15 +1,3 @@
-
-#include <iostream>
-#include<math.h> //library for math functions
-#include <boost/numeric/ublas/vector.hpp> //header for boost ublas vector declarations
-#include <boost/numeric/ublas/matrix.hpp> //header for boost ublas matrix declarations
-#include <boost/numeric/ublas/io.hpp>
-
-#ifndef DQ_H
-#define DQ_H
-
-using namespace boost::numeric::ublas;
-
 /**
 * This class DQ represents a Dual Quaternion.
 *
@@ -20,226 +8,271 @@ using namespace boost::numeric::ublas;
 * object which depends of object caller too. And there is a method for display in the console, the DQ object caller.
 * \author Mateus Rodrigues Martins (martinsrmateus@gmail.com)
 * \since 07/2012
-* \version 1.0
+***********************************************************
+*              REVISION HISTORY
+***********************************************************
+* 01/31/2013 - Murilo Marques Marinho (murilomarinho@lara.unb.br)
+             - Changed Library to Use Eigen.
+***********************************************************
+* 02/07/2013 - Murilo Marques Marinho (murilomarinho@lara.unb.br)
+             - Removed static functions and created DQRobotics
+               namespace.
+             - Some static methods became constants:
+                 - E() -> dual_E
+                 - i() -> im_i
+                 - j() -> im_j
+                 - k() -> im_k
+                 - threshold() -> DQ_threshold
+             - Created generalizedJacobian() method but kept
+               the method with MATLAB syntax for legacy reasons.
+             - Removed "DISPLAY" method and overloaded the "<<"
+               operator in order to use with cout.
+***********************************************************
+* \version 1.2
 */
-class DQ{
-    // public attriubutes
-	public:
-	/**
-	* The double Boost Vector 'q' stores the eight values of primary e dual parts of Dual Quaternion.
-	*
-	* To access use: 'dq_object.q(index);' where 'index' varies from 0 to 7.
-	* The DQ representation is: dq_object = (q(0) + q(1)*i + q(2)*j + q(3)*k) + dual_unit_E*(q(4) + q(5)*i + q(6)*j + q(7)*k)
-	* \sa DQ(), DQ(vector <double> v), DQ(const DQ& dq), DQ(double scalar), DQ(double q1,double q2,double q3,double q4,double q5,double q6,double q7,double q8);
-	*/
-	vector <double> q;
 
-    // private attributes
-    private:
-    // Auxiliar variables used in methods display() and build_string() for correctly display the DQ object
-    int has_primary_element;
-    int has_dual_element;
+#ifndef DQ_H
+#define DQ_H
 
-    // public methods
-    public:
-    // Class constructors: Creates a Dual Quaternion as a DQ object.
 
-    DQ();
+#include <iostream>
+#include <math.h>
+#include <Eigen/Dense>
+using namespace Eigen;
 
-    DQ(vector <double> v);
 
-    DQ(double q0,double q1,double q2,double q3,double q4,double q5,double q6,double q7);
 
-    DQ(double q0,double q1,double q2,double q3);
+namespace DQ_robotics{
 
-    DQ(double scalar);
 
-    ~DQ();
+    class DQ{
 
-    /*
-    * Public constant methods: Can be called by DQ objects.
-    * To use these methods, type: 'dq_object.method_name();' where 'method_name' is the name of one of the methods below.
-    * Or in another way type: 'DQ::method_name(dq_object);' that works well too.
-    * These ways of calling function can't be applied to display() method that uses a macro called DISPLAY.
-    */
+        //Atributes
+	    public:
 
-    static DQ const E();
-    static DQ const E(DQ dq);
+	    Matrix<double,8,1> q;
 
-    static DQ const i();
-    static DQ const i(DQ dq);
+        //Methods
+        public:
 
-    static DQ const j();
-    static DQ const j(DQ dq);
+        //Constructors and Destructor
+        DQ();
 
-    static DQ const k();
-    static DQ const k(DQ dq);
+        DQ(Matrix<double,8,1> v);
 
-    DQ const P();
-    static DQ const P(DQ dq);
+        DQ(Matrix<double,4,1> v);
 
-    DQ const D();
-    static DQ const D(DQ dq);
+        DQ(double q0,double q1,double q2,double q3,double q4,double q5,double q6,double q7);
 
-    DQ const Re();
-    static DQ const Re(DQ dq);
+        DQ(double q0,double q1,double q2,double q3);
 
-    DQ const Im();
-    static DQ const Im(DQ dq);
+        DQ(double scalar);
 
-    DQ const conj();
-    static DQ const conj(DQ dq);
+        static DQ unitDQ(double rot_angle, int x_axis,int y_axis,int z_axis, double x_trans,double y_trans, double z_trans);
 
-    DQ const norm();
-    static DQ const norm(DQ dq);
+        ~DQ();
 
-    DQ const inv();
-    static DQ const inv(DQ dq);
+        //Methods
+        DQ const P();
 
-    DQ const translation();
-    static DQ const translation(DQ dq);
+        DQ const D();
 
-    DQ const rot_axis();
-    static DQ const rot_axis(DQ dq);
+        DQ const Re();
 
-    double const rot_angle();
-    static DQ const rot_angle(DQ dq);
+        DQ const Im();
 
-    DQ const log();
-    static DQ const log(DQ dq);
+        DQ const conj();
 
-    DQ const exp();
-    static DQ const exp(DQ dq);
+        DQ const norm();
 
-    DQ const tplus();
-    static DQ const tplus(DQ dq);
+        DQ const inv();
 
-    DQ const pinv();
-    static DQ const pinv(DQ dq);
+        DQ const translation();
 
-    static DQ const dec_mult(DQ dq1, DQ dq2);
+        DQ const rot_axis();
 
-    matrix <double> const Hplus4();
-    static matrix <double> const Hplus4(DQ dq);
+        double const rot_angle();
 
-    matrix <double> const Hminus4();
-    static matrix <double> const Hminus4(DQ dq);
+        DQ const log();
 
-    matrix <double> const Hplus8();
-    static matrix <double> const Hplus8(DQ dq);
+        DQ const exp();
 
-    matrix <double> const Hminus8();
-    static matrix <double> const Hminus8(DQ dq);
+        DQ const tplus();
 
-    matrix <double> const vec4();
-    static matrix <double> const vec4(DQ dq);
+        DQ const pinv();
 
-    matrix <double> const vec8();
-    static matrix <double> const vec8(DQ dq);
+        Matrix4d const Hplus4();
 
-    matrix <double> const jacobG(DQ x_E);
-    static matrix <double> const jacobG(DQ param_dq, DQ x_E);
+        Matrix4d const Hminus4();
 
-    #define DISPLAY(dq) dq.display(#dq,dq) //for calling display function more easily
-    void display(char *name, DQ dq);
-    #define MATRIX(mat) DQ::display(#mat, mat) //for calling display function more easily
-    static void display(char *name, matrix <double> &H_or_vec);
-    static void display(char *name, vector <double> &vec);
+        Matrix<double,8,8> const Hplus8();
 
-    static DQ unitDQ(double rot_angle, int x_axis,int y_axis,int z_axis, double x_trans,double y_trans, double z_trans);
+        Matrix<double,8,8> const Hminus8();
 
-    private:
-    /*
-    * Private methods: these are the auxiliar methods used by the public methods.
-    * These methods construct and return results to be used by the public methods
-    */
-    std::string build_string(DQ dq, int shift);
+        Vector4d const vec4();
 
-    static double threshold();
+        Matrix<double,8,1> const vec8();
 
-    // Operators overload functions
-	public:
-	//Operator (+) Overload
+        Matrix<double,8,8> const generalizedJacobian(DQ x_E);
+            //The MATLAB syntax, kept for legacy reasons.
+            Matrix<double,8,8> const jacobG(DQ x_E);
 
-	friend DQ operator+(DQ dq1, DQ dq2);
+        // Operators overload functions
+	    public:
 
-	friend DQ operator+(DQ dq, int scalar);
+	    //Operator (+) Overload
 
-	friend DQ operator+(int scalar, DQ dq);
+	    friend DQ operator+(DQ dq1, DQ dq2);
 
-    friend DQ operator+(DQ dq, float scalar);
+	    friend DQ operator+(DQ dq, int scalar);
 
-	friend DQ operator+(float scalar, DQ dq);
+	    friend DQ operator+(int scalar, DQ dq);
 
-    friend DQ operator+(DQ dq, double scalar);
+        friend DQ operator+(DQ dq, float scalar);
 
-	friend DQ operator+(double scalar, DQ dq);
+	    friend DQ operator+(float scalar, DQ dq);
 
-	friend DQ operator-(DQ dq1, DQ dq2);
+        friend DQ operator+(DQ dq, double scalar);
 
-	friend DQ operator-(DQ dq, int scalar);
+	    friend DQ operator+(double scalar, DQ dq);
 
-	friend DQ operator-(int scalar, DQ dq);
+	    friend DQ operator-(DQ dq1, DQ dq2);
 
-    friend DQ operator-(DQ dq, float scalar);
+	    friend DQ operator-(DQ dq, int scalar);
 
-	friend DQ operator-(float scalar, DQ dq);
+	    friend DQ operator-(int scalar, DQ dq);
 
-    friend DQ operator-(DQ dq, double scalar);
+        friend DQ operator-(DQ dq, float scalar);
 
-	friend DQ operator-(double scalar, DQ dq);
+	    friend DQ operator-(float scalar, DQ dq);
 
-    //Operator (*) Overload
+        friend DQ operator-(DQ dq, double scalar);
 
-	friend DQ operator*(DQ dq1, DQ dq2);
+	    friend DQ operator-(double scalar, DQ dq);
 
-    friend DQ operator*(DQ dq, int scalar);
+        //Operator (*) Overload
 
-	friend DQ operator*(int scalar, DQ dq);
+	    friend DQ operator*(DQ dq1, DQ dq2);
 
-    friend DQ operator*(DQ dq, float scalar);
+        friend DQ operator*(DQ dq, int scalar);
 
-	friend DQ operator*(float scalar, DQ dq);
+	    friend DQ operator*(int scalar, DQ dq);
 
-    friend DQ operator*(DQ dq, double scalar);
+        friend DQ operator*(DQ dq, float scalar);
 
-	friend DQ operator*(double scalar, DQ dq);
+	    friend DQ operator*(float scalar, DQ dq);
 
-    //Operator (==) Overload
+        friend DQ operator*(DQ dq, double scalar);
 
-	bool DQ::operator==(DQ dq2);
+	    friend DQ operator*(double scalar, DQ dq);
 
-    friend bool operator==(DQ dq, int scalar);
+        //Operator (==) Overload
 
-	friend bool operator==(int scalar, DQ dq);
+	    bool operator==(DQ dq2);
 
-	friend bool operator==(DQ dq, float scalar);
+        friend bool operator==(DQ dq, int scalar);
 
-	friend bool operator==(float scalar, DQ dq);
+	    friend bool operator==(int scalar, DQ dq);
 
-    friend bool operator==(DQ dq, double scalar);
+	    friend bool operator==(DQ dq, float scalar);
 
-	friend bool operator==(double scalar, DQ dq);
+	    friend bool operator==(float scalar, DQ dq);
 
-    //Operator (!=) Overload
+        friend bool operator==(DQ dq, double scalar);
 
-	bool DQ::operator!=(DQ dq2);
+	    friend bool operator==(double scalar, DQ dq);
 
-    friend bool operator!=(DQ dq, int scalar);
+        //Operator (!=) Overload
 
-	friend bool operator!=(int scalar, DQ dq);
+	    bool operator!=(DQ dq2);
 
-	friend bool operator!=(DQ dq, float scalar);
+        friend bool operator!=(DQ dq, int scalar);
 
-	friend bool operator!=(float scalar, DQ dq);
+	    friend bool operator!=(int scalar, DQ dq);
 
-    friend bool operator!=(DQ dq, double scalar);
+	    friend bool operator!=(DQ dq, float scalar);
 
-	friend bool operator!=(double scalar, DQ dq);
+	    friend bool operator!=(float scalar, DQ dq);
 
-	friend DQ operator^(DQ dq, double m);
+        friend bool operator!=(DQ dq, double scalar);
 
+	    friend bool operator!=(double scalar, DQ dq);
 
-};
+	    friend DQ operator^(DQ dq, double m);
+
+        //Operator (<<) Overload
+
+        friend std::ostream& operator<<(std::ostream& os, const DQ& dq);
+
+
+    };//DQ Class END
+
+
+    /************************************************************************
+    ************** DUAL QUATERNION CONSTANTS AND OPERATORS ******************
+    ************************************************************************/
+    //Note that these are part of DQRobotics namespace when you include this
+    //header file.
+
+    //Constants
+    DQ const E_ = DQ(0,0,0,0,1,0,0,0);
+
+    DQ const i_ = DQ(0,1,0,0,0,0,0,0);
+
+    DQ const j_ = DQ(0,0,1,0,0,0,0,0);
+
+    DQ const k_ = DQ(0,0,0,1,0,0,0,0);
+
+    double const DQ_threshold = 0.000000000001;
+
+    //Operators
+    DQ const P(DQ dq);
+
+    DQ const D(DQ dq);
+
+    DQ const Re(DQ dq);
+
+    DQ const Im(DQ dq);
+
+    DQ const conj(DQ dq);
+
+    DQ const norm(DQ dq);
+
+    DQ const inv(DQ dq);
+
+    DQ const translation(DQ dq);
+
+    DQ const rot_axis(DQ dq);
+
+    double const rot_angle(DQ dq);
+
+    DQ const log(DQ dq);
+
+    DQ const exp(DQ dq);
+
+    DQ const tplus(DQ dq);
+
+    DQ const pinv(DQ dq);
+
+    DQ const dec_mult(DQ dq1, DQ dq2);
+
+    Matrix4d const Hplus4(DQ dq);
+
+    Matrix4d const Hminus4(DQ dq);
+
+    Matrix<double,8,8> const Hplus8(DQ dq);
+
+    Matrix<double,8,8> const Hminus8(DQ dq);
+
+    Vector4d const vec4(DQ dq);
+
+    Matrix<double,8,1> const vec8(DQ dq);
+
+    Matrix<double,8,8> const generalizedJacobian(DQ param_dq, DQ x_E);
+        //The MATLAB syntax, kept for legacy reasons.
+        Matrix<double,8,8> const jacobG(DQ param_dq, DQ x_E);
+
+
+}//Namespace DQRobotics
 
 #endif // DQ_H
