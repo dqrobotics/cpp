@@ -1,53 +1,312 @@
 #include "DQ.h"
-#include <iostream>
-#include <iomanip>
-#include<math.h>
 
-#include <boost/numeric/ublas/vector.hpp>
-#include <boost/numeric/ublas/io.hpp>
-
-using namespace boost::numeric::ublas;
 using std::cout;
 
+namespace DQ_robotics{
+
+
+/****************************************************************
+**************NAMESPACE ONLY FUNCTIONS***************************
+*****************************************************************/
+
 /**
-* DQ Default constructor, dont need parameters.
+* P() operator -> retrieves the primary part of a DQ. 
+*
+* @param dq The DQ which primary part you wish.
+* @return a constant DQ representing the primary part of dq.
+*/
+DQ const P(DQ dq)
+{
+    return dq.P();
+}
+
+/**
+* D() operator -> retrieves the dual part of a DQ. 
+*
+* @param dq The DQ which dual part you wish.
+* @return a constant DQ representing the dual part of dq.
+*/
+DQ const D(DQ dq)
+{
+    return dq.D();
+}
+
+/**
+* Re() operator -> retrieves the real part of a DQ. 
+*
+* @param dq The DQ which real part you wish.
+* @return a constant DQ representing the real part of dq.
+*/
+DQ const Re(DQ dq)
+{
+    return dq.Re();
+}
+
+/**
+* Im() operator -> retrieves the imaginary part of a DQ. 
+*
+* @param dq The DQ which imaginary part you wish.
+* @return a constant DQ representing the imaginary part of dq.
+*/
+DQ const Im(DQ dq)
+{
+    return dq.Im();
+}
+
+/**
+* Conjugate operator -> retrieves the conjugate of a DQ. 
+*
+* @param dq The DQ which conjugate you wish.
+* @return a constant DQ representing the conjugate of dq.
+*/
+DQ const conj(DQ dq)
+{
+    return dq.conj();
+}
+
+/**
+* Norm operator -> retrieves the norm of a DQ. 
+*
+* @param dq The DQ which norm you wish.
+* @return a constant DQ representing the norm of dq.
+*/
+DQ const norm(DQ dq)
+{
+    return dq.norm();
+}
+
+/**
+* Norm operator -> retrieves the norm of a DQ. 
+*
+* @param dq The DQ which norm you wish.
+* @return a constant DQ representing the norm of dq.
+*/
+DQ const inv(DQ dq)
+{
+    return dq.inv();
+}
+
+/**
+* Translation operator -> retrieves the Translation represented by a DQ. 
+*
+* @param dq The DQ which Translation you wish.
+* @return a constant DQ representing the Translation represented by dq.
+*/
+DQ const translation(DQ dq)
+{
+    return dq.translation();
+}
+
+/**
+* Rotation Axis operator -> retrieves the Rotation Axis represented by a DQ. 
+*
+* @param dq The DQ which Rotation Axis you wish.
+* @return a constant DQ representing the Rotation Axis represented by dq.
+*/
+DQ const rot_axis(DQ dq)
+{
+    return dq.rot_axis();
+}
+
+/**
+* Rotation Angle operator -> retrieves the Rotation Angle represented by a DQ. 
+*
+* @param dq The DQ which Rotation Angle you wish.
+* @return a constant DQ representing the Rotation Angle represented by dq.
+*/
+double const rot_angle(DQ dq)
+{
+    return dq.rot_angle();
+}
+
+/**
+* Logarithm operator -> retrieves the Logarithm of a DQ. 
+*
+* @param dq The DQ which Logarithm you wish.
+* @return a constant DQ representing the Logarithm of dq.
+*/
+DQ const log(DQ dq)
+{
+    return dq.log();
+}
+
+/**
+* Exponential operator -> retrieves the Exponential of a DQ. 
+*
+* @param dq The DQ which Exponential you wish.
+* @return a constant DQ representing the Exponential of dq.
+*/
+DQ const exp(DQ dq)
+{
+    return dq.exp();
+}
+
+/**
+* Exponential operator -> retrieves the Exponential of a DQ. 
+*
+* @param dq The DQ which Exponential you wish.
+* @return a constant DQ representing the Exponential of dq.
+*/
+DQ const tplus(DQ dq)
+{
+    return dq.tplus();
+}
+
+/**
+* Inverse of a unit DQ under decompositional multiplication.
+*
+* @param dq The DQ which inverse you wish.
+* @return a constant DQ representing the inverse of dq.
+*/
+DQ const pinv(DQ dq)
+{
+    return dq.pinv();
+}
+
+/**
+* Decompositional multiplication.
+*
+* @param dq1 a DQ.
+* @param dq2 a DQ.
+* @return Returns a constant DQ object representing the result of decompositional multiplication between two dq1 and dq2.
+*/
+DQ const dec_mult(DQ dq1, DQ dq2)
+{
+    DQ dec_mult = dq2.tplus()*dq1.tplus()*dq2.P()*dq1.P();
+    return dec_mult;
+}
+
+
+/**
+* Hamilton operator H+ for the primary part.
+*
+* @param dq The DQ which H+ you wish.
+* @return the 4x4 matrix representing the H+ operator of the primary part of dq.
+*/
+Matrix4d const Hplus4(DQ dq)
+{
+    return dq.Hplus4();
+}
+
+/**
+* Hamilton operator H- for the primary part.
+*
+* @param dq The DQ which H- you wish.
+* @return the 4x4 matrix representing the H- operator of the primary part of dq.
+*/
+Matrix4d const Hminus4(DQ dq)
+{
+    return dq.Hminus4();
+}
+
+/**
+* Hamilton operator H+.
+*
+* @param dq The DQ which H+ you wish.
+* @return the 8x8 matrix representing the H+ operator of dq.
+*/
+Matrix<double,8,8> const Hplus8(DQ dq)
+{
+    return dq.Hplus8();
+}
+
+/**
+* Hamilton operator H-.
+*
+* @param dq The DQ which H- you wish.
+* @return the 8x8 matrix representing the H- operator of dq.
+*/
+Matrix<double,8,8> const Hminus8(DQ dq)
+{
+    return dq.Hminus8();
+}
+
+/**
+* Vect operator on the primary part of a DQ.
+*
+* @param dq The DQ with the primary part you wish to obtain the vect of. 
+* @return A 4x1 vector representing the primary part of dq.
+*/
+Vector4d const vec4(DQ dq)
+{
+    return dq.vec4();
+}
+
+/**
+* Vect operator on a DQ.
+*
+* @param dq The DQ in which you want to apply the operation. 
+* @return A 8x1 vector representing dq.
+*/
+Matrix<double,8,1>  const vec8(DQ dq)
+{
+    return dq.vec8();
+}
+
+/**
+* Generalized Jacobian, i.e, the Jacobian that satisfies the relation Geometric Jacobian = Generalized Jacobian * Analytical (DQ) Jacobian.
+*
+* @param param_dq.
+* @param x_e.
+* @return A 8x8 matrix representing the Generalized Jacobian given the arguments.
+*/
+Matrix<double,8,8> const jacobG(DQ param_dq, DQ x_E)
+{
+    return param_dq.jacobG(x_E);
+}
+
+/**
+* Generalized Jacobian, i.e, the Jacobian that satisfies the relation Geometric Jacobian = Generalized Jacobian * Analytical (DQ) Jacobian.
+*
+* @param param_dq.
+* @param x_e.
+* @return A 8x8 matrix representing the Generalized Jacobian given the arguments.
+*/
+Matrix<double,8,8> const generalizedJacobian(DQ param_dq, DQ x_E)
+{
+    return param_dq.jacobG(x_E);
+}
+
+/****************************************************************
+**************DQ CLASS METHODS***********************************
+*****************************************************************/
+
+
+/**
+* DQ Default constructor, no parameters needed.
 *
 * Returns a DQ object with null primary and dual part. All elements of 'q' vector are 0.
 * To create a DQ object using this, type: 'DQ dq_object();' or even 'DQ dq_object;'
 */
 DQ::DQ() {
-    q.resize(8);
-    for(int n = 0; n < 8; n++){
-        q(n) = 0;
-	}
-};
+    q = Matrix<double,8,1>::Zero(8,1);
+}
 
 /**
 * DQ constructor using boost vector
 *
 * Returns a DQ object with the values of elements equal to the values of elements from a vector 'v' passed to constructor.
-* To create a DQ object using this, type: 'DQ dq_object(v);' where 'v' is the double boost vector.
-* if 'v' size is bigger than 8, the constructor catches only the 8 eight firs elements of 'v' and distributes on 'vector q'.
-* If 'v' size is smaller than 8, the constructor catches the elements of 'v', distributes on 'vector q' and complete the
-* rest with zeros. Remember that the first 4 elements are of primary part and the last 4 are of dual part of the quaternion.
 * \param vector <double> v contain the values to copied to the attribute q.
 */
-DQ::DQ(vector <double> v) {
-    q.resize(8);
-    if(v.size() == 8 || v.size() == 4 || v.size() == 1) {
-		for(unsigned int n = 0; n < v.size() ; n++) {
-		    if( fabs(v(n)) < DQ::threshold())
-		    q(n) = 0;
-		    else
-            q(n) = v(n);
-		}
-		for(int n = v.size(); n < 8 ; n++) {
-            q(n) = 0;
-        }
-	}
-	else
-		//error
-		cout << "\n" << "WARNING: VECTOR V SIZE IS RECOMMENDED TO BE 8, 4 OR 1";
+DQ::DQ(Matrix<double,8,1> v) {
+    q = v;
+}
+
+
+/**
+* DQ constructor using boost vector
+*
+* Returns a DQ object with the values of elements equal to the values of elements from a vector 'v' passed to constructor.
+* \param vector <double> v contain the values to copied to the attribute q.
+*/
+DQ::DQ(Matrix<double,4,1> v) {
+
+    for(int i = 0; i<4; i++)
+    {
+        q(i)   = v(i);
+        q(i+4) = 0;
+    }
+
 };
 
 /**
@@ -58,7 +317,7 @@ DQ::DQ(vector <double> v) {
 * \param double q0,q1,q2,q3,q4,q5,q6 and q7 are the values to be copied to the member 'q'.
 */
 DQ::DQ(double q0,double q1,double q2,double q3,double q4,double q5,double q6,double q7) {
-    q.resize(8);
+
     q(0) = q0;
     q(1) = q1;
     q(2) = q2;
@@ -68,7 +327,7 @@ DQ::DQ(double q0,double q1,double q2,double q3,double q4,double q5,double q6,dou
     q(6) = q6;
     q(7) = q7;
     for(int n = 0; n < 8; n++) {
-            if(fabs(q(n)) < DQ::threshold() )
+            if(fabs(q(n)) < DQ_threshold )
                 q(n) = 0;
         }
 };
@@ -82,7 +341,7 @@ DQ::DQ(double q0,double q1,double q2,double q3,double q4,double q5,double q6,dou
 * \param double q0,q1,q2 and q3 are values to be copied to the member 'q' four first positions.
 */
 DQ::DQ(double q0,double q1,double q2,double q3) {
-    q.resize(8);
+
     q(0) = q0;
     q(1) = q1;
     q(2) = q2;
@@ -92,7 +351,7 @@ DQ::DQ(double q0,double q1,double q2,double q3) {
     q(6) = 0;
     q(7) = 0;
     for(int n = 0; n < 4; n++) {
-            if(fabs(q(n)) < DQ::threshold() )
+            if(fabs(q(n)) < DQ_threshold )
                 q(n) = 0;
         }
 };
@@ -106,11 +365,11 @@ DQ::DQ(double q0,double q1,double q2,double q3) {
 * \param double scalar is the value to be copied to the member 'q' first position.
 */
 DQ::DQ(double scalar) {
-    q.resize(8);
+
     for(int n = 0; n < 8; n++) {
         q(n) = 0;
     }
-    if( fabs(scalar) >= DQ::threshold())
+    if( fabs(scalar) >= DQ_threshold)
     q(0) = scalar;
 };
 
@@ -124,77 +383,6 @@ DQ::~DQ(){};
 
 // Public constant methods
 
-/**
-* Returns a constant DQ object representing the dual unit epsilon.
-*
-* Creates a dual quaternion with values (0,0,0,0,1,0,0,0) and return. To use this member function, type: 'dq_object.E();'.
-* \return A constant DQ object.
-* \sa DQ(double q0,double q1,double q2,double q3,double q4,double q5,double q6,double q7).
-*/
-DQ const DQ::E() {
-	return DQ(0,0,0,0,1,0,0,0);
-};
-/**
-* Returns a constant DQ object representing the dual unit epsilon.
-* Actually this function does the same as E() changing only the way of calling, which is DQ::E(dq_object).
-*/
-DQ const DQ::E(DQ dq) {
- return dq.E();
-};
-
-/**
-* Returns a constant DQ object representing the imaginary unit 'i'.
-*
-* Creates a dual quaternion with values (0,1,0,0,0,0,0,0) and return. To use this member function, type: 'dq_object.i();'.
-* \return A constant DQ object.
-* \sa DQ(double q0,double q1,double q2,double q3).
-*/
-DQ const DQ::i() {
-	return DQ(0,1,0,0);
-};
-/**
-* Returns a constant DQ object representing the imaginary unit 'i'.
-* Actually this function does the same as i() changing only the way of calling, which is DQ::i(dq_object).
-*/
-DQ const DQ::i(DQ dq) {
- return dq.i();
-};
-
-/**
-* Returns a constant DQ object representing the imaginary unit 'j'.
-*
-* Creates a dual quaternion with values (0,0,1,0,0,0,0,0) and return. To use this member function, type: 'dq_object.j();'.
-* \return A constant DQ object.
-* \sa DQ(double q0,double q1,double q2,double q3).
-*/
-DQ const DQ::j() {
-	return DQ(0,0,1,0);
-};
-/**
-* Returns a constant DQ object representing the imaginary unit 'j'.
-* Actually this function does the same as j() changing only the way of calling, which is DQ::j(dq_object).
-*/
-DQ const DQ::j(DQ dq) {
- return dq.j();
-};
-
-/**
-* Returns a constant DQ object representing the imaginary unit 'k'.
-*
-* Creates a dual quaternion with values (0,0,0,1,0,0,0,0) and return. To use this member function, type: 'dq_object.k();'.
-* \return A constant DQ object.
-* \sa DQ(double q0,double q1,double q2,double q3).
-*/
-DQ const DQ::k() {
-	return DQ(0,0,0,1);
-};
-/**
-* Returns a constant DQ object representing the imaginary unit 'k'.
-* Actually this function does the same as k() changing only the way of calling, which is DQ::k(dq_object).
-*/
-DQ const DQ::k(DQ dq) {
- return dq.k();
-};
 
 /**
 * Returns a constant DQ object representing the primary part of the DQ object caller.
@@ -207,13 +395,7 @@ DQ const DQ::k(DQ dq) {
 DQ const DQ::P() {
     return DQ(q(0),q(1),q(2),q(3));
 };
-/**
-* Returns a constant DQ object representing the primary part of the DQ object caller.
-* Actually this function does the same as P() changing only the way of calling, which is DQ::P(dq_object).
-*/
-DQ const DQ::P(DQ dq) {
- return dq.P();
-};
+
 
 /**
 * Returns a constant DQ object representing the dual part of the DQ object caller.
@@ -226,31 +408,14 @@ DQ const DQ::P(DQ dq) {
 DQ const DQ::D() {
     return DQ(q(4),q(5),q(6),q(7));
 };
-/**
-* Returns a constant DQ object representing the dual part of the DQ object caller.
-* Actually this function does the same as D() changing only the way of calling, which is DQ::D(dq_object).
-*/
-DQ const DQ::D(DQ dq) {
- return dq.D();
-};
 
-/**
-* Returns a constant DQ object representing the real part of the DQ object caller.
-*
-* Creates a dual quaternion with values (q(0),0,0,0,q(4),0,0,0) and return. The q elements are from the DQ object caller.
-* To use this member function, type: 'dq_object.Re();'.
-* \return A constant DQ object.
-* \sa DQ(double q0,double q1,double q2,double q3,double q4,double q5,double q6,double q7).
-*/
-DQ const DQ::Re() {
-    return DQ(q(0),0,0,0,q(4),0,0,0);
-};
+
 /**
 * Returns a constant DQ object representing the real part of the DQ object caller.
 * Actually this function does the same as Re() changing only the way of calling, which is DQ::Re(dq_object).
 */
-DQ const DQ::Re(DQ dq) {
- return dq.Re();
+DQ const DQ::Re() {
+ return DQ(q(0),0,0,0,q(4),0,0,0);
 };
 
 /**
@@ -264,13 +429,6 @@ DQ const DQ::Re(DQ dq) {
 DQ const DQ::Im() {
     return DQ(0,q(1),q(2),q(3),0,q(5),q(6),q(7));
 };
-/**
-* Returns a constant DQ object representing the imaginary part of the DQ object caller.
-* Actually this function does the same as Im() changing only the way of calling, which is DQ::Im(dq_object).
-*/
-DQ const DQ::Im(DQ dq) {
- return dq.Im();
-};
 
 /**
 * Returns a constant DQ object representing the conjugate of the DQ object caller.
@@ -282,13 +440,6 @@ DQ const DQ::Im(DQ dq) {
 */
 DQ const DQ::conj() {
     return DQ(q(0),-q(1),-q(2),-q(3),q(4),-q(5),-q(6),-q(7));
-};
-/**
-* Returns a constant DQ object representing the conjugate of the DQ object caller.
-* Actually this function does the same as conj() changing only the way of calling, which is DQ::conj(dq_object).
-*/
-DQ const DQ::conj(DQ dq) {
- return dq.conj();
 };
 
 /**
@@ -316,20 +467,14 @@ DQ const DQ::norm() {
 
         // using threshold to verify zero values in DQ to be returned
         for(int n = 0; n < 8; n++) {
-            if(fabs(norm.q(n)) < DQ::threshold() )
+            if(fabs(norm.q(n)) < DQ_threshold )
                 norm.q(n) = 0;
         }
 
         return norm;
     }
 };
-/**
-* Returns a constant DQ object representing the norm of the DQ object caller.
-* Actually this function does the same as norm() changing only the way of calling, which is DQ::norm(dq_object).
-*/
-DQ const DQ::norm(DQ dq) {
- return dq.norm();
-};
+
 
 /**
 * Returns a constant DQ object representing the inverse of the DQ object caller.
@@ -353,19 +498,13 @@ DQ const DQ::inv() {
 
     // using threshold to verify zero values in DQ to be returned
     for(int n = 0; n < 8; n++) {
-        if(fabs(inv.q(n)) < DQ::threshold() )
+        if(fabs(inv.q(n)) < DQ_threshold )
             inv.q(n) = 0;
     }
 
 	return inv;
 };
-/**
-* Returns a constant DQ object representing the inverse of the DQ object caller.
-* Actually this function does the same as inv() changing only the way of calling, which is DQ::inv(dq_object).
-*/
-DQ const DQ::inv(DQ dq) {
- return dq.inv();
-};
+
 
 /**
 * Returns a constant DQ object representing the translation part of the unit DQ object caller.
@@ -396,7 +535,7 @@ DQ const DQ::translation() {
 
         // using threshold to verify zero values in DQ to be returned
         for(int n = 0; n < 8; n++) {
-            if(fabs(translation.q(n)) < DQ::threshold() )
+            if(fabs(translation.q(n)) < DQ_threshold )
                 translation.q(n) = 0;
         }
 
@@ -407,13 +546,6 @@ DQ const DQ::translation() {
         system("PAUSE");
         return EXIT_FAILURE;
 	}
-};
-/**
-* Returns a constant DQ object representing the translation part of the unit DQ object caller.
-* Actually this function does the same as translation() changing only the way of calling, which is DQ::translation(dq_object).
-*/
-DQ const DQ::translation(DQ dq) {
- return dq.translation();
 };
 
 /**
@@ -440,7 +572,7 @@ DQ const DQ::rot_axis() {
     else {
         double phi = acos(dq.q(0));
         if(phi == 0)
-            return rot_axis.k(); // DQ(0,0,0,1). This is only a convention;
+            return k_; // DQ(0,0,0,1). This is only a convention;
         else {
             //rotation axis calculation
             rot_axis = dq.P();
@@ -448,20 +580,13 @@ DQ const DQ::rot_axis() {
 
             // using threshold to verify zero values in DQ to be returned
             for(int n = 0; n < 8; n++) {
-                if(fabs(rot_axis.q(n)) < DQ::threshold() )
+                if(fabs(rot_axis.q(n)) < DQ_threshold )
                     rot_axis.q(n) = 0;
             }
 
             return rot_axis;
         }
     }
-};
-/**
-* Returns a constant DQ object representing the rotation axis of the unit DQ object caller.
-* Actually this function does the same as rot_axis() changing only the way of calling, which is DQ::rot_axis(dq_object).
-*/
-DQ const DQ::rot_axis(DQ dq) {
- return dq.rot_axis();
 };
 
 /**
@@ -492,13 +617,6 @@ double const DQ::rot_angle() {
         return rot_angle;
     }
 };
-/**
-* Returns a constant double value representing the rotation angle in rad/s of the unit DQ object caller.
-* Actually this function does the same as rot_angle() changing only the way of calling, which is DQ::rot_angle(dq_object).
-*/
-DQ const DQ::rot_angle(DQ dq) {
- return dq.rot_angle();
-};
 
 /**
 * Returns a constant DQ object representing the logaritm of the unit DQ object caller.
@@ -528,19 +646,12 @@ DQ const DQ::log() {
 
         // using threshold to verify zero values in DQ to be returned
         for(int n = 0; n < 8; n++) {
-            if(fabs(log.q(n)) < DQ::threshold() )
+            if(fabs(log.q(n)) < DQ_threshold )
                 log.q(n) = 0;
         }
 
         return log;
     }
-};
-/**
-* Returns a constant DQ object representing the log of the unit DQ object caller.
-* Actually this function does the same as log() changing only the way of calling, which is DQ::log(dq_object).
-*/
-DQ const DQ::log(DQ dq) {
- return dq.log();
 };
 
 /**
@@ -562,7 +673,7 @@ DQ const DQ::exp() {
     //TODO: Generate a message error here if condition is not satisfied
 	// Verify if the object caller is a unit DQ
 //	if (dq.norm() != 1) {
-//        cout << "ERROR IN EXP OPERATION: NOT A UNIT DUAL QUATERNION \n";
+//        cout << "ERROR IN EXP OPERATION: NOT A  DUAL QUATERNION \n";
 //        return dq;
 //    }
 
@@ -578,26 +689,20 @@ DQ const DQ::exp() {
         }
 
         if(prim.q(0) < 0)
-            exp = ( -1*(prim + prim.E()*dq.D()*prim) );
+            exp = ( -1*(prim + E_*dq.D()*prim) );
         else
-            exp = ( prim + prim.E()*dq.D()*prim );
+            exp = ( prim + E_*dq.D()*prim );
 
         // using threshold to verify zero values in DQ to be returned
         for(int n = 0; n < 8; n++) {
-            if(fabs(exp.q(n)) < DQ::threshold() )
+            if(fabs(exp.q(n)) < DQ_threshold )
                 exp.q(n) = 0;
         }
 
         return exp;
 //    }
 };
-/**
-* Returns a constant DQ object representing the exponential of the unit DQ object caller.
-* Actually this function does the same as exp() changing only the way of calling, which is DQ::exp(dq_object).
-*/
-DQ const DQ::exp(DQ dq) {
- return dq.exp();
-};
+
 
 /**
 * Returns a constant DQ object representing the tplus operator applied to the unit DQ object caller.
@@ -627,19 +732,12 @@ DQ const DQ::tplus() {
 
     // using threshold to verify zero values in DQ to be returned
     for(int n = 0; n < 8; n++) {
-        if(fabs(tplus.q(n)) < DQ::threshold() )
+        if(fabs(tplus.q(n)) < DQ_threshold )
             tplus.q(n) = 0;
     }
 
     return tplus;
     }
-};
-/**
-* Returns a constant DQ object representing the tplus operator applied to the unit DQ object caller.
-* Actually this function does the same as tplus() changing only the way of calling, which is DQ::tplus(dq_object).
-*/
-DQ const DQ::tplus(DQ dq) {
- return dq.tplus();
 };
 
 /**
@@ -672,30 +770,12 @@ DQ const DQ::pinv() {
 
     // using threshold to verify zero values in DQ to be returned
     for(int n = 0; n < 8; n++) {
-        if(fabs(pinv.q(n)) < DQ::threshold() )
+        if(fabs(pinv.q(n)) < DQ_threshold )
             pinv.q(n) = 0;
     }
 
     return pinv;
     }
-};
-/**
-* Returns a constant DQ object representing the inverse of the unit DQ object caller under decompositional multiplication.
-* Actually this function does the same as pinv() changing only the way of calling, which is DQ::pinv(dq_object).
-*/
-DQ const DQ::pinv(DQ dq) {
- return dq.pinv();
-};
-
-/**
-* Returns a constant DQ object representing the result of decompositional multiplication between two DQ objects.
-*
-* To use this member function, type: 'DQ::dec_mult(dq_object1, dq_object2);'.
-* \return A constant DQ object.
-*/
-DQ const DQ::dec_mult(DQ dq1, DQ dq2) {
- DQ dec_mult = dq2.tplus()*dq1.tplus()*dq2.P()*dq1.P();
- return dec_mult;
 };
 
 /**
@@ -706,20 +786,13 @@ DQ const DQ::dec_mult(DQ dq1, DQ dq2) {
 * To use this member function, type: 'dq_object.Hplus4();'.
 * \return A constant boost::numeric::ublas::matrix <double> (4,4).
 */
-matrix <double> const DQ::Hplus4() {
-    matrix <double> op_Hplus4(4,4);
+Matrix4d const DQ::Hplus4() {
+    Matrix4d op_Hplus4(4,4);
     op_Hplus4(0,0) = q(0); op_Hplus4(0,1) = -q(1); op_Hplus4(0,2) = -q(2); op_Hplus4(0,3) = -q(3);
     op_Hplus4(1,0) = q(1); op_Hplus4(1,1) =  q(0); op_Hplus4(1,2) = -q(3); op_Hplus4(1,3) =  q(2);
     op_Hplus4(2,0) = q(2); op_Hplus4(2,1) =  q(3); op_Hplus4(2,2) =  q(0); op_Hplus4(2,3) = -q(1);
     op_Hplus4(3,0) = q(3); op_Hplus4(3,1) = -q(2); op_Hplus4(3,2) =  q(1); op_Hplus4(3,3) =  q(0);
     return op_Hplus4;
-};
-/**
-* Returns a constant 4x4 double boost matrix representing the Hamilton operator H+ of primary part of the DQ object caller.
-* Actually this function does the same as Hplus4() changing only the way of calling, which is DQ::Hplus4(dq_object).
-*/
-matrix <double> const DQ::Hplus4(DQ dq) {
- return dq.Hplus4();
 };
 
 /**
@@ -730,21 +803,15 @@ matrix <double> const DQ::Hplus4(DQ dq) {
 * To use this member function, type: 'dq_object.Hminus4();'.
 * \return A constant boost::numeric::ublas::matrix <double> (4,4).
 */
-matrix <double> const DQ::Hminus4() {
-    matrix <double> op_Hminus4(4,4);
+Matrix4d const DQ::Hminus4() {
+    Matrix4d op_Hminus4(4,4);
     op_Hminus4(0,0) = q(0); op_Hminus4(0,1) = -q(1); op_Hminus4(0,2) = -q(2); op_Hminus4(0,3) = -q(3);
     op_Hminus4(1,0) = q(1); op_Hminus4(1,1) =  q(0); op_Hminus4(1,2) =  q(3); op_Hminus4(1,3) = -q(2);
     op_Hminus4(2,0) = q(2); op_Hminus4(2,1) = -q(3); op_Hminus4(2,2) =  q(0); op_Hminus4(2,3) =  q(1);
     op_Hminus4(3,0) = q(3); op_Hminus4(3,1) =  q(2); op_Hminus4(3,2) = -q(1); op_Hminus4(3,3) =  q(0);
     return op_Hminus4;
 };
-/**
-* Returns a constant 4x4 double boost matrix representing the Hamilton operator H- of primary part of the DQ object caller.
-* Actually this function does the same as Hminus4() changing only the way of calling, which is DQ::Hminus4(dq_object).
-*/
-matrix <double> const DQ::Hminus4(DQ dq) {
- return dq.Hminus4();
-};
+
 
 /**
 * Returns a constant 8x8 double boost matrix representing the Hamilton operator H+ of the DQ object caller.
@@ -753,8 +820,8 @@ matrix <double> const DQ::Hminus4(DQ dq) {
 * To use this member function, type: 'dq_object.Hplus8();'.
 * \return A constant boost::numeric::ublas::matrix <double> (8,8).
 */
-matrix <double> const DQ::Hplus8() {
-    matrix <double> op_Hplus8(8,8);
+Matrix<double,8,8> const DQ::Hplus8() {
+    Matrix<double,8,8> op_Hplus8;
     op_Hplus8(0,0) = q(0); op_Hplus8(0,1) = -q(1); op_Hplus8(0,2) = -q(2); op_Hplus8(0,3) = -q(3);
     op_Hplus8(1,0) = q(1); op_Hplus8(1,1) =  q(0); op_Hplus8(1,2) = -q(3); op_Hplus8(1,3) =  q(2);
     op_Hplus8(2,0) = q(2); op_Hplus8(2,1) =  q(3); op_Hplus8(2,2) =  q(0); op_Hplus8(2,3) = -q(1);
@@ -776,13 +843,6 @@ matrix <double> const DQ::Hplus8() {
     op_Hplus8(7,4) = q(3); op_Hplus8(7,5) = -q(2); op_Hplus8(7,6) =  q(1); op_Hplus8(7,7) =  q(0);
     return op_Hplus8;
 };
-/**
-* Returns a constant 8x8 double boost matrix representing the Hamilton operator H+ of the DQ object caller.
-* * Actually this function does the same as Hplus8() changing only the way of calling, which is DQ::Hplus8(dq_object).
-*/
-matrix <double> const DQ::Hplus8(DQ dq) {
- return dq.Hplus8();
-};
 
 /**
 * Returns a constant 8x8 double boost matrix representing the Hamilton operator H- of the DQ object caller.
@@ -791,8 +851,8 @@ matrix <double> const DQ::Hplus8(DQ dq) {
 * To use this member function, type: 'dq_object.Hminus8();'.
 * \return A constant boost::numeric::ublas::matrix <double> (8,8).
 */
-matrix <double> const DQ::Hminus8() {
-    matrix <double> op_Hminus8(8,8);
+Matrix<double,8,8> const DQ::Hminus8() {
+    Matrix<double,8,8> op_Hminus8(8,8);
     op_Hminus8(0,0) = q(0); op_Hminus8(0,1) = -q(1); op_Hminus8(0,2) = -q(2); op_Hminus8(0,3) = -q(3);
     op_Hminus8(1,0) = q(1); op_Hminus8(1,1) =  q(0); op_Hminus8(1,2) =  q(3); op_Hminus8(1,3) = -q(2);
     op_Hminus8(2,0) = q(2); op_Hminus8(2,1) = -q(3); op_Hminus8(2,2) =  q(0); op_Hminus8(2,3) =  q(1);
@@ -814,13 +874,6 @@ matrix <double> const DQ::Hminus8() {
     op_Hminus8(7,4) = q(3); op_Hminus8(7,5) =  q(2); op_Hminus8(7,6) = -q(1); op_Hminus8(7,7) =  q(0);
     return op_Hminus8;
 };
-/**
-* Returns a constant 8x8 double boost matrix representing the Hamilton operator H- of the DQ object caller.
-* * Actually this function does the same as Hminus8() changing only the way of calling, which is DQ::Hminus8(dq_object).
-*/
-matrix <double> const DQ::Hminus8(DQ dq) {
- return dq.Hminus8();
-};
 
 /**
 * Returns a constant 4x1 double Boost matrix representing the 'vec' operator of primary part of the DQ object caller.
@@ -830,20 +883,13 @@ matrix <double> const DQ::Hminus8(DQ dq) {
 * To use this member function, type: 'dq_object.vec4();'.
 * \return A constant boost::numeric::ublas::matrix <double> (4,1).
 */
-matrix <double> const DQ::vec4() {
-    matrix <double> op_vec4(4,1);
+Vector4d const DQ::vec4() {
+    Vector4d op_vec4(4,1);
     op_vec4(0,0) = q(0);
     op_vec4(1,0) = q(1);
     op_vec4(2,0) = q(2);
     op_vec4(3,0) = q(3);
     return op_vec4;
-};
-/**
-* Returns a constant 4x1 double Boost matrix representing the 'vec' operator of primary part of the DQ object caller.
-* Actually this function does the same as vec4() changing only the way of calling, which is DQ::vec4(dq_object).
-*/
-matrix <double> const DQ::vec4(DQ dq) {
-    return dq.vec4();
 };
 
 /**
@@ -853,8 +899,8 @@ matrix <double> const DQ::vec4(DQ dq) {
 * To use this member function, type: 'dq_object.vec8();'.
 * \return A constant boost::numeric::ublas::matrix <double> (8,1).
 */
-matrix <double> const DQ::vec8() {
-    matrix <double> op_vec8(8,1);
+Matrix<double,8,1>  const DQ::vec8() {
+    Matrix<double,8,1>  op_vec8(8,1);
     op_vec8(0,0) = q(0);
     op_vec8(1,0) = q(1);
     op_vec8(2,0) = q(2);
@@ -865,21 +911,14 @@ matrix <double> const DQ::vec8() {
     op_vec8(7,0) = q(7);
     return op_vec8;
 };
-/**
-* Returns a constant 8x1 double boost matrix representing the 'vec' operator of the DQ object caller.
-* Actually this function does the same as vec8() changing only the way of calling, which is DQ::vec8(dq_object).
-*/
-matrix <double> const DQ::vec8(DQ dq) {
- return dq.vec8();
-};
 
-/** Returns the Generilized Jacobian; that it, the Jacobian that satisfies the relation Geometric_Jacobian = G * DQ_Jacobian.
+/** Returns the Generalized Jacobian; that it, the Jacobian that satisfies the relation Geometric_Jacobian = G * DQ_Jacobian.
 * To use this member function type: 'dq_object.jacobG(x_E).
 * \param DQ x_E is the dual position quaternion
 * \return A constant boost::numeric::ublas::matrix <double>
 */
-matrix <double> const DQ::jacobG(DQ x_E) {
-    matrix <double> jacobGen(8,8);
+Matrix<double,8,8> const DQ::jacobG(DQ x_E) {
+    Matrix<double,8,8> jacobGen(8,8);
     jacobGen(0,0) = x_E.q(4); jacobGen(0,1) =  x_E.q(5); jacobGen(0,2) =  x_E.q(6); jacobGen(0,3) =  x_E.q(7);
     jacobGen(1,0) = x_E.q(5); jacobGen(1,1) = -x_E.q(4); jacobGen(1,2) =  x_E.q(7); jacobGen(1,3) = -x_E.q(6);
     jacobGen(2,0) = x_E.q(6); jacobGen(2,1) = -x_E.q(7); jacobGen(2,2) = -x_E.q(4); jacobGen(2,3) =  x_E.q(5);
@@ -903,101 +942,17 @@ matrix <double> const DQ::jacobG(DQ x_E) {
     return 2*jacobGen;
 };
 
-/** Returns the Generilized Jacobian; that it, the Jacobian that satisfies the relation Geometric_Jacobian = G * DQ_Jacobian.
-* Actually this function does the same as jacobG(theta_vec) changing only the way of calling, which is
-* DQ::jacobG(dq_object, x_E).
-*/
-matrix <double> const DQ::jacobG(DQ param_dq, DQ x_E) {
-    return param_dq.jacobG(x_E);
-};
-
 /**
-* Display DQ object caller.
+* Generalized Jacobian, i.e, the Jacobian that satisfies the relation Geometric Jacobian = Generalized Jacobian * Analytical (DQ) Jacobian.
 *
-* Concatenate the strings generated by the build_string function with other string elements to display correctly, the DQ object caller
-* including it's object name, the primary and dual parts. The DQ object is displayed in the following standard form:
-* dq_object = (q(0) + q(1)*i + q(2)*j + q(3)*k) + dual_unit_E*(q(4) + q(5)*i + q(6)*j + q(7)*k). To use this member funtion correctly
-* and comfortably, type DISPLAY(dq_object). Where 'DISPLAY" must be upper case because it's a defined macro created to facilitate the use.
-* \param name is the name of the DQ object passed to function (using DISPLAY macro this could be ignored)
-* \param dq is the dual quaternion to be displayed.
+* @param x_e.
+* @return A 8x8 matrix representing the Generalized Jacobian given the arguments.
 */
-void DQ::display(char *name, DQ dq) {
+Matrix<double,8,8> const DQ::generalizedJacobian(DQ x_E)
+{
+    return jacobG(x_E);
+}
 
-	has_primary_element = 0;
-	has_dual_element = 0;
-    std::string s, sd;
-
-    s = DQ::build_string(dq,0);
-    sd = DQ::build_string(dq,4);
-
-    if (has_primary_element == 1) {
-        s = "(" + s + ")";
-        if (has_dual_element == 1) {
-            sd = " + E*(" + sd + ")";
-            has_dual_element = 0;
-        }
-    }
-
-    if (has_dual_element == 1) {
-        sd = "E*(" + sd + ")";
-        if (has_primary_element == 1) {
-            s = "(" + s + ")";
-            sd = " + " + sd;
-        }
-    }
-
-    if ((has_primary_element + has_dual_element) == 0)
-        s = "0";
-    cout << name << " = " << s << sd << "\n";
-};
-
-/**
-* Display a boost matrix representing Hamilton or vec operators.
-*
-* This function just displays the boost matrix in a good form of visualisation. To use this member funtion correctly and comfortably,
-* type MATRIX(matrix <double> H_or_vec). Where 'MATRIX" must be upper case because it's a defined macro created to facilitate the use.
-* \param name is the name of the matrix passed to function (using MATRIX macro this could be ignored)
-* \param &H_or_vec is a reference to the matrix to be displayed.
-*/
-void DQ::display(char *name, matrix <double> &H_or_vec) {
-
-    cout << name << " = \n";
-    for(unsigned int line = 0; line < H_or_vec.size1() ; line++) {
-        for(unsigned int column = 0; column < H_or_vec.size2() ; column++) {
-            if(fabs(H_or_vec(line, column)) < DQ::threshold() )
-            H_or_vec(line, column) = 0;
-            cout << "\t" << std::setw(10) << std::left << H_or_vec(line, column);
-        }
-        cout << "\n";
-    }
-    cout << "\n";
-};
-
-/**
-* Display a boost vector as a boost matrix 1xn.
-*
-* This function just displays the boost vector in a good form of visualisation. To use this member funtion correctly and comfortably,
-* type MATRIX(vector <double> vec). Where 'MATRIX" must be upper case because it's a defined macro created to facilitate the use.
-* \param name is the name of the vector passed to function (using MATRIX macro this could be ignored)
-* \param &vec is a reference to the vector to be displayed.
-*/
-void DQ::display(char *name, vector <double> &vec) {
-
-    cout << name << " = \n";
-    matrix <double> vec_line (1,vec.size());
-    for(unsigned int col = 0; col < vec.size() ; col++) {
-	vec_line(0,col) = vec(col);
-    }
-    for(unsigned int line = 0; line < vec_line.size1() ; line++) {
-        for(unsigned int column = 0; column < vec_line.size2() ; column++) {
-            if(fabs(vec_line(line, column)) < DQ::threshold() )
-            vec_line(line, column) = 0;
-            cout << "\t" << std::setw(10) << std::left << vec_line(line, column);
-        }
-        cout << "\n";
-    }
-    cout << "\n";
-};
 
 /**
 * Unit Dual Quaternion constructor.
@@ -1015,7 +970,7 @@ DQ DQ::unitDQ(double rot_angle, int x_axis,int y_axis,int z_axis, double x_trans
         cout << "ERROR IN ROTATION ANGLE CHOOSE: X, Y AND Z AXIS PARAMETERS MUST BE 1 OR 0 \n";
         return DQ(0);
     }
-    vector <double> axis(4), translation(4);
+    Vector4d axis(4), translation(4);
     axis(0) = 0;
     axis(1) = x_axis;
     axis(2) = y_axis;
@@ -1028,76 +983,16 @@ DQ DQ::unitDQ(double rot_angle, int x_axis,int y_axis,int z_axis, double x_trans
 
     DQ r = cos(rot_angle/2) + sin(rot_angle/2)*DQ(axis);
     DQ p = DQ(translation);
-    DQ h = r + DQ::E(r)*0.5*p*r;
+    DQ h = r + E_*0.5*p*r;
 
     // using threshold to verify zero values in DQ to be returned
     for(int n = 0; n < 8; n++) {
-        if(fabs(h.q(n)) < DQ::threshold() )
+        if(fabs(h.q(n)) < DQ_threshold )
             h.q(n) = 0;
     }
     return h;
 };
 
-//Private auxiliar functions
-
-/**
-* Constructs and Returns a string to be displayed representing a part of the DQ object caller.
-*
-* Creates a string used by the display() member function which contains, parentesis, the imaginary units, and the elements scalar
-* values of the primary or dual part of the dual quaternion. The part being constructed is defined by a shift variable.
-* \param dq is the dual quaternion to be displayed.
-* \param shift is an integer that shifts the focus to the part which the display string is being constructed (primary or dual).
-* \return A std::string.
-* \sa display().
-*/
-std::string DQ::build_string(DQ dq, int shift) {
-    std::string s, aux;
-    char buffer_number[32];
-    s = "";
-    aux = " ijk";
-
-    int has_element = 0;
-
-    for(int n = 0; n < 4; n++) {
-        if (fabs(dq.q(n+shift) ) > dq.threshold() ) { //To avoid printing values very close to zero
-            if (dq.q(n+shift) < 0)
-                s = s + " - ";
-            else if (has_element != 0)
-                s = s + " + ";
-
-            if (n == 0) {
-                sprintf(buffer_number, "%1.5g", fabs(dq.q(n+shift) ) ); //coverts DQ element to string
-                s = s + buffer_number; //concatenate the real number to string generated yet
-            }
-            else {
-                sprintf(buffer_number, "%1.5g", fabs(dq.q(n+shift) ) ); //coverts DQ element to string
-                s = s + buffer_number + aux[n]; //concatenate the imaginary number to string generated yet
-            }
-
-            if (shift == 0) { //mounting primary part
-            has_primary_element = 1;
-            has_element = 1;
-            }
-            else { //mounting dual part
-            has_dual_element = 1;
-            has_element = 1;
-            }
-        }
-    }
-    return s;
-};
-
-/**
-* Returns a scalar value to be used as a threshold in some internal operations
-*
-* Creates a double type constant with the value 0.000000000001 or 10e-12. In several definitions inside the class member functions
-* this number is used to verify if a value should be considered zero or not.
-* \return A const double value.
-*/
-double DQ::threshold() {
-	const double threshold = 0.000000000001;
-	return threshold;
-};
 
 //Overloaded operators definitions
 
@@ -1117,7 +1012,7 @@ DQ operator+(DQ dq1, DQ dq2) {
         dq.q(n) = dq1.q(n) + dq2.q(n);
     }
     for(int n = 0; n < 8; n++) {
-            if(fabs(dq.q(n)) < DQ::threshold() )
+            if(fabs(dq.q(n)) < DQ_threshold )
                 dq.q(n) = 0;
         }
     return dq;
@@ -1232,7 +1127,7 @@ DQ operator-(DQ dq1, DQ dq2){
         dq.q(n) = dq1.q(n) - dq2.q(n);
     }
     for(int n = 0; n < 8; n++) {
-            if(fabs(dq.q(n)) < DQ::threshold() )
+            if(fabs(dq.q(n)) < DQ_threshold )
                 dq.q(n) = 0;
         }
     return dq;
@@ -1359,7 +1254,7 @@ DQ operator*(DQ dq1, DQ dq2){
     dq.q(7) = dq.q(7) + dq1.D().q(0)*dq2.P().q(3) + dq1.D().q(1)*dq2.P().q(2) - dq1.D().q(2)*dq2.P().q(1) + dq1.D().q(3)*dq2.P().q(0);
 
     for(int n = 0; n < 8; n++) {
-            if(fabs(dq.q(n)) < DQ::threshold() )
+            if(fabs(dq.q(n)) < DQ_threshold )
                 dq.q(n) = 0;
         }
 
@@ -1469,7 +1364,7 @@ DQ operator*(double scalar, DQ dq) {
 */
 bool DQ::operator==(DQ dq2) {
     for(int n = 0; n<8; n++) {
-        if(fabs(q(n) - dq2.q(n)) > DQ::threshold() )
+        if(fabs(q(n) - dq2.q(n)) > DQ_threshold )
         return false; //elements of Dual Quaternion different of scalar
     }
     return true; //elements of Dual Quaternion equal to scalar
@@ -1584,7 +1479,7 @@ bool operator==(double scalar, DQ dq) {
 */
 bool DQ::operator!=(DQ dq2) {
     for(int n = 0; n<8; n++){
-        if(fabs(q(n) - dq2.q(n)) > DQ::threshold() )
+        if(fabs(q(n) - dq2.q(n)) > DQ_threshold )
         return true; //elements of Dual Quaternion different of scalar
     }
     return false; //elements of Dual Quaternion equal to scalar
@@ -1709,9 +1604,27 @@ DQ operator^(DQ dq1, double m) {
         dq = m * dq1.log();
         dq = dq.exp();
         for(int n = 0; n < 8; n++) {
-                if(fabs(dq.q(n)) < DQ::threshold() )
+                if(fabs(dq.q(n)) < DQ_threshold )
                     dq.q(n) = 0;
             }
         return dq;
     }
 };
+
+
+std::ostream& operator<<(std::ostream& os, const DQ& dq)
+{
+    os << dq.q(0) << " "
+       << dq.q(1) << "i "
+       << dq.q(2) << "j "
+       << dq.q(3) << "k +E( "
+       << dq.q(4) << " "
+       << dq.q(5) << "i "
+       << dq.q(6) << "j "
+       << dq.q(7) << "k )";
+
+    return os;
+};
+
+
+}//Namespace DQRobotics

@@ -1,16 +1,3 @@
-#include <iostream>
-#include<math.h> //library for math functions
-#include "DQ.h"
-#include<stdarg.h> //library to use string
-#include <boost/numeric/ublas/vector.hpp> //header for boost ublas vector declarations
-#include <boost/numeric/ublas/matrix.hpp> //header for boost ublas matrix declarations
-#include <boost/numeric/ublas/io.hpp>
-
-#ifndef DQ_KINEMATICS_H
-#define DQ_KINEMATICS_H
-
-using namespace boost::numeric::ublas;
-
 /**
 * This class DQ_kinematics represents a kinematic model of a robotic system using dual quaternions concept.
 *
@@ -22,109 +9,164 @@ using namespace boost::numeric::ublas;
 * of DQ class (also provided with this class) can be used.
 * \author Mateus Rodrigues Martins (martinsrmateus@gmail.com)
 * \since 11/2012
-* \version 1.0
+***********************************************************
+*              REVISION HISTORY
+***********************************************************
+* 01/31/2013 - Murilo Marques Marinho (murilomarinho@lara.unb.br)
+             - Changed Library to Use Eigen.
+* 02/07/2013 - Murilo Marques Marinho (murilomarinho@lara.unb.br)
+             - Removed static functions and created DQRobotics
+               namespace.
+             - All jacobians have a more human-readable name now
+               but the old names were kept for legacy reasons:
+                - jacobian() -> analyticalJacobian()
+                - jacobp()   -> translationJacobian()
+                - jacobd()   -> distanceJacobian()
+             - static methods returning constant matrix objects
+               completely removed from DQ_kinematics class.
+***********************************************************
+* \version 1.2
 */
-class DQ_kinematics{
-
-    // private attributtes
-    private:
-
-    //Para uso nas funções Jacobian...
-    matrix <double> dq_kin;
-    DQ curr_base;
-    DQ curr_effector;
-    // TODO: IMPLEMENT THESE VARIABLES REGARDING ROBOTICS TOOLBOX
-    // Properties for interfacing with Robotics Toolbox
-    // name;
-    // robot_RT;
-    std::string aux_type;
 
 
-    // public methods
-    public:
-    // Class constructors: Creates a Dual Quaternion as a DQ object.
+#include <iostream>
+#include <math.h> //library for math functions
+#include "DQ.h"
+#include <stdarg.h> //library to use string
+#include <Eigen/Dense>
 
-    DQ_kinematics(matrix <double> A);
+#ifndef DQ_KINEMATICS_H
+#define DQ_KINEMATICS_H
 
-    DQ_kinematics(matrix <double> A, std::string type);
-
-    ~DQ_kinematics();
+using namespace Eigen;
 
 
-    /*
-    * Public constant methods: Can be called by DQ_kinematics objects.
-    * To use these methods, type: 'dq_kinematics_object.method_name();' where 'method_name' is the name of one of the methods below.
-    * Or in another way type: 'DQ_kinematics::method_name(dq_kinematics_object);' that works well too.
-    * For displaying the results of methods, the DISPLAY and MATRIX functions of DQ class can be used
-    */
+namespace DQ_robotics
+{
 
-    int const links();
-    static int const links(DQ_kinematics param_dq_kin);
 
-    vector <double> const theta();
-    static vector <double> const theta(DQ_kinematics param_dq_kin);
 
-    vector <double> const d();
-    static vector <double> const d(DQ_kinematics param_dq_kin);
+    class DQ_kinematics{
 
-    vector <double> const a();
-    static vector <double> const a(DQ_kinematics param_dq_kin);
+        // private attributtes
+        private:
 
-    vector <double> const alpha();
-    static vector <double> const alpha(DQ_kinematics param_dq_kin);
+        //Para uso nas funções Jacobian...
+        MatrixXd dq_kin;
+        DQ curr_base;
+        DQ curr_effector;
 
-    vector <double> const dummy();
-    static vector <double> const dummy(DQ_kinematics param_dq_kin);
+        std::string aux_type;
 
-    int const n_dummy();
-    static int const n_dummy(DQ_kinematics param_dq_kin);
 
-    std::string const convention();
-    static std::string const convention(DQ_kinematics param_dq_kin);
+        // public methods
+        public:
+        // Class constructors: Creates a Dual Quaternion as a DQ object.
 
-    DQ const base();
-    static DQ const base(DQ_kinematics param_dq_kin);
+        DQ_kinematics(MatrixXd A);
 
-    DQ const effector();
-    static DQ const effector(DQ_kinematics param_dq_kin);
+        DQ_kinematics(MatrixXd A, std::string type);
 
-    static matrix <double> const C8();
-    static matrix <double> const C8(DQ_kinematics param_dq_kin);
+        DQ_kinematics(){};
 
-    static matrix <double> const C4();
-    static matrix <double> const C4(DQ_kinematics param_dq_kin);
+        ~DQ_kinematics();
 
-    DQ const set_base(DQ new_base);
-    static DQ const set_base(DQ_kinematics param_dq_kin, DQ new_base);
 
-    DQ const set_effector(DQ new_effector);
-    static DQ const set_effector(DQ_kinematics param_dq_kin, DQ new_effector);
+        /*
+        * Public constant methods: Can be called by DQ_kinematics objects.
+        * To use these methods, type: 'dq_kinematics_object.method_name();' where 'method_name' is the name of one of the methods below.
+        * Or in another way type: 'DQ_kinematics::method_name(dq_kinematics_object);' that works well too.
+        * For displaying the results of methods, the DISPLAY and MATRIX functions of DQ class can be used
+        */
 
-    DQ const raw_fkm(vector <double> theta_vec);
-    static DQ const raw_fkm(DQ_kinematics param_dq_kin, vector <double> theta_vec);
-    DQ const raw_fkm(vector <double> theta_vec, int ith);
-    static DQ const raw_fkm(DQ_kinematics param_dq_kin, vector <double> theta_vec, int ith);
+        int const links();
 
-    DQ const fkm(vector <double> theta_vec);
-    static DQ const fkm(DQ_kinematics param_dq_kin, vector <double> theta_vec);
-    DQ const fkm(vector <double> theta_vec, int ith);
-    static DQ const fkm(DQ_kinematics param_dq_kin, vector <double> theta_vec, int ith);
+        VectorXd const theta();
 
-    DQ const dh2dq(double theta_ang, int link_i);
-    static DQ const dh2dq(DQ_kinematics param_dq_kin, double theta_ang, int link_i);
+        VectorXd const d();
 
-    DQ const get_z(vector <double> q);
-    static DQ const get_z(DQ_kinematics param_dq_kin, vector <double> q);
+        VectorXd const a();
 
-    matrix <double> const jacobian(vector <double> theta_vec);
-    static matrix <double> const jacobian(DQ_kinematics param_dq_kin, vector <double> theta_vec);
+        VectorXd const alpha();
 
-    static matrix <double> const jacobp(matrix <double> param_jacobian, vector <double> x);
-    static matrix <double> const jacobp(DQ_kinematics param_dq_kin, matrix <double> param_jacobian, vector <double> x);
+        VectorXd const dummy();
 
-    static matrix <double> const jacobd(matrix <double> param_jacobian, vector <double> x);
-    static matrix <double> const jacobd(DQ_kinematics param_dq_kin, matrix <double> param_jacobian, vector <double> x);
+        int const n_dummy();
 
-};
+        std::string const convention();
+
+        DQ const base();
+
+        DQ const effector();
+
+        DQ const set_base(DQ new_base);
+
+        DQ const set_effector(DQ new_effector);
+
+        DQ const raw_fkm(VectorXd theta_vec);
+        DQ const raw_fkm(VectorXd theta_vec, int ith);
+
+        DQ const fkm(VectorXd theta_vec);
+        DQ const fkm(VectorXd theta_vec, int ith);
+
+        DQ const dh2dq(double theta_ang, int link_i);
+
+        DQ const get_z(VectorXd q);
+
+        MatrixXd const analyticalJacobian(VectorXd theta_vec);
+            MatrixXd const jacobian(VectorXd theta_vec); //The MATLAB syntax, kept for legacy reasons.
+
+    };
+
+
+    Matrix<double,8,8> const C8();
+
+    Matrix<double,4,4> const C4();
+
+    int const links(DQ_kinematics param_dq_kin);
+
+    VectorXd const theta(DQ_kinematics param_dq_kin);
+
+    VectorXd const d(DQ_kinematics param_dq_kin);
+
+    VectorXd const a(DQ_kinematics param_dq_kin);
+
+    VectorXd const alpha(DQ_kinematics param_dq_kin);
+
+    VectorXd const dummy(DQ_kinematics param_dq_kin);
+
+    int const n_dummy(DQ_kinematics param_dq_kin);
+
+    std::string const convention(DQ_kinematics param_dq_kin);
+
+    DQ const base(DQ_kinematics param_dq_kin);
+
+    DQ const effector(DQ_kinematics param_dq_kin);
+
+    DQ const set_base(DQ_kinematics param_dq_kin, DQ new_base);
+
+    DQ const set_effector(DQ_kinematics param_dq_kin, DQ new_effector);
+
+    DQ const raw_fkm(DQ_kinematics param_dq_kin, VectorXd theta_vec);
+    DQ const raw_fkm(DQ_kinematics param_dq_kin, VectorXd theta_vec, int ith);
+
+    DQ const dh2dq(DQ_kinematics param_dq_kin, double theta_ang, int link_i);
+
+    DQ const get_z(DQ_kinematics param_dq_kin, VectorXd q);
+   
+    MatrixXd const analyticalJacobian(DQ_kinematics param_dq_kin, VectorXd theta_vec);
+        MatrixXd const jacobian(DQ_kinematics param_dq_kin, VectorXd theta_vec); //The MATLAB syntax, kept for legacy reasons.
+
+    MatrixXd const translationJacobian(DQ_kinematics param_dq_kin, MatrixXd param_jacobian, Matrix<double,8,1> x);
+        MatrixXd const jacobp(DQ_kinematics param_dq_kin, MatrixXd param_jacobian, Matrix<double,8,1> x); //The MATLAB syntax, kept for legacy reasons.
+    
+
+    MatrixXd const distanceJacobian(DQ_kinematics param_dq_kin, MatrixXd param_jacobian, Matrix<double,8,1> x);
+        MatrixXd const jacobd(DQ_kinematics param_dq_kin, MatrixXd param_jacobian, Matrix<double,8,1> x); //The MATLAB syntax, kept for legacy reasons.
+
+    MatrixXd const pseudoInverse(MatrixXd matrix);
+    
+
+}//Namespace DQRobotics
 
 #endif // DQ_KINEMATICS_H_INCLUDED
