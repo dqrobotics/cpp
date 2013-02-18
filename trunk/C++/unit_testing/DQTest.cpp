@@ -148,6 +148,15 @@ void DQTest::kinematicsTest(void)
         //std::cout << std::endl << "thetas" << std::endl << thetas << std::endl;
     }   
 
+    DampedNumericalFilteredController dn_controller(schunk, kp, 0.001, 0.1, 0.001);
+
+    for(int j=0;j<10;j++)
+    {   
+        thetas = dn_controller.getNewJointPositions(reference,thetas);
+        std::cout << std::endl << "thetas" << std::endl << thetas << std::endl;
+    }   
+
+
     //std::cout << m << std::endl;
     //std::cout << m_pinv << std::endl;
     
