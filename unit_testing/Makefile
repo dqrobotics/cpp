@@ -3,7 +3,7 @@
 # 31/01/2013
 
 test:
-	g++ -Wall DQTest.cpp dqtest_main.cpp ../DQ.cpp ../DQ_kinematics.cpp ../controllers/HInfinityRobustController.cpp -lcppunit -o test
+	g++ -Wall DQTest.cpp dqtest_main.cpp ../DQ.cpp ../DQ_kinematics.cpp ../controllers/HInfinityRobustController.cpp ../controllers/DampedNumericalFilteredController.cpp -lcppunit -o test
 	./test
 runtest:
 	./test
