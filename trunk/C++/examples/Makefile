@@ -4,6 +4,7 @@
 
 all:
 	g++ -Wall  schunk_hinfinitycontrol_example.cpp ../DQ.cpp ../DQ_kinematics.cpp ../controllers/HInfinityRobustController.cpp -o schunk_hinfinitycontrol_example
+	g++ -Wall  schunk_allcontrollers_example.cpp ../DQ.cpp ../DQ_kinematics.cpp ../controllers/HInfinityRobustController.cpp ../controllers/DampedNumericalFilteredController.cpp -o schunk_allcontrollers_example
 clean:
-	rm -f schunk_hinfinitycontrol_example
+	rm -f schunk_hinfinitycontrol_example schunk_allcontrollers_example
 
