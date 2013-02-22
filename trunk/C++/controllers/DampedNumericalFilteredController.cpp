@@ -12,6 +12,8 @@ namespace DQ_robotics
 
 DampedNumericalFilteredController::DampedNumericalFilteredController(DQ_kinematics robot, MatrixXd feedback_gain, double beta, double lambda_max, double epsilon) : DQ_controller()
 {
+    //Constants
+    dq_one_ = DQ(1);
 
     //Initialization of argument parameters
     robot_dofs_     = (robot.links() - robot.n_dummy());
@@ -23,9 +25,6 @@ DampedNumericalFilteredController::DampedNumericalFilteredController(DQ_kinemati
     //Initilization of remaining parameters
     thetas_         = MatrixXd(robot_dofs_,1);
     delta_thetas_   = MatrixXd::Zero(robot_dofs_,1);
-
-    reference_state_variables_ = MatrixXd(8,1);
-    measured_state_variables_  = MatrixXd(8,1);
 
     task_jacobian_     = MatrixXd(8,robot_dofs_);
     task_jacobian_pseudoinverse_   = MatrixXd(robot_dofs_,8);
@@ -42,9 +41,18 @@ DampedNumericalFilteredController::DampedNumericalFilteredController(DQ_kinemati
 VectorXd DampedNumericalFilteredController::getNewJointPositions(DQ reference, VectorXd thetas)
 {
 
+    delta_thetas_ = getNewJointVelocities(reference, thetas);
+
+    // Send updated thetas to simulation
+    return (thetas_ + delta_thetas_);
+
+}
+
+VectorXd DampedNumericalFilteredController::getNewJointVelocities(DQ reference, VectorXd thetas)
+{
+
     ///--Remapping arguments
     thetas_ = thetas;
-    reference_state_variables_ = reference.vec8();
 
     ///--Controller Step
            
@@ -54,15 +62,15 @@ VectorXd DampedNumericalFilteredController::getNewJointPositions(DQ reference, V
     // Recalculation of measured data.
     // End effectors pose
     end_effector_pose_ = robot_.fkm(thetas_);
-    measured_state_variables_ = vec8(end_effector_pose_);
 
     //Error
-    error_ = (reference_state_variables_ - measured_state_variables_);
+    error_ = vec8(reference - end_effector_pose_);
+    //error_ = vec8(dq_one_ - conj(end_effector_pose_)*reference);
 
-    svd_.compute(task_jacobian_, ComputeFullU | ComputeFullV);
+    svd_.compute(task_jacobian_, ComputeFullU);
     singular_values_ = svd_.singularValues();
 
-    //Tolerance Calculation
+    //Damping Calculation
     double sigma_min = singular_values_(robot_dofs_-1);
     VectorXd u_min = svd_.matrixU().col(robot_dofs_-1);
     double lambda = lambda_max_;
@@ -75,16 +83,7 @@ VectorXd DampedNumericalFilteredController::getNewJointPositions(DQ reference, V
 
     delta_thetas_ = task_jacobian_pseudoinverse_*kp_*error_;
 
-    // Send updated thetas to simulation
-    return (thetas_ + delta_thetas_);
-
-}
-
-VectorXd DampedNumericalFilteredController::getNewJointVelocities(DQ reference, VectorXd thetas)
-{
-
-    std::cout << std::endl << "getNewJointVelocities() not implemented yet" << std::endl;
-    return VectorXd(1,1);
+    return delta_thetas_;
 
 }
 
