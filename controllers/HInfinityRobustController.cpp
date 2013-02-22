@@ -41,6 +41,16 @@ HInfinityRobustController::HInfinityRobustController(DQ_kinematics robot, Matrix
 VectorXd HInfinityRobustController::getNewJointPositions(DQ reference, VectorXd thetas)
 {
 
+    delta_thetas_ = getNewJointVelocities( reference, thetas);
+
+    // Send updated thetas to simulation
+    return (thetas_ + delta_thetas_);
+
+}
+
+VectorXd HInfinityRobustController::getNewJointVelocities(DQ reference, VectorXd thetas)
+{
+
     ///--Remapping arguments
     thetas_ = thetas;
     reference_state_variables_ = reference.vec8();
@@ -66,16 +76,7 @@ VectorXd HInfinityRobustController::getNewJointPositions(DQ reference, VectorXd 
                
     delta_thetas_ = N_pseudoinverse_*kp_*error_;
 
-    // Send updated thetas to simulation
-    return (thetas_ + delta_thetas_);
-
-}
-
-VectorXd HInfinityRobustController::getNewJointVelocities(DQ reference, VectorXd thetas)
-{
-
-    std::cout << std::endl << "getNewJointVelocities() not implemented yet" << std::endl;
-    return VectorXd(1,1);
+    return delta_thetas_;
 
 }
 

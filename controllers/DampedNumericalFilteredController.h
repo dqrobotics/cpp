@@ -32,9 +32,6 @@ private: //variables
     VectorXd thetas_;
     VectorXd delta_thetas_;
 
-    VectorXd reference_state_variables_;
-    VectorXd measured_state_variables_;
-
     VectorXd error_;
 
     MatrixXd task_jacobian_;
@@ -47,6 +44,8 @@ private: //variables
 
     DQ end_effector_pose_;
 
+    DQ dq_one_;
+
 
 public: //methods
     DampedNumericalFilteredController(DQ_kinematics robot, MatrixXd feedback_gain, double beta, double lambda_max, double epsilon);
@@ -56,7 +55,6 @@ public: //methods
     VectorXd getNewJointVelocities(DQ reference, VectorXd thetas);
 
 private: //methods
-
 
 };
 
