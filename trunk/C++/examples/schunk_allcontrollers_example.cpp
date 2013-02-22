@@ -51,7 +51,7 @@ int main(void)
     control(kp, thetas, schunk, eff_pose_reference, r_controller);
     
     //Chiaverini Controller
-    std::cout << std::endl <<"Chiaverini Robust Controller" << std::endl;
+    std::cout << std::endl <<"Chiaverini Singularity-Robust Controller" << std::endl;
     DampedNumericalFilteredController c_controller(schunk, kp, 0.01, 0.01, 0.001);
     control(kp, thetas, schunk,eff_pose_reference, c_controller);
 
@@ -63,15 +63,13 @@ void control(Matrix<double,8,8> kp, Matrix<double,7,1> thetas, DQ_kinematics rob
 
     //Control Loop Variables
     DQ eff_pose_current(0);
-    DQ eff_pose_difference(0);
+    DQ eff_pose_difference(20); //An initial large value so it does not break from the control loop
     double control_threshold = 1.e-5;
-    bool continue_control = true;
     int control_step_count=0;
 
     //Control Loop
-    while(continue_control)
+    while(eff_pose_difference.vec8().norm() > control_threshold)
     {   
-        //std::cout << std::endl <<"thetas: " << thetas << std::endl;
 
         //One controller step
         thetas = controller.getNewJointPositions(eff_pose_reference,thetas);
@@ -79,17 +77,10 @@ void control(Matrix<double,8,8> kp, Matrix<double,7,1> thetas, DQ_kinematics rob
         //End of control check
         eff_pose_current = robot.fkm(thetas);
         eff_pose_difference = (eff_pose_current - eff_pose_reference);
-        continue_control = false;
-        for(int i=0;i<8;++i)
-        {
-
-            if(fabs(eff_pose_difference.q(i,0)) > control_threshold)
-                continue_control = true;
-
-        }
 
         //Count Steps
         control_step_count++;
+
     }
 
     std::cout << std::endl <<"Control Loop Ended In " << control_step_count << " Steps" << std::endl;
