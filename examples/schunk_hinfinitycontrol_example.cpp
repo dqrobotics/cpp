@@ -43,13 +43,12 @@ int main(void)
 
     //Control Loop Variables
     DQ eff_pose_current(0);
-    DQ eff_pose_difference(0);
+    DQ eff_pose_difference(20);
     double control_threshold = 1.e-10;
-    bool continue_control = true;
     int control_step_count=0;
 
     //Control Loop
-    while(continue_control)
+    while(eff_pose_difference.vec8().norm() > control_threshold)
     {   
         //One controller step
         thetas = controller.getNewJointPositions(eff_pose_reference,thetas);
@@ -57,14 +56,6 @@ int main(void)
         //End of control check
         eff_pose_current = schunk.fkm(thetas);
         eff_pose_difference = (eff_pose_current - eff_pose_reference);
-        continue_control = false;
-        for(int i=0;i<8;++i)
-        {
-
-            if(fabs(eff_pose_difference.q(i,0)) > control_threshold)
-                continue_control = true;
-
-        }
 
         //Count Steps
         control_step_count++;
