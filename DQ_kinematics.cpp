@@ -234,6 +234,16 @@ MatrixXd const analyticalJacobian(DQ_kinematics param_dq_kin, VectorXd theta_vec
 }
 
 
+/**
+* Obtains the rotation jacobian, relating the derivative of the rotation quaternion to the derivative of the joint variables as being the first 4 rows of the analytical jacobian.
+* \param MatrixXd analytical_jacobian The robot analytical jacobian.
+* \return The rotation jacobian.
+*/
+MatrixXd const rotationJacobian(MatrixXd analytical_jacobian)
+{
+	return analytical_jacobian.block(0,0,4,analytical_jacobian.cols());
+}
+
 /** Returns the translation Jacobian; that it, the Jacobian that satisfies the relation dot_p = Jp * dot_theta.
 * Where dot_p is the time derivative of the translation quaternion and dot_theta is the time derivative of the joint vector.
 * To use this member function type: 'dq_kin_object.jacobp(param_jacobian, x).
@@ -241,17 +251,17 @@ MatrixXd const analyticalJacobian(DQ_kinematics param_dq_kin, VectorXd theta_vec
 * \param Eigen::Matrix<double,8,1> x is the vector which constructs a translation DQ object
 * \return A constant Eigen::MatrixXd
 */
-MatrixXd const jacobp(MatrixXd param_jacobian, Matrix<double,8,1> x)
+MatrixXd const jacobp(MatrixXd analytical_jacobian, Matrix<double,8,1> x)
 {
     DQ dq_x(x);
     DQ dq_x_conj_P = dq_x.P();
     dq_x_conj_P = dq_x_conj_P.conj();
-    MatrixXd aux_J1(4,param_jacobian.cols());
-    MatrixXd aux_J2(4,param_jacobian.cols());
+    MatrixXd aux_J1(4,analytical_jacobian.cols());
+    MatrixXd aux_J2(4,analytical_jacobian.cols());
     for(int i = 0; i < 4; i++) {
-        for(int j = 0; j < param_jacobian.cols(); j++) {
-            aux_J1(i,j) = param_jacobian(i,j);
-            aux_J2(i,j) = param_jacobian((i+4),j);
+        for(int j = 0; j < analytical_jacobian.cols(); j++) {
+            aux_J1(i,j) = analytical_jacobian(i,j);
+            aux_J2(i,j) = analytical_jacobian((i+4),j);
         }
     }
     MatrixXd aux = Hplus4(dq_x.D())*C4();
@@ -259,9 +269,9 @@ MatrixXd const jacobp(MatrixXd param_jacobian, Matrix<double,8,1> x)
     return Jp;
 }
 
-MatrixXd const translationJacobian(MatrixXd param_jacobian, Matrix<double,8,1> x)
+MatrixXd const translationJacobian(MatrixXd analytical_jacobian, Matrix<double,8,1> x)
 {
-    return DQ_robotics::jacobp(param_jacobian,x);
+    return DQ_robotics::jacobp(analytical_jacobian,x);
 }
 
 /** Returns the distance Jacobian; that it, the Jacobian that satisfies the relation dot_(d^2) = Jd * dot_theta.
@@ -778,4 +788,4 @@ MatrixXd const DQ_kinematics::analyticalJacobian(VectorXd theta_vec)
 
 
 
-}//namspace DQ_robotics
+}//namespace DQ_robotics
