@@ -40,7 +40,7 @@ TranslationFirstPoseController::TranslationFirstPoseController(DQ_kinematics rob
     error_translation_  = MatrixXd(4,1);
 	error_rotation_     = MatrixXd(4,1);
 
-    end_effector_pose_ = DQ(0,0,0,0,0,0,0,0);
+    end_effector_pose_           = DQ(0,0,0,0,0,0,0,0);
 	reference_translation_       = DQ(0,0,0,0,0,0,0,0);
 	reference_rotation_          = DQ(0,0,0,0,0,0,0,0);
 
@@ -90,7 +90,7 @@ VectorXd TranslationFirstPoseController::getNewJointVelocities(DQ reference, Vec
 
 	
 	//Nullspace projector
-	nullspace_projector_ = (identityDOFS_ - (pseudoInverse(rotation_jacobian_))*rotation_jacobian_ );
+	nullspace_projector_ = (identityDOFS_ - (pseudoInverse(translation_jacobian_))*translation_jacobian_ );
 
 
     delta_thetas_ = translation_jacobian_pseudoinverse_ * kp_ * error_translation_ +
