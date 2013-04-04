@@ -17,6 +17,7 @@ Unit tests header file for testing both DQ.cpp and DQ_kinematics.cpp
 #include "../DQ_kinematics.h"
 #include "../controllers/HInfinityRobustController.h"
 #include "../controllers/DampedNumericalFilteredController.h"
+#include "../controllers/TranslationFirstPoseController.h"
 #include <iostream>
 
 using namespace Eigen;

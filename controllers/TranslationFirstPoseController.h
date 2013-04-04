@@ -34,7 +34,7 @@ private: //variables
     VectorXd delta_thetas_;
 
     VectorXd error_translation_;
-	Vectorxd error_rotation_;
+	VectorXd error_rotation_;
 
     MatrixXd analytical_jacobian_;
 	MatrixXd translation_jacobian_;
@@ -42,20 +42,18 @@ private: //variables
     MatrixXd translation_jacobian_pseudoinverse_;
 	MatrixXd rotation_jacobian_pseudoinverse_;
 
-    JacobiSVD<MatrixXd> svd_;
-    VectorXd singular_values_;
-    MatrixXd svd_sigma_inverted_;
-    MatrixXd identity_;
+	MatrixXd nullspace_projector_;
+
+	MatrixXd identity4_;
+	MatrixXd identityDOFS_;
 
     DQ end_effector_pose_;
 	DQ reference_translation_;
 	DQ reference_rotation_;
 
-    DQ dq_one_;
-
 
 public: //methods
-    TranslationFirstPoseController(DQ_kinematics robot, MatrixXd translation_feedback_gain, MatrixXd rotation_feedback_gain);
+    TranslationFirstPoseController(DQ_kinematics robot, MatrixXd translation_feedback_gain, MatrixXd rotation_feedback_gain, double translation_damping, double rotation_damping);
     ~TranslationFirstPoseController(){};
 
     VectorXd getNewJointPositions(DQ reference, VectorXd thetas);

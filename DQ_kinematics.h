@@ -159,8 +159,8 @@ namespace DQ_robotics
 
 	MatrixXd const rotationJacobian(MatrixXd analytical_jacobian);
 
-    MatrixXd const translationJacobian(DQ_kinematics param_dq_kin, MatrixXd analytical_jacobian, Matrix<double,8,1> x);
-        MatrixXd const jacobp(DQ_kinematics param_dq_kin, MatrixXd analytical_jacobian, Matrix<double,8,1> x); //The MATLAB syntax, kept for legacy reasons.
+    MatrixXd const translationJacobian(MatrixXd analytical_jacobian, Matrix<double,8,1> x);
+        MatrixXd const jacobp(MatrixXd analytical_jacobian, Matrix<double,8,1> x); //The MATLAB syntax, kept for legacy reasons.
     
 
     MatrixXd const distanceJacobian(DQ_kinematics param_dq_kin, MatrixXd param_jacobian, Matrix<double,8,1> x);
