@@ -84,17 +84,15 @@ VectorXd TranslationFirstPoseController::getNewJointVelocities(DQ reference, Vec
 	translation_jacobian_pseudoinverse_ = (translation_jacobian_.transpose())
 										 *(translation_jacobian_*translation_jacobian_.transpose() + translation_damping_*translation_damping_*identity4_).inverse();
 
-
 	rotation_jacobian_pseudoinverse_ =    (rotation_jacobian_.transpose())
 										 *(rotation_jacobian_*rotation_jacobian_.transpose() + rotation_damping_*rotation_damping_*identity4_).inverse();
-
 	
 	//Nullspace projector
 	nullspace_projector_ = (identityDOFS_ - (pseudoInverse(translation_jacobian_))*translation_jacobian_ );
 
-
     delta_thetas_ = translation_jacobian_pseudoinverse_ * kp_ * error_translation_ +
 					nullspace_projector_ * rotation_jacobian_pseudoinverse_ * kr_ * error_rotation_;
+
 
     return delta_thetas_;
 
