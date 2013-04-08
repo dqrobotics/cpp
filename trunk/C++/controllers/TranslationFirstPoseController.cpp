@@ -74,6 +74,7 @@ VectorXd TranslationFirstPoseController::getNewJointVelocities(DQ reference, Vec
 
     //Error
     error_translation_ = vec4( reference_translation_ -  end_effector_pose_.translation() );
+
 	error_rotation_    = vec4( reference_rotation_    - P(end_effector_pose_) );
 
 	//Calculate Jacobians
