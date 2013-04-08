@@ -463,7 +463,7 @@ DQ const DQ::norm() {
         // norm calculation
         norm = aux.conj() * aux;
         norm.q(0) = sqrt(norm.q(0));
-        norm.q(4) = norm.q(4)/(2*norm.q(4));
+        norm.q(4) = norm.q(4)/(2*norm.q(0));
 
         // using threshold to verify zero values in DQ to be returned
         for(int n = 0; n < 8; n++) {
@@ -543,7 +543,6 @@ DQ const DQ::translation() {
 	}
 	catch (int i) {
         std::cerr << "ERROR IN TRANSLATION OPERATION: NOT A UNIT DUAL QUATERNION \n";
-        system("PAUSE");
         return EXIT_FAILURE;
 	}
 };
