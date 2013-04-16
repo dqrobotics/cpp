@@ -13,6 +13,7 @@ Schunk Control Examples Using HInfinityRobustController.h
 #include "../DQ_controller.h"
 #include "../controllers/HInfinityRobustController.h" //Has HInfinityRobustController(...,...)
 #include "../controllers/DampedNumericalFilteredController.h"
+#include "../controllers/DampedNumericalFilteredControllerJointLimits.h"
 #include "../robot_dh/Schunk.h" //Has SchunkKinematics()
 
 #define _USE_MATH_DEFINES
@@ -22,11 +23,14 @@ using namespace Eigen;
 using namespace DQ_robotics;
 
 
+#include <iomanip>
 
 void control(Matrix<double,8,8> kp, Matrix<double,7,1> thetas, DQ_kinematics robot, DQ eff_pose_reference, DQ_controller& controller);
 
 int main(void)
 {
+    //  std::cout << std::setprecision(51);
+
     const double pi2 = M_PI_2;
 
     //Gain Matrix
@@ -39,11 +43,14 @@ int main(void)
     Matrix<double,7,1> thetas;
     thetas << 0,pi2,0,0,0,0,0;
 
+    std::cout << std::endl << "Initial Thetas" << std::endl << thetas << std::endl;
+
     //End Effector Pose eff_pose_reference
     DQ eff_pose_reference(1,0,0,0,0,0,0,0.652495);
 
  	//Robot DH
 	DQ_kinematics schunk = SchunkKinematics();
+    std::cout << std::endl << "Robot initial FKM " << schunk.fkm(thetas) << std::endl;
 
     //HInfinity Controller
     std::cout << std::endl <<"H-Inf Robust Controller" << std::endl;
@@ -51,9 +58,21 @@ int main(void)
     control(kp, thetas, schunk, eff_pose_reference, r_controller);
     
     //Chiaverini Controller
-    std::cout << std::endl <<"Chiaverini Singularity-Robust Controller" << std::endl;
+    std::cout << std::endl <<"Chiaverini's Singularity-Robust Controller" << std::endl;
     DampedNumericalFilteredController c_controller(schunk, kp, 0.01, 0.01, 0.001);
     control(kp, thetas, schunk,eff_pose_reference, c_controller);
+
+    //Chiaverini Controller With Joint Limit Considerantion
+    //Upper Limits
+    Matrix<double,7,1> upper_limits;
+    upper_limits << pi2,pi2,pi2,pi2,pi2,pi2,pi2;
+    //Lower Limits
+    Matrix<double,7,1> lower_limits;
+    lower_limits << -pi2,-pi2,-pi2,-pi2,-pi2,-pi2,-pi2;  
+
+    std::cout << std::endl <<"Chiaverini's Singularity-Robust Controller with Joint Limit Consideration" << std::endl;
+    DampedNumericalFilteredControllerJointLimits cjl_controller(schunk, upper_limits, lower_limits, kp, 0.01, 0.01, 0.001);
+    control(kp,thetas, schunk, eff_pose_reference, cjl_controller );
 
     return 0;
 }
