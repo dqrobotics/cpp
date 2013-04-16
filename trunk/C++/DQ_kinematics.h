@@ -12,9 +12,11 @@
 ***********************************************************
 *              REVISION HISTORY
 ***********************************************************
-* 01/31/2013 - Murilo Marques Marinho (murilomarinho@lara.unb.br)
-             - Changed Library to Use Eigen.
-* 02/07/2013 - Murilo Marques Marinho (murilomarinho@lara.unb.br)
+* 2013/04/15 Murilo Marques Marinho (murilomarinho@lara.unb.br)
+             - Created setDummy() method in class, for changing
+               the 'dummy' status of a joint during runtime.
+
+* 2013/02/07 Murilo Marques Marinho (murilomarinho@lara.unb.br)
              - Removed static functions and created DQRobotics
                namespace.
              - All jacobians have a more human-readable name now
@@ -24,6 +26,9 @@
                 - jacobd()   -> distanceJacobian()
              - static methods returning constant matrix objects
                completely removed from DQ_kinematics class.
+
+* 01/31/2013 Murilo Marques Marinho (murilomarinho@lara.unb.br)
+             - Changed Library to Use Eigen.
 ***********************************************************
 * \version 1.2
 */
@@ -79,6 +84,8 @@ namespace DQ_robotics
         * For displaying the results of methods, the DISPLAY and MATRIX functions of DQ class can be used
         */
 
+        MatrixXd getDHMatrix();
+
         int const links();
 
         VectorXd const theta();
@@ -90,6 +97,7 @@ namespace DQ_robotics
         VectorXd const alpha();
 
         VectorXd const dummy();
+        void setDummy( VectorXd dummy_vector);
 
         int const n_dummy();
 

@@ -365,7 +365,16 @@ DQ_kinematics::DQ_kinematics(MatrixXd A) {
 		system("PAUSE");
         }
 
-        dq_kin.resize(A.rows(), A.cols());
+        dq_kin.resize(5, A.cols());
+
+        //Set all joints as non-dummy if A has only 4 rows.
+        if(A.rows() == 4)
+        {
+            for(int i = 0; i < A.cols(); i++)
+            {
+                dq_kin(4,i) = 0;
+            }
+        }
 
         for(int i = 0; i < A.rows(); i++) {
             for(int j = 0; j < A.cols(); j++) {
@@ -424,6 +433,16 @@ DQ_kinematics::DQ_kinematics(MatrixXd A, std::string type) {
 DQ_kinematics::~DQ_kinematics(){};
 
 // Public constant methods
+
+/**
+
+*/
+MatrixXd DQ_kinematics::getDHMatrix()
+{
+    MatrixXd DHMatrix = dq_kin;
+    return DHMatrix;
+}
+
 
 /**
 * Returns a constant int representing the number of links of a robotic system DQ_kinematics object.
@@ -515,6 +534,33 @@ VectorXd const DQ_kinematics::dummy() {
         return aux_dummy;
     }
 };
+
+
+void DQ_kinematics::setDummy(VectorXd dummy_vector)
+{
+
+    if(dummy_vector.size() != dq_kin.cols())
+    {
+        std::cerr << std:: endl << "Cannot change dummy status: argument vector is of size = " 
+                  << dummy_vector.size() << " when it should be of size = " << dq_kin.cols() << std::endl;
+        //Do nothing
+        return;
+    }
+
+    if (dq_kin.rows() > 4){
+        for (int i = 0; i < dq_kin.cols(); i++) {
+            dq_kin(4,i) = dummy_vector(i);
+        }
+    }
+    else{
+        std::cerr << std::endl << "Kinematics body has no dummy information to change." << std::endl;        
+        //Do nothing
+    }
+
+
+
+}
+
 
 /**
 * Returns a constant int representing the number of 'dummy' axes of a robotic system DQ_kinematics object.
