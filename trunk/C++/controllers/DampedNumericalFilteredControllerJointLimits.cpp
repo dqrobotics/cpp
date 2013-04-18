@@ -84,7 +84,11 @@ VectorXd DampedNumericalFilteredControllerJointLimits::getNewJointVelocities(DQ 
         singular_values_ = svd_.singularValues();
 
         //Damping Calculation
-        int current_step_relevant_dof = pseudo_robot.links() - pseudo_robot.n_dummy();
+        int current_step_relevant_dof = ( pseudo_robot.links() - pseudo_robot.n_dummy() );
+
+        //std::cout << std::endl << "Singular values = " << singular_values_;
+        //std::cout << std::endl << "Size = " << current_step_relevant_dof;
+
         double sigma_min = singular_values_( current_step_relevant_dof - 1);
         VectorXd u_min = svd_.matrixU().col( current_step_relevant_dof - 1);
         double lambda = lambda_max_;
@@ -98,170 +102,101 @@ VectorXd DampedNumericalFilteredControllerJointLimits::getNewJointVelocities(DQ 
 
         pseudo_delta_thetas = task_jacobian_pseudoinverse_*kp_*error_;
 
-        //Set delta thetas as if the loop was ending now.
-        for(int i = 0, j = 0; i < robot_dofs_; i++)
+        //Update delta_thetas for possiblenewthetas calculation
+        for(int i=0,j=0; i < robot_dofs_; i++)
         {
-            if(pseudo_dummy_joint_marker(i) == 1)
-                delta_thetas_(i) = 0;
-            else{
+            if(pseudo_dummy_joint_marker(i) == 0)
+            {
                 delta_thetas_(i) = pseudo_delta_thetas(j);
-                j++;
+                ++j;
             }
+            //Do NOTHING if it should be ignored.
         }
 
+
+        //Possible new thetas
         possible_new_thetas = thetas_ + delta_thetas_;
 
         //Verify if loop should end
         should_break_loop = true;
         int j=0;
+        //For all joints
         for(int i = 0; i < robot_dofs_; i++){
 
+            //If joint is not yet marked for not being considered in the minimization
             if(pseudo_dummy_joint_marker(i) == 0){
 
+                //If the controller is trying to put a joint further than any of its limits
                 if(    possible_new_thetas(i) > upper_joint_limits_(i)
                     || possible_new_thetas(i) < lower_joint_limits_(i) )
                 {
-                    //std::cout << std::endl << "YOU SHALL NOT PASS" << std::endl;
-                    pseudo_dummy_joint_marker(i) = 1;
-                    should_break_loop = false;
-                    step_dh_matrix(4,i) = 1; //Set matrix as dummy.
-                    step_dh_matrix(0,i) = thetas_(i); //Set matrix theta as a fixed value.
-       
+
+                    //If the joint was already saturated sometime ago
+                    double ep = 1.e-05;
+                    if (    thetas_(i) > upper_joint_limits_(i) - ep 
+                         || thetas_(i) < lower_joint_limits_(i) + ep){
+
+                        pseudo_dummy_joint_marker(i) = 1; //Mark it to be ignored in the minization
+                        //std::cout << std::endl << "Joint " << i << " will be ignored in the next controller step.";
+                        step_dh_matrix(4,i) = 1;          //Set matrix as dummy.
+                        step_dh_matrix(0,i) = thetas_(i); //Set matrix theta as a fixed value.
+                        should_break_loop = false;
+                    }
+                    //If the joint was not yet saturated and the controller wants to saturate it
+                    else{
+
+                        // Saturate the joint in this step.
+                        if   ( possible_new_thetas(i) > upper_joint_limits_(i) ){
+                            delta_thetas_(i) = upper_joint_limits_(i) - thetas_(i);
+                            //std::cout << std::endl << "Joint = " << i << " was saturated in its upper_limit";
+                        }
+                        else if ( possible_new_thetas(i) < lower_joint_limits_(i) ){
+                            delta_thetas_(i) = lower_joint_limits_(i) - thetas_(i);
+                            //std::cout << std::endl << "Joint = " << i << " was saturated in its lower_limit";
+                        }
+                        else{
+                            std::cout << std::endl << "Something is really wrong";
+                        }
+                        //The joint should still be considered in the minimizations.
+                        pseudo_thetas(j) = thetas_(i);
+                        ++j;    
+                    }
+
+      
                 }
+                //If the controller is not trying to put this joint further than any of its limits, we consider the velocity given normally
                 else{
+                    delta_thetas_(i) = pseudo_delta_thetas(j);
                     pseudo_thetas(j) = thetas_(i);
-                    j++;      
+                    ++j;      
                 }
+            }
+            //If joint was marked to be ignored, it shall be ignored.
+            else{
+                delta_thetas_(i) = 0;
             }
 
         }
-        if(j==0){
-            //std::cout << std::endl << "Robot will be unable to get out of this configuration using this controller." << std::endl;
+        if( j == 0 ){
+            std::cout << std::endl << "Robot will be unable to get out of this configuration using this controller.";
             delta_thetas_ = VectorXd::Zero(robot_dofs_);
             break;       
         }
 
-        pseudo_thetas.resize(j);
+        if(not should_break_loop){
+            pseudo_robot = DQ_kinematics(step_dh_matrix);  //Change DH
+            pseudo_thetas.conservativeResize(j);           //Resize pseudothetas
+            //std::cout << std::endl << " Number of joints being considered in the next step: " << j;
+            //std::cout << std::endl << " PseudoDummyJointMarker : " << pseudo_dummy_joint_marker;
+            //std::cout << std::endl << " Robot DH = " <<  pseudo_robot.getDHMatrix();
+            //std::cout << std::endl << " Pseudo Thetas = " << pseudo_thetas;
+            //std::cout << std::endl << " Thetas        = " << thetas_;
+        }
 
-        //Change DH
-        pseudo_robot = DQ_kinematics(step_dh_matrix);
-
-    }
-
-/*
-
-    ///--Remapping arguments
-    thetas_ = thetas;
-
-    //Non-class variables used in control loop.
-    VectorXd possible_new_thetas;
-    VectorXd pseudo_dummy_joints = original_dummy_joints_;
-    VectorXd pseudo_delta_thetas;
-    VectorXd pseudo_thetas = thetas_;
-    bool limits_were_violated = true;
-
-    int current_step_relevant_dof;
-
-    //Verify if joint limits where violated
-    while (limits_were_violated)
-    {
-        current_step_relevant_dof = ( robot_.links() - robot_.n_dummy() );
-        limits_were_violated = false;
-
-        //Calculate jacobian
-        task_jacobian_  = robot_.analyticalJacobian(pseudo_thetas);
         
-        // Recalculation of measured data.
-        end_effector_pose_ = robot_.fkm(pseudo_thetas);
 
-        //Error
-        error_ = vec8(reference - end_effector_pose_);
-        //error_ = vec8(dq_one_ - conj(end_effector_pose_)*reference);
+    }//While not should_break_loop
 
-        ///Inverse calculation
-        svd_.compute(task_jacobian_, ComputeFullU);
-
-        singular_values_ = svd_.singularValues();
-
-        //Damping Calculation
-        sigma_min = singular_values_( current_step_relevant_dof -1);
-        u_min = svd_.matrixU().col( current_step_relevant_dof -1);
-        lambda = lambda_max_;
-        if (sigma_min < epsilon_)
-        {
-            lambda = (1-(sigma_min/epsilon_)*(sigma_min/epsilon_))*lambda_max_*lambda_max_;
-        }
-
-        task_jacobian_pseudoinverse_ =    (task_jacobian_.transpose())*((task_jacobian_*task_jacobian_.transpose() 
-                                        + (beta_*beta_)*identity_ + (lambda*lambda)*u_min*u_min.transpose()).inverse());
-
-        pseudo_delta_thetas = task_jacobian_pseudoinverse_*kp_*error_;
-        pseudo_thetas.resize(current_step_relevant_dof);
-
-        //As the jacobian sizes might have changed, we have to remap the thetas to the right joint indexes.
-        for(int i = 0, k = 0, j = 0; i < robot_.links(); i++)
-        {
-            if(original_dummy_joints_(i) == 0)
-                {
-                if( pseudo_dummy_joints(i) == 1 )
-                {
-                    delta_thetas_(k) = 0; //This joint is not supposed to move.
-                    k++;   
-                }
-                else
-                {
-                    pseudo_thetas(j) = thetas_(k);
-                    delta_thetas_(k) = pseudo_delta_thetas(j);
-                    j++;
-                    k++;
-                }
-            }
-        }
-
-        //std::cout << std::endl << "Milestone 2" << std::endl;
-
-        //Checks all joints and set as dummies those that try going through the joint limits.
-        possible_new_thetas = thetas_ + delta_thetas_;
-
-        //Iterate through all links
-        for( int i = 0, j = 0; i < robot_.links(); i++)
-        {
-            //Verify if joint is not already dummy
-            if(pseudo_dummy_joints(i) == 0)
-            {
-                //Verify limits
-                if(    possible_new_thetas(j) > upper_joint_limits_(j)
-                    || possible_new_thetas(j) < lower_joint_limits_(j) )
-                {
-                    //If violates joint limits, we should ignore it in jacobian calculations.
-                    pseudo_dummy_joints(i) = 1;
-                    limits_were_violated = true;
-                    std::cout << std::endl << "Joint limit was violated!!" << std::endl;
-                }
-                j++;
-            }
-            
-        }     
-
-        robot_.setDummy( pseudo_dummy_joints );
-        pseudo_thetas.resize( ( robot_.links() - robot_.n_dummy() ) );
-        //As the jacobian sizes might have changed, we have to remap the thetas to the right joint indexes.
-        for(int i = 0, j = 0; i < robot_dofs_; i++)
-        {
-            if( pseudo_dummy_joints(i) == 0 )
-            {
-                pseudo_thetas(j) = thetas_(i);
-                j++;
-            }
-        }
-
-
-
-    }
-
-    //Reset dummy joint status
-    robot_.setDummy( original_dummy_joints_ );
-*/
     return delta_thetas_;
 
 }

@@ -20,11 +20,12 @@ namespace DQ_robotics{
     {
         const double pi2 = M_PI_2;
 
-	    Matrix<double,4,7> wam_dh(4,7);
+	    Matrix<double,5,7> wam_dh(5,7);
 	    wam_dh << 0,    0,    0,      0,      0,   0,   0,
                   0,    0,    0.55,   0,      0.3, 0,   0.0609,
                   0,    0,    0.045, -0.045,  0,   0,   0,
-                  -pi2, pi2, -pi2,    pi2,   -pi2, pi2, 0;
+                  -pi2, pi2, -pi2,    pi2,   -pi2, pi2, 0,
+                  0,    0,    0,      0,      0,   0,   0;
 
 	    DQ_kinematics wam(wam_dh,"standard");
 
