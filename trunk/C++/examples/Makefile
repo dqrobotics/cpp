@@ -8,5 +8,5 @@ all:
 	g++ -Wall  schunk_allcontrollers_example.cpp ../DQ.cpp ../DQ_kinematics.cpp ../controllers/HInfinityRobustController.cpp ../controllers/DampedNumericalFilteredController.cpp ../controllers/DampedNumericalFilteredControllerJointLimits.cpp -o schunk_allcontrollers_example
 	g++ -Wall  wam_chiaveriniwithjointlimits_example.cpp ../DQ.cpp ../DQ_kinematics.cpp ../controllers/DampedNumericalFilteredControllerJointLimits.cpp -o wam_chiaveriniwithjointlimits_example
 clean:
-	rm -f schunk_hinfinitycontrol_example schunk_allcontrollers_example wam4_translationfirstcontrol_example wam_chiaveriniwithjointlimits_example
+	rm -f schunk_hinfinitycontrol_example schunk_allcontrollers_example wam4_translationfirstcontrol_example wam_chiaveriniwithjointlimits_example 
 

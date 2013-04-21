@@ -56,14 +56,19 @@ VectorXd DampedNumericalFilteredControllerJointLimits::getNewJointVelocities(DQ 
 
     thetas_ = thetas;
 
+    DQ robot_base = robot_.base();
+    DQ robot_effector = robot_.effector();
+
     VectorXd pseudo_dummy_joint_marker = VectorXd::Zero(robot_dofs_);
     VectorXd pseudo_thetas = thetas_;
-    VectorXd pseudo_delta_thetas;
-    VectorXd possible_new_thetas;    
+    VectorXd pseudo_delta_thetas = VectorXd::Zero(robot_dofs_);
+    VectorXd possible_new_thetas = VectorXd::Zero(robot_dofs_);    
 
     MatrixXd original_dh_matrix = robot_.getDHMatrix();
     MatrixXd step_dh_matrix = original_dh_matrix;
     DQ_kinematics pseudo_robot(original_dh_matrix);
+    pseudo_robot.set_base(robot_base);
+    pseudo_robot.set_effector(robot_effector);
 
     bool should_break_loop = false;
     while(not should_break_loop){
@@ -185,12 +190,9 @@ VectorXd DampedNumericalFilteredControllerJointLimits::getNewJointVelocities(DQ 
 
         if(not should_break_loop){
             pseudo_robot = DQ_kinematics(step_dh_matrix);  //Change DH
+            pseudo_robot.set_base(robot_base);
+            pseudo_robot.set_effector(robot_effector);
             pseudo_thetas.conservativeResize(j);           //Resize pseudothetas
-            //std::cout << std::endl << " Number of joints being considered in the next step: " << j;
-            //std::cout << std::endl << " PseudoDummyJointMarker : " << pseudo_dummy_joint_marker;
-            //std::cout << std::endl << " Robot DH = " <<  pseudo_robot.getDHMatrix();
-            //std::cout << std::endl << " Pseudo Thetas = " << pseudo_thetas;
-            //std::cout << std::endl << " Thetas        = " << thetas_;
         }
 
         
