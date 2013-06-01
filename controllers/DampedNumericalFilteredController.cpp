@@ -2,7 +2,7 @@
 * Chiaverini's Singularity Robust controller for the unit dual quaternion space.
 *
 * \author Murilo Marques Marinho (murilomarinho@lara.unb.br)
-* \since 07/2012
+* \since 2012/07
 ***********************************************************
 *              REVISION HISTORY
 ***********************************************************
