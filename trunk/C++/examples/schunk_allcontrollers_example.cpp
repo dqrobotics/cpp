@@ -3,6 +3,15 @@ Schunk DQ Control Examples
 
 \author Murilo Marques Marinho
 \since 2013/01
+***********************************************************
+*              REVISION HISTORY
+***********************************************************
+* YYYY/MM/DD - Author (e-mail address)
+*            - Description
+***********************************************************
+* 2013/06/01 - Murilo Marques Marinho (murilomarinho@lara.unb.br)
+             - Added OrdinaryPoseController
+***********************************************************
 */
 
 
@@ -14,6 +23,7 @@ Schunk DQ Control Examples
 #include "../controllers/HInfinityRobustController.h" 
 #include "../controllers/DampedNumericalFilteredController.h"
 #include "../controllers/DampedNumericalFilteredControllerJointLimits.h"
+#include "../controllers/OrdinaryPoseController.h"
 //Robot Kinematics
 #include "../robot_dh/Schunk.h" 
 //For M_PI_2
@@ -58,6 +68,11 @@ int main(void)
     HInfinityRobustController r_controller(schunk, kp);
     control(kp, thetas, schunk, eff_pose_reference, r_controller);
     
+    //Ordinary Pose Controller
+    std::cout << std::endl <<"Ordinary Pose Controller" << std::endl;
+    OrdinaryPoseController op_controller(schunk, kp, 0.01);
+    control(kp, thetas, schunk, eff_pose_reference, op_controller);
+
     //Chiaverini Controller
     std::cout << std::endl <<"Chiaverini's Singularity-Robust Controller" << std::endl;
     DampedNumericalFilteredController c_controller(schunk, kp, 0.01, 0.01, 0.01);
