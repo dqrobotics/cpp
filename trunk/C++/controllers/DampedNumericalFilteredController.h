@@ -5,6 +5,7 @@
 #include "../DQ_kinematics.h"
 #include "../DQ_controller.h"
 #include <Eigen/Dense>
+#include <iostream>
 
 using namespace Eigen;
 

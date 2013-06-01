@@ -1,35 +1,36 @@
 /**
-Schunk Control Examples Using HInfinityRobustController.h
-
-
+Schunk DQ Control Examples
 
 \author Murilo Marques Marinho
-\since 01/2013
-
+\since 2013/01
 */
 
+
+//DQ Kinematics and Arithmetics
 #include "../DQ.h"
 #include "../DQ_kinematics.h"
+//DQ Controllers
 #include "../DQ_controller.h"
-#include "../controllers/HInfinityRobustController.h" //Has HInfinityRobustController(...,...)
+#include "../controllers/HInfinityRobustController.h" 
 #include "../controllers/DampedNumericalFilteredController.h"
 #include "../controllers/DampedNumericalFilteredControllerJointLimits.h"
-#include "../robot_dh/Schunk.h" //Has SchunkKinematics()
-
+//Robot Kinematics
+#include "../robot_dh/Schunk.h" 
+//For M_PI_2
 #define _USE_MATH_DEFINES
-#include <cmath> //For fabs and M_PI_2
+#include <cmath>
+//For std::setprecision()
+#include <iomanip> // For std::setprecision()
 
 using namespace Eigen;
 using namespace DQ_robotics;
-
-
-#include <iomanip>
 
 void control(Matrix<double,8,8> kp, Matrix<double,7,1> thetas, DQ_kinematics robot, DQ eff_pose_reference, DQ_controller& controller);
 
 int main(void)
 {
-    //  std::cout << std::setprecision(51);
+    //Uncomment the next line to show more digits when printing variables.
+    //std::cout << std::setprecision(51);
 
     const double pi2 = M_PI_2;
 
@@ -59,7 +60,7 @@ int main(void)
     
     //Chiaverini Controller
     std::cout << std::endl <<"Chiaverini's Singularity-Robust Controller" << std::endl;
-    DampedNumericalFilteredController c_controller(schunk, kp, 0.01, 0.01, 0.001);
+    DampedNumericalFilteredController c_controller(schunk, kp, 0.01, 0.01, 0.01);
     control(kp, thetas, schunk,eff_pose_reference, c_controller);
 
     //Chiaverini Controller With Joint Limit Considerantion
@@ -83,19 +84,27 @@ void control(Matrix<double,8,8> kp, Matrix<double,7,1> thetas, DQ_kinematics rob
     //Control Loop Variables
     DQ eff_pose_current(0);
     DQ eff_pose_difference(20); //An initial large value so it does not break from the control loop
-    double control_threshold = 1.e-5;
+    double control_threshold = 1.e-4;
     int control_step_count=0;
+
+    Matrix<double,7,1> delta_thetas; //Only necessary for performance measurements commented bellow
 
     //Control Loop
     while(eff_pose_difference.vec8().norm() > control_threshold)
     {   
 
         //One controller step
-        thetas = controller.getNewJointPositions(eff_pose_reference,thetas);
+        delta_thetas = controller.getNewJointVelocities(eff_pose_reference,thetas);
+        thetas = thetas + delta_thetas;
 
         //End of control check
         eff_pose_current = robot.fkm(thetas);
         eff_pose_difference = (eff_pose_current - eff_pose_reference);
+
+        //The following are optional convergence and efficiency measurements.        
+        //std::cout << std::endl << "error: " << eff_pose_difference.vec8().norm() << std::endl; //This one should fall exponentially.
+        //std::cout << std::endl << "biggest d_theta: " << delta_thetas.maxCoeff() << std::endl; //This should be as small as possible.
+        //std::cout << std::endl << "biggest theta:   " << thetas.maxCoeff() << std::endl;       //This should be inside the inverval between manipulator joint limits.
 
         //Count Steps
         control_step_count++;
