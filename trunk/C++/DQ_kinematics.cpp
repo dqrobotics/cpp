@@ -18,7 +18,7 @@ namespace DQ_robotics
 
 /**
 */
-int const links(DQ_kinematics param_dq_kin)
+int  links(DQ_kinematics param_dq_kin)
 {
     return param_dq_kin.links();
 }
@@ -26,7 +26,7 @@ int const links(DQ_kinematics param_dq_kin)
 /**
 * Returns a constant vector representing the theta joint angles offset of a robotic system.
 */
-VectorXd const theta(DQ_kinematics param_dq_kin)
+VectorXd  theta(DQ_kinematics param_dq_kin)
 {
     return param_dq_kin.theta();
 }
@@ -34,7 +34,7 @@ VectorXd const theta(DQ_kinematics param_dq_kin)
 /**
 * Returns a constant vector representing each 'd' offset along previous z to the common normal of a robotic system DQ_kinematics object.
 */
-VectorXd const d(DQ_kinematics param_dq_kin)
+VectorXd  d(DQ_kinematics param_dq_kin)
 {
     return param_dq_kin.d();
 }
@@ -42,7 +42,7 @@ VectorXd const d(DQ_kinematics param_dq_kin)
 /**
 * Returns a constant vector representing each 'a' length of the common normal of a robotic system DQ_kinematics object.
 */
-VectorXd const a(DQ_kinematics param_dq_kin)
+VectorXd  a(DQ_kinematics param_dq_kin)
 {
     return param_dq_kin.a();
 }
@@ -51,7 +51,7 @@ VectorXd const a(DQ_kinematics param_dq_kin)
 * Returns a constant vector representing each 'alpha' angle about common normal, from old z axis to new z axis of a
 * robotic system DQ_kinematics object.
 */
-VectorXd const alpha(DQ_kinematics param_dq_kin)
+VectorXd  alpha(DQ_kinematics param_dq_kin)
 {
     return param_dq_kin.alpha();
 }
@@ -59,7 +59,7 @@ VectorXd const alpha(DQ_kinematics param_dq_kin)
 /**
 * Returns a constant vector representing the existing 'dummy' axes of a robotic system DQ_kinematics object.
 */
-VectorXd const dummy(DQ_kinematics param_dq_kin)
+VectorXd  dummy(DQ_kinematics param_dq_kin)
 {
     return param_dq_kin.dummy();
 }
@@ -67,7 +67,7 @@ VectorXd const dummy(DQ_kinematics param_dq_kin)
 /**
 * Returns a constant int representing the number of 'dummy' axes of a robotic system DQ_kinematics object.
 */
-int const n_dummy(DQ_kinematics param_dq_kin)
+int  n_dummy(DQ_kinematics param_dq_kin)
 {
     return param_dq_kin.n_dummy();
 }
@@ -76,7 +76,7 @@ int const n_dummy(DQ_kinematics param_dq_kin)
 * Returns a constant std::string representing the Denavit Hartenberg convenction (standard or modified) used in a robotic system
 * DQ_kinematics object.
 */
-std::string const convention(DQ_kinematics param_dq_kin)
+std::string  convention(DQ_kinematics param_dq_kin)
 {
     return param_dq_kin.convention();
 }
@@ -84,7 +84,7 @@ std::string const convention(DQ_kinematics param_dq_kin)
 /**
 * Returns a constant DQ object representing current defined base of a robotic system DQ_kinematics object.
 */
-DQ const base(DQ_kinematics param_dq_kin)
+DQ  base(DQ_kinematics param_dq_kin)
 {
     return param_dq_kin.base();
 }
@@ -92,7 +92,7 @@ DQ const base(DQ_kinematics param_dq_kin)
 /**
 * Returns a constant DQ object representing current defined end effector of a robotic system DQ_kinematics object.
 */
-DQ const effector(DQ_kinematics param_dq_kin)
+DQ  effector(DQ_kinematics param_dq_kin)
 {
     return param_dq_kin.effector();
 }
@@ -104,7 +104,7 @@ DQ const effector(DQ_kinematics param_dq_kin)
 * is established: 'vec8(dot_x) = C8 * J * dot_theta'.
 * \return A constant Eigen::MatrixXd (8,8).
 */
-Matrix<double,8,8> const C8()
+Matrix<double,8,8>  C8()
 {
 
     Matrix<double,8,8> diag_C8(8,8);
@@ -140,7 +140,7 @@ Matrix<double,8,8> const C8()
 * \return A constant Eigen::MatrixXd (4,4).
 
 */
-Matrix<double,4,4> const C4()
+Matrix<double,4,4>  C4()
 {
 
     Matrix<double,4,4> diag_C4(4,4);
@@ -156,7 +156,7 @@ Matrix<double,4,4> const C4()
 /**
 * Sets, by new_base parameter, the pose of current base of a robotic system DQ_kinematics object and returns it in a constant DQ object.
 */
-DQ const set_base(DQ_kinematics param_dq_kin, DQ new_base)
+DQ  set_base(DQ_kinematics param_dq_kin, DQ new_base)
 {
     return param_dq_kin.set_base(new_base);
 }
@@ -165,7 +165,7 @@ DQ const set_base(DQ_kinematics param_dq_kin, DQ new_base)
 /**
 * Sets, by new_effector parameter, the pose of current end effector of a robotic system DQ_kinematics object and returns it in a constant DQ object.
 */
-DQ const set_effector(DQ_kinematics param_dq_kin, DQ new_effector)
+DQ  set_effector(DQ_kinematics param_dq_kin, DQ new_effector)
 {
     return param_dq_kin.set_effector(new_effector);
 }
@@ -173,7 +173,7 @@ DQ const set_effector(DQ_kinematics param_dq_kin, DQ new_effector)
 /**
 * Calculates the forward kinematic model and returns a DQ object corresponding to the last joint.
 */
-DQ const raw_fkm(DQ_kinematics param_dq_kin, VectorXd theta_vec)
+DQ  raw_fkm(DQ_kinematics param_dq_kin, VectorXd theta_vec)
 {
     return param_dq_kin.raw_fkm(theta_vec);
 }
@@ -181,7 +181,7 @@ DQ const raw_fkm(DQ_kinematics param_dq_kin, VectorXd theta_vec)
 /**
 * Calculates the forward kinematic model and returns a DQ object corresponding to the ith joint.
 */
-DQ const raw_fkm(DQ_kinematics param_dq_kin, VectorXd theta_vec, int ith)
+DQ  raw_fkm(DQ_kinematics param_dq_kin, VectorXd theta_vec, int ith)
 {
     return param_dq_kin.raw_fkm(theta_vec, ith);
 }
@@ -190,7 +190,7 @@ DQ const raw_fkm(DQ_kinematics param_dq_kin, VectorXd theta_vec, int ith)
 /**
 * Calculates the forward kinematic model and returns a DQ object corresponding to the last joint
 */
-DQ const fkm(DQ_kinematics param_dq_kin, VectorXd theta_vec)
+DQ  fkm(DQ_kinematics param_dq_kin, VectorXd theta_vec)
 {
     return param_dq_kin.fkm(theta_vec);
 }
@@ -199,7 +199,7 @@ DQ const fkm(DQ_kinematics param_dq_kin, VectorXd theta_vec)
 * Calculates the forward kinematic model and returns a DQ object corresponding to the ith joint.
 
 */
-DQ const fkm(DQ_kinematics param_dq_kin, VectorXd theta_vec, int ith)
+DQ  fkm(DQ_kinematics param_dq_kin, VectorXd theta_vec, int ith)
 {
     return param_dq_kin.fkm(theta_vec, ith);
 }
@@ -207,12 +207,12 @@ DQ const fkm(DQ_kinematics param_dq_kin, VectorXd theta_vec, int ith)
 
 /** Returns the correspondent DQ object, for a given link's Denavit Hartenberg parameters.
 */
-DQ const dh2dq(DQ_kinematics param_dq_kin, double theta_ang, int link_i)
+DQ  dh2dq(DQ_kinematics param_dq_kin, double theta_ang, int link_i)
 {
     return param_dq_kin.dh2dq(theta_ang, link_i);
 }
 
-DQ const get_z(DQ_kinematics param_dq_kin, VectorXd q)
+DQ  get_z(DQ_kinematics param_dq_kin, VectorXd q)
 {
     return param_dq_kin.get_z(q);
 }
@@ -220,7 +220,7 @@ DQ const get_z(DQ_kinematics param_dq_kin, VectorXd q)
 /** 
 Returns a MatrixXd 8x(links - n_dummy) representing the Jacobian of a robotic system DQ_kinematics object.
 */
-MatrixXd const jacobian(DQ_kinematics param_dq_kin, VectorXd theta_vec)
+MatrixXd  jacobian(DQ_kinematics param_dq_kin, VectorXd theta_vec)
 {
     return param_dq_kin.jacobian(theta_vec);
 }
@@ -228,7 +228,7 @@ MatrixXd const jacobian(DQ_kinematics param_dq_kin, VectorXd theta_vec)
 /** 
 Returns a MatrixXd 8x(links - n_dummy) representing the Jacobian of a robotic system DQ_kinematics object.
 */
-MatrixXd const analyticalJacobian(DQ_kinematics param_dq_kin, VectorXd theta_vec)
+MatrixXd  analyticalJacobian(DQ_kinematics param_dq_kin, VectorXd theta_vec)
 {
     return param_dq_kin.jacobian(theta_vec);
 }
@@ -239,7 +239,7 @@ MatrixXd const analyticalJacobian(DQ_kinematics param_dq_kin, VectorXd theta_vec
 * \param MatrixXd analytical_jacobian The robot analytical jacobian.
 * \return The rotation jacobian.
 */
-MatrixXd const rotationJacobian(MatrixXd analytical_jacobian)
+MatrixXd  rotationJacobian(MatrixXd analytical_jacobian)
 {
 	return analytical_jacobian.block(0,0,4,analytical_jacobian.cols());
 }
@@ -251,7 +251,7 @@ MatrixXd const rotationJacobian(MatrixXd analytical_jacobian)
 * \param Eigen::Matrix<double,8,1> x is the vector which constructs a translation DQ object
 * \return A constant Eigen::MatrixXd
 */
-MatrixXd const jacobp(MatrixXd analytical_jacobian, Matrix<double,8,1> x)
+MatrixXd  jacobp(MatrixXd analytical_jacobian, Matrix<double,8,1> x)
 {
     DQ dq_x(x);
     DQ dq_x_conj_P = dq_x.P();
@@ -269,7 +269,7 @@ MatrixXd const jacobp(MatrixXd analytical_jacobian, Matrix<double,8,1> x)
     return Jp;
 }
 
-MatrixXd const translationJacobian(MatrixXd analytical_jacobian, Matrix<double,8,1> x)
+MatrixXd  translationJacobian(MatrixXd analytical_jacobian, Matrix<double,8,1> x)
 {
     return DQ_robotics::jacobp(analytical_jacobian,x);
 }
@@ -282,7 +282,7 @@ MatrixXd const translationJacobian(MatrixXd analytical_jacobian, Matrix<double,8
 * \param Eigen::Matrix<double,8,1> x is the vector which constructs a translation DQ object
 * \return A constant Eigen::MatrixXd
 */
-MatrixXd const jacobd(MatrixXd param_jacobian, Matrix<double,8,1> x)
+MatrixXd  jacobd(MatrixXd param_jacobian, Matrix<double,8,1> x)
 {
     DQ dq_x(x);
     DQ p = translation(dq_x);
@@ -296,7 +296,7 @@ MatrixXd const jacobd(MatrixXd param_jacobian, Matrix<double,8,1> x)
     return Jd;
 }
 
-MatrixXd const distanceJacobian(MatrixXd param_jacobian, Matrix<double,8,1> x)
+MatrixXd  distanceJacobian(MatrixXd param_jacobian, Matrix<double,8,1> x)
 {
     return DQ_robotics::jacobd(param_jacobian,x);
 }
@@ -307,7 +307,7 @@ MatrixXd const distanceJacobian(MatrixXd param_jacobian, Matrix<double,8,1> x)
 * \return A constant Eigen::MatrixXd that is the Moore-Penrose pseudoinverse of matrix with the default MATLAB tolerance.
 * \see  http://www.mathworks.com/help/matlab/ref/pinv.html
 */
-MatrixXd const pseudoInverse(MatrixXd matrix)
+MatrixXd  pseudoInverse(MatrixXd matrix)
 {
     int num_rows = matrix.rows();
     int num_cols = matrix.cols();
@@ -450,7 +450,7 @@ MatrixXd DQ_kinematics::getDHMatrix()
 * To use this member function, type: 'dq_kin_object.links();'.
 * \return A constant int.
 */
-int const DQ_kinematics::links() {
+int  DQ_kinematics::links() {
     return dq_kin.cols();
 };
 
@@ -460,7 +460,7 @@ int const DQ_kinematics::links() {
 * To use this member function, type: 'dq_kin_object.theta();'.
 * \return A constant Eigen::VectorXd (number of links).
 */
-VectorXd const DQ_kinematics::theta() {
+VectorXd  DQ_kinematics::theta() {
     VectorXd aux_theta(dq_kin.cols());
     for (int i = 0; i < dq_kin.cols(); i++) {
         aux_theta(i) = dq_kin(0,i);
@@ -476,7 +476,7 @@ VectorXd const DQ_kinematics::theta() {
 * To use this member function, type: 'dq_kin_object.d();'.
 * \return A constant Eigen::VectorXd (number of links).
 */
-VectorXd const DQ_kinematics::d() {
+VectorXd  DQ_kinematics::d() {
     VectorXd aux_d(dq_kin.cols());
     for (int i = 0; i < dq_kin.cols(); i++) {
         aux_d(i) = dq_kin(1,i);
@@ -490,7 +490,7 @@ VectorXd const DQ_kinematics::d() {
 * To use this member function, type: 'dq_kin_object.a();'.
 * \return A constant Eigen::VectorXd (number of links).
 */
-VectorXd const DQ_kinematics::a() {
+VectorXd  DQ_kinematics::a() {
     VectorXd aux_a(dq_kin.cols());
     for (int i = 0; i < dq_kin.cols(); i++) {
         aux_a(i) = dq_kin(2,i);
@@ -504,7 +504,7 @@ VectorXd const DQ_kinematics::a() {
 * dq_kin. To use this member function, type: 'dq_kin_object.alpha();'.
 * \return A constant Eigen::VectorXd (number of links).
 */
-VectorXd const DQ_kinematics::alpha() {
+VectorXd  DQ_kinematics::alpha() {
     VectorXd aux_alpha(dq_kin.cols());
     for (int i = 0; i < dq_kin.cols(); i++) {
         aux_alpha(i) = dq_kin(3,i);
@@ -519,7 +519,7 @@ VectorXd const DQ_kinematics::alpha() {
 * 'dq_kin_object.dummy();'.
 * \return A constant Eigen::VectorXd (number of links).
 */
-VectorXd const DQ_kinematics::dummy() {
+VectorXd  DQ_kinematics::dummy() {
     VectorXd aux_dummy(dq_kin.cols());
     if (dq_kin.rows() > 4){
         for (int i = 0; i < dq_kin.cols(); i++) {
@@ -567,7 +567,7 @@ void DQ_kinematics::setDummy(VectorXd dummy_vector)
 * If there are no dummy axes the result is 0. To use this member function, type: 'dq_kin_object.n_dummy();'.
 * \return A constant int.
 */
-int const DQ_kinematics::n_dummy() {
+int  DQ_kinematics::n_dummy() {
     int aux_n_dummy = 0;
     if (dq_kin.rows() > 4){
         for (int i = 0; i < dq_kin.cols(); i++) {
@@ -585,7 +585,7 @@ int const DQ_kinematics::n_dummy() {
 * DQ_kinematics object. To use this member function, type: 'dq_kin_object.convention();'.
 * \return A constant std::string.
 */
-std::string const DQ_kinematics::convention() {
+std::string  DQ_kinematics::convention() {
     return aux_type;
 };
 
@@ -594,7 +594,7 @@ std::string const DQ_kinematics::convention() {
 * To use this member function, type: 'dq_kin_object.base();'.
 * \return A constant DQ object.
 */
-DQ const DQ_kinematics::base() {
+DQ  DQ_kinematics::base() {
     return curr_base;
 };
 
@@ -603,7 +603,7 @@ DQ const DQ_kinematics::base() {
 * To use this member function, type: 'dq_kin_object.effector();'.
 * \return A constant DQ object.
 */
-DQ const DQ_kinematics::effector() {
+DQ  DQ_kinematics::effector() {
     return curr_effector;
 };
 
@@ -613,7 +613,7 @@ DQ const DQ_kinematics::effector() {
 * \param DQ new_base representing the new pose of robotic system base
 * \return A constant DQ object.
 */
-DQ const DQ_kinematics::set_base(DQ new_base) {
+DQ  DQ_kinematics::set_base(DQ new_base) {
     curr_base = new_base;
     return curr_base;
 };
@@ -624,7 +624,7 @@ DQ const DQ_kinematics::set_base(DQ new_base) {
 * \param DQ new_effector representing the new pose of robotic system end effector
 * \return A constant DQ object.
 */
-DQ const DQ_kinematics::set_effector(DQ new_effector) {
+DQ  DQ_kinematics::set_effector(DQ new_effector) {
     curr_effector = new_effector;
     return curr_effector;
 };
@@ -637,7 +637,7 @@ DQ const DQ_kinematics::set_effector(DQ new_effector) {
 * \param Eigen::VectorXd theta_vec is the vector representing the theta joint angles.
 * \return A constant DQ object.
 */
-DQ const DQ_kinematics::raw_fkm(VectorXd theta_vec) {
+DQ  DQ_kinematics::raw_fkm(VectorXd theta_vec) {
     DQ_kinematics aux_dq_kin(dq_kin, aux_type);
     if((int)theta_vec.size() != (aux_dq_kin.links() - aux_dq_kin.n_dummy()) ) {
         //erro
@@ -665,7 +665,7 @@ DQ const DQ_kinematics::raw_fkm(VectorXd theta_vec) {
 * \param int ith is the position of the least joint included in the forward kinematic model
 * \return A constant DQ object.
 */
-DQ const DQ_kinematics::raw_fkm(VectorXd theta_vec, int ith) {
+DQ  DQ_kinematics::raw_fkm(VectorXd theta_vec, int ith) {
     DQ_kinematics aux_dq_kin(dq_kin, aux_type);
     if((int)theta_vec.size() != (aux_dq_kin.links() - aux_dq_kin.n_dummy()) ) {
         //erro
@@ -691,7 +691,7 @@ DQ const DQ_kinematics::raw_fkm(VectorXd theta_vec, int ith) {
 * \param Eigen::VectorXd theta_vec is the vector representing the theta joint angles.
 * \return A constant DQ object.
 */
-DQ const DQ_kinematics::fkm(VectorXd theta_vec) {
+DQ  DQ_kinematics::fkm(VectorXd theta_vec) {
     DQ_kinematics aux_dq_kin(dq_kin, aux_type);
     DQ q = curr_base * aux_dq_kin.raw_fkm(theta_vec) * curr_effector;
     return q;
@@ -705,7 +705,7 @@ DQ const DQ_kinematics::fkm(VectorXd theta_vec) {
 * \param Eigen::VectorXd theta_vec is the vector representing the theta joint angles.
 * \return A constant DQ object.
 */
-DQ const DQ_kinematics::fkm(VectorXd theta_vec, int ith) {
+DQ  DQ_kinematics::fkm(VectorXd theta_vec, int ith) {
     DQ_kinematics aux_dq_kin(dq_kin, aux_type);
     DQ q = curr_base * aux_dq_kin.raw_fkm(theta_vec, ith) * curr_effector;
     return q;
@@ -717,7 +717,7 @@ DQ const DQ_kinematics::fkm(VectorXd theta_vec, int ith) {
 * \param int link_i is the link number
 * \return A constant DQ object
 */
-DQ const DQ_kinematics::dh2dq(double theta_ang, int link_i) {
+DQ  DQ_kinematics::dh2dq(double theta_ang, int link_i) {
     DQ_kinematics aux_dq_kin(dq_kin, aux_type);
     Matrix<double,8,1> q(8);
     link_i = link_i - 1;
@@ -761,7 +761,7 @@ DQ const DQ_kinematics::dh2dq(double theta_ang, int link_i) {
 };
 
 
-DQ const DQ_kinematics::get_z(VectorXd q) {
+DQ  DQ_kinematics::get_z(VectorXd q) {
     Matrix<double,8,1> z(8);
     z(0) = 0;
     z(1)=q(1)*q(3) + q(0)*q(2);
@@ -779,7 +779,7 @@ DQ const DQ_kinematics::get_z(VectorXd q) {
 * \param Eigen::VectorXd theta_vec is the vector representing the theta joint angles.
 * \return A constant Eigen::MatrixXd (8,links - n_dummy).
 */
-MatrixXd const DQ_kinematics::jacobian(VectorXd theta_vec) {
+MatrixXd  DQ_kinematics::jacobian(VectorXd theta_vec) {
     DQ_kinematics aux_dq_kin(dq_kin, aux_type);
     DQ q_effector = aux_dq_kin.raw_fkm(theta_vec);
 
@@ -826,7 +826,7 @@ MatrixXd const DQ_kinematics::jacobian(VectorXd theta_vec) {
     return J;
 };
 
-MatrixXd const DQ_kinematics::analyticalJacobian(VectorXd theta_vec)
+MatrixXd  DQ_kinematics::analyticalJacobian(VectorXd theta_vec)
 {
     return DQ_kinematics::jacobian(theta_vec);
 }

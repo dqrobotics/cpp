@@ -15,7 +15,7 @@ namespace DQ_robotics{
 * @param dq The DQ which primary part you wish.
 * @return a constant DQ representing the primary part of dq.
 */
-DQ const P(DQ dq)
+DQ P(DQ dq)
 {
     return dq.P();
 }
@@ -26,7 +26,7 @@ DQ const P(DQ dq)
 * @param dq The DQ which dual part you wish.
 * @return a constant DQ representing the dual part of dq.
 */
-DQ const D(DQ dq)
+DQ D(DQ dq)
 {
     return dq.D();
 }
@@ -37,7 +37,7 @@ DQ const D(DQ dq)
 * @param dq The DQ which real part you wish.
 * @return a constant DQ representing the real part of dq.
 */
-DQ const Re(DQ dq)
+DQ Re(DQ dq)
 {
     return dq.Re();
 }
@@ -48,7 +48,7 @@ DQ const Re(DQ dq)
 * @param dq The DQ which imaginary part you wish.
 * @return a constant DQ representing the imaginary part of dq.
 */
-DQ const Im(DQ dq)
+DQ Im(DQ dq)
 {
     return dq.Im();
 }
@@ -59,7 +59,7 @@ DQ const Im(DQ dq)
 * @param dq The DQ which conjugate you wish.
 * @return a constant DQ representing the conjugate of dq.
 */
-DQ const conj(DQ dq)
+DQ conj(DQ dq)
 {
     return dq.conj();
 }
@@ -70,7 +70,7 @@ DQ const conj(DQ dq)
 * @param dq The DQ which norm you wish.
 * @return a constant DQ representing the norm of dq.
 */
-DQ const norm(DQ dq)
+DQ norm(DQ dq)
 {
     return dq.norm();
 }
@@ -81,7 +81,7 @@ DQ const norm(DQ dq)
 * @param dq The DQ which norm you wish.
 * @return a constant DQ representing the norm of dq.
 */
-DQ const inv(DQ dq)
+DQ inv(DQ dq)
 {
     return dq.inv();
 }
@@ -92,7 +92,7 @@ DQ const inv(DQ dq)
 * @param dq The DQ which Translation you wish.
 * @return a constant DQ representing the Translation represented by dq.
 */
-DQ const translation(DQ dq)
+DQ translation(DQ dq)
 {
     return dq.translation();
 }
@@ -103,7 +103,7 @@ DQ const translation(DQ dq)
 * @param dq The DQ which Rotation Axis you wish.
 * @return a constant DQ representing the Rotation Axis represented by dq.
 */
-DQ const rot_axis(DQ dq)
+DQ rot_axis(DQ dq)
 {
     return dq.rot_axis();
 }
@@ -114,7 +114,7 @@ DQ const rot_axis(DQ dq)
 * @param dq The DQ which Rotation Angle you wish.
 * @return a constant DQ representing the Rotation Angle represented by dq.
 */
-double const rot_angle(DQ dq)
+double rot_angle(DQ dq)
 {
     return dq.rot_angle();
 }
@@ -125,7 +125,7 @@ double const rot_angle(DQ dq)
 * @param dq The DQ which Logarithm you wish.
 * @return a constant DQ representing the Logarithm of dq.
 */
-DQ const log(DQ dq)
+DQ log(DQ dq)
 {
     return dq.log();
 }
@@ -136,7 +136,7 @@ DQ const log(DQ dq)
 * @param dq The DQ which Exponential you wish.
 * @return a constant DQ representing the Exponential of dq.
 */
-DQ const exp(DQ dq)
+DQ exp(DQ dq)
 {
     return dq.exp();
 }
@@ -147,7 +147,7 @@ DQ const exp(DQ dq)
 * @param dq The DQ which Exponential you wish.
 * @return a constant DQ representing the Exponential of dq.
 */
-DQ const tplus(DQ dq)
+DQ tplus(DQ dq)
 {
     return dq.tplus();
 }
@@ -158,7 +158,7 @@ DQ const tplus(DQ dq)
 * @param dq The DQ which inverse you wish.
 * @return a constant DQ representing the inverse of dq.
 */
-DQ const pinv(DQ dq)
+DQ pinv(DQ dq)
 {
     return dq.pinv();
 }
@@ -170,7 +170,7 @@ DQ const pinv(DQ dq)
 * @param dq2 a DQ.
 * @return Returns a constant DQ object representing the result of decompositional multiplication between two dq1 and dq2.
 */
-DQ const dec_mult(DQ dq1, DQ dq2)
+DQ dec_mult(DQ dq1, DQ dq2)
 {
     DQ dec_mult = dq2.tplus()*dq1.tplus()*dq2.P()*dq1.P();
     return dec_mult;
@@ -183,7 +183,7 @@ DQ const dec_mult(DQ dq1, DQ dq2)
 * @param dq The DQ which H+ you wish.
 * @return the 4x4 matrix representing the H+ operator of the primary part of dq.
 */
-Matrix4d const Hplus4(DQ dq)
+Matrix4d Hplus4(DQ dq)
 {
     return dq.Hplus4();
 }
@@ -194,7 +194,7 @@ Matrix4d const Hplus4(DQ dq)
 * @param dq The DQ which H- you wish.
 * @return the 4x4 matrix representing the H- operator of the primary part of dq.
 */
-Matrix4d const Hminus4(DQ dq)
+Matrix4d Hminus4(DQ dq)
 {
     return dq.Hminus4();
 }
@@ -205,7 +205,7 @@ Matrix4d const Hminus4(DQ dq)
 * @param dq The DQ which H+ you wish.
 * @return the 8x8 matrix representing the H+ operator of dq.
 */
-Matrix<double,8,8> const Hplus8(DQ dq)
+Matrix<double,8,8> Hplus8(DQ dq)
 {
     return dq.Hplus8();
 }
@@ -216,7 +216,7 @@ Matrix<double,8,8> const Hplus8(DQ dq)
 * @param dq The DQ which H- you wish.
 * @return the 8x8 matrix representing the H- operator of dq.
 */
-Matrix<double,8,8> const Hminus8(DQ dq)
+Matrix<double,8,8> Hminus8(DQ dq)
 {
     return dq.Hminus8();
 }
@@ -227,7 +227,7 @@ Matrix<double,8,8> const Hminus8(DQ dq)
 * @param dq The DQ with the primary part you wish to obtain the vect of. 
 * @return A 4x1 vector representing the primary part of dq.
 */
-Vector4d const vec4(DQ dq)
+Vector4d vec4(DQ dq)
 {
     return dq.vec4();
 }
@@ -238,7 +238,7 @@ Vector4d const vec4(DQ dq)
 * @param dq The DQ in which you want to apply the operation. 
 * @return A 8x1 vector representing dq.
 */
-Matrix<double,8,1>  const vec8(DQ dq)
+Matrix<double,8,1>  vec8(DQ dq)
 {
     return dq.vec8();
 }
@@ -250,7 +250,7 @@ Matrix<double,8,1>  const vec8(DQ dq)
 * @param x_e.
 * @return A 8x8 matrix representing the Generalized Jacobian given the arguments.
 */
-Matrix<double,8,8> const jacobG(DQ param_dq, DQ x_E)
+Matrix<double,8,8> jacobG(DQ param_dq, DQ x_E)
 {
     return param_dq.jacobG(x_E);
 }
@@ -262,7 +262,7 @@ Matrix<double,8,8> const jacobG(DQ param_dq, DQ x_E)
 * @param x_e.
 * @return A 8x8 matrix representing the Generalized Jacobian given the arguments.
 */
-Matrix<double,8,8> const generalizedJacobian(DQ param_dq, DQ x_E)
+Matrix<double,8,8> generalizedJacobian(DQ param_dq, DQ x_E)
 {
     return param_dq.jacobG(x_E);
 }
@@ -392,7 +392,7 @@ DQ::~DQ(){};
 * \return A constant DQ object.
 * \sa DQ(double q0,double q1,double q2,double q3).
 */
-DQ const DQ::P() {
+DQ DQ::P() {
     return DQ(q(0),q(1),q(2),q(3));
 };
 
@@ -405,7 +405,7 @@ DQ const DQ::P() {
 * \return A constant DQ object.
 * \sa DQ(double q0,double q1,double q2,double q3).
 */
-DQ const DQ::D() {
+DQ DQ::D() {
     return DQ(q(4),q(5),q(6),q(7));
 };
 
@@ -414,7 +414,7 @@ DQ const DQ::D() {
 * Returns a constant DQ object representing the real part of the DQ object caller.
 * Actually this function does the same as Re() changing only the way of calling, which is DQ::Re(dq_object).
 */
-DQ const DQ::Re() {
+DQ DQ::Re() {
  return DQ(q(0),0,0,0,q(4),0,0,0);
 };
 
@@ -426,7 +426,7 @@ DQ const DQ::Re() {
 * \return A constant DQ object.
 * \sa DQ(double q0,double q1,double q2,double q3,double q4,double q5,double q6,double q7).
 */
-DQ const DQ::Im() {
+DQ DQ::Im() {
     return DQ(0,q(1),q(2),q(3),0,q(5),q(6),q(7));
 };
 
@@ -438,7 +438,7 @@ DQ const DQ::Im() {
 * \return A constant DQ object.
 * \sa DQ(double q0,double q1,double q2,double q3,double q4,double q5,double q6,double q7).
 */
-DQ const DQ::conj() {
+DQ DQ::conj() {
     return DQ(q(0),-q(1),-q(2),-q(3),q(4),-q(5),-q(6),-q(7));
 };
 
@@ -450,7 +450,7 @@ DQ const DQ::conj() {
 * \return A constant DQ object.
 * \sa DQ().
 */
-DQ const DQ::norm() {
+DQ DQ::norm() {
     DQ aux;
     DQ norm;
 
@@ -484,7 +484,7 @@ DQ const DQ::norm() {
 * \return A constant DQ object.
 * \sa DQ(), DQ(double q0,double q1,double q2,double q3,double q4,double q5,double q6,double q7).
 */
-DQ const DQ::inv() {
+DQ DQ::inv() {
     DQ aux;
     DQ aux2;
 
@@ -515,7 +515,7 @@ DQ const DQ::inv() {
 * \return A constant DQ object.
 * \sa DQ().
 */
-DQ const DQ::translation() {
+DQ DQ::translation() {
     DQ aux;
     DQ translation;
 
@@ -555,7 +555,7 @@ DQ const DQ::translation() {
 * \return A constant DQ object.
 * \sa DQ().
 */
-DQ const DQ::rot_axis() {
+DQ DQ::rot_axis() {
     DQ dq;
     DQ rot_axis;
     for(int n = 0; n < 8; n++) {
@@ -596,7 +596,7 @@ DQ const DQ::rot_axis() {
 * \return A constant double value.
 * \sa DQ().
 */
-double const DQ::rot_angle() {
+double DQ::rot_angle() {
     DQ dq;
     double rot_angle;
     for(int n = 0; n < 8; n++) {
@@ -625,7 +625,7 @@ double const DQ::rot_angle() {
 * \return A constant DQ object.
 * \sa DQ(), DQ(double q0,double q1,double q2,double q3,double q4,double q5,double q6,double q7).
 */
-DQ const DQ::log() {
+DQ DQ::log() {
     DQ aux;
     for(int n = 0; n < 8; n++) {
         aux.q(n) = q(n);
@@ -661,7 +661,7 @@ DQ const DQ::log() {
 * \return A constant DQ object.
 * \sa DQ().
 */
-DQ const DQ::exp() {
+DQ DQ::exp() {
         DQ dq;
     DQ phi;
     DQ prim;
@@ -711,7 +711,7 @@ DQ const DQ::exp() {
 * \return A constant DQ object.
 * \sa DQ().
 */
-DQ const DQ::tplus() {
+DQ DQ::tplus() {
         DQ dq;
     DQ tplus;
     for(int n = 0; n < 8; n++) {
@@ -747,7 +747,7 @@ DQ const DQ::tplus() {
 * \return A constant DQ object.
 * \sa DQ().
 */
-DQ const DQ::pinv() {
+DQ DQ::pinv() {
     DQ dq;
     DQ pinv;
     DQ tinv;
@@ -785,7 +785,7 @@ DQ const DQ::pinv() {
 * To use this member function, type: 'dq_object.Hplus4();'.
 * \return A constant boost::numeric::ublas::matrix <double> (4,4).
 */
-Matrix4d const DQ::Hplus4() {
+Matrix4d DQ::Hplus4() {
     Matrix4d op_Hplus4(4,4);
     op_Hplus4(0,0) = q(0); op_Hplus4(0,1) = -q(1); op_Hplus4(0,2) = -q(2); op_Hplus4(0,3) = -q(3);
     op_Hplus4(1,0) = q(1); op_Hplus4(1,1) =  q(0); op_Hplus4(1,2) = -q(3); op_Hplus4(1,3) =  q(2);
@@ -802,7 +802,7 @@ Matrix4d const DQ::Hplus4() {
 * To use this member function, type: 'dq_object.Hminus4();'.
 * \return A constant boost::numeric::ublas::matrix <double> (4,4).
 */
-Matrix4d const DQ::Hminus4() {
+Matrix4d DQ::Hminus4() {
     Matrix4d op_Hminus4(4,4);
     op_Hminus4(0,0) = q(0); op_Hminus4(0,1) = -q(1); op_Hminus4(0,2) = -q(2); op_Hminus4(0,3) = -q(3);
     op_Hminus4(1,0) = q(1); op_Hminus4(1,1) =  q(0); op_Hminus4(1,2) =  q(3); op_Hminus4(1,3) = -q(2);
@@ -819,7 +819,7 @@ Matrix4d const DQ::Hminus4() {
 * To use this member function, type: 'dq_object.Hplus8();'.
 * \return A constant boost::numeric::ublas::matrix <double> (8,8).
 */
-Matrix<double,8,8> const DQ::Hplus8() {
+Matrix<double,8,8> DQ::Hplus8() {
     Matrix<double,8,8> op_Hplus8;
     op_Hplus8(0,0) = q(0); op_Hplus8(0,1) = -q(1); op_Hplus8(0,2) = -q(2); op_Hplus8(0,3) = -q(3);
     op_Hplus8(1,0) = q(1); op_Hplus8(1,1) =  q(0); op_Hplus8(1,2) = -q(3); op_Hplus8(1,3) =  q(2);
@@ -850,7 +850,7 @@ Matrix<double,8,8> const DQ::Hplus8() {
 * To use this member function, type: 'dq_object.Hminus8();'.
 * \return A constant boost::numeric::ublas::matrix <double> (8,8).
 */
-Matrix<double,8,8> const DQ::Hminus8() {
+Matrix<double,8,8> DQ::Hminus8() {
     Matrix<double,8,8> op_Hminus8(8,8);
     op_Hminus8(0,0) = q(0); op_Hminus8(0,1) = -q(1); op_Hminus8(0,2) = -q(2); op_Hminus8(0,3) = -q(3);
     op_Hminus8(1,0) = q(1); op_Hminus8(1,1) =  q(0); op_Hminus8(1,2) =  q(3); op_Hminus8(1,3) = -q(2);
@@ -882,7 +882,7 @@ Matrix<double,8,8> const DQ::Hminus8() {
 * To use this member function, type: 'dq_object.vec4();'.
 * \return A constant boost::numeric::ublas::matrix <double> (4,1).
 */
-Vector4d const DQ::vec4() {
+Vector4d DQ::vec4() {
     Vector4d op_vec4(4,1);
     op_vec4(0,0) = q(0);
     op_vec4(1,0) = q(1);
@@ -898,7 +898,7 @@ Vector4d const DQ::vec4() {
 * To use this member function, type: 'dq_object.vec8();'.
 * \return A constant boost::numeric::ublas::matrix <double> (8,1).
 */
-Matrix<double,8,1>  const DQ::vec8() {
+Matrix<double,8,1>  DQ::vec8() {
     Matrix<double,8,1>  op_vec8(8,1);
     op_vec8(0,0) = q(0);
     op_vec8(1,0) = q(1);
@@ -916,7 +916,7 @@ Matrix<double,8,1>  const DQ::vec8() {
 * \param DQ x_E is the dual position quaternion
 * \return A constant boost::numeric::ublas::matrix <double>
 */
-Matrix<double,8,8> const DQ::jacobG(DQ x_E) {
+Matrix<double,8,8> DQ::jacobG(DQ x_E) {
     Matrix<double,8,8> jacobGen(8,8);
     jacobGen(0,0) = x_E.q(4); jacobGen(0,1) =  x_E.q(5); jacobGen(0,2) =  x_E.q(6); jacobGen(0,3) =  x_E.q(7);
     jacobGen(1,0) = x_E.q(5); jacobGen(1,1) = -x_E.q(4); jacobGen(1,2) =  x_E.q(7); jacobGen(1,3) = -x_E.q(6);
@@ -947,7 +947,7 @@ Matrix<double,8,8> const DQ::jacobG(DQ x_E) {
 * @param x_e.
 * @return A 8x8 matrix representing the Generalized Jacobian given the arguments.
 */
-Matrix<double,8,8> const DQ::generalizedJacobian(DQ x_E)
+Matrix<double,8,8> DQ::generalizedJacobian(DQ x_E)
 {
     return jacobG(x_E);
 }
@@ -1611,7 +1611,7 @@ DQ operator^(DQ dq1, double m) {
 };
 
 
-std::ostream& operator<<(std::ostream& os, const DQ& dq)
+std::ostream& operator<<(std::ostream& os, DQ& dq)
 {
     os << dq.q(0) << " "
        << dq.q(1) << "i "

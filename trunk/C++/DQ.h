@@ -11,10 +11,14 @@
 ***********************************************************
 *              REVISION HISTORY
 ***********************************************************
-* 01/31/2013 - Murilo Marques Marinho (murilomarinho@lara.unb.br)
+* 2013/11/14 Murilo Marques Marinho (murilomarinho@lara.unb.br)
+             - Removed qualifiers that were only causing
+               warnings.
+
+* 2013/31/01 Murilo Marques Marinho (murilomarinho@lara.unb.br)
              - Changed Library to Use Eigen.
-***********************************************************
-* 02/07/2013 - Murilo Marques Marinho (murilomarinho@lara.unb.br)
+
+* 2013/07/02 Murilo Marques Marinho (murilomarinho@lara.unb.br)
              - Removed static functions and created DQRobotics
                namespace.
              - Some static methods became constants:
@@ -73,49 +77,49 @@ namespace DQ_robotics{
         ~DQ();
 
         //Methods
-        DQ const P();
+        DQ P();
 
-        DQ const D();
+        DQ D();
 
-        DQ const Re();
+        DQ Re();
 
-        DQ const Im();
+        DQ Im();
 
-        DQ const conj();
+        DQ conj();
 
-        DQ const norm();
+        DQ norm();
 
-        DQ const inv();
+        DQ inv();
 
-        DQ const translation();
+        DQ translation();
 
-        DQ const rot_axis();
+        DQ rot_axis();
 
-        double const rot_angle();
+        double rot_angle();
 
-        DQ const log();
+        DQ log();
 
-        DQ const exp();
+        DQ exp();
 
-        DQ const tplus();
+        DQ tplus();
 
-        DQ const pinv();
+        DQ pinv();
 
-        Matrix4d const Hplus4();
+        Matrix4d Hplus4();
 
-        Matrix4d const Hminus4();
+        Matrix4d Hminus4();
 
-        Matrix<double,8,8> const Hplus8();
+        Matrix<double,8,8> Hplus8();
 
-        Matrix<double,8,8> const Hminus8();
+        Matrix<double,8,8> Hminus8();
 
-        Vector4d const vec4();
+        Vector4d vec4();
 
-        Matrix<double,8,1> const vec8();
+        Matrix<double,8,1> vec8();
 
-        Matrix<double,8,8> const generalizedJacobian(DQ x_E);
+        Matrix<double,8,8> generalizedJacobian(DQ x_E);
             //The MATLAB syntax, kept for legacy reasons.
-            Matrix<double,8,8> const jacobG(DQ x_E);
+            Matrix<double,8,8> jacobG(DQ x_E);
 
         // Operators overload functions
 	    public:
@@ -202,7 +206,7 @@ namespace DQ_robotics{
 
         //Operator (<<) Overload
 
-        friend std::ostream& operator<<(std::ostream& os, const DQ& dq);
+        friend std::ostream& operator<<(std::ostream& os, DQ& dq);
 
 
     };//DQ Class END
@@ -215,62 +219,62 @@ namespace DQ_robotics{
     //header file.
 
     //Constants
-    DQ const E_ = DQ(0,0,0,0,1,0,0,0);
+    const DQ E_ = DQ(0,0,0,0,1,0,0,0);
 
-    DQ const i_ = DQ(0,1,0,0,0,0,0,0);
+    const DQ i_ = DQ(0,1,0,0,0,0,0,0);
 
-    DQ const j_ = DQ(0,0,1,0,0,0,0,0);
+    const DQ j_ = DQ(0,0,1,0,0,0,0,0);
 
-    DQ const k_ = DQ(0,0,0,1,0,0,0,0);
+    const DQ k_ = DQ(0,0,0,1,0,0,0,0);
 
-    double const DQ_threshold = 0.000000000001;
+    const double DQ_threshold = 0.000000000001;
 
     //Operators
-    DQ const P(DQ dq);
+    DQ P(DQ dq);
 
-    DQ const D(DQ dq);
+    DQ D(DQ dq);
 
-    DQ const Re(DQ dq);
+    DQ Re(DQ dq);
 
-    DQ const Im(DQ dq);
+    DQ Im(DQ dq);
 
-    DQ const conj(DQ dq);
+    DQ conj(DQ dq);
 
-    DQ const norm(DQ dq);
+    DQ norm(DQ dq);
 
-    DQ const inv(DQ dq);
+    DQ inv(DQ dq);
 
-    DQ const translation(DQ dq);
+    DQ translation(DQ dq);
 
-    DQ const rot_axis(DQ dq);
+    DQ rot_axis(DQ dq);
 
-    double const rot_angle(DQ dq);
+    double rot_angle(DQ dq);
 
-    DQ const log(DQ dq);
+    DQ log(DQ dq);
 
-    DQ const exp(DQ dq);
+    DQ exp(DQ dq);
 
-    DQ const tplus(DQ dq);
+    DQ tplus(DQ dq);
 
-    DQ const pinv(DQ dq);
+    DQ pinv(DQ dq);
 
-    DQ const dec_mult(DQ dq1, DQ dq2);
+    DQ dec_mult(DQ dq1, DQ dq2);
 
-    Matrix4d const Hplus4(DQ dq);
+    Matrix4d Hplus4(DQ dq);
 
-    Matrix4d const Hminus4(DQ dq);
+    Matrix4d Hminus4(DQ dq);
 
-    Matrix<double,8,8> const Hplus8(DQ dq);
+    Matrix<double,8,8> Hplus8(DQ dq);
 
-    Matrix<double,8,8> const Hminus8(DQ dq);
+    Matrix<double,8,8> Hminus8(DQ dq);
 
-    Vector4d const vec4(DQ dq);
+    Vector4d vec4(DQ dq);
 
-    Matrix<double,8,1> const vec8(DQ dq);
+    Matrix<double,8,1> vec8(DQ dq);
 
-    Matrix<double,8,8> const generalizedJacobian(DQ param_dq, DQ x_E);
+    Matrix<double,8,8> generalizedJacobian(DQ param_dq, DQ x_E);
         //The MATLAB syntax, kept for legacy reasons.
-        Matrix<double,8,8> const jacobG(DQ param_dq, DQ x_E);
+        Matrix<double,8,8> jacobG(DQ param_dq, DQ x_E);
 
 
 }//Namespace DQRobotics
