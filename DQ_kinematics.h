@@ -12,6 +12,10 @@
 ***********************************************************
 *              REVISION HISTORY
 ***********************************************************
+* 2013/11/14 Murilo Marques Marinho (murilomarinho@lara.unb.br)
+             - Removed const qualifiers that were only causing
+               warnings.
+
 * 2013/04/15 Murilo Marques Marinho (murilomarinho@lara.unb.br)
              - Created setDummy() method in class, for changing
                the 'dummy' status of a joint during runtime.
@@ -27,7 +31,7 @@
              - static methods returning constant matrix objects
                completely removed from DQ_kinematics class.
 
-* 01/31/2013 Murilo Marques Marinho (murilomarinho@lara.unb.br)
+* 2013/31/01 Murilo Marques Marinho (murilomarinho@lara.unb.br)
              - Changed Library to Use Eigen.
 ***********************************************************
 * \version 1.2
@@ -86,95 +90,95 @@ namespace DQ_robotics
 
         MatrixXd getDHMatrix();
 
-        int const links();
+        int links();
 
-        VectorXd const theta();
+        VectorXd theta();
 
-        VectorXd const d();
+        VectorXd d();
 
-        VectorXd const a();
+        VectorXd a();
 
-        VectorXd const alpha();
+        VectorXd alpha();
 
-        VectorXd const dummy();
+        VectorXd dummy();
         void setDummy( VectorXd dummy_vector);
 
-        int const n_dummy();
+        int n_dummy();
 
-        std::string const convention();
+        std::string convention();
 
-        DQ const base();
+        DQ base();
 
-        DQ const effector();
+        DQ effector();
 
-        DQ const set_base(DQ new_base);
+        DQ set_base(DQ new_base);
 
-        DQ const set_effector(DQ new_effector);
+        DQ set_effector(DQ new_effector);
 
-        DQ const raw_fkm(VectorXd theta_vec);
-        DQ const raw_fkm(VectorXd theta_vec, int ith);
+        DQ raw_fkm(VectorXd theta_vec);
+        DQ raw_fkm(VectorXd theta_vec, int ith);
 
-        DQ const fkm(VectorXd theta_vec);
-        DQ const fkm(VectorXd theta_vec, int ith);
+        DQ fkm(VectorXd theta_vec);
+        DQ fkm(VectorXd theta_vec, int ith);
 
-        DQ const dh2dq(double theta_ang, int link_i);
+        DQ dh2dq(double theta_ang, int link_i);
 
-        DQ const get_z(VectorXd q);
+        DQ get_z(VectorXd q);
 
-        MatrixXd const analyticalJacobian(VectorXd theta_vec);
-            MatrixXd const jacobian(VectorXd theta_vec); //The MATLAB syntax, kept for legacy reasons.
+        MatrixXd analyticalJacobian(VectorXd theta_vec);
+            MatrixXd jacobian(VectorXd theta_vec); //The MATLAB syntax, kept for legacy reasons.
 
     };
 
 
-    Matrix<double,8,8> const C8();
+    Matrix<double,8,8> C8();
 
-    Matrix<double,4,4> const C4();
+    Matrix<double,4,4> C4();
 
-    int const links(DQ_kinematics param_dq_kin);
+    int links(DQ_kinematics param_dq_kin);
 
-    VectorXd const theta(DQ_kinematics param_dq_kin);
+    VectorXd theta(DQ_kinematics param_dq_kin);
 
-    VectorXd const d(DQ_kinematics param_dq_kin);
+    VectorXd d(DQ_kinematics param_dq_kin);
 
-    VectorXd const a(DQ_kinematics param_dq_kin);
+    VectorXd a(DQ_kinematics param_dq_kin);
 
-    VectorXd const alpha(DQ_kinematics param_dq_kin);
+    VectorXd alpha(DQ_kinematics param_dq_kin);
 
-    VectorXd const dummy(DQ_kinematics param_dq_kin);
+    VectorXd dummy(DQ_kinematics param_dq_kin);
 
-    int const n_dummy(DQ_kinematics param_dq_kin);
+    int n_dummy(DQ_kinematics param_dq_kin);
 
-    std::string const convention(DQ_kinematics param_dq_kin);
+    std::string convention(DQ_kinematics param_dq_kin);
 
-    DQ const base(DQ_kinematics param_dq_kin);
+    DQ base(DQ_kinematics param_dq_kin);
 
-    DQ const effector(DQ_kinematics param_dq_kin);
+    DQ effector(DQ_kinematics param_dq_kin);
 
-    DQ const set_base(DQ_kinematics param_dq_kin, DQ new_base);
+    DQ set_base(DQ_kinematics param_dq_kin, DQ new_base);
 
-    DQ const set_effector(DQ_kinematics param_dq_kin, DQ new_effector);
+    DQ set_effector(DQ_kinematics param_dq_kin, DQ new_effector);
 
-    DQ const raw_fkm(DQ_kinematics param_dq_kin, VectorXd theta_vec);
-    DQ const raw_fkm(DQ_kinematics param_dq_kin, VectorXd theta_vec, int ith);
+    DQ raw_fkm(DQ_kinematics param_dq_kin, VectorXd theta_vec);
+    DQ raw_fkm(DQ_kinematics param_dq_kin, VectorXd theta_vec, int ith);
 
-    DQ const dh2dq(DQ_kinematics param_dq_kin, double theta_ang, int link_i);
+    DQ dh2dq(DQ_kinematics param_dq_kin, double theta_ang, int link_i);
 
-    DQ const get_z(DQ_kinematics param_dq_kin, VectorXd q);
+    DQ get_z(DQ_kinematics param_dq_kin, VectorXd q);
    
-    MatrixXd const analyticalJacobian(DQ_kinematics param_dq_kin, VectorXd theta_vec);
-        MatrixXd const jacobian(DQ_kinematics param_dq_kin, VectorXd theta_vec); //The MATLAB syntax, kept for legacy reasons.
+    MatrixXd analyticalJacobian(DQ_kinematics param_dq_kin, VectorXd theta_vec);
+        MatrixXd jacobian(DQ_kinematics param_dq_kin, VectorXd theta_vec); //The MATLAB syntax, kept for legacy reasons.
 
-	MatrixXd const rotationJacobian(MatrixXd analytical_jacobian);
+	MatrixXd rotationJacobian(MatrixXd analytical_jacobian);
 
-    MatrixXd const translationJacobian(MatrixXd analytical_jacobian, Matrix<double,8,1> x);
-        MatrixXd const jacobp(MatrixXd analytical_jacobian, Matrix<double,8,1> x); //The MATLAB syntax, kept for legacy reasons.
+    MatrixXd translationJacobian(MatrixXd analytical_jacobian, Matrix<double,8,1> x);
+        MatrixXd  jacobp(MatrixXd analytical_jacobian, Matrix<double,8,1> x); //The MATLAB syntax, kept for legacy reasons.
     
 
-    MatrixXd const distanceJacobian(DQ_kinematics param_dq_kin, MatrixXd param_jacobian, Matrix<double,8,1> x);
-        MatrixXd const jacobd(DQ_kinematics param_dq_kin, MatrixXd param_jacobian, Matrix<double,8,1> x); //The MATLAB syntax, kept for legacy reasons.
+    MatrixXd distanceJacobian(DQ_kinematics param_dq_kin, MatrixXd param_jacobian, Matrix<double,8,1> x);
+        MatrixXd  jacobd(DQ_kinematics param_dq_kin, MatrixXd param_jacobian, Matrix<double,8,1> x); //The MATLAB syntax, kept for legacy reasons.
 
-    MatrixXd const pseudoInverse(MatrixXd matrix);
+    MatrixXd pseudoInverse(MatrixXd matrix);
     
 
 }//Namespace DQRobotics
