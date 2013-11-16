@@ -11,6 +11,10 @@
 ***********************************************************
 *              REVISION HISTORY
 ***********************************************************
+* 2013/11/15 Murilo Marques Marinho (murilomarinho@lara.unb.br)
+             - Changed << operator from reference to argument
+               copy. 
+
 * 2013/11/14 Murilo Marques Marinho (murilomarinho@lara.unb.br)
              - Removed qualifiers that were only causing
                warnings.
@@ -206,7 +210,7 @@ namespace DQ_robotics{
 
         //Operator (<<) Overload
 
-        friend std::ostream& operator<<(std::ostream& os, DQ& dq);
+        friend std::ostream& operator<<(std::ostream& os, DQ dq);
 
 
     };//DQ Class END

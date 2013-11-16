@@ -1611,7 +1611,7 @@ DQ operator^(DQ dq1, double m) {
 };
 
 
-std::ostream& operator<<(std::ostream& os, DQ& dq)
+std::ostream& operator<<(std::ostream& os, DQ dq)
 {
     os << dq.q(0) << " "
        << dq.q(1) << "i "
