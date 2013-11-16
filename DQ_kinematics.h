@@ -12,6 +12,26 @@
 ***********************************************************
 *              REVISION HISTORY
 ***********************************************************
+* 2013/11/15 Murilo Marques Marinho (murilomarinho@lara.unb.br)
+             - Changed the member variable names so they make
+               more sense.
+               from dq_kin       to  dh_matrix_
+                    aux_type         dh_matrix_convention_
+                    curr_base        curr_base_
+                    curr_effector    curr_effector_
+             - Changed raw_fkm, fkm, jacobian functions to stop 
+               making unnecessary copies of objects.
+             - Added 
+               - const qualifiers to specify when the arguments
+                 are changed by the function.
+               - const qualifiers to specify when a method
+                 changes the object
+               - argument references in place of copies whenever
+                 possible.
+             - Fixed namespace functions set_base() and
+               set_effector() by passing arguments as references.
+             - Changed setDummy() to set_dummy() for consistency.
+
 * 2013/11/14 Murilo Marques Marinho (murilomarinho@lara.unb.br)
              - Removed const qualifiers that were only causing
                warnings.
@@ -61,20 +81,19 @@ namespace DQ_robotics
         private:
 
         //Para uso nas funções Jacobian...
-        MatrixXd dq_kin;
-        DQ curr_base;
-        DQ curr_effector;
+        MatrixXd    dh_matrix_;
+        std::string dh_matrix_convention_;
 
-        std::string aux_type;
-
+        DQ curr_base_;
+        DQ curr_effector_;
 
         // public methods
         public:
         // Class constructors: Creates a Dual Quaternion as a DQ object.
 
-        DQ_kinematics(MatrixXd A);
+        DQ_kinematics(const MatrixXd& A) ;
 
-        DQ_kinematics(MatrixXd A, std::string type);
+        DQ_kinematics(const MatrixXd& A, const std::string& type);
 
         DQ_kinematics(){};
 
@@ -90,43 +109,43 @@ namespace DQ_robotics
 
         MatrixXd getDHMatrix();
 
-        int links();
+        int links() const;
 
-        VectorXd theta();
+        VectorXd theta() const;
 
-        VectorXd d();
+        VectorXd d() const;
 
-        VectorXd a();
+        VectorXd a() const;
 
-        VectorXd alpha();
+        VectorXd alpha() const;
 
-        VectorXd dummy();
-        void setDummy( VectorXd dummy_vector);
+        VectorXd dummy() const;
+        void set_dummy( const VectorXd& dummy_vector);
 
-        int n_dummy();
+        int n_dummy() const;
 
-        std::string convention();
+        std::string convention() const;
 
-        DQ base();
+        DQ base() const;
 
-        DQ effector();
+        DQ effector() const;
 
-        DQ set_base(DQ new_base);
+        DQ set_base( const DQ& new_base);
 
-        DQ set_effector(DQ new_effector);
+        DQ set_effector( const DQ& new_effector);
 
-        DQ raw_fkm(VectorXd theta_vec);
-        DQ raw_fkm(VectorXd theta_vec, int ith);
+        DQ raw_fkm( const VectorXd& theta_vec) const;
+        DQ raw_fkm( const VectorXd& theta_vec, const int& ith) const;
 
-        DQ fkm(VectorXd theta_vec);
-        DQ fkm(VectorXd theta_vec, int ith);
+        DQ fkm( const VectorXd& theta_vec) const;
+        DQ fkm( const VectorXd& theta_vec, const int& ith) const;
 
-        DQ dh2dq(double theta_ang, int link_i);
+        DQ dh2dq( const double& theta_ang, const int& link_i) const;
 
-        DQ get_z(VectorXd q);
+        DQ get_z( const VectorXd& q) const;
 
-        MatrixXd analyticalJacobian(VectorXd theta_vec);
-            MatrixXd jacobian(VectorXd theta_vec); //The MATLAB syntax, kept for legacy reasons.
+        MatrixXd analyticalJacobian( const VectorXd& theta_vec) const;
+            MatrixXd jacobian( const VectorXd& theta_vec) const; //The MATLAB syntax, kept for legacy reasons.
 
     };
 
@@ -135,50 +154,50 @@ namespace DQ_robotics
 
     Matrix<double,4,4> C4();
 
-    int links(DQ_kinematics param_dq_kin);
+    int links( const DQ_kinematics& dq_kin);
 
-    VectorXd theta(DQ_kinematics param_dq_kin);
+    VectorXd theta( const DQ_kinematics& dq_kin);
 
-    VectorXd d(DQ_kinematics param_dq_kin);
+    VectorXd d( const DQ_kinematics& dq_kin);
 
-    VectorXd a(DQ_kinematics param_dq_kin);
+    VectorXd a( const DQ_kinematics& dq_kin);
 
-    VectorXd alpha(DQ_kinematics param_dq_kin);
+    VectorXd alpha( const DQ_kinematics& dq_kin);
 
-    VectorXd dummy(DQ_kinematics param_dq_kin);
+    VectorXd dummy( const DQ_kinematics& dq_kin);
 
-    int n_dummy(DQ_kinematics param_dq_kin);
+    int n_dummy( const DQ_kinematics& dq_kin);
 
-    std::string convention(DQ_kinematics param_dq_kin);
+    std::string convention( const DQ_kinematics& dq_kin);
 
-    DQ base(DQ_kinematics param_dq_kin);
+    DQ base( const DQ_kinematics& dq_kin);
 
-    DQ effector(DQ_kinematics param_dq_kin);
+    DQ effector( const DQ_kinematics& dq_kin);
 
-    DQ set_base(DQ_kinematics param_dq_kin, DQ new_base);
+    DQ set_base( DQ_kinematics& dq_kin, const DQ& new_base);
 
-    DQ set_effector(DQ_kinematics param_dq_kin, DQ new_effector);
+    DQ set_effector( DQ_kinematics& dq_kin, const DQ& new_effector);
 
-    DQ raw_fkm(DQ_kinematics param_dq_kin, VectorXd theta_vec);
-    DQ raw_fkm(DQ_kinematics param_dq_kin, VectorXd theta_vec, int ith);
+    DQ raw_fkm( const DQ_kinematics& dq_kin, const VectorXd& theta_vec);
+    DQ raw_fkm( const DQ_kinematics& dq_kin, const VectorXd& theta_vec, const int& ith);
 
-    DQ dh2dq(DQ_kinematics param_dq_kin, double theta_ang, int link_i);
+    DQ dh2dq( const DQ_kinematics& dq_kin, const double& theta_ang, const int& link_i);
 
-    DQ get_z(DQ_kinematics param_dq_kin, VectorXd q);
+    DQ get_z( const DQ_kinematics& dq_kin, const VectorXd& q);
    
-    MatrixXd analyticalJacobian(DQ_kinematics param_dq_kin, VectorXd theta_vec);
-        MatrixXd jacobian(DQ_kinematics param_dq_kin, VectorXd theta_vec); //The MATLAB syntax, kept for legacy reasons.
+    MatrixXd analyticalJacobian( const DQ_kinematics& dq_kin, const VectorXd& theta_vec);
+        MatrixXd jacobian( const DQ_kinematics& dq_kin, const VectorXd& theta_vec); //The MATLAB syntax, kept for legacy reasons.
 
-	MatrixXd rotationJacobian(MatrixXd analytical_jacobian);
+	  MatrixXd rotationJacobian( const MatrixXd& analytical_jacobian);
 
-    MatrixXd translationJacobian(MatrixXd analytical_jacobian, Matrix<double,8,1> x);
-        MatrixXd  jacobp(MatrixXd analytical_jacobian, Matrix<double,8,1> x); //The MATLAB syntax, kept for legacy reasons.
+    MatrixXd translationJacobian( const MatrixXd& analytical_jacobian, const Matrix<double,8,1>& x);
+        MatrixXd  jacobp( const MatrixXd& analytical_jacobian, const Matrix<double,8,1>& x); //The MATLAB syntax, kept for legacy reasons.
     
 
-    MatrixXd distanceJacobian(DQ_kinematics param_dq_kin, MatrixXd param_jacobian, Matrix<double,8,1> x);
-        MatrixXd  jacobd(DQ_kinematics param_dq_kin, MatrixXd param_jacobian, Matrix<double,8,1> x); //The MATLAB syntax, kept for legacy reasons.
+    MatrixXd distanceJacobian( const DQ_kinematics& dq_kin, const MatrixXd& param_jacobian, const Matrix<double,8,1>& x);
+        MatrixXd  jacobd( const DQ_kinematics& dq_kin, const MatrixXd& param_jacobian, const Matrix<double,8,1>& x); //The MATLAB syntax, kept for legacy reasons.
 
-    MatrixXd pseudoInverse(MatrixXd matrix);
+    MatrixXd pseudoInverse( const MatrixXd& matrix);
     
 
 }//Namespace DQRobotics

@@ -29,13 +29,13 @@ void DQTest::tearDown(void)
 void DQTest::constructorTest(void)
 {
 	DQ dq1 = DQ(1.,2.,3.,4.,5.,6.,7.,8.);
-    Matrix<double,8,1> q1_test = Matrix<double,8,1>::Zero(8,1);
-    q1_test << 1.,2.,3.,4.,5.,6.,7.,8.;
+  Matrix<double,8,1> q1_test = Matrix<double,8,1>::Zero(8,1);
+  q1_test << 1.,2.,3.,4.,5.,6.,7.,8.;
 
-    CPPUNIT_ASSERT(dq1.q == q1_test);
+  CPPUNIT_ASSERT(dq1.q == q1_test);
 
-    DQ dq_zero = DQ();
-    Matrix<double,8,1> q_zero_test = Matrix<double,8,1>::Zero(8,1);
+  DQ dq_zero = DQ();
+  Matrix<double,8,1> q_zero_test = Matrix<double,8,1>::Zero(8,1);
     	
 	CPPUNIT_ASSERT(dq_zero.q == q_zero_test);
 }
@@ -48,7 +48,7 @@ void DQTest::constructorTest(void)
 void DQTest::displayTest(void)
 {
 
-    std::cout << std::endl << "Dual Quaternion Display test";
+  std::cout << std::endl << "Dual Quaternion Display test";
 	DQ dq1 = DQ(1.,2.,3.,4.,5.,6.,7.,8.);
 	std::cout << std::endl << dq1 << std::endl;
 }
@@ -58,6 +58,7 @@ void DQTest::displayTest(void)
 /*************************************************************/
 /********   DQ ARITHMETICS TESTING             ***************/
 /*************************************************************/
+
 
 void DQTest::sumTest(void)
 {
@@ -80,15 +81,30 @@ void DQTest::subtractTest(void)
 	CPPUNIT_ASSERT(dq_sub==dq_sub_should_be);
 }
 
+void DQTest::copyTest(void)
+{
+	DQ dq1 = DQ(1.,2.,3.,4.,5.,6.,7.,8.);
+	DQ dq2 = DQ(8.,7.,6.,5.,4.,3.,2.,1.);
+  
+  dq2 = dq1;
+
+  CPPUNIT_ASSERT(dq1==dq2);
+
+  dq2.q(1) = 20.0;
+
+	CPPUNIT_ASSERT(dq1!=dq2);
+}
+
+
 void DQTest::Hplus4Test(void)
 {
 
 	Matrix4d hplus(4,4);
 
 	hplus << 1, -2, -3, -4,
-	 	 2,  1, -4,  3,
-                 3,  4,  1, -2,
-                 4, -3,  2,  1;
+	 	       2,  1, -4,  3,
+           3,  4,  1, -2,
+           4, -3,  2,  1; 
 
 	DQ dq1 = DQ(1.,2.,3.,4.,5.,6.,7.,8.);
 
@@ -102,10 +118,10 @@ void DQTest::Hminus4Test(void)
 
 	Matrix4d hminus(4,4);
 
-	hminus<< 1, -2, -3, -4,
-	 	 2,  1,  4, -3,
-                 3, -4,  1,  2,
-                 4,  3, -2,  1;
+	hminus << 1, -2, -3, -4,
+	 	        2,  1,  4, -3,
+            3, -4,  1,  2,
+            4,  3, -2,  1;
 
 	DQ dq1 = DQ(1.,2.,3.,4.,5.,6.,7.,8.);
 
@@ -120,8 +136,8 @@ void DQTest::kinematicsTest(void)
 {
     const double pi2 = (3.14159/2);
 
-	Matrix<double,8,8> kp = Matrix<double,8,8>::Zero(8,8);
-	Matrix<double,8,1> kp_diagonal(8,1);
+  	Matrix<double,8,8> kp = Matrix<double,8,8>::Zero(8,8);
+  	Matrix<double,8,1> kp_diagonal(8,1);
     kp_diagonal << 0.8,0.8,0.8,0.8,0.8,0.8,0.8,0.8;
     kp.diagonal() = kp_diagonal;
 
@@ -129,34 +145,55 @@ void DQTest::kinematicsTest(void)
     thetas << 0,pi2,0,0,0,0,0;
     DQ reference(1,0,0,0,0,0,0,0.652495);
 
- 	//Robot DH
+   	//Robot DH
+	  Matrix<double,4,7> schunk_dh(4,7);
+	  schunk_dh << 0,     0,   0,     0,   0,      0,  0,
+	               0.3,   0,   0.328, 0,   0.2765, 0,  0.40049,
+	               0,     0,   0,     0,   0,      0,  0,
+	              -pi2,   pi2,-pi2,   pi2,-pi2,    pi2,0;
 
-  
-	Matrix<double,4,7> schunk_dh(4,7);
-	schunk_dh << 0,     0,   0,     0,   0,      0,  0,
-	             0.3,   0,   0.328, 0,   0.2765, 0,  0.40049,
-	             0,     0,   0,     0,   0,      0,  0,
-	            -pi2,   pi2,-pi2,   pi2,-pi2,    pi2,0;
-	DQ_kinematics schunk(schunk_dh,"standard");
+	  DQ_kinematics schunk(schunk_dh,"standard");
+    DQ expected_eff_pose =  DQ(0.70710725027922627373, 
+                               0.0, 
+                               0.70710631209293517419,
+                               9.3818504632046722733e-07,
+                              -6.121610518039718018e-07, 
+                               0.24925143948119921067, 
+                               0.0, 
+                               0.46138394527094378494);
 
+    DQ eff_pose = schunk.fkm(thetas);
+    CPPUNIT_ASSERT( expected_eff_pose == eff_pose);
 
     HInfinityRobustController r_controller(schunk, kp);
 
-    for(int j=0;j<10;j++)
+    for(int j=0;j<2;j++)
     {   
-        thetas = r_controller.getNewJointPositions(reference,thetas);
-        //std::cout << std::endl << "thetas" << std::endl << thetas << std::endl;
+      thetas = r_controller.getNewJointPositions(reference,thetas);
+      //std::cout << std::endl << "thetas" << std::endl << thetas << std::endl;
     }   
 
     DampedNumericalFilteredController dn_controller(schunk, kp, 0.001, 0.1, 0.001);
 
     for(int j=0;j<10;j++)
     {   
-        thetas = dn_controller.getNewJointPositions(reference,thetas);
-        std::cout << std::endl << "thetas" << std::endl << thetas << std::endl;
+      thetas = dn_controller.getNewJointPositions(reference,thetas);
+      //std::cout << std::endl << "thetas" << std::endl << thetas << std::endl;
     }   
 
+    //Namespace and Methods Comparison
+    CPPUNIT_ASSERT( schunk.links() == links(schunk));
+    CPPUNIT_ASSERT( schunk.d()     == d(schunk));
+    CPPUNIT_ASSERT( schunk.a()     == a(schunk));
+    CPPUNIT_ASSERT( schunk.alpha() == alpha(schunk));
 
+    //Setbase and SetEffector
+    set_base(schunk,DQ(1)*(1 + 0.5*E_*(i_)));
+    set_effector(schunk,DQ(1)*(1 + 0.5*E_*(j_)));
+    CPPUNIT_ASSERT( schunk.base()     == DQ(1)*(1 + 0.5*E_*(i_)));
+    CPPUNIT_ASSERT( schunk.effector() == DQ(1)*(1 + 0.5*E_*(j_)));
+
+    pseudoInverse(schunk_dh);
     //std::cout << m << std::endl;
     //std::cout << m_pinv << std::endl;
     

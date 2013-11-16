@@ -59,8 +59,8 @@ int main(void)
     //End Effector Pose eff_pose_reference
     DQ eff_pose_reference(1,0,0,0,0,0,0,0.652495);
 
- 	//Robot DH
-	DQ_kinematics schunk = SchunkKinematics();
+ 	  //Robot DH
+	  DQ_kinematics schunk = SchunkKinematics();
     std::cout << std::endl << "Robot initial FKM " << schunk.fkm(thetas) << std::endl;
 
     //HInfinity Controller
