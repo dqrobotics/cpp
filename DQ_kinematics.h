@@ -31,6 +31,8 @@
              - Fixed namespace functions set_base() and
                set_effector() by passing arguments as references.
              - Changed setDummy() to set_dummy() for consistency.
+             - Note that the operator overloading methods were
+               not changed. 
 
 * 2013/11/14 Murilo Marques Marinho (murilomarinho@lara.unb.br)
              - Removed const qualifiers that were only causing
