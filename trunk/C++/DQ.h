@@ -11,6 +11,17 @@
 ***********************************************************
 *              REVISION HISTORY
 ***********************************************************
+* 2013/11/18 Murilo Marques Marinho (murilomarinho@lara.unb.br)
+             - Added 
+               - const qualifiers to specify when the arguments
+                 are changed by the function.
+               - const qualifiers to specify when a method
+                 changes the object
+               - argument references in place of copies whenever
+                 possible.
+             - Note that the operator overloading methods were
+               not changed. 
+
 * 2013/11/15 Murilo Marques Marinho (murilomarinho@lara.unb.br)
              - Changed << operator from reference to argument
                copy. 
@@ -48,8 +59,6 @@
 #include <Eigen/Dense>
 using namespace Eigen;
 
-
-
 namespace DQ_robotics{
 
 
@@ -66,64 +75,64 @@ namespace DQ_robotics{
         //Constructors and Destructor
         DQ();
 
-        DQ(Matrix<double,8,1> v);
+        DQ( const Matrix<double,8,1>& v);
 
-        DQ(Matrix<double,4,1> v);
+        DQ( const Matrix<double,4,1>& v);
 
-        DQ(double q0,double q1,double q2,double q3,double q4,double q5,double q6,double q7);
+        DQ( const double& q0, const double& q1, const double& q2, const double& q3, const double& q4, const double& q5, const double& q6, const double& q7);
 
-        DQ(double q0,double q1,double q2,double q3);
+        DQ( const double& q0, const double& q1, const double& q2, const double& q3);
 
-        DQ(double scalar);
+        DQ( const double& scalar);
 
-        static DQ unitDQ(double rot_angle, int x_axis,int y_axis,int z_axis, double x_trans,double y_trans, double z_trans);
+        static DQ unitDQ( const double& rot_angle, const int& x_axis, const int& y_axis, const int& z_axis, const double& x_trans, const double& y_trans, const double& z_trans);
 
         ~DQ();
 
         //Methods
-        DQ P();
+        DQ P() const;
 
-        DQ D();
+        DQ D() const;
 
-        DQ Re();
+        DQ Re() const;
 
-        DQ Im();
+        DQ Im() const;
 
-        DQ conj();
+        DQ conj() const;
 
-        DQ norm();
+        DQ norm() const;
 
-        DQ inv();
+        DQ inv() const;
 
-        DQ translation();
+        DQ translation() const;
 
-        DQ rot_axis();
+        DQ rot_axis() const;
 
-        double rot_angle();
+        double rot_angle() const;
 
-        DQ log();
+        DQ log() const;
 
-        DQ exp();
+        DQ exp() const;
 
-        DQ tplus();
+        DQ tplus() const;
 
-        DQ pinv();
+        DQ pinv() const;
 
-        Matrix4d Hplus4();
+        Matrix4d Hplus4() const;
 
-        Matrix4d Hminus4();
+        Matrix4d Hminus4() const;
 
-        Matrix<double,8,8> Hplus8();
+        Matrix<double,8,8> Hplus8() const;
 
-        Matrix<double,8,8> Hminus8();
+        Matrix<double,8,8> Hminus8() const;
 
-        Vector4d vec4();
+        Vector4d vec4() const;
 
-        Matrix<double,8,1> vec8();
+        Matrix<double,8,1> vec8() const;
 
-        Matrix<double,8,8> generalizedJacobian(DQ x_E);
+        Matrix<double,8,8> generalizedJacobian( const DQ& x_E) const;
             //The MATLAB syntax, kept for legacy reasons.
-            Matrix<double,8,8> jacobG(DQ x_E);
+            Matrix<double,8,8> jacobG( const DQ& x_E) const;
 
         // Operators overload functions
 	    public:
@@ -234,51 +243,51 @@ namespace DQ_robotics{
     const double DQ_threshold = 0.000000000001;
 
     //Operators
-    DQ P(DQ dq);
+    DQ P(const DQ& dq);
 
-    DQ D(DQ dq);
+    DQ D(const DQ& dq);
 
-    DQ Re(DQ dq);
+    DQ Re(const DQ& dq);
 
-    DQ Im(DQ dq);
+    DQ Im(const DQ& dq);
 
-    DQ conj(DQ dq);
+    DQ conj(const DQ& dq);
 
-    DQ norm(DQ dq);
+    DQ norm(const DQ& dq);
 
-    DQ inv(DQ dq);
+    DQ inv(const DQ& dq);
 
-    DQ translation(DQ dq);
+    DQ translation(const DQ& dq);
 
-    DQ rot_axis(DQ dq);
+    DQ rot_axis(const DQ& dq);
 
-    double rot_angle(DQ dq);
+    double rot_angle(const DQ& dq);
 
-    DQ log(DQ dq);
+    DQ log(const DQ& dq);
 
-    DQ exp(DQ dq);
+    DQ exp(const DQ& dq);
 
-    DQ tplus(DQ dq);
+    DQ tplus(const DQ& dq);
 
-    DQ pinv(DQ dq);
+    DQ pinv(const DQ& dq);
 
-    DQ dec_mult(DQ dq1, DQ dq2);
+    DQ dec_mult(const DQ& dq1, const DQ& dq2);
 
-    Matrix4d Hplus4(DQ dq);
+    Matrix4d Hplus4(const DQ& dq);
 
-    Matrix4d Hminus4(DQ dq);
+    Matrix4d Hminus4(const DQ& dq);
 
-    Matrix<double,8,8> Hplus8(DQ dq);
+    Matrix<double,8,8> Hplus8(const DQ& dq);
 
-    Matrix<double,8,8> Hminus8(DQ dq);
+    Matrix<double,8,8> Hminus8(const DQ& dq);
 
-    Vector4d vec4(DQ dq);
+    Vector4d vec4(const DQ& dq);
 
-    Matrix<double,8,1> vec8(DQ dq);
+    Matrix<double,8,1> vec8(const DQ& dq);
 
-    Matrix<double,8,8> generalizedJacobian(DQ param_dq, DQ x_E);
+    Matrix<double,8,8> generalizedJacobian(const DQ& param_dq, const DQ& x_E);
         //The MATLAB syntax, kept for legacy reasons.
-        Matrix<double,8,8> jacobG(DQ param_dq, DQ x_E);
+        Matrix<double,8,8> jacobG(const DQ& param_dq, const DQ& x_E);
 
 
 }//Namespace DQRobotics
