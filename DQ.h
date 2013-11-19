@@ -6,11 +6,20 @@
 * public methods. Most of the methods returns a constant Dual Quaternion object, which depends of the object caller such as primary
 * and dual parts or not, being the same for any caller such as the imaginary parts. Some methods returns a constant boost matrix class
 * object which depends of object caller too. And there is a method for display in the console, the DQ object caller.
-* \author Mateus Rodrigues Martins (martinsrmateus@gmail.com)
-* \since 07/2012
+
 ***********************************************************
 *              REVISION HISTORY
 ***********************************************************
+* 2013/11/19 Murilo Marques Marinho (murilomarinho@lara.unb.br)
+             - Removed redundant constructors and used de
+               fault value constructors.
+             - Added range_error thrown() in the arithmetic
+               functions that require unit quaternions as
+               inputs.
+             - Removed unecessary copying of objects in those 
+               functions.
+             - Removed unecessary includes.
+
 * 2013/11/18 Murilo Marques Marinho (murilomarinho@lara.unb.br)
              - Added 
                - const qualifiers to specify when the arguments
@@ -46,16 +55,19 @@
                the method with MATLAB syntax for legacy reasons.
              - Removed "DISPLAY" method and overloaded the "<<"
                operator in order to use with cout.
+
+* 2012/12/10 Mateus Rodrigues Martins (martinsrmateus@gmail.com)
+             - First working version implementing MATLAB
+               functionality
 ***********************************************************
-* \version 1.2
 */
 
 #ifndef DQ_H
 #define DQ_H
 
-
 #include <iostream>
 #include <math.h>
+#include <stdexcept> //for range_error
 #include <Eigen/Dense>
 using namespace Eigen;
 
@@ -79,11 +91,7 @@ namespace DQ_robotics{
 
         DQ( const Matrix<double,4,1>& v);
 
-        DQ( const double& q0, const double& q1, const double& q2, const double& q3, const double& q4, const double& q5, const double& q6, const double& q7);
-
-        DQ( const double& q0, const double& q1, const double& q2, const double& q3);
-
-        DQ( const double& scalar);
+        DQ( const double& q0, const double& q1=0.0, const double& q2=0.0, const double& q3=0.0, const double& q4=0.0, const double& q5=0.0, const double& q6=0.0, const double& q7=0.0);
 
         static DQ unitDQ( const double& rot_angle, const int& x_axis, const int& y_axis, const int& z_axis, const double& x_trans, const double& y_trans, const double& z_trans);
 
@@ -137,93 +145,114 @@ namespace DQ_robotics{
         // Operators overload functions
 	    public:
 
+
 	    //Operator (+) Overload
 
 	    friend DQ operator+(DQ dq1, DQ dq2);
+
 
 	    friend DQ operator+(DQ dq, int scalar);
 
 	    friend DQ operator+(int scalar, DQ dq);
 
-        friend DQ operator+(DQ dq, float scalar);
+
+      friend DQ operator+(DQ dq, float scalar);
 
 	    friend DQ operator+(float scalar, DQ dq);
 
-        friend DQ operator+(DQ dq, double scalar);
+
+      friend DQ operator+(DQ dq, double scalar);
 
 	    friend DQ operator+(double scalar, DQ dq);
 
+	    //Operator (-) Overload
+
 	    friend DQ operator-(DQ dq1, DQ dq2);
+
 
 	    friend DQ operator-(DQ dq, int scalar);
 
 	    friend DQ operator-(int scalar, DQ dq);
 
-        friend DQ operator-(DQ dq, float scalar);
+
+      friend DQ operator-(DQ dq, float scalar);
 
 	    friend DQ operator-(float scalar, DQ dq);
 
-        friend DQ operator-(DQ dq, double scalar);
+
+      friend DQ operator-(DQ dq, double scalar);
 
 	    friend DQ operator-(double scalar, DQ dq);
+
 
         //Operator (*) Overload
 
 	    friend DQ operator*(DQ dq1, DQ dq2);
 
-        friend DQ operator*(DQ dq, int scalar);
+
+      friend DQ operator*(DQ dq, int scalar);
 
 	    friend DQ operator*(int scalar, DQ dq);
 
-        friend DQ operator*(DQ dq, float scalar);
+
+      friend DQ operator*(DQ dq, float scalar);
 
 	    friend DQ operator*(float scalar, DQ dq);
 
-        friend DQ operator*(DQ dq, double scalar);
+
+      friend DQ operator*(DQ dq, double scalar);
 
 	    friend DQ operator*(double scalar, DQ dq);
+
 
         //Operator (==) Overload
 
 	    bool operator==(DQ dq2);
 
-        friend bool operator==(DQ dq, int scalar);
+
+      friend bool operator==(DQ dq, int scalar);
 
 	    friend bool operator==(int scalar, DQ dq);
+
 
 	    friend bool operator==(DQ dq, float scalar);
 
 	    friend bool operator==(float scalar, DQ dq);
 
-        friend bool operator==(DQ dq, double scalar);
+
+      friend bool operator==(DQ dq, double scalar);
 
 	    friend bool operator==(double scalar, DQ dq);
+
 
         //Operator (!=) Overload
 
 	    bool operator!=(DQ dq2);
 
-        friend bool operator!=(DQ dq, int scalar);
+
+      friend bool operator!=(DQ dq, int scalar);
 
 	    friend bool operator!=(int scalar, DQ dq);
+
 
 	    friend bool operator!=(DQ dq, float scalar);
 
 	    friend bool operator!=(float scalar, DQ dq);
 
-        friend bool operator!=(DQ dq, double scalar);
+
+      friend bool operator!=(DQ dq, double scalar);
 
 	    friend bool operator!=(double scalar, DQ dq);
 
+
 	    friend DQ operator^(DQ dq, double m);
 
-        //Operator (<<) Overload
+      //Operator (<<) Overload
 
-        friend std::ostream& operator<<(std::ostream& os, DQ dq);
+      friend std::ostream& operator<<(std::ostream& os, DQ dq);
 
 
     };//DQ Class END
-
 
     /************************************************************************
     ************** DUAL QUATERNION CONSTANTS AND OPERATORS ******************
@@ -240,7 +269,7 @@ namespace DQ_robotics{
 
     const DQ k_ = DQ(0,0,0,1,0,0,0,0);
 
-    const double DQ_threshold = 0.000000000001;
+    const double DQ_threshold = 1e-12;
 
     //Operators
     DQ P(const DQ& dq);

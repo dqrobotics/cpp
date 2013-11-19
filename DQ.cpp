@@ -333,47 +333,6 @@ DQ::DQ(const double& q0,const double& q1,const double& q2,const double& q3,const
 };
 
 /**
-* DQ constructor using 4 scalar elements
-*
-* Returns a DQ object with the first four values of vector q equal to the values of the 4 parameters 'q0' to 'q4' passed to constructor.
-* This represents a quaternion in a dual quaternion form since the last four elements are set to 0.
-* To create a DQ object using this, type: 'DQ dq_object(q0,q1,q2,q3);' where 'qn' is a double type scalar.
-* \param double q0,q1,q2 and q3 are values to be copied to the member 'q' four first positions.
-*/
-DQ::DQ(const double& q0,const double& q1,const double& q2,const double& q3) {
-
-    q(0) = q0;
-    q(1) = q1;
-    q(2) = q2;
-    q(3) = q3;
-    q(4) = 0;
-    q(5) = 0;
-    q(6) = 0;
-    q(7) = 0;
-    for(int n = 0; n < 4; n++) {
-            if(fabs(q(n)) < DQ_threshold )
-                q(n) = 0;
-        }
-};
-
-/**
-* DQ constructor using a scalar element
-*
-* Returns a DQ object with the first values of vector q equal to the value of the parameter 'scalar' passed to constructor.
-* This represents a scalar in a dual quaternion form since the last seven elements ara set to 0.
-* To create a DQ object using this, type: 'DQ dq_object(scalar);'.
-* \param double scalar is the value to be copied to the member 'q' first position.
-*/
-DQ::DQ(const double& scalar) {
-
-    for(int n = 0; n < 8; n++) {
-        q(n) = 0;
-    }
-    if( fabs(scalar) >= DQ_threshold)
-    q(0) = scalar;
-};
-
-/**
 * DQ Destructor
 *
 * Deletes from memory the DQ object caller. To use this destructor, type: 'dq_object.~DQ();'. Dont need parameters.
@@ -515,36 +474,26 @@ DQ DQ::inv() const{
 * \return A constant DQ object.
 * \sa DQ().
 */
-DQ DQ::translation() const{
-    DQ aux;
-    DQ translation;
+DQ DQ::translation() const
+{
+  //Verify if unit quaternion
+  if (this->norm() != 1)
+  {
+    throw(std::range_error("Bad translation() call: Not a unit dual quaternion"));
+  }
 
-    for(int n = 0; n < 8; n++) {
-        aux.q(n) = q(n);
-	}
-    //TODO: Generate a message error here if condition is not satisfied
-	// Verify if the object caller is a unit DQ
-	try {
-        if (aux.norm() != 1) {
-            throw 1;
-        }
+  //translation part calculation
+  DQ translation = this->P();
+     translation = (2.0 * this->D() * translation.conj() );
 
-        //translation part calculation
-        translation = aux.P();
-        translation = (2 * aux.D() * translation.conj() );
+  // using threshold to verify zero values in DQ to be returned
+  for(int n = 0; n < 8; n++) 
+    {
+    if(fabs(translation.q(n)) < DQ_threshold )
+      translation.q(n) = 0;
+    }
 
-        // using threshold to verify zero values in DQ to be returned
-        for(int n = 0; n < 8; n++) {
-            if(fabs(translation.q(n)) < DQ_threshold )
-                translation.q(n) = 0;
-        }
-
-        return translation;
-	}
-	catch (int i) {
-        std::cerr << "ERROR IN TRANSLATION OPERATION: NOT A UNIT DUAL QUATERNION \n";
-        return EXIT_FAILURE;
-	}
+  return translation;
 };
 
 /**
@@ -556,36 +505,31 @@ DQ DQ::translation() const{
 * \sa DQ().
 */
 DQ DQ::rot_axis() const{
-    DQ dq;
-    DQ rot_axis;
-    for(int n = 0; n < 8; n++) {
-        dq.q(n) = q(n);
-	}
-    //TODO: Generate a message error here if condition is not satisfied
+
 	// Verify if the object caller is a unit DQ
-	if (dq.norm() != 1) {
-        cout << "ERROR IN ROT_AXIS OPERATION: NOT A UNIT DUAL QUATERNION \n";
-        return dq;
+	if (this->norm() != 1) {
+    throw(std::range_error("Bad rot_axis() call: Not a unit dual quaternion"));
+  }
+
+  double phi = acos(this->q(0));
+  if(phi == 0)
+    return k_; // DQ(0,0,0,1). This is only a convention;
+  else
+  {
+    //rotation axis calculation
+    DQ rot_axis = this->P();
+       rot_axis = ( rot_axis.Im() * (1/sin(phi)) );
+
+    // using threshold to verify zero values in DQ to be returned
+    for(int n = 0; n < 8; n++)
+    {
+      if(fabs(rot_axis.q(n)) < DQ_threshold )
+        rot_axis.q(n) = 0;
     }
 
-    else {
-        double phi = acos(dq.q(0));
-        if(phi == 0)
-            return k_; // DQ(0,0,0,1). This is only a convention;
-        else {
-            //rotation axis calculation
-            rot_axis = dq.P();
-            rot_axis = ( rot_axis.Im() * (1/sin(phi)) );
+  return rot_axis;
+  }
 
-            // using threshold to verify zero values in DQ to be returned
-            for(int n = 0; n < 8; n++) {
-                if(fabs(rot_axis.q(n)) < DQ_threshold )
-                    rot_axis.q(n) = 0;
-            }
-
-            return rot_axis;
-        }
-    }
 };
 
 /**
@@ -597,24 +541,16 @@ DQ DQ::rot_axis() const{
 * \sa DQ().
 */
 double DQ::rot_angle() const{
-    DQ dq;
-    double rot_angle;
-    for(int n = 0; n < 8; n++) {
-        dq.q(n) = q(n);
-	}
-    //TODO: Generate a message error here if condition is not satisfied
+
 	// Verify if the object caller is a unit DQ
-	if (dq.norm() != 1) {
-        cout << "ERROR IN ROT_ANGLE OPERATION: NOT A UNIT DUAL QUATERNION \n";
-        return 0;
-    }
+	if (this->norm() != 1) {
+    throw(std::range_error("Bad rot_angle() call: Not a unit dual quaternion"));
+  }
 
-    else {
-        //Rotation angle calculation
-        rot_angle = 2*acos(dq.q(0));
+  //Rotation angle calculation
+  double rot_angle = 2*acos(this->q(0));
 
-        return rot_angle;
-    }
+  return rot_angle;
 };
 
 /**
@@ -626,31 +562,26 @@ double DQ::rot_angle() const{
 * \sa DQ(), DQ(double q0,double q1,double q2,double q3,double q4,double q5,double q6,double q7).
 */
 DQ DQ::log() const{
-    DQ aux;
-    for(int n = 0; n < 8; n++) {
-        aux.q(n) = q(n);
-	}
-    //TODO: Generate a message error here if condition is not satisfied
+
 	// Verify if the object caller is a unit DQ
-	if (aux.norm() != 1) {
-        cout << "ERROR IN LOG OPERATION: NOT A UNIT DUAL QUATERNION \n";
-        return aux;
-    }
+	if (this->norm() != 1) {
+    throw(std::range_error("Bad log() call: Not a unit dual quaternion"));
+  }
 
-    else {
-        // log calculation
-        DQ p = acos(aux.q(0)) * aux.rot_axis(); //primary
-        DQ d = 0.5 * aux.translation(); //dual
-        DQ log(p.q(0),p.q(1),p.q(2),p.q(3),d.q(0),d.q(1),d.q(2),d.q(3));
+  // log calculation
+  DQ p = acos(this->q(0)) * this->rot_axis(); //primary
+  DQ d = 0.5 * this->translation(); //dual
+  DQ log(p.q(0),p.q(1),p.q(2),p.q(3),d.q(0),d.q(1),d.q(2),d.q(3));
 
-        // using threshold to verify zero values in DQ to be returned
-        for(int n = 0; n < 8; n++) {
-            if(fabs(log.q(n)) < DQ_threshold )
-                log.q(n) = 0;
-        }
+  // using threshold to verify zero values in DQ to be returned
+  for(int n = 0; n < 8; n++)
+  {
+    if(fabs(log.q(n)) < DQ_threshold )
+      log.q(n) = 0;
+  }
 
-        return log;
-    }
+  return log;
+
 };
 
 /**
@@ -662,44 +593,39 @@ DQ DQ::log() const{
 * \sa DQ().
 */
 DQ DQ::exp() const{
-        DQ dq;
-    DQ phi;
-    DQ prim;
-    DQ exp;
-    for(int n = 0; n < 8; n++) {
-        dq.q(n) = q(n);
-	}
-    //TODO: Generate a message error here if condition is not satisfied
+
+  DQ phi;
+  DQ prim;
+  DQ exp;
+
 	// Verify if the object caller is a unit DQ
-//	if (dq.norm() != 1) {
-//        cout << "ERROR IN EXP OPERATION: NOT A  DUAL QUATERNION \n";
-//        return dq;
-//    }
+	if (this->norm() != 1) {
+    throw(std::range_error("Bad exp() call: Not a unit dual quaternion"));
+  }
 
-//    else {
-    // exponential calculation
-    phi = dq.P();
-    phi = dq.norm();
-        if(phi != 0)
-            prim = cos(phi.q(0)) + (sin(phi.q(0))/phi.q(0))*dq.P();
-        else {
-            DQ aux(1);
-            prim = aux;
-        }
 
-        if(prim.q(0) < 0)
-            exp = ( -1*(prim + E_*dq.D()*prim) );
-        else
-            exp = ( prim + E_*dq.D()*prim );
+  phi = this->P();
+  phi = this->norm();
+  if(phi != 0)
+    prim = cos(phi.q(0)) + (sin(phi.q(0))/phi.q(0))*this->P();
+  else {
+    DQ aux(1);
+    prim = aux;
+  }
 
-        // using threshold to verify zero values in DQ to be returned
-        for(int n = 0; n < 8; n++) {
-            if(fabs(exp.q(n)) < DQ_threshold )
-                exp.q(n) = 0;
-        }
+  if(prim.q(0) < 0)
+    exp = ( -1*(prim + E_*this->D()*prim) );
+  else
+    exp = ( prim + E_*this->D()*prim );
 
-        return exp;
-//    }
+  // using threshold to verify zero values in DQ to be returned
+  for(int n = 0; n < 8; n++) {
+    if(fabs(exp.q(n)) < DQ_threshold )
+      exp.q(n) = 0;
+  }
+
+  return exp;
+
 };
 
 
@@ -712,31 +638,27 @@ DQ DQ::exp() const{
 * \sa DQ().
 */
 DQ DQ::tplus() const{
-        DQ dq;
-    DQ tplus;
-    for(int n = 0; n < 8; n++) {
-        dq.q(n) = q(n);
-	}
-    //TODO: Generate a message error here if condition is not satisfied
+
+  DQ tplus;
+
 	// Verify if the object caller is a unit DQ
-	if (dq.norm() != 1) {
-        cout << "ERROR IN TPLUS OPERATION: NOT A UNIT DUAL QUATERNION \n";
-        return dq;
-    }
+	if (this->norm() != 1) {
+    throw(std::range_error("Bad tplus() call: Not a unit dual quaternion"));
+  }
 
-    else {
-    // tplus operator calculation
-    tplus = dq.P();
-    tplus = dq * tplus.conj();
+  // tplus operator calculation
+  tplus = this->P();
+  tplus = (*this) * tplus.conj();
 
-    // using threshold to verify zero values in DQ to be returned
-    for(int n = 0; n < 8; n++) {
-        if(fabs(tplus.q(n)) < DQ_threshold )
-            tplus.q(n) = 0;
-    }
+  // using threshold to verify zero values in DQ to be returned
+  for(int n = 0; n < 8; n++)
+  {
+    if(fabs(tplus.q(n)) < DQ_threshold )
+      tplus.q(n) = 0;
+  }
 
-    return tplus;
-    }
+  return tplus;
+
 };
 
 /**
@@ -748,33 +670,30 @@ DQ DQ::tplus() const{
 * \sa DQ().
 */
 DQ DQ::pinv() const{
-    DQ dq;
-    DQ pinv;
-    DQ tinv;
-    for(int n = 0; n < 8; n++) {
-        dq.q(n) = q(n);
-	}
-    //TODO: Generate a message error here if condition is not satisfied
+
+
+  DQ pinv;
+  DQ tinv;
+
 	// Verify if the object caller is a unit DQ
-	if (dq.norm() != 1) {
-        cout << "ERROR IN PINV OPERATION: NOT A UNIT DUAL QUATERNION \n";
-        return dq;
-    }
+	if (this->norm() != 1) {
+    throw(std::range_error("Bad pinv() call: Not a unit dual quaternion"));
+  }
 
-    else {
-    // inverse calculation under decompositional multiplication
-    tinv = dq.conj();
-    tinv = tinv.tplus() * dq.tplus();
-    pinv = tinv.conj() * dq.conj();
+  // inverse calculation under decompositional multiplication
+  tinv = this->conj();
+  tinv = tinv.tplus() * this->tplus();
+  pinv = tinv.conj()  * this->conj();
 
-    // using threshold to verify zero values in DQ to be returned
-    for(int n = 0; n < 8; n++) {
-        if(fabs(pinv.q(n)) < DQ_threshold )
-            pinv.q(n) = 0;
-    }
+  // using threshold to verify zero values in DQ to be returned
+  for(int n = 0; n < 8; n++)
+  {
+    if(fabs(pinv.q(n)) < DQ_threshold )
+      pinv.q(n) = 0;
+  }
 
-    return pinv;
-    }
+  return pinv;
+
 };
 
 /**
@@ -966,8 +885,7 @@ Matrix<double,8,8> DQ::generalizedJacobian( const DQ& x_E) const
 */
 DQ DQ::unitDQ(const double& rot_angle, const int& x_axis,const int& y_axis,const int& z_axis, const double& x_trans,const double& y_trans, const double& z_trans) {
     if ((x_axis != 0 && x_axis != 1) || (y_axis != 0 && y_axis != 1) || (z_axis != 0 && z_axis != 1)) {
-        cout << "ERROR IN ROTATION ANGLE CHOOSE: X, Y AND Z AXIS PARAMETERS MUST BE 1 OR 0 \n";
-        return DQ(0);
+        throw(std::range_error("Bad unitDQ() call: X, Y and Z axis parameters should be 1 OR 0"));
     }
     Vector4d axis(4), translation(4);
     axis(0) = 0;
@@ -1593,10 +1511,9 @@ bool operator!=(double scalar, DQ dq) {
 * \sa DQ(), log(), exp() threshold().
 */
 DQ operator^(DQ dq1, double m) {
-    //TODO: Generate a message error here if condition is not satisfied
+
     if (dq1.norm() != 1) {
-        cout << "ERROR IN MPOWER OPERATION: NOT A UNIT DUAL QUATERNION \n";
-        return dq1;
+        throw(std::range_error("Bad operator^() call: Not a unit dual quaternion"));
     }
     else {
         DQ dq;

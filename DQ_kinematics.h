@@ -1,17 +1,22 @@
 /**
 * This class DQ_kinematics represents a kinematic model of a robotic system using dual quaternions concept.
 *
-* TODO: REDEFINE THIS DEFINITION OF THE CLASS
 * In the class definition are declared different constructors for the Dual Quaternion Kinematics object, the public methods which
 * can be called by the object and also auxiliar functions and variables to intermediate the operations of the public methods.
 * Some methods return a constant Dual Quaternion object, some return a constant boost vector class and some return a constant boost
 * matrix class. But, all of then depends of the object caller. For displaying the results of methods, the DISPLAY and MATRIX functions
 * of DQ class (also provided with this class) can be used.
-* \author Mateus Rodrigues Martins (martinsrmateus@gmail.com)
-* \since 11/2012
+
 ***********************************************************
 *              REVISION HISTORY
 ***********************************************************
+* 2013/11/19 Murilo Marques Marinho (murilomarinho@lara.unb.br)
+             - Changed constructor to use default value, instead
+               of having two constructors.
+             - Added range_error throw to constructor and to 
+               raw_fkm().
+             - Removed unecessary includes.
+
 * 2013/11/15 Murilo Marques Marinho (murilomarinho@lara.unb.br)
              - Changed the member variable names so they make
                more sense.
@@ -31,8 +36,6 @@
              - Fixed namespace functions set_base() and
                set_effector() by passing arguments as references.
              - Changed setDummy() to set_dummy() for consistency.
-             - Note that the operator overloading methods were
-               not changed. 
 
 * 2013/11/14 Murilo Marques Marinho (murilomarinho@lara.unb.br)
              - Removed const qualifiers that were only causing
@@ -55,22 +58,25 @@
 
 * 2013/31/01 Murilo Marques Marinho (murilomarinho@lara.unb.br)
              - Changed Library to Use Eigen.
+
+* 2012/12/10 Mateus Rodrigues Martins (martinsrmateus@gmail.com)
+             - First working version implementing MATLAB
+               functionality
 ***********************************************************
-* \version 1.2
 */
-
-
-#include <iostream>
-#include <math.h> //library for math functions
-#include "DQ.h"
-#include <stdarg.h> //library to use string
-#include <Eigen/Dense>
 
 #ifndef DQ_KINEMATICS_H
 #define DQ_KINEMATICS_H
 
-using namespace Eigen;
+#include "DQ.h"
 
+#include <math.h>       //library for math functions
+#include <stdexcept>    //For range_error
+#include <Eigen/Dense>  //Library for matrix usage
+#include <limits>       //Used in pseudoinverse()
+#include <string>
+
+using namespace Eigen;
 
 namespace DQ_robotics
 {
@@ -93,9 +99,7 @@ namespace DQ_robotics
         public:
         // Class constructors: Creates a Dual Quaternion as a DQ object.
 
-        DQ_kinematics(const MatrixXd& A) ;
-
-        DQ_kinematics(const MatrixXd& A, const std::string& type);
+        DQ_kinematics(const MatrixXd& dh_matrix, const std::string& convention = "standard" );
 
         DQ_kinematics(){};
 
