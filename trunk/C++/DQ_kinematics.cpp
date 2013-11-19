@@ -1,13 +1,5 @@
 #include "DQ_kinematics.h"
 #include "DQ.h"
-#include <iostream>
-#include <iomanip>
-#include <math.h>
-
-//For the pseudoinverse calculation
-#include <limits>
-
-using std::cout;
 
 namespace DQ_robotics
 {
@@ -342,47 +334,6 @@ MatrixXd  pseudoInverse( const MatrixXd& matrix)
 * Returns a DQ_kinematics object based on a 4xn or 5xn matrix named 'A' containing the Denavit-Hartenberg parameters.
 * 'n' is the number of links of the robotic system. If 'A' has 4 rows there are no dummy joints. If 'A' has 4 rows,
 * exists at least one dummy joint. 'A' matrix must be 4xn or 5xn. The 'A' rows 1 to 5 are respectively, 'theta' 1 to n,
-* 'd' parameter 1 to n, 'a' parameter 1 to n, 'alpha' 1 to n and 'dummy joints' 1 to n parameters. The DH convention used is standard.
-* To create a DQ_kinematics object using this, type: 'DQ dh_matrix__object(A)';
-
-* \param MatrixXd A contain the Denavit-Hartenberg parameters for the kinematic model.
-*/
-DQ_kinematics::DQ_kinematics( const MatrixXd& A) {
-	
-	if (A.rows() != 4 && A.rows() != 5) {
-		std::cerr << "ERROR: DH Parameters matrix must be 4xn or 5xn. \n";
-		system("PAUSE");
-        }
-
-        dh_matrix_.resize(5, A.cols());
-
-        //Set all joints as non-dummy if A has only 4 rows.
-        if(A.rows() == 4)
-        {
-            for(int i = 0; i < A.cols(); i++)
-            {
-                dh_matrix_(4,i) = 0;
-            }
-        }
-
-        for(int i = 0; i < A.rows(); i++) {
-            for(int j = 0; j < A.cols(); j++) {
-                dh_matrix_(i,j) = A(i,j);
-            }
-        }
-
-        dh_matrix_convention_ = "standard";
-        curr_base_ = DQ(1);
-        curr_effector_ = DQ(1);
-        
-};
-
-/**
-* DQ_kinematics constructor using boost matrix
-*
-* Returns a DQ_kinematics object based on a 4xn or 5xn matrix named 'A' containing the Denavit-Hartenberg parameters.
-* 'n' is the number of links of the robotic system. If 'A' has 4 rows there are no dummy joints. If 'A' has 4 rows,
-* exists at least one dummy joint. 'A' matrix must be 4xn or 5xn. The 'A' rows 1 to 5 are respectively, 'theta' 1 to n,
 * 'd' 1 to n, 'a' 1 to n, 'alpha' 1 to n and 'dummy joints' 1 to n parameters. The DH convention used is according to
 * the 'type' parameter. 'type' is a string that can be 'standard' or 'modified' depending on the wanted convention. If
 * something different of these values are attributed to 'type' parameter the standard convention is used as default.
@@ -391,29 +342,22 @@ DQ_kinematics::DQ_kinematics( const MatrixXd& A) {
 * \param MatrixXd A contain the Denavit-Hartenberg parameters for the kinematic model.
 * \param std::string type contain the convention used in Denavit_Hartenberg.
 */
-DQ_kinematics::DQ_kinematics( const MatrixXd& A, const std::string& type) {
+DQ_kinematics::DQ_kinematics(const MatrixXd& dh_matrix, const std::string& convention ){
  
-    if (type != "standard" && type != "modified")
+    if (convention != "standard" && convention != "modified")
     {
-        std::cerr << "ERROR: DH convention must be standard or modified. Write it correctly \n";
-        system("PAUSE");
+        throw(std::range_error("Bad DQ_kinematics(dh_matrix, convention) call: convention must be 'standard' or 'modified' "));
     }
-    if (A.rows() != 4 && A.rows() != 5)
+	  if (dh_matrix.rows() != 4 && dh_matrix.rows() != 5)
     {
-        std::cerr << "ERROR: DH Parameters matrix must be 4xn or 5xn. \n";
-        system("PAUSE");
+        throw(std::range_error("Bad DQ_kinematics(dh_matrix, convention) call: dh_matrix should be 5xn or 4xn"));
     }
 
-    dh_matrix_.resize(A.rows(), A.cols());
-    for(int i = 0; i < A.rows(); i++) {
-        for(int j = 0; j < A.cols(); j++) {
-            dh_matrix_(i,j) = A(i,j);
-        }
-    }
-
+    //dh_matrix_.resize(dh_matrix);
+    dh_matrix_ = dh_matrix;
     curr_base_ = DQ(1);
     curr_effector_ = DQ(1);
-    dh_matrix_convention_ = type;
+    dh_matrix_convention_ = convention;
 };
 
 /**
@@ -645,7 +589,7 @@ DQ  DQ_kinematics::raw_fkm( const VectorXd& theta_vec) const
 
     if((int)theta_vec.size() != (this->links() - this->n_dummy()) )
     {
-        cout << "\n INCORRECT NUMBER OF JOINT VARIABLES \n";
+        throw(std::range_error("Bad raw_fkm(theta_vec) call: Incorrect number of joint variables"));
     }
 
     DQ q(1);
@@ -675,7 +619,7 @@ DQ  DQ_kinematics::raw_fkm( const VectorXd& theta_vec, const int& ith) const
 
     if((int)theta_vec.size() != (this->links() - this->n_dummy()) )
     {
-        cout << "\n INCORRECT NUMBER OF JOINT VARIABLES \n";
+        throw(std::range_error("Bad raw_fkm(theta_vec,ith) call: Incorrect number of joint variables"));
     }
 
     DQ q(1);
