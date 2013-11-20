@@ -1,29 +1,3 @@
-/**
-* Chiaverini's Singularity Robust controller for the unit dual quaternion space.
-*
-* \author Murilo Marques Marinho (murilomarinho@lara.unb.br)
-* \since 2012/07
-***********************************************************
-*              REVISION HISTORY
-***********************************************************
-* YYYY/MM/DD - Author (e-mail address)
-*            - Description
-***********************************************************
-* 2013/06/01 - Murilo Marques Marinho (murilomarinho@lara.unb.br)
-             - Fixed the minimun singular value considered in the 
-               numerical filtering. It was considering the last 
-               singular value of the matrix when it should be consi-
-               dering the 6th.
-             - Changed the inversion algorithm in the damped pseudo-
-               inverse calculation. It was using .inverse(), which
-               is only recomended for matrix.size() <= 4. Changed it
-               to use Cholesky decomposition as it is always a posi-
-               tive definite matrix.
-             - Minor changes in the included files organization.
-***********************************************************
-*/
-
-
 #include "DampedNumericalFilteredController.h"
 
 namespace DQ_robotics
@@ -31,7 +5,7 @@ namespace DQ_robotics
 
 
 
-DampedNumericalFilteredController::DampedNumericalFilteredController(DQ_kinematics robot, MatrixXd feedback_gain, double beta, double lambda_max, double epsilon) : DQ_controller()
+DampedNumericalFilteredController::DampedNumericalFilteredController(DQ_kinematics robot, MatrixXd kp, double beta, double lambda_max, double epsilon) : DQ_controller()
 {
     //Constants
     dq_one_ = DQ(1);
@@ -39,7 +13,9 @@ DampedNumericalFilteredController::DampedNumericalFilteredController(DQ_kinemati
     //Initialization of argument parameters
     robot_dofs_     = (robot.links() - robot.n_dummy());
     robot_          = robot;
-    kp_             = feedback_gain;
+    kp_             = kp;
+    ki_             = MatrixXd::Zero(kp.rows(),kp.cols());
+    kd_             = MatrixXd::Zero(kp.rows(),kp.cols());
     beta_           = beta;
     lambda_max_     = lambda_max;
 
@@ -47,32 +23,68 @@ DampedNumericalFilteredController::DampedNumericalFilteredController(DQ_kinemati
     thetas_         = MatrixXd(robot_dofs_,1);
     delta_thetas_   = MatrixXd::Zero(robot_dofs_,1);
 
-    task_jacobian_     = MatrixXd(8,robot_dofs_);
-    svd_ = JacobiSVD<MatrixXd>(robot_dofs_,8);
+    task_jacobian_      = MatrixXd(8,robot_dofs_);
+    svd_                = JacobiSVD<MatrixXd>(robot_dofs_,8);
     svd_sigma_inverted_ = MatrixXd::Zero(robot_dofs_,8);
     identity_           = Matrix<double,8,8>::Identity();
 
-    error_             = MatrixXd(8,1);
+    error_              = MatrixXd::Zero(8,1);
+    integral_error_     = MatrixXd::Zero(8,1);
+    last_error_         = MatrixXd::Zero(8,1);
+    at_least_one_error_ = false;
 
     end_effector_pose_ = DQ(0,0,0,0,0,0,0,0);
 
 }
 
-VectorXd DampedNumericalFilteredController::getNewJointPositions(DQ reference, VectorXd thetas)
+
+DampedNumericalFilteredController::DampedNumericalFilteredController( const DQ_kinematics& robot, const MatrixXd& kp, const MatrixXd& ki, const MatrixXd& kd, const double& beta, const double& lambda_max, const double& epsilon) : DQ_controller()
+{
+    //Constants
+    dq_one_ = DQ(1);
+
+    //Initialization of argument parameters
+    robot_dofs_     = (robot.links() - robot.n_dummy());
+    robot_          = robot;
+    kp_             = kp;
+    ki_             = ki;
+    kd_             = kd;
+    beta_           = beta;
+    lambda_max_     = lambda_max;
+
+    //Initilization of remaining parameters
+    thetas_         = MatrixXd(robot_dofs_,1);
+    delta_thetas_   = MatrixXd::Zero(robot_dofs_,1);
+
+    task_jacobian_      = MatrixXd(8,robot_dofs_);
+    svd_                = JacobiSVD<MatrixXd>(robot_dofs_,8);
+    svd_sigma_inverted_ = MatrixXd::Zero(robot_dofs_,8);
+    identity_           = Matrix<double,8,8>::Identity();
+
+    error_              = MatrixXd::Zero(8,1);
+    integral_error_     = MatrixXd::Zero(8,1);
+    last_error_         = MatrixXd::Zero(8,1);
+    at_least_one_error_ = false;
+
+
+    end_effector_pose_ = DQ(0,0,0,0,0,0,0,0);
+
+
+}
+
+
+VectorXd DampedNumericalFilteredController::getNewJointPositions( const DQ& reference, const VectorXd& thetas)
 {
 
     delta_thetas_ = getNewJointVelocities(reference, thetas);
 
     // Send updated thetas to simulation
-    return (thetas_ + delta_thetas_);
+    return (thetas + delta_thetas_);
 
 }
 
-VectorXd DampedNumericalFilteredController::getNewJointVelocities(DQ reference, VectorXd thetas)
+VectorXd DampedNumericalFilteredController::getNewJointVelocities( const DQ& reference, const VectorXd& thetas)
 {
-
-    ///--Remapping arguments
-    thetas_ = thetas;
 
     ///--Controller Step
            
@@ -84,7 +96,9 @@ VectorXd DampedNumericalFilteredController::getNewJointVelocities(DQ reference, 
     end_effector_pose_ = robot_.fkm(thetas_);
 
     //Error
-    error_ = vec8(reference - end_effector_pose_);
+    last_error_      = error_;
+    error_           = vec8(reference - end_effector_pose_);
+    integral_error_ += error_;
     //error_ = vec8(dq_one_ - conj(end_effector_pose_)*reference);
 
     svd_.compute(task_jacobian_, ComputeFullU);
@@ -99,8 +113,6 @@ VectorXd DampedNumericalFilteredController::getNewJointVelocities(DQ reference, 
         lambda = (1-(sigma_min/epsilon_)*(sigma_min/epsilon_))*lambda_max_*lambda_max_;
     }
 
-    //task_jacobian_pseudoinverse_ = (task_jacobian_.transpose())*((task_jacobian_*task_jacobian_.transpose() + (beta_*beta_)*identity_ + (lambda*lambda)*u_min*u_min.transpose()).inverse());
-
     //We want to solve the equation J+ = J^T(JJ^T+aI)^-1, in which the matrix 
     //being inverted is obviously positive definite if a > 0.
     //The solver gives us the solution to X = A^-1.B
@@ -108,7 +120,13 @@ VectorXd DampedNumericalFilteredController::getNewJointVelocities(DQ reference, 
     task_jacobian_pseudoinverse_ = ((task_jacobian_*task_jacobian_.transpose() + (beta_*beta_)*identity_ + (lambda*lambda)*u_min*u_min.transpose()).transpose()).ldlt().solve(task_jacobian_);
     task_jacobian_pseudoinverse_.transposeInPlace();
 
-    delta_thetas_ = task_jacobian_pseudoinverse_*kp_*error_;
+    if( at_least_one_error_ )
+      delta_thetas_ = task_jacobian_pseudoinverse_*( kp_*error_ + ki_*integral_error_ + kd_*(error_ - last_error_) );
+    else
+    {
+      at_least_one_error_ = true;
+      delta_thetas_ = task_jacobian_pseudoinverse_*( kp_*error_ + ki_*integral_error_ );
+    }
 
     return delta_thetas_;
 

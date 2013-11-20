@@ -56,8 +56,8 @@ public: //methods
     TranslationFirstPoseController(DQ_kinematics robot, MatrixXd translation_feedback_gain, MatrixXd rotation_feedback_gain, double translation_damping, double rotation_damping);
     ~TranslationFirstPoseController(){};
 
-    VectorXd getNewJointPositions(DQ reference, VectorXd thetas);
-    VectorXd getNewJointVelocities(DQ reference, VectorXd thetas);
+    VectorXd getNewJointPositions( const DQ& reference, const VectorXd& thetas);
+    VectorXd getNewJointVelocities( const DQ& reference, const VectorXd& thetas);
 
 private: //methods
 

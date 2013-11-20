@@ -41,7 +41,7 @@ DampedNumericalFilteredControllerJointLimits::DampedNumericalFilteredControllerJ
 }
 
 
-VectorXd DampedNumericalFilteredControllerJointLimits::getNewJointPositions(DQ reference, VectorXd thetas)
+VectorXd DampedNumericalFilteredControllerJointLimits::getNewJointPositions( const DQ& reference, const VectorXd& thetas)
 {
 
     delta_thetas_ = getNewJointVelocities(reference, thetas);
@@ -51,10 +51,10 @@ VectorXd DampedNumericalFilteredControllerJointLimits::getNewJointPositions(DQ r
 
 }
 
-VectorXd DampedNumericalFilteredControllerJointLimits::getNewJointVelocities(DQ reference, VectorXd thetas)
+VectorXd DampedNumericalFilteredControllerJointLimits::getNewJointVelocities( const DQ& reference, const VectorXd& thetas)
 {
 
-    thetas_ = thetas;
+    thetas_ = thetas; //This is necessary for the getNewJointPositions to work
 
     DQ robot_base = robot_.base();
     DQ robot_effector = robot_.effector();

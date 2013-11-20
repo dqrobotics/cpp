@@ -174,11 +174,14 @@ void DQTest::kinematicsTest(void)
     }   
 
     DampedNumericalFilteredController dn_controller(schunk, kp, 0.001, 0.1, 0.001);
+    DampedNumericalFilteredController pid_dn_controller(schunk, kp, MatrixXd::Zero(8,8), MatrixXd::Zero(8,8), 0.001, 0.1, 0.001);
 
     for(int j=0;j<10;j++)
     {   
       thetas = dn_controller.getNewJointPositions(reference,thetas);
-      //std::cout << std::endl << "thetas" << std::endl << thetas << std::endl;
+      //std::cout << std::endl << "thetas" << std::endl << thetas.transpose() << std::endl;
+      thetas = pid_dn_controller.getNewJointPositions(reference,thetas);
+      //std::cout << std::endl << "thetas" << std::endl << thetas.transpose() << std::endl;
     }   
 
     //Namespace and Methods Comparison
@@ -193,7 +196,15 @@ void DQTest::kinematicsTest(void)
     CPPUNIT_ASSERT( schunk.base()     == DQ(1)*(1 + 0.5*E_*(i_)));
     CPPUNIT_ASSERT( schunk.effector() == DQ(1)*(1 + 0.5*E_*(j_)));
 
-    pseudoInverse(schunk_dh);
+    MatrixXd cool_matrix = MatrixXd(5,5);
+    cool_matrix << 8.0, 5.0, 4.0, 2.0, 1.0,
+                   5.0, 8.0, 5.0, 4.0, 2.0,
+                   4.0, 5.0, 8.0, 5.0, 4.0,
+                   2.0, 4.0, 5.0, 8.0, 5.0,
+                   1.0, 2.0, 4.0, 5.0, 8.0;
+
+    MatrixXd pinv = pseudoInverse(cool_matrix);
+    std::cout << std::endl << (cool_matrix*pinv);
     //std::cout << m << std::endl;
     //std::cout << m_pinv << std::endl;
     
