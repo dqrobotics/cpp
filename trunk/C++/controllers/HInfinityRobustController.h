@@ -48,8 +48,8 @@ public: //methods
     HInfinityRobustController(DQ_kinematics robot, MatrixXd feedback_gain);
     ~HInfinityRobustController(){};
 
-    VectorXd getNewJointPositions( const DQ& reference, const VectorXd& thetas);
-    VectorXd getNewJointVelocities( const DQ& reference, const VectorXd& thetas);
+    VectorXd getNewJointPositions( const DQ reference, const VectorXd thetas);
+    VectorXd getNewJointVelocities( const DQ reference, const VectorXd thetas);
 
 private: //methods
 

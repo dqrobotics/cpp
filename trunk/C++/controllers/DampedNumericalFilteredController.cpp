@@ -73,19 +73,19 @@ DampedNumericalFilteredController::DampedNumericalFilteredController( const DQ_k
 }
 
 
-VectorXd DampedNumericalFilteredController::getNewJointPositions( const DQ& reference, const VectorXd& thetas)
+VectorXd DampedNumericalFilteredController::getNewJointPositions( const DQ reference, const VectorXd thetas)
 {
 
     delta_thetas_ = getNewJointVelocities(reference, thetas);
 
     // Send updated thetas to simulation
-    return (thetas + delta_thetas_);
+    return (thetas_ + delta_thetas_);
 
 }
 
-VectorXd DampedNumericalFilteredController::getNewJointVelocities( const DQ& reference, const VectorXd& thetas)
+VectorXd DampedNumericalFilteredController::getNewJointVelocities( const DQ reference, const VectorXd thetas)
 {
-
+    thetas_ = thetas;
     ///--Controller Step
            
     //Calculate jacobian
@@ -132,7 +132,15 @@ VectorXd DampedNumericalFilteredController::getNewJointVelocities( const DQ& ref
 
 }
 
+void DampedNumericalFilteredController::setPGain( const MatrixXd new_kp )
+{
+    kp_ = new_kp;
+}
 
+void DampedNumericalFilteredController::setIGain( const MatrixXd new_ki )
+{
+    ki_ = new_ki;
+}
 
 
 

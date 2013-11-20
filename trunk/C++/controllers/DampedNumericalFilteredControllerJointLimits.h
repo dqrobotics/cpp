@@ -57,8 +57,8 @@ public: //methods
                                                            MatrixXd feedback_gain, double beta, double lambda_max, double epsilon);
     ~DampedNumericalFilteredControllerJointLimits(){};
 
-    VectorXd getNewJointPositions( const DQ& reference, const VectorXd& thetas);
-    VectorXd getNewJointVelocities( const DQ& reference, const VectorXd& thetas);
+    VectorXd getNewJointPositions( const DQ reference, const VectorXd thetas);
+    VectorXd getNewJointVelocities( const DQ reference, const VectorXd thetas);
 
 private: //methods
 

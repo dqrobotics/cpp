@@ -86,12 +86,16 @@ private: //variables
 
 
 public: //methods
+    DampedNumericalFilteredController(){};
     DampedNumericalFilteredController( DQ_kinematics robot, MatrixXd kp, double beta, double lambda_max, double epsilon); //Kept for backwards compatibility
     DampedNumericalFilteredController( const DQ_kinematics& robot, const MatrixXd& kp, const MatrixXd& ki, const MatrixXd& kd, const double& beta, const double& lambda_max, const double& epsilon);
     ~DampedNumericalFilteredController(){};
 
-    VectorXd getNewJointPositions( const DQ& reference, const VectorXd& thetas);
-    VectorXd getNewJointVelocities( const DQ& reference, const VectorXd& thetas);
+    VectorXd getNewJointPositions( const DQ reference, const VectorXd thetas);
+    VectorXd getNewJointVelocities( const DQ reference, const VectorXd thetas);
+    
+    void setPGain( const MatrixXd new_kp );
+    void setIGain( const MatrixXd new_ki );
 
 private: //methods
 
