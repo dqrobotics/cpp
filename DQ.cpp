@@ -587,24 +587,16 @@ DQ DQ::log() const{
 */
 DQ DQ::exp() const{
 
-  DQ phi;
+  double phi;
   DQ prim;
   DQ exp;
 
-	// Verify if the object caller is a unit DQ
-	if (this->norm() != 1) {
-    throw(std::range_error("Bad exp() call: Not a unit dual quaternion"));
-  }
+  phi = this->q.norm();
 
-
-  phi = this->P();
-  phi = this->norm();
-  if(phi != 0)
-    prim = cos(phi.q(0)) + (sin(phi.q(0))/phi.q(0))*this->P();
-  else {
-    DQ aux(1);
-    prim = aux;
-  }
+  if(phi != 0.0)
+    prim = cos(phi) + (sin(phi)/phi)*this->P();
+  else
+    prim = DQ(1.0);
 
   if(prim.q(0) < 0)
     exp = ( -1*(prim + E_*this->D()*prim) );
