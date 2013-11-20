@@ -273,16 +273,6 @@ Matrix<double,8,8> generalizedJacobian(const DQ& param_dq, const DQ& x_E)
 
 
 /**
-* DQ Default constructor, no parameters needed.
-*
-* Returns a DQ object with null primary and dual part. All elements of 'q' vector are 0.
-* To create a DQ object using this, type: 'DQ dq_object();' or even 'DQ dq_object;'
-*/
-DQ::DQ() {
-    q = Matrix<double,8,1>::Zero(8,1);
-}
-
-/**
 * DQ constructor using boost vector
 *
 * Returns a DQ object with the values of elements equal to the values of elements from a vector 'v' passed to constructor.
@@ -326,10 +316,13 @@ DQ::DQ(const double& q0,const double& q1,const double& q2,const double& q3,const
     q(5) = q5;
     q(6) = q6;
     q(7) = q7;
-    for(int n = 0; n < 8; n++) {
-            if(fabs(q(n)) < DQ_threshold )
-                q(n) = 0;
-        }
+
+    for(int n = 0; n < 8; n++)
+    {
+      if(fabs(q(n)) < DQ_threshold)
+        q(n) = 0;
+    }
+
 };
 
 /**
