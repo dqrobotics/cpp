@@ -10,6 +10,9 @@
 ***********************************************************
 *              REVISION HISTORY
 ***********************************************************
+* 2013/11/20 Murilo Marques Marinho (murilomarinho@lara.unb.br)
+             - Removed the last redundant constructor.
+
 * 2013/11/19 Murilo Marques Marinho (murilomarinho@lara.unb.br)
              - Removed redundant constructors and used de
                fault value constructors.
@@ -84,14 +87,11 @@ namespace DQ_robotics{
         //Methods
         public:
 
-        //Constructors and Destructor
-        DQ();
-
         DQ( const Matrix<double,8,1>& v);
 
         DQ( const Matrix<double,4,1>& v);
 
-        DQ( const double& q0, const double& q1=0.0, const double& q2=0.0, const double& q3=0.0, const double& q4=0.0, const double& q5=0.0, const double& q6=0.0, const double& q7=0.0);
+        DQ( const double& q0=0.0, const double& q1=0.0, const double& q2=0.0, const double& q3=0.0, const double& q4=0.0, const double& q5=0.0, const double& q6=0.0, const double& q7=0.0);
 
         static DQ unitDQ( const double& rot_angle, const int& x_axis, const int& y_axis, const int& z_axis, const double& x_trans, const double& y_trans, const double& z_trans);
 
