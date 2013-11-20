@@ -37,7 +37,7 @@ OrdinaryPoseController::OrdinaryPoseController(DQ_kinematics robot, MatrixXd fee
 
 }
 
-VectorXd OrdinaryPoseController::getNewJointPositions( const DQ& reference, const VectorXd& thetas)
+VectorXd OrdinaryPoseController::getNewJointPositions( const DQ reference, const VectorXd thetas)
 {
 
     delta_thetas_ = getNewJointVelocities(reference, thetas);
@@ -47,7 +47,7 @@ VectorXd OrdinaryPoseController::getNewJointPositions( const DQ& reference, cons
 
 }
 
-VectorXd OrdinaryPoseController::getNewJointVelocities( const DQ& reference, const VectorXd& thetas)
+VectorXd OrdinaryPoseController::getNewJointVelocities( const DQ reference, const VectorXd thetas)
 {
 
     ///--Remapping arguments

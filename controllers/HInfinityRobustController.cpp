@@ -38,7 +38,7 @@ HInfinityRobustController::HInfinityRobustController(DQ_kinematics robot, Matrix
 
 }
 
-VectorXd HInfinityRobustController::getNewJointPositions( const DQ& reference, const VectorXd& thetas)
+VectorXd HInfinityRobustController::getNewJointPositions( const DQ reference, const VectorXd thetas)
 {
 
     delta_thetas_ = getNewJointVelocities( reference, thetas);
@@ -48,7 +48,7 @@ VectorXd HInfinityRobustController::getNewJointPositions( const DQ& reference, c
 
 }
 
-VectorXd HInfinityRobustController::getNewJointVelocities( const DQ& reference, const VectorXd& thetas)
+VectorXd HInfinityRobustController::getNewJointVelocities( const DQ reference, const VectorXd thetas)
 {
 
     ///--Remapping arguments

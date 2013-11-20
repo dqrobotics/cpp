@@ -47,8 +47,8 @@ public: //methods
     OrdinaryPoseController(DQ_kinematics robot, MatrixXd feedback_gain, double lambda);
     ~OrdinaryPoseController(){};
 
-    VectorXd getNewJointPositions( const DQ& reference, const VectorXd& thetas);
-    VectorXd getNewJointVelocities( const DQ& reference, const VectorXd& thetas);
+    VectorXd getNewJointPositions( const DQ reference, const VectorXd thetas);
+    VectorXd getNewJointVelocities( const DQ reference, const VectorXd thetas);
 
 private: //methods
 

@@ -46,7 +46,7 @@ TranslationFirstPoseController::TranslationFirstPoseController(DQ_kinematics rob
 
 }
 
-VectorXd TranslationFirstPoseController::getNewJointPositions( const DQ& reference, const VectorXd& thetas)
+VectorXd TranslationFirstPoseController::getNewJointPositions( const DQ reference, const VectorXd thetas)
 {
 
     delta_thetas_ = getNewJointVelocities(reference, thetas);
@@ -56,7 +56,7 @@ VectorXd TranslationFirstPoseController::getNewJointPositions( const DQ& referen
 
 }
 
-VectorXd TranslationFirstPoseController::getNewJointVelocities( const DQ& reference, const VectorXd& thetas)
+VectorXd TranslationFirstPoseController::getNewJointVelocities( const DQ reference, const VectorXd thetas)
 {
 
     ///--Remapping arguments

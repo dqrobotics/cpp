@@ -39,8 +39,8 @@ public: //methods
     DQ_controller(){};
     ~DQ_controller(){};
 
-    virtual VectorXd getNewJointPositions( const DQ& reference, const VectorXd& thetas)=0;
-    virtual VectorXd getNewJointVelocities( const DQ& reference, const VectorXd& thetas)=0;
+    virtual VectorXd getNewJointPositions( const DQ reference, const VectorXd thetas)=0;
+    virtual VectorXd getNewJointVelocities( const DQ reference, const VectorXd thetas)=0;
 
 private: //methods
 
