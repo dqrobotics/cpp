@@ -64,9 +64,9 @@ int main(void)
     std::cout << std::endl << "Robot initial FKM " << schunk.fkm(thetas) << std::endl;
 
     //HInfinity Controller
-    std::cout << std::endl <<"H-Inf Robust Controller" << std::endl;
-    HInfinityRobustController r_controller(schunk, kp);
-    control(kp, thetas, schunk, eff_pose_reference, r_controller);
+    //std::cout << std::endl <<"H-Inf Robust Controller" << std::endl;
+    //HInfinityRobustController r_controller(schunk, kp);
+    //control(kp, thetas, schunk, eff_pose_reference, r_controller);
     
     //Ordinary Pose Controller
     std::cout << std::endl <<"Ordinary Pose Controller" << std::endl;
