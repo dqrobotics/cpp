@@ -25,16 +25,22 @@ private: //variables
     int robot_dofs_;
 
     MatrixXd kp_;
+    double gamma_;
+    double alpha_;
+    Matrix<double,8,1> B_;
+    Matrix<double,8,1> Bw_;
 
     VectorXd thetas_;
     VectorXd delta_thetas_;
 
     VectorXd reference_state_variables_;
+    DQ old_reference_;
     VectorXd measured_state_variables_;
 
     VectorXd error_;
 
     Matrix<double,8,8> C8_;
+    Matrix<double,8,8> identity8_;
 
     MatrixXd N_;
 
@@ -45,7 +51,7 @@ private: //variables
 
 
 public: //methods
-    HInfinityRobustController(DQ_kinematics robot, MatrixXd feedback_gain);
+    HInfinityRobustController( const DQ_kinematics& robot, const Matrix<double,8,1>& B, const double& gamma, const double& alpha);
     ~HInfinityRobustController(){};
 
     VectorXd getNewJointPositions( const DQ reference, const VectorXd thetas);
