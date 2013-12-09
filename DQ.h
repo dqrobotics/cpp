@@ -80,9 +80,9 @@ namespace DQ_robotics{
     class DQ{
 
         //Atributes
-	    public:
+      public:
 
-	    Matrix<double,8,1> q;
+      Matrix<double,8,1> q;
 
         //Methods
         public:
@@ -143,109 +143,109 @@ namespace DQ_robotics{
             Matrix<double,8,8> jacobG( const DQ& x_E) const;
 
         // Operators overload functions
-	    public:
+      public:
 
 
-	    //Operator (+) Overload
+      //Operator (+) Overload
 
-	    friend DQ operator+(DQ dq1, DQ dq2);
+      friend DQ operator+(DQ dq1, DQ dq2);
 
 
-	    friend DQ operator+(DQ dq, int scalar);
+      friend DQ operator+(DQ dq, int scalar);
 
-	    friend DQ operator+(int scalar, DQ dq);
+      friend DQ operator+(int scalar, DQ dq);
 
 
       friend DQ operator+(DQ dq, float scalar);
 
-	    friend DQ operator+(float scalar, DQ dq);
+      friend DQ operator+(float scalar, DQ dq);
 
 
       friend DQ operator+(DQ dq, double scalar);
 
-	    friend DQ operator+(double scalar, DQ dq);
+      friend DQ operator+(double scalar, DQ dq);
 
-	    //Operator (-) Overload
+      //Operator (-) Overload
 
-	    friend DQ operator-(DQ dq1, DQ dq2);
+      friend DQ operator-(DQ dq1, DQ dq2);
 
 
-	    friend DQ operator-(DQ dq, int scalar);
+      friend DQ operator-(DQ dq, int scalar);
 
-	    friend DQ operator-(int scalar, DQ dq);
+      friend DQ operator-(int scalar, DQ dq);
 
 
       friend DQ operator-(DQ dq, float scalar);
 
-	    friend DQ operator-(float scalar, DQ dq);
+      friend DQ operator-(float scalar, DQ dq);
 
 
       friend DQ operator-(DQ dq, double scalar);
 
-	    friend DQ operator-(double scalar, DQ dq);
+      friend DQ operator-(double scalar, DQ dq);
 
 
         //Operator (*) Overload
 
-	    friend DQ operator*(DQ dq1, DQ dq2);
+      friend DQ operator*(DQ dq1, DQ dq2);
 
 
       friend DQ operator*(DQ dq, int scalar);
 
-	    friend DQ operator*(int scalar, DQ dq);
+      friend DQ operator*(int scalar, DQ dq);
 
 
       friend DQ operator*(DQ dq, float scalar);
 
-	    friend DQ operator*(float scalar, DQ dq);
+      friend DQ operator*(float scalar, DQ dq);
 
 
       friend DQ operator*(DQ dq, double scalar);
 
-	    friend DQ operator*(double scalar, DQ dq);
+      friend DQ operator*(double scalar, DQ dq);
 
 
         //Operator (==) Overload
 
-	    bool operator==(DQ dq2);
+      bool operator==(DQ dq2);
 
 
       friend bool operator==(DQ dq, int scalar);
 
-	    friend bool operator==(int scalar, DQ dq);
+      friend bool operator==(int scalar, DQ dq);
 
 
-	    friend bool operator==(DQ dq, float scalar);
+      friend bool operator==(DQ dq, float scalar);
 
-	    friend bool operator==(float scalar, DQ dq);
+      friend bool operator==(float scalar, DQ dq);
 
 
       friend bool operator==(DQ dq, double scalar);
 
-	    friend bool operator==(double scalar, DQ dq);
+      friend bool operator==(double scalar, DQ dq);
 
 
         //Operator (!=) Overload
 
-	    bool operator!=(DQ dq2);
+      bool operator!=(DQ dq2);
 
 
       friend bool operator!=(DQ dq, int scalar);
 
-	    friend bool operator!=(int scalar, DQ dq);
+      friend bool operator!=(int scalar, DQ dq);
 
 
-	    friend bool operator!=(DQ dq, float scalar);
+      friend bool operator!=(DQ dq, float scalar);
 
-	    friend bool operator!=(float scalar, DQ dq);
+      friend bool operator!=(float scalar, DQ dq);
 
 
       friend bool operator!=(DQ dq, double scalar);
 
-	    friend bool operator!=(double scalar, DQ dq);
+      friend bool operator!=(double scalar, DQ dq);
 
 
-	    friend DQ operator^(DQ dq, double m);
+      friend DQ operator^(DQ dq, double m);
 
       //Operator (<<) Overload
 
