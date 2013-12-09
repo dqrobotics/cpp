@@ -21,6 +21,7 @@ Schunk DQ Control Examples
 //DQ Controllers
 #include "../DQ_controller.h"
 #include "../controllers/HInfinityRobustController.h" 
+#include "../controllers/HIRTController.h"
 #include "../controllers/DampedNumericalFilteredController.h"
 #include "../controllers/DampedNumericalFilteredControllerJointLimits.h"
 #include "../controllers/OrdinaryPoseController.h"
