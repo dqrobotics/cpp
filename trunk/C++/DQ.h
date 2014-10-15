@@ -10,6 +10,10 @@
 ***********************************************************
 *              REVISION HISTORY
 ***********************************************************
+* 2014/10/15 Murilo Marques Marinho (murilomarinho@lara.unb.br)
+             - Fixed all implementations of jacobG and 
+               generalizedJacobian so that they make sense.
+
 * 2013/11/20 Murilo Marques Marinho (murilomarinho@lara.unb.br)
              - Removed the last redundant constructor.
 
@@ -138,9 +142,9 @@ namespace DQ_robotics{
 
         Matrix<double,8,1> vec8() const;
 
-        Matrix<double,8,8> generalizedJacobian( const DQ& x_E) const;
+        Matrix<double,8,8> generalizedJacobian() const;
             //The MATLAB syntax, kept for legacy reasons.
-            Matrix<double,8,8> jacobG( const DQ& x_E) const;
+            Matrix<double,8,8> jacobG() const;
 
         // Operators overload functions
       public:
@@ -314,9 +318,9 @@ namespace DQ_robotics{
 
     Matrix<double,8,1> vec8(const DQ& dq);
 
-    Matrix<double,8,8> generalizedJacobian(const DQ& param_dq, const DQ& x_E);
+    Matrix<double,8,8> generalizedJacobian(const DQ& x_E);
         //The MATLAB syntax, kept for legacy reasons.
-        Matrix<double,8,8> jacobG(const DQ& param_dq, const DQ& x_E);
+        Matrix<double,8,8> jacobG(const DQ& x_E);
 
 
 }//Namespace DQRobotics
