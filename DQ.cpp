@@ -250,9 +250,9 @@ Matrix<double,8,1>  vec8(const DQ& dq)
 * @param x_e.
 * @return A 8x8 matrix representing the Generalized Jacobian given the arguments.
 */
-Matrix<double,8,8> jacobG(const DQ& param_dq, const DQ& x_E)
+Matrix<double,8,8> jacobG(const DQ& x_E)
 {
-    return param_dq.jacobG(x_E);
+    return x_E.jacobG();
 }
 
 /**
@@ -262,9 +262,9 @@ Matrix<double,8,8> jacobG(const DQ& param_dq, const DQ& x_E)
 * @param x_e.
 * @return A 8x8 matrix representing the Generalized Jacobian given the arguments.
 */
-Matrix<double,8,8> generalizedJacobian(const DQ& param_dq, const DQ& x_E)
+Matrix<double,8,8> generalizedJacobian(const DQ& x_E)
 {
-    return param_dq.jacobG(x_E);
+    return x_E.jacobG();
 }
 
 /****************************************************************
@@ -820,22 +820,22 @@ Matrix<double,8,1>  DQ::vec8() const{
 * \param DQ x_E is the dual position quaternion
 * \return A constant boost::numeric::ublas::matrix <double>
 */
-Matrix<double,8,8> DQ::jacobG( const DQ& x_E) const{
+Matrix<double,8,8> DQ::jacobG() const{
     Matrix<double,8,8> jacobGen(8,8);
-    jacobGen(0,0) = x_E.q(4); jacobGen(0,1) =  x_E.q(5); jacobGen(0,2) =  x_E.q(6); jacobGen(0,3) =  x_E.q(7);
-    jacobGen(1,0) = x_E.q(5); jacobGen(1,1) = -x_E.q(4); jacobGen(1,2) =  x_E.q(7); jacobGen(1,3) = -x_E.q(6);
-    jacobGen(2,0) = x_E.q(6); jacobGen(2,1) = -x_E.q(7); jacobGen(2,2) = -x_E.q(4); jacobGen(2,3) =  x_E.q(5);
-    jacobGen(3,0) = x_E.q(7); jacobGen(3,1) =  x_E.q(6); jacobGen(3,2) = -x_E.q(5); jacobGen(3,3) = -x_E.q(4);
+    jacobGen(0,0) = q(4); jacobGen(0,1) =  q(5); jacobGen(0,2) =  q(6); jacobGen(0,3) =  q(7);
+    jacobGen(1,0) = q(5); jacobGen(1,1) = -q(4); jacobGen(1,2) =  q(7); jacobGen(1,3) = -q(6);
+    jacobGen(2,0) = q(6); jacobGen(2,1) = -q(7); jacobGen(2,2) = -q(4); jacobGen(2,3) =  q(5);
+    jacobGen(3,0) = q(7); jacobGen(3,1) =  q(6); jacobGen(3,2) = -q(5); jacobGen(3,3) = -q(4);
 
-    jacobGen(0,4) =  x_E.q(0); jacobGen(0,5) =  x_E.q(1); jacobGen(0,6) =  x_E.q(2); jacobGen(0,7) =  x_E.q(3);
-    jacobGen(1,4) = -x_E.q(1); jacobGen(1,5) =  x_E.q(0); jacobGen(1,6) = -x_E.q(3); jacobGen(1,7) =  x_E.q(2);
-    jacobGen(2,4) = -x_E.q(2); jacobGen(2,5) =  x_E.q(3); jacobGen(2,6) =  x_E.q(0); jacobGen(2,7) = -x_E.q(1);
-    jacobGen(3,4) = -x_E.q(3); jacobGen(3,5) = -x_E.q(2); jacobGen(3,6) =  x_E.q(1); jacobGen(3,7) =  x_E.q(0);
+    jacobGen(0,4) =  q(0); jacobGen(0,5) =  q(1); jacobGen(0,6) =  q(2); jacobGen(0,7) =  q(3);
+    jacobGen(1,4) = -q(1); jacobGen(1,5) =  q(0); jacobGen(1,6) = -q(3); jacobGen(1,7) =  q(2);
+    jacobGen(2,4) = -q(2); jacobGen(2,5) =  q(3); jacobGen(2,6) =  q(0); jacobGen(2,7) = -q(1);
+    jacobGen(3,4) = -q(3); jacobGen(3,5) = -q(2); jacobGen(3,6) =  q(1); jacobGen(3,7) =  q(0);
 
-    jacobGen(4,0) =  x_E.q(0); jacobGen(4,1) =  x_E.q(1); jacobGen(4,2) =  x_E.q(2); jacobGen(4,3) =  x_E.q(3);
-    jacobGen(5,0) = -x_E.q(1); jacobGen(5,1) =  x_E.q(0); jacobGen(5,2) = -x_E.q(3); jacobGen(5,3) =  x_E.q(2);
-    jacobGen(6,0) = -x_E.q(2); jacobGen(6,1) =  x_E.q(3); jacobGen(6,2) =  x_E.q(0); jacobGen(6,3) = -x_E.q(1);
-    jacobGen(7,0) = -x_E.q(3); jacobGen(7,1) = -x_E.q(2); jacobGen(7,2) =  x_E.q(1); jacobGen(7,3) =  x_E.q(0);
+    jacobGen(4,0) =  q(0); jacobGen(4,1) =  q(1); jacobGen(4,2) =  q(2); jacobGen(4,3) =  q(3);
+    jacobGen(5,0) = -q(1); jacobGen(5,1) =  q(0); jacobGen(5,2) = -q(3); jacobGen(5,3) =  q(2);
+    jacobGen(6,0) = -q(2); jacobGen(6,1) =  q(3); jacobGen(6,2) =  q(0); jacobGen(6,3) = -q(1);
+    jacobGen(7,0) = -q(3); jacobGen(7,1) = -q(2); jacobGen(7,2) =  q(1); jacobGen(7,3) =  q(0);
 
     jacobGen(4,4) = 0; jacobGen(4,5) = 0; jacobGen(4,6) = 0; jacobGen(4,7) = 0;
     jacobGen(5,4) = 0; jacobGen(5,5) = 0; jacobGen(5,6) = 0; jacobGen(5,7) = 0;
@@ -851,9 +851,9 @@ Matrix<double,8,8> DQ::jacobG( const DQ& x_E) const{
 * @param x_e.
 * @return A 8x8 matrix representing the Generalized Jacobian given the arguments.
 */
-Matrix<double,8,8> DQ::generalizedJacobian( const DQ& x_E) const
+Matrix<double,8,8> DQ::generalizedJacobian() const
 {
-    return jacobG(x_E);
+    return jacobG();
 }
 
 
