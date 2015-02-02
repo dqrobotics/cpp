@@ -27,11 +27,12 @@ class DQTest : public CppUnit::TestFixture
 {
 
 	CPPUNIT_TEST_SUITE (DQTest);
-  CPPUNIT_TEST (constructorTest);
-  CPPUNIT_TEST (displayTest);
+    CPPUNIT_TEST (constructorTest);
+    CPPUNIT_TEST (displayTest);
+    CPPUNIT_TEST (expTest);
 	CPPUNIT_TEST (sumTest);
 	CPPUNIT_TEST (subtractTest);
-  CPPUNIT_TEST (copyTest);
+    CPPUNIT_TEST (copyTest);
 	CPPUNIT_TEST (Hplus4Test);
 	CPPUNIT_TEST (Hminus4Test);
 	CPPUNIT_TEST (kinematicsTest);
@@ -50,14 +51,15 @@ protected:
 
   void displayTest();
 
-	void sumTest();
-	void subtractTest();
+  void expTest();
+  void sumTest();
+  void subtractTest();
   void copyTest();
-	void Hplus4Test();
-	void Hminus4Test();
+  void Hplus4Test();
+  void Hminus4Test();
 
 
-	void kinematicsTest();
+  void kinematicsTest();
 
 
 
