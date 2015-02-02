@@ -59,6 +59,22 @@ void DQTest::displayTest(void)
 /********   DQ ARITHMETICS TESTING             ***************/
 /*************************************************************/
 
+void DQTest::expTest(void)
+{
+    DQ dq1 = exp(2*log(i_));
+    DQ dq2 = DQ(-1);
+
+    CPPUNIT_ASSERT(dq1==dq2);
+
+    dq1 = exp(2*log(j_));
+
+    CPPUNIT_ASSERT(dq1==dq2);
+
+    dq1 = exp(2*log(k_));
+
+    CPPUNIT_ASSERT(dq1==dq2);
+}
+
 
 void DQTest::sumTest(void)
 {
@@ -164,25 +180,6 @@ void DQTest::kinematicsTest(void)
 
     DQ eff_pose = schunk.fkm(thetas);
     CPPUNIT_ASSERT( expected_eff_pose == eff_pose);
-
-    HInfinityRobustController r_controller(schunk, kp);
-
-    for(int j=0;j<2;j++)
-    {   
-      thetas = r_controller.getNewJointPositions(reference,thetas);
-      //std::cout << std::endl << "thetas" << std::endl << thetas << std::endl;
-    }   
-
-    DampedNumericalFilteredController dn_controller(schunk, kp, 0.001, 0.1, 0.001);
-    DampedNumericalFilteredController pid_dn_controller(schunk, kp, MatrixXd::Zero(8,8), MatrixXd::Zero(8,8), 0.001, 0.1, 0.001);
-
-    for(int j=0;j<10;j++)
-    {   
-      thetas = dn_controller.getNewJointPositions(reference,thetas);
-      //std::cout << std::endl << "thetas" << std::endl << thetas.transpose() << std::endl;
-      thetas = pid_dn_controller.getNewJointPositions(reference,thetas);
-      //std::cout << std::endl << "thetas" << std::endl << thetas.transpose() << std::endl;
-    }   
 
     //Namespace and Methods Comparison
     CPPUNIT_ASSERT( schunk.links() == links(schunk));

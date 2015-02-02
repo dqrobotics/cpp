@@ -591,17 +591,20 @@ DQ DQ::exp() const{
   DQ prim;
   DQ exp;
 
-  phi = this->q.norm();
+  if( this->Re() != 0.0 )
+  {
+    throw(std::range_error("Bad exp() call: Exponential operation is defined only for pure dual quaterions."));
+  }
+
+  prim = this->P();
+  phi  = prim.q.norm();
 
   if(phi != 0.0)
     prim = cos(phi) + (sin(phi)/phi)*this->P();
   else
     prim = DQ(1.0);
 
-  if(prim.q(0) < 0)
-    exp = ( -1*(prim + E_*this->D()*prim) );
-  else
-    exp = ( prim + E_*this->D()*prim );
+  exp = ( prim + E_*this->D()*prim );
 
   // using threshold to verify zero values in DQ to be returned
   for(int n = 0; n < 8; n++) {
