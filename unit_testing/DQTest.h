@@ -35,6 +35,7 @@ class DQTest : public CppUnit::TestFixture
     CPPUNIT_TEST (copyTest);
 	CPPUNIT_TEST (Hplus4Test);
 	CPPUNIT_TEST (Hminus4Test);
+    CPPUNIT_TEST (H8Test);
 	CPPUNIT_TEST (kinematicsTest);
 	CPPUNIT_TEST_SUITE_END ();
 
@@ -57,6 +58,7 @@ protected:
   void copyTest();
   void Hplus4Test();
   void Hminus4Test();
+  void H8Test();
 
 
   void kinematicsTest();
