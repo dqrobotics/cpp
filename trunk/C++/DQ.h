@@ -10,6 +10,11 @@
 ***********************************************************
 *              REVISION HISTORY
 ***********************************************************
+* 2015/5/26 Murilo Marques Marinho (murilo@nml.t.u-tokyo.ac.jp)
+             - Added functions to allow compatibility between C++
+               and MATLAB code. (haminus4,8 hamiplus4,8 T(), 
+               rotation_axis(), rotation_angle().
+
 * 2014/10/15 Murilo Marques Marinho (murilomarinho@lara.unb.br)
              - Fixed all implementations of jacobG and 
                generalizedJacobian so that they make sense.
@@ -119,24 +124,31 @@ namespace DQ_robotics{
         DQ translation() const;
 
         DQ rot_axis() const;
+        inline DQ rotation_axis() const{return rot_axis();};
 
         double rot_angle() const;
+        inline DQ rotation_angle() const{return rot_angle();};
 
         DQ log() const;
 
         DQ exp() const;
 
         DQ tplus() const;
+        inline DQ T() const{return tplus();};
 
         DQ pinv() const;
 
         Matrix4d Hplus4() const;
+        inline Matrix4d hamiplus4() const{return Hplus4();};
 
         Matrix4d Hminus4() const;
+        inline Matrix4d haminus4() const{return Hminus4();};
 
         Matrix<double,8,8> Hplus8() const;
-
+        inline Matrix<double,8,8> hamiplus8() const{return Hplus8();};
+        
         Matrix<double,8,8> Hminus8() const;
+        inline Matrix<double,8,8> haminus8() const{return Hminus8();}; 
 
         Vector4d vec4() const;
 
@@ -293,26 +305,33 @@ namespace DQ_robotics{
     DQ translation(const DQ& dq);
 
     DQ rot_axis(const DQ& dq);
+    inline DQ rotation_axis(const DQ& dq){return rot_axis(dq);};
 
     double rot_angle(const DQ& dq);
+    inline DQ rotation_angle(const DQ& dq){return rot_angle(dq);};
 
     DQ log(const DQ& dq);
 
     DQ exp(const DQ& dq);
 
     DQ tplus(const DQ& dq);
+    inline DQ T(const DQ& dq){return tplus(dq);};
 
     DQ pinv(const DQ& dq);
 
     DQ dec_mult(const DQ& dq1, const DQ& dq2);
 
     Matrix4d Hplus4(const DQ& dq);
+    inline Matrix4d hamiplus4(const DQ& dq){return Hplus4(dq);};
 
     Matrix4d Hminus4(const DQ& dq);
+    inline Matrix4d haminus4(const DQ& dq){return Hminus4(dq);};
 
     Matrix<double,8,8> Hplus8(const DQ& dq);
+    inline Matrix<double,8,8> hamiplus8(const DQ& dq){return Hplus8(dq);};
 
     Matrix<double,8,8> Hminus8(const DQ& dq);
+    inline Matrix<double,8,8> haminus8(const DQ& dq){return Hminus8(dq);};
 
     Vector4d vec4(const DQ& dq);
 

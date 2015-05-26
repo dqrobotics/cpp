@@ -147,6 +147,16 @@ void DQTest::Hminus4Test(void)
 }
 
 
+void DQTest::H8Test(void)
+{
+
+	DQ dq1 = DQ(1.,2.,3.,4.,5.,6.,7.,8.);
+
+	CPPUNIT_ASSERT( Hminus8(dq1) == haminus8(dq1));
+    CPPUNIT_ASSERT( Hplus8(dq1) == hamiplus8(dq1));
+}
+
+
 
 void DQTest::kinematicsTest(void)
 {
