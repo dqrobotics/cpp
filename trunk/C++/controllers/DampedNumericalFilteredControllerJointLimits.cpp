@@ -90,6 +90,8 @@ VectorXd DampedNumericalFilteredControllerJointLimits::getNewJointVelocities( co
 
         //Damping Calculation
         int current_step_relevant_dof = ( pseudo_robot.links() - pseudo_robot.n_dummy() );
+        if (current_step_relevant_dof > 6)
+            current_step_relevant_dof = 6;
 
         //std::cout << std::endl << "Singular values = " << singular_values_;
         //std::cout << std::endl << "Size = " << current_step_relevant_dof;
