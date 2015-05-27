@@ -188,6 +188,8 @@ void DQTest::kinematicsTest(void)
                                0.0, 
                                0.46138394527094378494);
 
+    std::cout << std::endl << schunk.getDHMatrix() << std::endl;
+
     DQ eff_pose = schunk.fkm(thetas);
     CPPUNIT_ASSERT( expected_eff_pose == eff_pose);
 

@@ -77,6 +77,7 @@ private: //variables
 
     JacobiSVD<MatrixXd> svd_;
     VectorXd singular_values_;
+    int smallest_expected_non_singular_value_index_;
     MatrixXd svd_sigma_inverted_;
     MatrixXd identity_;
 

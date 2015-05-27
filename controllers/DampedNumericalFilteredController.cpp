@@ -69,7 +69,12 @@ DampedNumericalFilteredController::DampedNumericalFilteredController( const DQ_k
 
     end_effector_pose_ = DQ(0,0,0,0,0,0,0,0);
 
-
+    if (robot_dofs_ < 6)
+        smallest_expected_non_singular_value_index_ = robot_dofs_-1;
+    else
+        smallest_expected_non_singular_value_index_ = 5;
+    
+    
 }
 
 
@@ -105,8 +110,8 @@ VectorXd DampedNumericalFilteredController::getNewJointVelocities( const DQ refe
     singular_values_ = svd_.singularValues();
 
     //Damping Calculation
-    double sigma_min = singular_values_(5);
-    VectorXd u_min = svd_.matrixU().col(5);
+    double sigma_min = singular_values_(smallest_expected_non_singular_value_index_);
+    VectorXd u_min = svd_.matrixU().col(smallest_expected_non_singular_value_index_);
     double lambda = lambda_max_;
     if (sigma_min < epsilon_)
     {
