@@ -33,6 +33,10 @@ Contributors:
 ***********************************************************
 *              REVISION HISTORY
 ***********************************************************
+* 2015/1/29 Murilo Marques Marinho (murilo@nml.t.u-tokyo.ac.jp)
+             - Optmized the dual quaternion multiplication function.
+               (this change sped my code for a factor of 3.44)
+
 * 2015/5/26 Murilo Marques Marinho (murilo@nml.t.u-tokyo.ac.jp)
              - Added functions to allow compatibility between C++
                and MATLAB code. (haminus4,8 hamiplus4,8 T(), 
