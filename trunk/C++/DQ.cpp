@@ -1,5 +1,5 @@
 /**
-(C) Copyright 2015 DQ Robotics Developers
+(C) Copyright 2016 DQ Robotics Developers
 
 This file is part of DQ Robotics.
 

@@ -1,5 +1,5 @@
 /**
-(C) Copyright 2015 DQ Robotics Developers
+(C) Copyright 2016 DQ Robotics Developers
 
 This file is part of DQ Robotics.
 
@@ -22,20 +22,15 @@ Contributors:
 */
 
 /**
-* This class DQ represents a Dual Quaternion.
-*
-* In the class definition are declared different constructors for the Dual Quaternion object, the public methods which can be called
-* by the object, the operators overload functions and also auxiliar functions and variables to intermediate the operations of the
-* public methods. Most of the methods returns a constant Dual Quaternion object, which depends of the object caller such as primary
-* and dual parts or not, being the same for any caller such as the imaginary parts. Some methods returns a constant boost matrix class
-* object which depends of object caller too. And there is a method for display in the console, the DQ object caller.
+* This file contains the DQ (Dual Quaternion) class, dual quaternion
+* algebraic operators, and dual quaternion constants, such as the 
+* imaginary units.
 
 ***********************************************************
 *              REVISION HISTORY
 ***********************************************************
 * 2015/1/29 Murilo Marques Marinho (murilo@nml.t.u-tokyo.ac.jp)
              - Optmized the dual quaternion multiplication function.
-               (this change sped my code for a factor of 3.44)
 
 * 2015/5/26 Murilo Marques Marinho (murilo@nml.t.u-tokyo.ac.jp)
              - Added functions to allow compatibility between C++

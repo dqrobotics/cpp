@@ -1,5 +1,5 @@
 /**
-(C) Copyright 2015 DQ Robotics Developers
+(C) Copyright 2016 DQ Robotics Developers
 
 This file is part of DQ Robotics.
 
@@ -22,17 +22,27 @@ Contributors:
 */
 
 /**
-* This class DQ_kinematics represents a kinematic model of a robotic system using dual quaternions concept.
-*
-* In the class definition are declared different constructors for the Dual Quaternion Kinematics object, the public methods which
-* can be called by the object and also auxiliar functions and variables to intermediate the operations of the public methods.
-* Some methods return a constant Dual Quaternion object, some return a constant boost vector class and some return a constant boost
-* matrix class. But, all of then depends of the object caller. For displaying the results of methods, the DISPLAY and MATRIX functions
-* of DQ class (also provided with this class) can be used.
+* This file contains the DQ_kinematics (Dual Quaternion Kinematics) class, and
+* related functions. With the Denavit-Hartenberg parameters, a serial-link robot
+* can be described and its Kinematic functions, such as its Jacobian, can be
+* obtained.
 
 ***********************************************************
 *              REVISION HISTORY
 ***********************************************************
+* YYYY/MM/DD Author (e-mail)
+
+* 2016/03/02 Murilo Marques Marinho (murilo@nml.t.u-tokyo.ac.jp)
+             - Added support for prismatic joints, the new constants
+               can be used to define a joint type on a nx5 DH matrix, 
+               in the same way you could define a "dummy" joint.
+               JOINT_TYPE_ROTATIONAL = 0
+               JOINT_TYPE_DUMMY      = 1
+               JOINT_TYPE_PRISMATIC  = 2
+             - This code is backwards compatible.
+             Prefer using joint_types() instead of dummy() in 
+             future code.
+
 * 2013/11/19 Murilo Marques Marinho (murilomarinho@lara.unb.br)
              - Changed constructor to use default value, instead
                of having two constructors.
@@ -79,7 +89,7 @@ Contributors:
              - static methods returning constant matrix objects
                completely removed from DQ_kinematics class.
 
-* 2013/31/01 Murilo Marques Marinho (murilomarinho@lara.unb.br)
+* 2013/01/31 Murilo Marques Marinho (murilomarinho@lara.unb.br)
              - Changed Library to Use Eigen.
 
 * 2012/12/10 Mateus Rodrigues Martins (martinsrmateus@gmail.com)
@@ -104,7 +114,12 @@ using namespace Eigen;
 namespace DQ_robotics
 {
 
-
+    //Joint Types: added March 2nd
+    enum{
+        JOINT_TYPE_ROTATIONAL,
+        JOINT_TYPE_DUMMY,
+        JOINT_TYPE_PRISMATIC
+    };
 
     class DQ_kinematics{
 
@@ -148,8 +163,11 @@ namespace DQ_robotics
 
         VectorXd alpha() const;
 
-        VectorXd dummy() const;
-        void set_dummy( const VectorXd& dummy_vector);
+        VectorXd dummy() const;                           //Deprecated March 2nd, 2016. Use joint_types instead
+        void set_dummy( const VectorXd& dummy_vector);    //Deprecated March 2nd, 2016. Use set_joint_types instead
+
+        VectorXd joint_types() const;
+        
 
         int n_dummy() const;
 
@@ -171,13 +189,15 @@ namespace DQ_robotics
 
         DQ dh2dq( const double& theta_ang, const int& link_i) const;
 
-        DQ get_z( const VectorXd& q) const;
+        DQ get_z( const VectorXd& q, const int joint_type=JOINT_TYPE_ROTATIONAL) const;
 
         MatrixXd analyticalJacobian( const VectorXd& theta_vec) const;
             MatrixXd jacobian( const VectorXd& theta_vec) const; //The MATLAB syntax, kept for legacy reasons.
 
     };
 
+
+    
 
     Matrix<double,8,8> C8();
 
@@ -212,7 +232,7 @@ namespace DQ_robotics
 
     DQ dh2dq( const DQ_kinematics& dq_kin, const double& theta_ang, const int& link_i);
 
-    DQ get_z( const DQ_kinematics& dq_kin, const VectorXd& q);
+    DQ get_z( const DQ_kinematics& dq_kin, const VectorXd& q, const int joint_type=JOINT_TYPE_ROTATIONAL);
    
     MatrixXd analyticalJacobian( const DQ_kinematics& dq_kin, const VectorXd& theta_vec);
         MatrixXd jacobian( const DQ_kinematics& dq_kin, const VectorXd& theta_vec); //The MATLAB syntax, kept for legacy reasons.
@@ -227,6 +247,8 @@ namespace DQ_robotics
         MatrixXd  jacobd( const DQ_kinematics& dq_kin, const MatrixXd& param_jacobian, const Matrix<double,8,1>& x); //The MATLAB syntax, kept for legacy reasons.
 
     MatrixXd pseudoInverse( const MatrixXd& matrix);
+    
+    MatrixXd dampedPseudoInverse(const MatrixXd& matrix, const double alpha);
     
 
 }//Namespace DQRobotics
