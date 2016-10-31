@@ -1,5 +1,5 @@
 /**
-(C) Copyright 2016 DQ Robotics Developers
+(C) Copyright 2015 DQ Robotics Developers
 
 This file is part of DQ Robotics.
 
@@ -78,7 +78,6 @@ VectorXd  dummy( const DQ_kinematics& dq_kin)
 {
     return dq_kin.dummy();
 }
-
 
 /**
 * Returns a constant int representing the number of 'dummy' axes of a robotic system DQ_kinematics object.
@@ -217,7 +216,7 @@ DQ  dh2dq( const DQ_kinematics& dq_kin, const double& theta_ang, const int& link
     return dq_kin.dh2dq(theta_ang, link_i);
 }
 
-DQ  get_z( const DQ_kinematics& dq_kin, const VectorXd& q, const int joint_type)
+DQ  get_z( const DQ_kinematics& dq_kin, const VectorXd& q)
 {
     return dq_kin.get_z(q);
 }
@@ -335,41 +334,16 @@ MatrixXd  pseudoInverse( const MatrixXd& matrix)
     for(int i=0;i<singular_values.size();i++)
     {
         if(singular_values(i) > tol)
-            svd_sigma_inverted(i,i) = 1/(singular_values(i));
+		    svd_sigma_inverted(i,i) = 1/(singular_values(i));
 	    else
 		    svd_sigma_inverted(i,i) = 0;
      }
-    ////svd_sigma_inverted(6,6)=0;
 
      pseudo_inverse = svd.matrixV() * (svd_sigma_inverted * svd.matrixU().adjoint());
     
      return pseudo_inverse;
 }
 
-
-MatrixXd dampedPseudoInverse( const MatrixXd& matrix, const double alpha)
-{
-    int num_rows = matrix.rows();
-    int num_cols = matrix.cols();
-
-    MatrixXd pseudo_inverse(num_cols,num_rows);
-    JacobiSVD<MatrixXd> svd(num_cols,num_rows);
-    VectorXd singular_values;
-    MatrixXd svd_sigma_inverted(num_cols,num_rows);
-    svd_sigma_inverted = MatrixXd::Zero(num_cols,num_rows);
-
-    svd.compute(matrix, ComputeFullU | ComputeFullV);
-    singular_values = svd.singularValues();
-
-    //We want to solve the equation J+ = J^T(JJ^T+aI)^-1, in which the matrix 
-    //being inverted is obviously positive definite if a > 0.
-    //The solver gives us the solution to X = A^-1.B
-    //Therefore I chose to find X^T = B^T(A^T)^-1 then take the transpose of X.
-    pseudo_inverse = ((matrix*matrix.transpose() + (alpha*alpha)*Matrix<double,8,8>::Identity() ).transpose()).ldlt().solve(matrix);
-    pseudo_inverse.transposeInPlace();
-
-    return pseudo_inverse;
-}
 
 
 /****************************************************************
@@ -510,39 +484,19 @@ VectorXd  DQ_kinematics::alpha() const
 */
 VectorXd  DQ_kinematics::dummy() const
 {
-    VectorXd dummy_vector = VectorXd::Zero(dh_matrix_.cols());
-
-    //If joint types are specified
+    VectorXd aux_dummy(dh_matrix_.cols());
     if (dh_matrix_.rows() > 4){
         for (int i = 0; i < dh_matrix_.cols(); i++) {
-            if(dh_matrix_(4,i)==1)
-                dummy_vector(i) = 1;
-            else
-                dummy_vector(i) = 0;
+            aux_dummy(i) = dh_matrix_(4,i);
         }
-        return dummy_vector; //Dummy joints are 1, rotational joints are 0
+        return aux_dummy;
     }
-    else
-        return dummy_vector;
-    
-};
-
-VectorXd  DQ_kinematics::joint_types() const
-{
-    VectorXd joint_type_vector = VectorXd::Zero(dh_matrix_.cols());
-
-    //If joint types are specified
-    if (dh_matrix_.rows() > 4){
-
-        for (int i = 0; i < dh_matrix_.cols(); i++)
-            joint_type_vector(i) = dh_matrix_(4,i);
-
-        return joint_type_vector; //see the enum at DQ_kinematics.h
+    else {
+        for (int i = 0; i < dh_matrix_.cols(); i++) {
+        aux_dummy(i) = 0;
+        }
+        return aux_dummy;
     }
-    //If not, all joints are ROTATIONAL joints (legacy reasons)
-    else
-        return joint_type_vector;
-    
 };
 
 
@@ -559,16 +513,15 @@ void DQ_kinematics::set_dummy( const VectorXd& dummy_vector)
 
     if (dh_matrix_.rows() > 4){
         for (int i = 0; i < dh_matrix_.cols(); i++) {
-            if(dummy_vector(i)==1) //Dummy joints are 1, rotational joints are 0
-                dh_matrix_(4,i) = 1;
-            else 
-                dh_matrix_(4,i) = 0;
+            dh_matrix_(4,i) = dummy_vector(i);
         }
     }
     else{
         std::cerr << std::endl << "Kinematics body has no dummy information to change." << std::endl;        
         //Do nothing
     }
+
+
 
 }
 
@@ -681,7 +634,7 @@ DQ  DQ_kinematics::raw_fkm( const VectorXd& theta_vec) const
 * This is an auxiliary function to be used mainly with the jacobian function.
 * To use this member function, type: 'dh_matrix__object.raw_fkm(theta_vec, ith);'.
 * \param Eigen::VectorXd theta_vec is the vector representing the theta joint angles.
-* \param int ith is the position of the last joint included in the forward kinematic model
+* \param int ith is the position of the least joint included in the forward kinematic model
 * \return A constant DQ object.
 */
 DQ  DQ_kinematics::raw_fkm( const VectorXd& theta_vec, const int& ith) const
@@ -740,108 +693,60 @@ DQ  DQ_kinematics::fkm( const VectorXd& theta_vec, const int& ith) const
 */
 DQ  DQ_kinematics::dh2dq( const double& theta_ang, const int& link_i) const {
 
-    //CHECK IF ROTATIONAL OR PRISMATIC
-    if(joint_types()(link_i-1)==JOINT_TYPE_PRISMATIC)
-    {
+    Matrix<double,8,1> q(8);
 
-        Matrix<double,8,1> q(8);
+    double d     = this->d()(link_i-1);
+    double a     = this->a()(link_i-1);
+    double alpha = this->alpha()(link_i-1);
 
-        double theta = this->theta()(link_i-1);
-        double d     = this->d()(link_i-1) + theta_ang;
-        double a     = this->a()(link_i-1);
-        double alpha = this->alpha()(link_i-1);
+    if(this->convention() == "standard") {
 
-        if(this->convention() == "standard") {
-
-            q(0)=cos((theta )/2.0)*cos(alpha/2.0);
-            q(1)=cos((theta )/2.0)*sin(alpha/2.0);
-            q(2)=sin((theta )/2.0)*sin(alpha/2.0);
-            q(3)=sin((theta )/2.0)*cos(alpha/2.0);
-            double d2=d/2.0;
-            double a2=a/2.0;
-            q(4)= -d2*q(3) - a2*q(1);
-            q(5)= -d2*q(2) + a2*q(0);
-            q(6)=  d2*q(1) + a2*q(3);
-            q(7)=  d2*q(0) - a2*q(2);
-        }
-        else{
-
-            double h1 = cos((theta )/2.0)*cos(alpha/2.0);
-            double h2 = cos((theta )/2.0)*sin(alpha/2.0);
-            double h3 = sin((theta )/2.0)*sin(alpha/2.0);
-            double h4 = sin((theta )/2.0)*cos(alpha/2.0);
-            q(0)= h1;
-            q(1)= h2;
-            q(2)= -h3;
-            q(3)= h4;
-            double d2=d/2.0;
-            double a2=a/2.0;
-            q(4)=-d2*h4 - a2*h2;
-            q(5)=-d2*h3 + a2*h1;
-            q(6)=-(d2*h2 + a2*h4);
-            q(7)=d2*h1 - a2*h3;
-        }
-        return DQ(q);
-
+        q(0)=cos((theta_ang + this->theta()(link_i-1) )/2.0)*cos(alpha/2.0);
+        q(1)=cos((theta_ang + this->theta()(link_i-1) )/2.0)*sin(alpha/2.0);
+        q(2)=sin((theta_ang + this->theta()(link_i-1) )/2.0)*sin(alpha/2.0);
+        q(3)=sin((theta_ang + this->theta()(link_i-1) )/2.0)*cos(alpha/2.0);
+        double d2=d/2.0;
+        double a2=a/2.0;
+        q(4)= -d2*q(3) - a2*q(1);
+        q(5)= -d2*q(2) + a2*q(0);
+        q(6)=  d2*q(1) + a2*q(3);
+        q(7)=  d2*q(0) - a2*q(2);
     }
-    else
-    {
+    else{
 
-        Matrix<double,8,1> q(8);
-
-        double theta = theta_ang + this->theta()(link_i-1);
-        double d     = this->d()(link_i-1);
-        double a     = this->a()(link_i-1);
-        double alpha = this->alpha()(link_i-1);
-
-        if(this->convention() == "standard") {
-
-            q(0)=cos((theta )/2.0)*cos(alpha/2.0);
-            q(1)=cos((theta )/2.0)*sin(alpha/2.0);
-            q(2)=sin((theta )/2.0)*sin(alpha/2.0);
-            q(3)=sin((theta )/2.0)*cos(alpha/2.0);
-            double d2=d/2.0;
-            double a2=a/2.0;
-            q(4)= -d2*q(3) - a2*q(1);
-            q(5)= -d2*q(2) + a2*q(0);
-            q(6)=  d2*q(1) + a2*q(3);
-            q(7)=  d2*q(0) - a2*q(2);
-        }
-        else{
-
-            double h1 = cos((theta )/2.0)*cos(alpha/2.0);
-            double h2 = cos((theta )/2.0)*sin(alpha/2.0);
-            double h3 = sin((theta )/2.0)*sin(alpha/2.0);
-            double h4 = sin((theta )/2.0)*cos(alpha/2.0);
-            q(0)= h1;
-            q(1)= h2;
-            q(2)= -h3;
-            q(3)= h4;
-            double d2=d/2.0;
-            double a2=a/2.0;
-            q(4)=-d2*h4 - a2*h2;
-            q(5)=-d2*h3 + a2*h1;
-            q(6)=-(d2*h2 + a2*h4);
-            q(7)=d2*h1 - a2*h3;
-        }
-        return DQ(q);
-
-
+        double h1 = cos((theta_ang + this->theta()(link_i-1) )/2.0)*cos(alpha/2.0);
+        double h2 = cos((theta_ang + this->theta()(link_i-1) )/2.0)*sin(alpha/2.0);
+        double h3 = sin((theta_ang + this->theta()(link_i-1) )/2.0)*sin(alpha/2.0);
+        double h4 = sin((theta_ang + this->theta()(link_i-1) )/2.0)*cos(alpha/2.0);
+        q(0)= h1;
+        q(1)= h2;
+        q(2)= -h3;
+        q(3)= h4;
+        double d2=d/2.0;
+        double a2=a/2.0;
+        q(4)=-d2*h4 - a2*h2;
+        q(5)=-d2*h3 + a2*h1;
+        q(6)=-(d2*h2 + a2*h4);
+        q(7)=d2*h1 - a2*h3;
     }
+    return DQ(q);
 };
 
 
-DQ  DQ_kinematics::get_z( const VectorXd& q, const int joint_type/*=JOINT_TYPE_ROTATIONAL*/) const
+DQ  DQ_kinematics::get_z( const VectorXd& q) const
 {
-    Matrix<double,8,1> matrix(q);
-    DQ x(matrix);
-    
-    //CHECK IF ROTATIONAL OR PRISMATIC
-    if(joint_type==JOINT_TYPE_PRISMATIC)
-        return x*E_*k_*conj(x);
-    else
-        return 0.5*x*k_*conj(x);
+    Matrix<double,8,1> z(8);
 
+    z(0) = 0.0;
+    z(1)=q(1)*q(3) + q(0)*q(2);
+    z(2)=q(2)*q(3) - q(0)* q(1);
+    z(3)=(q(3)*q(3)-q(2)*q(2)-q(1)*q(1)+q(0)*q(0))/2.0;
+    z(4)=0.0;
+    z(5)=q(1)*q(7)+q(5)*q(3)+q(0)*q(6)+q(4)*q(2);
+    z(6)=q(2)*q(7)+q(6)*q(3)-q(0)*q(5)-q(4)*q(1);
+    z(7)=q(3)*q(7)-q(2)*q(6)-q(1)*q(5)+q(0)*q(4);
+
+    return DQ(z);
 };
 
 /** Returns a MatrixXd 8x(links - n_dummy) representing the Jacobian of a robotic system DQ_kinematics object.
@@ -869,7 +774,7 @@ MatrixXd  DQ_kinematics::jacobian( const VectorXd& theta_vec) const
 
             // Use the standard DH convention
             if(this->convention() == "standard") {
-                z = this->get_z(q.q, this->joint_types()(i));
+                z = this->get_z(q.q);
             }
             // Use the modified DH convention
             else {
@@ -877,7 +782,7 @@ MatrixXd  DQ_kinematics::jacobian( const VectorXd& theta_vec) const
                 z =0.5 * q * w * q.conj();
             }
 
-            if(this->dummy()(i) != JOINT_TYPE_DUMMY) {
+            if(this->dummy()(i) == 0) {
             	q = q * this->dh2dq(theta_vec(ith+1), i+1);
             	DQ aux_j = z * q_effector;
             	for(int k = 0; k < J.rows(); k++) {
