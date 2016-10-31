@@ -156,6 +156,15 @@ void DQTest::H8Test(void)
     CPPUNIT_ASSERT( Hplus8(dq1) == hamiplus8(dq1));
 }
 
+void DQTest::normalizeTest(void)
+{
+
+	DQ dq1 = DQ(1.,2.,3.,4.,5.,6.,7.,8.);
+
+	CPPUNIT_ASSERT( dq1.normalize().norm() == norm(DQ(1)));
+	CPPUNIT_ASSERT( dq1.normalize().norm() == norm(normalize(dq1)));
+}
+
 
 
 void DQTest::kinematicsTest(void)

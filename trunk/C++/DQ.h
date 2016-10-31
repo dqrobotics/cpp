@@ -1,5 +1,5 @@
 /**
-(C) Copyright 2015 DQ Robotics Developers
+(C) Copyright 2016 DQ Robotics Developers
 
 This file is part of DQ Robotics.
 
@@ -33,6 +33,9 @@ Contributors:
 ***********************************************************
 *              REVISION HISTORY
 ***********************************************************
+* 2016/10/31 Murilo Marques Marinho (murilo@nml.t.u-tokyo.ac.jp)
+             - Added normalize() function, see ticket #18
+
 * 2015/5/26 Murilo Marques Marinho (murilo@nml.t.u-tokyo.ac.jp)
              - Added functions to allow compatibility between C++
                and MATLAB code. (haminus4,8 hamiplus4,8 T(), 
@@ -180,6 +183,8 @@ namespace DQ_robotics{
         Matrix<double,8,8> generalizedJacobian() const;
             //The MATLAB syntax, kept for legacy reasons.
             Matrix<double,8,8> jacobG() const;
+
+        DQ normalize() const;
 
         // Operators overload functions
       public:
@@ -364,6 +369,7 @@ namespace DQ_robotics{
         //The MATLAB syntax, kept for legacy reasons.
         Matrix<double,8,8> jacobG(const DQ& x_E);
 
+    DQ normalize (const DQ& dq);
 
 }//Namespace DQRobotics
 
