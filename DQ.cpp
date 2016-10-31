@@ -1,5 +1,5 @@
 /**
-(C) Copyright 2015 DQ Robotics Developers
+(C) Copyright 2016 DQ Robotics Developers
 
 This file is part of DQ Robotics.
 
@@ -288,6 +288,16 @@ Matrix<double,8,8> jacobG(const DQ& x_E)
 Matrix<double,8,8> generalizedJacobian(const DQ& x_E)
 {
     return x_E.jacobG();
+}
+
+/**
+* Dual quaternion normalization
+* @param dq
+* @return the normalized version of qd.
+*/
+DQ normalize(const DQ& dq)
+{
+    return dq*(dq.norm().inv());
 }
 
 /****************************************************************
@@ -880,6 +890,12 @@ Matrix<double,8,8> DQ::jacobG() const{
 Matrix<double,8,8> DQ::generalizedJacobian() const
 {
     return jacobG();
+}
+
+
+DQ DQ::normalize() const
+{
+    return (*this)*((*this).norm().inv());
 }
 
 
