@@ -1,5 +1,5 @@
 /**
-(C) Copyright 2016 DQ Robotics Developers
+(C) Copyright 2015 DQ Robotics Developers
 
 This file is part of DQ Robotics.
 
@@ -1165,24 +1165,21 @@ DQ operator-(double scalar, DQ dq){
 */
 DQ operator*(DQ dq1, DQ dq2){
     DQ dq;
-    DQ dq2d = dq2.D();
-    DQ dq2p = dq2.P();
-    DQ dq1d = dq1.D();    
 
     dq.q(0) = dq1.q(0)*dq2.q(0) - dq1.q(1)*dq2.q(1) - dq1.q(2)*dq2.q(2) - dq1.q(3)*dq2.q(3);
     dq.q(1) = dq1.q(0)*dq2.q(1) + dq1.q(1)*dq2.q(0) + dq1.q(2)*dq2.q(3) - dq1.q(3)*dq2.q(2);
     dq.q(2) = dq1.q(0)*dq2.q(2) - dq1.q(1)*dq2.q(3) + dq1.q(2)*dq2.q(0) + dq1.q(3)*dq2.q(1);
     dq.q(3) = dq1.q(0)*dq2.q(3) + dq1.q(1)*dq2.q(2) - dq1.q(2)*dq2.q(1) + dq1.q(3)*dq2.q(0);
 
-    dq.q(4) = dq1.q(0)*dq2d.q(0) - dq1.q(1)*dq2d.q(1) - dq1.q(2)*dq2d.q(2) - dq1.q(3)*dq2d.q(3);
-    dq.q(5) = dq1.q(0)*dq2d.q(1) + dq1.q(1)*dq2d.q(0) + dq1.q(2)*dq2d.q(3) - dq1.q(3)*dq2d.q(2);
-    dq.q(6) = dq1.q(0)*dq2d.q(2) - dq1.q(1)*dq2d.q(3) + dq1.q(2)*dq2d.q(0) + dq1.q(3)*dq2d.q(1);
-    dq.q(7) = dq1.q(0)*dq2d.q(3) + dq1.q(1)*dq2d.q(2) - dq1.q(2)*dq2d.q(1) + dq1.q(3)*dq2d.q(0);
+    dq.q(4) = dq1.q(0)*dq2.D().q(0) - dq1.q(1)*dq2.D().q(1) - dq1.q(2)*dq2.D().q(2) - dq1.q(3)*dq2.D().q(3);
+    dq.q(5) = dq1.q(0)*dq2.D().q(1) + dq1.q(1)*dq2.D().q(0) + dq1.q(2)*dq2.D().q(3) - dq1.q(3)*dq2.D().q(2);
+    dq.q(6) = dq1.q(0)*dq2.D().q(2) - dq1.q(1)*dq2.D().q(3) + dq1.q(2)*dq2.D().q(0) + dq1.q(3)*dq2.D().q(1);
+    dq.q(7) = dq1.q(0)*dq2.D().q(3) + dq1.q(1)*dq2.D().q(2) - dq1.q(2)*dq2.D().q(1) + dq1.q(3)*dq2.D().q(0);
 
-    dq.q(4) = dq.q(4) + dq1d.q(0)*dq2p.q(0) - dq1d.q(1)*dq2p.q(1) - dq1d.q(2)*dq2p.q(2) - dq1d.q(3)*dq2p.q(3);
-    dq.q(5) = dq.q(5) + dq1d.q(0)*dq2p.q(1) + dq1d.q(1)*dq2p.q(0) + dq1d.q(2)*dq2p.q(3) - dq1d.q(3)*dq2p.q(2);
-    dq.q(6) = dq.q(6) + dq1d.q(0)*dq2p.q(2) - dq1d.q(1)*dq2p.q(3) + dq1d.q(2)*dq2p.q(0) + dq1d.q(3)*dq2p.q(1);
-    dq.q(7) = dq.q(7) + dq1d.q(0)*dq2p.q(3) + dq1d.q(1)*dq2p.q(2) - dq1d.q(2)*dq2p.q(1) + dq1d.q(3)*dq2p.q(0);
+    dq.q(4) = dq.q(4) + dq1.D().q(0)*dq2.P().q(0) - dq1.D().q(1)*dq2.P().q(1) - dq1.D().q(2)*dq2.P().q(2) - dq1.D().q(3)*dq2.P().q(3);
+    dq.q(5) = dq.q(5) + dq1.D().q(0)*dq2.P().q(1) + dq1.D().q(1)*dq2.P().q(0) + dq1.D().q(2)*dq2.P().q(3) - dq1.D().q(3)*dq2.P().q(2);
+    dq.q(6) = dq.q(6) + dq1.D().q(0)*dq2.P().q(2) - dq1.D().q(1)*dq2.P().q(3) + dq1.D().q(2)*dq2.P().q(0) + dq1.D().q(3)*dq2.P().q(1);
+    dq.q(7) = dq.q(7) + dq1.D().q(0)*dq2.P().q(3) + dq1.D().q(1)*dq2.P().q(2) - dq1.D().q(2)*dq2.P().q(1) + dq1.D().q(3)*dq2.P().q(0);
 
     for(int n = 0; n < 8; n++) {
             if(fabs(dq.q(n)) < DQ_threshold )
