@@ -1535,36 +1535,6 @@ bool operator!=(double scalar, DQ dq) {
     return (dq_scalar != dq);
 };
 
-// Operator (^) overload
-
-/**
-* Operator (^) overload for the potentiation operation of a DQ objects.
-*
-* This friend function do the raises a DQ object by the m-th power and returns the result on another DQ object which
-* elements are correctly calculated
-* \param dq1 is the DQ object in the operation.
-* \param m is the double value representing the power.
-* \return A DQ object.
-* \sa DQ(), log(), exp() threshold().
-*/
-DQ operator^(DQ dq1, double m) {
-
-    if (dq1.norm() != 1) {
-        throw(std::range_error("Bad operator^() call: Not a unit dual quaternion"));
-    }
-    else {
-        DQ dq;
-        dq = m * dq1.log();
-        dq = dq.exp();
-        for(int n = 0; n < 8; n++) {
-                if(fabs(dq.q(n)) < DQ_threshold )
-                    dq.q(n) = 0;
-            }
-        return dq;
-    }
-};
-
-
 std::ostream& operator<<(std::ostream& os, DQ dq)
 {
     os << dq.q(0) << " "
