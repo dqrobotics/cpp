@@ -37,7 +37,12 @@ void DQTest::constructorTest(void)
   DQ dq_zero = DQ();
   Matrix<double,8,1> q_zero_test = Matrix<double,8,1>::Zero(8,1);
     	
-	CPPUNIT_ASSERT(dq_zero.q == q_zero_test);
+  CPPUNIT_ASSERT(dq_zero.q == q_zero_test);
+
+  DQ positive(1,2,3,4,5,6,7,8);
+  DQ negative(-1,-2,-3,-4,-5,-6,-7,-8);
+  DQ negative2 = -positive;
+  CPPUNIT_ASSERT(negative == negative2);
 }
 
 

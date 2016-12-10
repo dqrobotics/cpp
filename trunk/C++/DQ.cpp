@@ -1055,6 +1055,16 @@ DQ operator+(double scalar, DQ dq) {
 
 // Operator (-) overload
 
+DQ DQ::operator-()
+{
+    DQ dq;
+    for(int n = 0; n<8; n++)
+    {
+        dq.q(n) = -this->q(n);
+    }
+    return dq;
+}
+
 /**
 * Operator (-) overload to subtract one DQ object of other.
 *
