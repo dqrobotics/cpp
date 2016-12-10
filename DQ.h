@@ -33,6 +33,9 @@ Contributors:
 ***********************************************************
 *              REVISION HISTORY
 ***********************************************************
+* 2016/12/10 Murilo Marques Marinho (murilo@nml.t.u-tokyo.ac.jp)
+             - Added operator-() overload, see ticket #20
+
 * 2016/10/31 Murilo Marques Marinho (murilo@nml.t.u-tokyo.ac.jp)
              - Added normalize() function, see ticket #18
 
@@ -211,8 +214,9 @@ namespace DQ_robotics{
 
       //Operator (-) Overload
 
-      friend DQ operator-(DQ dq1, DQ dq2);
+      DQ operator-();
 
+      friend DQ operator-(DQ dq1, DQ dq2);
 
       friend DQ operator-(DQ dq, int scalar);
 
