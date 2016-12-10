@@ -34,6 +34,10 @@ Contributors:
 *              REVISION HISTORY
 ***********************************************************
 * 2016/12/10 Murilo Marques Marinho (murilo@nml.t.u-tokyo.ac.jp)
+             - Removed the operator^(), since it was showing
+               unexpected behavior. See ticket #22.
+
+* 2016/12/10 Murilo Marques Marinho (murilo@nml.t.u-tokyo.ac.jp)
              - Moved C8() and C4() here from DQ_kinematics, see 
                ticket #21
 
@@ -296,8 +300,6 @@ namespace DQ_robotics{
 
       friend bool operator!=(double scalar, DQ dq);
 
-
-      friend DQ operator^(DQ dq, double m);
 
       //Operator (<<) Overload
 
