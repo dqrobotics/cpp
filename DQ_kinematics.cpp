@@ -112,50 +112,6 @@ DQ  effector( const DQ_kinematics& dq_kin)
     return dq_kin.effector();
 }
 
-/**
-* Returns a constant MatrixXd 8x8 dimensions representing C8, a diagonal negative unit matrix.
-* Given the jacobian matrix J that satisfies 'vec8(dot_x) = J * dot_theta', where dot_x is the time derivative of the translation
-* quaternion and dot_theta is the time derivative of the joint vector, the following relation
-* is established: 'vec8(dot_x) = C8 * J * dot_theta'.
-* \return A constant Eigen::MatrixXd (8,8).
-*/
-Matrix<double,8,8>  C8()
-{
-
-    Matrix<double,8,8> diag_C8 = Matrix<double,8,8>::Zero();
-
-    diag_C8(0,0) =  1;
-    diag_C8(1,1) = -1;
-    diag_C8(2,2) = -1;
-    diag_C8(3,3) = -1;
-    diag_C8(4,4) =  1;
-    diag_C8(5,5) = -1;
-    diag_C8(6,6) = -1;
-    diag_C8(7,7) = -1;
-
-    return diag_C8;
-}
-
-/**
-* Returns a constant MatrixXd 4x4 dimensions representing C4, a diagonal negative unit matrix.
-* Given the jacobian matrix J that satisfies 'vec4(dot_x) = J * dot_theta', where dot_x is the time derivative of the translation
-* quaternion and dot_theta is the time derivative of the joint vector, the following relation
-* is established: 'vec4(dot_x) = C4 * J * dot_theta'.
-* \return A constant Eigen::MatrixXd (4,4).
-
-*/
-Matrix<double,4,4>  C4()
-{
-
-    Matrix<double,4,4> diag_C4 = Matrix<double,4,4>::Zero();
-
-    diag_C4(0,0) =  1;
-    diag_C4(1,1) = -1;
-    diag_C4(2,2) = -1;
-    diag_C4(3,3) = -1;
-
-    return diag_C4;
-}
 
 /**
 * Sets, by new_base parameter, the pose of current base of a robotic system DQ_kinematics object and returns it in a constant DQ object.

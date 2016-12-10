@@ -34,6 +34,10 @@ Contributors:
 *              REVISION HISTORY
 ***********************************************************
 * 2016/12/10 Murilo Marques Marinho (murilo@nml.t.u-tokyo.ac.jp)
+             - Moved C8() and C4() here from DQ_kinematics, see 
+               ticket #21
+
+* 2016/12/10 Murilo Marques Marinho (murilo@nml.t.u-tokyo.ac.jp)
              - Added operator-() overload, see ticket #20
 
 * 2016/10/31 Murilo Marques Marinho (murilo@nml.t.u-tokyo.ac.jp)
@@ -309,6 +313,10 @@ namespace DQ_robotics{
     //header file.
 
     //Constants
+    Matrix<double,8,8> C8();
+
+    Matrix<double,4,4> C4();
+
     const DQ E_ = DQ(0,0,0,0,1,0,0,0);
 
     const DQ i_ = DQ(0,1,0,0,0,0,0,0);
