@@ -179,10 +179,6 @@ namespace DQ_robotics
     };
 
 
-    Matrix<double,8,8> C8();
-
-    Matrix<double,4,4> C4();
-
     int links( const DQ_kinematics& dq_kin);
 
     VectorXd theta( const DQ_kinematics& dq_kin);
