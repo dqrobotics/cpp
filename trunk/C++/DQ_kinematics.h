@@ -111,7 +111,7 @@ namespace DQ_robotics
         // private attributtes
         private:
 
-        //Para uso nas funções Jacobian...
+        //Para uso nas funÃ§Ãµes Jacobian...
         MatrixXd    dh_matrix_;
         std::string dh_matrix_convention_;
 

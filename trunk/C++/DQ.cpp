@@ -902,8 +902,8 @@ DQ DQ::normalize() const
 /**
 * Unit Dual Quaternion constructor.
 *
-* Returns a DQ object with unitary norm defined as DQ h = r + DQ::E(r)*0.5*p*r. Where, r is a rotation quatérnion composed by a
-* rotation angle and rotation axis. and p is a translation quatérnion composed by three displacements on the three coordinates x,y and z.
+* Returns a DQ object with unitary norm defined as DQ h = r + DQ::E(r)*0.5*p*r. Where, r is a rotation quatÃ©rnion composed by a
+* rotation angle and rotation axis. and p is a translation quatÃ©rnion composed by three displacements on the three coordinates x,y and z.
 * To create a DQ object using this, type: 'unit_DQ_h = DQ::unitDQ(PI/4, 0,0,1, 2.2,0,2.457);' for example.
 * \param rot_angle is the angle rotation of the unit DQ.
 * \param x_axis, y_axis and z_axis are the axis which are rotated
