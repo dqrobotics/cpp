@@ -25,20 +25,20 @@ using namespace Eigen;
 
 namespace DQ_robotics{
     
-    DQ_kinematics Ax18mKinematics()
+    DQ_kinematics Ax18Kinematics()
     {
         const double pi2 = M_PI_2;
         
-        Matrix<double,5,5> ax18m_dh(5,5);
+        Matrix<double,5,5> ax18_dh(5,5);
         ax18m_dh <<   0,    0,   -pi2,  -pi2,   -pi2,
         0.167,  0,    0,    0.1225,    0,
         0,    0.159,   0.02225,  0 ,   0,
         -pi2,  0,   -pi2,      -pi2,    0,
         0,    0,    0,    0,           0;
         
-        DQ_kinematics ax18m(ax18m_dh,"standard");
+        DQ_kinematics ax18(ax18_dh,"standard");
         
-        return ax18m;
+        return ax18;
     };
     
 }
