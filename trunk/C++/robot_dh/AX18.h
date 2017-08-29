@@ -11,7 +11,7 @@
  since 06/2016
  changes:
  -Virtual Joint was removed
- -Robot dimensions are in meter now.
+ -Robot dimensions are in meters now.
  */
 
 #ifndef DQ_ROBOTICS_AX18_DH_H
@@ -30,7 +30,7 @@ namespace DQ_robotics{
         const double pi2 = M_PI_2;
         
         Matrix<double,5,5> ax18_dh(5,5);
-        ax18m_dh <<   0,    0,   -pi2,  -pi2,   -pi2,
+        ax18_dh <<   0,    0,   -pi2,  -pi2,   -pi2,
         0.167,  0,    0,    0.1225,    0,
         0,    0.159,   0.02225,  0 ,   0,
         -pi2,  0,   -pi2,      -pi2,    0,
