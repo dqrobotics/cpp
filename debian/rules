@@ -1,0 +1,19 @@
+#!/usr/bin/make -f
+
+build:  ;
+build-arch:  ;
+build-indep:  ;
+
+binary:
+	mkdir -p ../usr/lib
+	g++ -Wall -fPIC -I/usr/include/eigen3 -I/usr/local/include/eigen3 ../src/DQ.cpp ../src/DQ_kinematics.cpp -o ../usr/lib/libdqrobotics.so  -shared
+	mkdir -p ../usr/include/dqrobotics/
+	mkdir -p ../usr/include/dqrobotics/robot_dh
+	cp ../src/DQ.h ../usr/include/dqrobotics/DQ.h
+	cp ../src/DQ_kinematics.h ../usr/include/dqrobotics/DQ_kinematics.h
+	cp ../src/robot_dh/* ../usr/include/dqrobotics/robot_dh/
+
+binary-arch:  ;
+binary-indep:  ;
+clean:  ;
+
