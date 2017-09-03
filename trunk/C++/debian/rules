@@ -1,19 +1,28 @@
 #!/usr/bin/make -f
 
-build:  ;
-build-arch:  ;
-build-indep:  ;
+BUILDDIR = build_dir
 
-binary:
-	mkdir -p ../usr/lib
-	g++ -Wall -fPIC -I/usr/include/eigen3 -I/usr/local/include/eigen3 ../src/DQ.cpp ../src/DQ_kinematics.cpp -o ../usr/lib/libdqrobotics.so  -shared
-	mkdir -p ../usr/include/dqrobotics/
-	mkdir -p ../usr/include/dqrobotics/robot_dh
-	cp ../src/DQ.h ../usr/include/dqrobotics/DQ.h
-	cp ../src/DQ_kinematics.h ../usr/include/dqrobotics/DQ_kinematics.h
-	cp ../src/robot_dh/* ../usr/include/dqrobotics/robot_dh/
+# secondly called by launchpad
+build:
+    mkdir $(BUILDDIR);
+    cd $(BUILDDIR); cmake -DCMAKE_INSTALL_PREFIX=../debian/tmp/usr ..
+    make -C $(BUILDDIR)
 
-binary-arch:  ;
-binary-indep:  ;
-clean:  ;
+# thirdly called by launchpad
+binary: binary-indep binary-arch
 
+binary-indep:
+    # nothing to be done
+
+binary-arch:
+    cd $(BUILDDIR); cmake -P cmake_install.cmake
+    mkdir debian/tmp/DEBIAN
+    dpkg-gencontrol -plibdqrobotics
+    dpkg --build debian/tmp ..
+
+# firstly called by launchpad
+clean:
+    rm -f build
+    rm -rf $(BUILDDIR)
+
+.PHONY: binary binary-arch binary-indep clean

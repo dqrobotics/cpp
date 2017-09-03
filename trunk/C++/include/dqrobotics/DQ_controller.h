@@ -39,7 +39,7 @@ Contributors:
 #ifndef DQCONTROLLER_H
 #define DQCONTROLLER_H
 
-#include "DQ.h"
+#include <dqrobotics/DQ.h>
 #include <Eigen/Dense>
 
 using namespace Eigen;
