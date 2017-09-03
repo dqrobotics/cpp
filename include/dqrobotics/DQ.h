@@ -117,7 +117,7 @@ Contributors:
 #include <iostream>
 #include <math.h>
 #include <stdexcept> //for range_error
-#include <Eigen/Dense>
+#include <eigen3/Eigen/Dense>
 using namespace Eigen;
 
 namespace DQ_robotics{

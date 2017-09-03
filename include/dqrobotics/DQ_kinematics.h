@@ -95,7 +95,7 @@ Contributors:
 
 #include <math.h>       //library for math functions
 #include <stdexcept>    //For range_error
-#include <Eigen/Dense>  //Library for matrix usage
+#include <eigen3/Eigen/Dense>  //Library for matrix usage
 #include <limits>       //Used in pseudoinverse()
 #include <string>
 

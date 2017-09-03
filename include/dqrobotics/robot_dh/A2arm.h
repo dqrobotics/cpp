@@ -9,7 +9,7 @@ Schunk Robot DH Parameters
 #define DQ_ROBOTICS_A2ARM_DH_H
 
 #include<dqrobotics/DQ_kinematics.h>
-#include<Eigen/Dense>
+#include<eigen3/Eigen/Dense>
 #include<cmath>
 
 using namespace Eigen;
