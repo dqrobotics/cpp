@@ -8,7 +8,7 @@ Schunk Robot DH Parameters
 #ifndef DQ_ROBOTICS_SCHUNK_DH_H
 #define DQ_ROBOTICS_SCHUNK_DH_H
 
-#include"../DQ_kinematics.h"
+#include<dqrobotics/DQ_kinematics.h>
 #include<Eigen/Dense>
 #include<cmath>
 

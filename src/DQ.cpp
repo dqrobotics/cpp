@@ -21,7 +21,7 @@ Contributors:
 - Mateus Rodrigues Martins (martinsrmateus@gmail.com)
 */
 
-#include "DQ.h"
+#include<dqrobotics/DQ.h>
 
 using std::cout;
 

@@ -8,7 +8,7 @@ Kukka Robot DH Parameters
 #ifndef DQ_ROBOTICS_KUKKA_DH_H
 #define DQ_ROBOTICS_KUKKA_DH_H
 
-#include"../DQ_kinematics.h"
+#include<dqrobotics/DQ_kinematics.h>
 #include<Eigen/Dense>
 #include<cmath>
 

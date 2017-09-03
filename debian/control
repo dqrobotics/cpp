@@ -1,11 +1,12 @@
-Package: libdqrobotics
-Version: 0.1.1
-Architecture: all
-Maintainer: Murilo Marinho
-Installed-Size: 6
-Depends: libeigen3-dev
-Section: testing
+Source: libdqrobotics
+Section: devel
 Priority: optional
+Maintainer: Murilo Marinho <murlou@gmail.com>
+Build-Depends: cmake, libeigen3-dev
 Homepage: http://dqrobotics.sourceforge.net/
+
+Package: libdqrobotics
+Architecture: any
+Depends:
 Description: DQ Robotics
- The dual quaternion robotics library
+ The dual quaternion robotics library.

@@ -91,7 +91,7 @@ Contributors:
 #ifndef DQ_KINEMATICS_H
 #define DQ_KINEMATICS_H
 
-#include "DQ.h"
+#include <dqrobotics/DQ.h>
 
 #include <math.h>       //library for math functions
 #include <stdexcept>    //For range_error

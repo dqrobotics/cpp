@@ -21,8 +21,8 @@ Contributors:
 - Mateus Rodrigues Martins (martinsrmateus@gmail.com)
 */
 
-#include "DQ_kinematics.h"
-#include "DQ.h"
+#include<dqrobotics/DQ_kinematics.h>
+#include<dqrobotics/DQ.h>
 
 namespace DQ_robotics
 {
