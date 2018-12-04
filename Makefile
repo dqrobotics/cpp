@@ -48,10 +48,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/murlou/dqrobotics-code/C++
+CMAKE_SOURCE_DIR = /home/nml/svn/dqrobotics-code/C++
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/murlou/dqrobotics-code/C++
+CMAKE_BINARY_DIR = /home/nml/svn/dqrobotics-code/C++
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -113,8 +113,8 @@ install/local/fast: install/local
 
 # Special rule for the target edit_cache
 edit_cache:
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "No interactive CMake dialog available..."
-	/usr/bin/cmake -E echo No\ interactive\ CMake\ dialog\ available.
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake cache editor..."
+	/usr/bin/cmake-gui -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
 .PHONY : edit_cache
 
 # Special rule for the target edit_cache
@@ -124,9 +124,9 @@ edit_cache/fast: edit_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/murlou/dqrobotics-code/C++/CMakeFiles /home/murlou/dqrobotics-code/C++/CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/nml/svn/dqrobotics-code/C++/CMakeFiles /home/nml/svn/dqrobotics-code/C++/CMakeFiles/progress.marks
 	$(MAKE) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/murlou/dqrobotics-code/C++/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/nml/svn/dqrobotics-code/C++/CMakeFiles 0
 .PHONY : all
 
 # The main clean target

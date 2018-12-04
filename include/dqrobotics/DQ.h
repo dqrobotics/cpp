@@ -170,6 +170,8 @@ namespace DQ_robotics{
 
         DQ exp() const;
 
+        DQ pow(const double a) const;
+
         DQ tplus() const;
         inline DQ T() const{return tplus();};
 
@@ -355,6 +357,8 @@ namespace DQ_robotics{
     DQ log(const DQ& dq);
 
     DQ exp(const DQ& dq);
+
+    DQ pow(const DQ& dq, const double a);
 
     DQ tplus(const DQ& dq);
     inline DQ T(const DQ& dq){return tplus(dq);};
