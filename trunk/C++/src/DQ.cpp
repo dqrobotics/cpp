@@ -164,6 +164,11 @@ DQ exp(const DQ& dq)
     return dq.exp();
 }
 
+DQ pow(const DQ& dq, const double a)
+{
+    return dq.pow(a);
+}
+
 /**
 * Exponential operator -> retrieves the Exponential of a DQ. 
 *
@@ -649,6 +654,14 @@ DQ DQ::exp() const{
 
 };
 
+/**
+
+*/
+DQ DQ::pow(const double a) const
+{
+    DQ logtimesa = a*this->log();
+    return logtimesa.exp();
+};
 
 /**
 * Returns a constant DQ object representing the tplus operator applied to the unit DQ object caller.
