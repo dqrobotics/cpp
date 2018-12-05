@@ -35,24 +35,31 @@ namespace DQ_robotics{
 
 class DQ{
 
-    //Atributes
-
+    //Private methods
 private:
     VectorXd q_() const;
     double q_(const int a) const;
 
+    //Attributes
+public:
+    VectorXd q;
+
+    //Static Methods
 public:
 
-    VectorXd q;
+    static DQ unitDQ( const double& rot_angle, const int& x_axis, const int& y_axis, const int& z_axis, const double& x_trans, const double& y_trans, const double& z_trans);
+    //To comply with MATLAB
+    const static DQ i;
+    const static DQ j;
+    const static DQ k;
+    const static DQ E;
 
     //Methods
 public:
 
-    DQ( const VectorXd& v);
+    DQ(const VectorXd& v);
 
-    DQ( const double& q0=0.0, const double& q1=0.0, const double& q2=0.0, const double& q3=0.0, const double& q4=0.0, const double& q5=0.0, const double& q6=0.0, const double& q7=0.0);
-
-    static DQ unitDQ( const double& rot_angle, const int& x_axis, const int& y_axis, const int& z_axis, const double& x_trans, const double& y_trans, const double& z_trans);
+    DQ(const double& q0=0.0, const double& q1=0.0, const double& q2=0.0, const double& q3=0.0, const double& q4=0.0, const double& q5=0.0, const double& q6=0.0, const double& q7=0.0);
 
     ~DQ();
 
@@ -153,12 +160,12 @@ DQ operator*(const DQ dq, const double scalar);
 DQ operator*(const double scalar, const DQ dq);
 
 //Operator (==) Overload
-bool operator==(DQ dq, int scalar);
-bool operator==(int scalar, DQ dq);
-bool operator==(DQ dq, float scalar);
-bool operator==(float scalar, DQ dq);
-bool operator==(DQ dq, double scalar);
-bool operator==(double scalar, DQ dq);
+bool operator==(const DQ dq, const int scalar);
+bool operator==(const int scalar, const DQ dq);
+bool operator==(const DQ dq, const float scalar);
+bool operator==(const float scalar, const DQ dq);
+bool operator==(const DQ dq, const double scalar);
+bool operator==(const double scalar, const DQ dq);
 
 //Operator (!=) Overload
 bool operator!=(const DQ dq, const int scalar);
@@ -177,11 +184,8 @@ Matrix<double,8,8> C8();
 Matrix<double,4,4> C4();
 
 const DQ E_ = DQ(0,0,0,0,1,0,0,0);
-
 const DQ i_ = DQ(0,1,0,0,0,0,0,0);
-
 const DQ j_ = DQ(0,0,1,0,0,0,0,0);
-
 const DQ k_ = DQ(0,0,0,1,0,0,0,0);
 
 const double DQ_threshold = 1e-12;

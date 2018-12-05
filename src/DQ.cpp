@@ -27,6 +27,11 @@ using std::cout;
 
 namespace DQ_robotics{
 
+//To comply with MATLAB
+const DQ DQ::i(0,1,0,0,0,0,0,0);
+const DQ DQ::j(0,0,1,0,0,0,0,0);
+const DQ DQ::k(0,0,0,1,0,0,0,0);
+const DQ DQ::E(0,0,0,0,1,0,0,0);
 
 /****************************************************************
 **************NAMESPACE ONLY FUNCTIONS***************************
