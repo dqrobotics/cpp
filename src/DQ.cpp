@@ -309,17 +309,15 @@ DQ normalize(const DQ& dq)
 **************DQ CLASS METHODS***********************************
 *****************************************************************/
 
-
-/**
-* DQ constructor using boost vector
-*
-* Returns a DQ object with the values of elements equal to the values of elements from a vector 'v' passed to constructor.
-* \param vector <double> v contain the values to copied to the attribute q.
-*/
-DQ::DQ( const Matrix<double,8,1>& v) {
-    q = v;
+VectorXd DQ::q_() const
+{
+  return q;
 }
 
+double DQ::q_(const int a) const
+{
+  return q(a);
+}
 
 /**
 * DQ constructor using boost vector
@@ -327,14 +325,21 @@ DQ::DQ( const Matrix<double,8,1>& v) {
 * Returns a DQ object with the values of elements equal to the values of elements from a vector 'v' passed to constructor.
 * \param vector <double> v contain the values to copied to the attribute q.
 */
-DQ::DQ( const Matrix<double,4,1>& v) {
-
-    for(int i = 0; i<4; i++)
+DQ::DQ(const VectorXd& v) {
+    q.resize(8);
+    if(v.size()>8)
     {
-        q(i)   = v(i);
-        q(i+4) = 0;
+        throw std::range_error("Trying to initialize a DQ with a vector of size >8 is not allowed.");
     }
-
+    int i=0;
+    for(;i<v.size();i++)
+    {
+        q(i)=v(i);
+    }
+    for(;i<8;i++)
+    {
+        q(i) = 0;
+    }
 };
 
 /**
@@ -346,6 +351,7 @@ DQ::DQ( const Matrix<double,4,1>& v) {
 */
 DQ::DQ(const double& q0,const double& q1,const double& q2,const double& q3,const double& q4,const double& q5,const double& q6,const double& q7) {
 
+    q.resize(8);
     q(0) = q0;
     q(1) = q1;
     q(2) = q2;
@@ -963,7 +969,7 @@ DQ DQ::unitDQ(const double& rot_angle, const int& x_axis,const int& y_axis,const
 * \return A DQ object.
 * \sa DQ(), threshold().
 */
-DQ operator+(DQ dq1, DQ dq2) {
+DQ operator+(const DQ dq1, const DQ dq2) {
     DQ dq;
     for(int n = 0; n<8; n++) {
         dq.q(n) = dq1.q(n) + dq2.q(n);
@@ -986,7 +992,7 @@ DQ operator+(DQ dq1, DQ dq2) {
 * \return A DQ object.
 * \sa DQ(double scalar), operator+(DQ dq1, DQ dq2).
 */
-DQ operator+(DQ dq, int scalar) {
+DQ operator+(const DQ dq, const int scalar) {
     DQ dq_scalar(scalar);
     return (dq + dq_scalar);
 };
@@ -1001,7 +1007,7 @@ DQ operator+(DQ dq, int scalar) {
 * \return A DQ object.
 * \sa DQ(double scalar), operator+(DQ dq1, DQ dq2).
 */
-DQ operator+(int scalar, DQ dq) {
+DQ operator+(const int scalar, const DQ dq) {
     DQ dq_scalar(scalar);
     return (dq_scalar + dq);
 };
@@ -1016,7 +1022,7 @@ DQ operator+(int scalar, DQ dq) {
 * \return A DQ object.
 * \sa DQ(double scalar), operator+(DQ dq1, DQ dq2).
 */
-DQ operator+(DQ dq, float scalar) {
+DQ operator+(const DQ dq, const float scalar) {
     DQ dq_scalar(scalar);
     return (dq + dq_scalar);
 };
@@ -1031,7 +1037,7 @@ DQ operator+(DQ dq, float scalar) {
 * \return A DQ object.
 * \sa DQ(double scalar), operator+(DQ dq1, DQ dq2).
 */
-DQ operator+(float scalar, DQ dq) {
+DQ operator+(const float scalar, const DQ dq) {
     DQ dq_scalar(scalar);
     return (dq_scalar + dq);
 };
@@ -1046,7 +1052,7 @@ DQ operator+(float scalar, DQ dq) {
 * \return A DQ object.
 * \sa DQ(double scalar), operator+(DQ dq1, DQ dq2).
 */
-DQ operator+(DQ dq, double scalar) {
+DQ operator+(const DQ dq, const double scalar) {
     DQ dq_scalar(scalar);
     return (dq + dq_scalar);
 };
@@ -1061,7 +1067,7 @@ DQ operator+(DQ dq, double scalar) {
 * \return A DQ object.
 * \sa DQ(double scalar), operator+(DQ dq1, DQ dq2).
 */
-DQ operator+(double scalar, DQ dq) {
+DQ operator+(const double scalar, const DQ dq) {
     DQ dq_scalar(scalar);
     return (dq_scalar + dq);
 };
@@ -1088,7 +1094,7 @@ DQ DQ::operator-()
 * \return A DQ object.
 * \sa DQ(), threshold().
 */
-DQ operator-(DQ dq1, DQ dq2){
+DQ operator-(const DQ dq1, const DQ dq2){
     DQ dq;
     for(int n = 0; n<8; n++) {
         dq.q(n) = dq1.q(n) - dq2.q(n);
@@ -1110,7 +1116,7 @@ DQ operator-(DQ dq1, DQ dq2){
 * \return A DQ object.
 * \sa DQ(double scalar), operator-(DQ dq1, DQ dq2).
 */
-DQ operator-(DQ dq, int scalar) {
+DQ operator-(const DQ dq, const int scalar) {
     DQ dq_scalar(scalar);
     return (dq - dq_scalar);
 };
@@ -1125,7 +1131,7 @@ DQ operator-(DQ dq, int scalar) {
 * \return A DQ object.
 * \sa DQ(double scalar), operator-(DQ dq1, DQ dq2).
 */
-DQ operator-(int scalar, DQ dq){
+DQ operator-(const int scalar, const DQ dq){
     DQ dq_scalar(scalar);
     return (dq_scalar - dq);
 };
@@ -1140,7 +1146,7 @@ DQ operator-(int scalar, DQ dq){
 * \return A DQ object.
 * \sa DQ(double scalar), operator-(DQ dq1, DQ dq2).
 */
-DQ operator-(DQ dq, float scalar){
+DQ operator-(const DQ dq, const float scalar){
     DQ dq_scalar(scalar);
     return (dq - dq_scalar);
 };
@@ -1155,7 +1161,7 @@ DQ operator-(DQ dq, float scalar){
 * \return A DQ object.
 * \sa DQ(double scalar), operator-(DQ dq1, DQ dq2).
 */
-DQ operator-(float scalar, DQ dq){
+DQ operator-(const float scalar, const DQ dq){
     DQ dq_scalar(scalar);
     return (dq_scalar - dq);
 };
@@ -1170,7 +1176,7 @@ DQ operator-(float scalar, DQ dq){
 * \return A DQ object.
 * \sa DQ(double scalar), operator-(DQ dq1, DQ dq2).
 */
-DQ operator-(DQ dq, double scalar){
+DQ operator-(const DQ dq, const double scalar){
     DQ dq_scalar(scalar);
     return (dq - dq_scalar);
 };
@@ -1185,7 +1191,7 @@ DQ operator-(DQ dq, double scalar){
 * \return A DQ object.
 * \sa DQ(double scalar), operator-(DQ dq1, DQ dq2).
 */
-DQ operator-(double scalar, DQ dq){
+DQ operator-(const double scalar, const DQ dq){
     DQ dq_scalar(scalar);
     return (dq_scalar - dq);
 };
@@ -1202,7 +1208,7 @@ DQ operator-(double scalar, DQ dq){
 * \return A DQ object.
 * \sa DQ(), D(), P(), threshold().
 */
-DQ operator*(DQ dq1, DQ dq2){
+DQ operator*(const DQ dq1, const DQ dq2){
     DQ dq;
 
     dq.q(0) = dq1.q(0)*dq2.q(0) - dq1.q(1)*dq2.q(1) - dq1.q(2)*dq2.q(2) - dq1.q(3)*dq2.q(3);
@@ -1238,7 +1244,7 @@ DQ operator*(DQ dq1, DQ dq2){
 * \return A DQ object.
 * \sa DQ(double scalar), operator*(DQ dq1, DQ dq2).
 */
-DQ operator*(DQ dq, int scalar) {
+DQ operator*(const DQ dq, const int scalar) {
     DQ dq_scalar(scalar);
     return (dq * dq_scalar);
 };
@@ -1253,7 +1259,7 @@ DQ operator*(DQ dq, int scalar) {
 * \return A DQ object.
 * \sa DQ(double scalar), operator*(DQ dq1, DQ dq2).
 */
-DQ operator*(int scalar, DQ dq) {
+DQ operator*(const int scalar, const DQ dq) {
     DQ dq_scalar(scalar);
     return (dq_scalar * dq);
 };
@@ -1268,7 +1274,7 @@ DQ operator*(int scalar, DQ dq) {
 * \return A DQ object.
 * \sa DQ(double scalar), operator*(DQ dq1, DQ dq2).
 */
-DQ operator*(DQ dq, float scalar) {
+DQ operator*(const DQ dq, const float scalar) {
     DQ dq_scalar(scalar);
     return (dq * dq_scalar);
 };
@@ -1283,7 +1289,7 @@ DQ operator*(DQ dq, float scalar) {
 * \return A DQ object.
 * \sa DQ(double scalar), operator*(DQ dq1, DQ dq2).
 */
-DQ operator*(float scalar, DQ dq){
+DQ operator*(const float scalar, const DQ dq){
     DQ dq_scalar(scalar);
     return (dq_scalar * dq);
 };
@@ -1298,7 +1304,7 @@ DQ operator*(float scalar, DQ dq){
 * \return A DQ object.
 * \sa DQ(double scalar), operator*(DQ dq1, DQ dq2).
 */
-DQ operator*(DQ dq, double scalar){
+DQ operator*(const DQ dq, const double scalar){
     DQ dq_scalar(scalar);
     return (dq * dq_scalar);
 };
@@ -1313,7 +1319,7 @@ DQ operator*(DQ dq, double scalar){
 * \return A DQ object.
 * \sa DQ(double scalar), operator*(DQ dq1, DQ dq2).
 */
-DQ operator*(double scalar, DQ dq) {
+DQ operator*(const double scalar, const DQ dq) {
     DQ dq_scalar(scalar);
     return (dq_scalar * dq);
 };
@@ -1329,9 +1335,9 @@ DQ operator*(double scalar, DQ dq) {
 * \return A boolean variable.
 * \sa threshold().
 */
-bool DQ::operator==(DQ dq2) {
+bool DQ::operator==(const DQ dq2) const{
     for(int n = 0; n<8; n++) {
-        if(fabs(q(n) - dq2.q(n)) > DQ_threshold )
+        if(fabs(q(n) - dq2.q_(n)) > DQ_threshold )
         return false; //elements of Dual Quaternion different of scalar
     }
     return true; //elements of Dual Quaternion equal to scalar
@@ -1348,7 +1354,7 @@ bool DQ::operator==(DQ dq2) {
 * \return A boolean variable.
 * \sa DQ(double scalar), operator==(DQ dq2).
 */
-bool operator==(DQ dq, int scalar) {
+bool operator==(const DQ dq, const int scalar) {
     DQ dq_scalar(scalar);
     return (dq == dq_scalar);
 };
@@ -1364,7 +1370,7 @@ bool operator==(DQ dq, int scalar) {
 * \return A boolean variable.
 * \sa DQ(double scalar), operator==(DQ dq2).
 */
-bool operator==(int scalar, DQ dq) {
+bool operator==(const int scalar, const DQ dq) {
     DQ dq_scalar(scalar);
     return (dq_scalar == dq);
 };
@@ -1380,7 +1386,7 @@ bool operator==(int scalar, DQ dq) {
 * \return A boolean variable.
 * \sa DQ(double scalar), operator==(DQ dq2).
 */
-bool operator==(DQ dq, float scalar) {
+bool operator==(const DQ dq, const float scalar) {
     DQ dq_scalar(scalar);
     return (dq == dq_scalar);
 };
@@ -1396,7 +1402,7 @@ bool operator==(DQ dq, float scalar) {
 * \return A boolean variable.
 * \sa DQ(double scalar), operator==(DQ dq2).
 */
-bool operator==(float scalar, DQ dq) {
+bool operator==(const float scalar, const DQ dq) {
     DQ dq_scalar(scalar);
     return (dq_scalar == dq);
 };
@@ -1412,7 +1418,7 @@ bool operator==(float scalar, DQ dq) {
 * \return A boolean variable.
 * \sa DQ(double scalar), operator==(DQ dq2).
 */
-bool operator==(DQ dq, double scalar) {
+bool operator==(const DQ dq, const double scalar) {
     DQ dq_scalar(scalar);
     return (dq == dq_scalar);
 };
@@ -1428,7 +1434,7 @@ bool operator==(DQ dq, double scalar) {
 * \return A boolean variable.
 * \sa DQ(double scalar), operator==(DQ dq2).
 */
-bool operator==(double scalar, DQ dq) {
+bool operator==(const double scalar, const DQ dq) {
     DQ dq_scalar(scalar);
     return (dq_scalar == dq);
 };
@@ -1444,7 +1450,7 @@ bool operator==(double scalar, DQ dq) {
 * \return A boolean variable.
 * \sa threshold().
 */
-bool DQ::operator!=(DQ dq2) {
+bool DQ::operator!=(const DQ dq2) const{
     for(int n = 0; n<8; n++){
         if(fabs(q(n) - dq2.q(n)) > DQ_threshold )
         return true; //elements of Dual Quaternion different of scalar
@@ -1463,7 +1469,7 @@ bool DQ::operator!=(DQ dq2) {
 * \return A boolean variable.
 * \sa DQ(double scalar), operator!=(DQ dq2).
 */
-bool operator!=(DQ dq, int scalar) {
+bool operator!=(const DQ dq, const int scalar) {
     DQ dq_scalar(scalar);
     return (dq != dq_scalar);
 };
@@ -1495,7 +1501,7 @@ bool operator!=(int scalar, DQ dq) {
 * \return A boolean variable.
 * \sa DQ(double scalar), operator!=(DQ dq2).
 */
-bool operator!=(DQ dq, float scalar) {
+bool operator!=(const DQ dq, const float scalar) {
     DQ dq_scalar(scalar);
     return (dq != dq_scalar);
 };
@@ -1511,7 +1517,7 @@ bool operator!=(DQ dq, float scalar) {
 * \return A boolean variable.
 * \sa DQ(double scalar), operator!=(DQ dq2).
 */
-bool operator!=(float scalar, DQ dq) {
+bool operator!=(const float scalar,const DQ dq) {
     DQ dq_scalar(scalar);
     return (dq_scalar != dq);
 };
@@ -1527,7 +1533,7 @@ bool operator!=(float scalar, DQ dq) {
 * \return A boolean variable.
 * \sa DQ(double scalar), operator!=(DQ dq2).
 */
-bool operator!=(DQ dq, double scalar) {
+bool operator!=(const DQ dq,const double scalar) {
     DQ dq_scalar(scalar);
     return (dq != dq_scalar);
 };
@@ -1543,12 +1549,12 @@ bool operator!=(DQ dq, double scalar) {
 * \return A boolean variable.
 * \sa DQ(double scalar), operator!=(DQ dq2).
 */
-bool operator!=(double scalar, DQ dq) {
+bool operator!=(const double scalar, const DQ dq) {
     DQ dq_scalar(scalar);
     return (dq_scalar != dq);
 };
 
-std::ostream& operator<<(std::ostream& os, DQ dq)
+std::ostream& operator<<(std::ostream& os, const DQ dq)
 {
     os << dq.q(0) << " "
        << dq.q(1) << "i "
