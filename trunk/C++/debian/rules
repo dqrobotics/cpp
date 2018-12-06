@@ -1,7 +1,6 @@
 #!/usr/bin/make -f
 
 BUILDDIR = build_dir
-CFLAGS = -Wall -g
 
 # secondly called by launchpad
 build:
@@ -20,7 +19,7 @@ binary-arch:
 	mkdir -p debian/tmp/DEBIAN
 	dpkg-gencontrol -plibdqrobotics
 	dpkg --build debian/tmp ..
-  dh_strip --dbg-package=libdqrobotics
+	dh_strip --dbg-package=libdqrobotics
 
 # firstly called by launchpad
 clean:
