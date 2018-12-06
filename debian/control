@@ -10,3 +10,9 @@ Architecture: any
 Depends:
 Description: DQ Robotics
  The dual quaternion robotics library.
+
+Package: libdqrobotics-dbg
+Section: libdevel
+Architecture: any
+Depends: libdqrobotics
+Description: Debug symbols for the DQ Robotics library.
