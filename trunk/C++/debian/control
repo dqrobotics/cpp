@@ -12,7 +12,7 @@ Description: DQ Robotics
  The dual quaternion robotics library.
 
 Package: libdqrobotics-dbg
-Section: libdevel
+Section: debug
 Architecture: any
 Depends: libdqrobotics
 Description: Debug symbols for the DQ Robotics library.
