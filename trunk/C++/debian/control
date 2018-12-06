@@ -2,7 +2,7 @@ Source: libdqrobotics
 Section: devel
 Priority: optional
 Maintainer: Murilo Marinho <murlou@gmail.com>
-Build-Depends: cmake, libeigen3-dev
+Build-Depends: cmake, libeigen3-dev, debhelper
 Homepage: http://dqrobotics.sourceforge.net/
 
 Package: libdqrobotics
