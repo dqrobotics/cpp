@@ -19,7 +19,7 @@ binary-arch:
 	mkdir -p debian/tmp/DEBIAN
 	dpkg-gencontrol -plibdqrobotics
 	dpkg --build debian/tmp ..
-	#dh_strip --automatic-dbgsym
+	dh_strip --automatic-dbgsym
 
 # firstly called by launchpad
 clean:
