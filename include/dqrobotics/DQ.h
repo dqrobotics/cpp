@@ -122,9 +122,9 @@ public:
     //Operator (-) Overload
     DQ operator-();
     //Operator (==) Overload
-    bool operator==(const DQ dq2) const;
+    bool operator==(const DQ& dq2) const;
     //Operator (!=) Overload
-    bool operator!=(const DQ dq2) const;
+    bool operator!=(const DQ& dq2) const;
 
 };//DQ Class END
 
@@ -133,50 +133,50 @@ public:
  ************************************************************************/
 
 //Operator (+) Overload
-DQ operator+(const DQ dq1, const DQ dq2);
-DQ operator+(const DQ dq, const int scalar);
-DQ operator+(const int scalar, const DQ dq);
-DQ operator+(const DQ dq, const float scalar);
-DQ operator+(const float scalar, const DQ dq);
-DQ operator+(const DQ dq, const double scalar);
-DQ operator+(const double scalar, const DQ dq);
+DQ operator+(const DQ& dq1, const DQ& dq2);
+DQ operator+(const DQ& dq, const int& scalar);
+DQ operator+(const int& scalar, const DQ& dq);
+DQ operator+(const DQ& dq, const float &scalar);
+DQ operator+(const float &scalar, const DQ& dq);
+DQ operator+(const DQ& dq, const double& scalar);
+DQ operator+(const double& scalar, const DQ& dq);
 
 //Operator (-) Overload
-DQ operator-(const DQ dq1, const DQ dq2);
-DQ operator-(const DQ dq, const int scalar);
-DQ operator-(const int scalar, const DQ dq);
-DQ operator-(const DQ dq, const float scalar);
-DQ operator-(const float scalar, const DQ dq);
-DQ operator-(const DQ dq, const double scalar);
-DQ operator-(const double scalar, const DQ dq);
+DQ operator-(const DQ& dq1, const DQ& dq2);
+DQ operator-(const DQ& dq, const int& scalar);
+DQ operator-(const int& scalar, const DQ& dq);
+DQ operator-(const DQ& dq, const float &scalar);
+DQ operator-(const float &scalar, const DQ& dq);
+DQ operator-(const DQ& dq, const double& scalar);
+DQ operator-(const double& scalar, const DQ& dq);
 
 //Operator (*) Overload
-DQ operator*(const DQ dq1, const DQ dq2);
-DQ operator*(const DQ dq, const int scalar);
-DQ operator*(int scalar, const DQ dq);
-DQ operator*(const DQ dq, const float scalar);
-DQ operator*(const float scalar, const DQ dq);
-DQ operator*(const DQ dq, const double scalar);
-DQ operator*(const double scalar, const DQ dq);
+DQ operator*(const DQ& dq1, const DQ& dq2);
+DQ operator*(const DQ& dq, const int& scalar);
+DQ operator*(int& scalar, const DQ& dq);
+DQ operator*(const DQ& dq, const float &scalar);
+DQ operator*(const float &scalar, const DQ& dq);
+DQ operator*(const DQ& dq, const double& scalar);
+DQ operator*(const double& scalar, const DQ& dq);
 
 //Operator (==) Overload
-bool operator==(const DQ dq, const int scalar);
-bool operator==(const int scalar, const DQ dq);
-bool operator==(const DQ dq, const float scalar);
-bool operator==(const float scalar, const DQ dq);
-bool operator==(const DQ dq, const double scalar);
-bool operator==(const double scalar, const DQ dq);
+bool operator==(const DQ& dq, const int& scalar);
+bool operator==(const int& scalar, const DQ& dq);
+bool operator==(const DQ& dq, const float &scalar);
+bool operator==(const float &scalar, const DQ& dq);
+bool operator==(const DQ& dq, const double& scalar);
+bool operator==(const double& scalar, const DQ& dq);
 
 //Operator (!=) Overload
-bool operator!=(const DQ dq, const int scalar);
-bool operator!=(const int scalar, const DQ dq);
-bool operator!=(const DQ dq, const float scalar);
-bool operator!=(const float scalar, const DQ dq);
-bool operator!=(const DQ dq, const double scalar);
-bool operator!=(const double scalar, const DQ dq);
+bool operator!=(const DQ& dq, const int& scalar);
+bool operator!=(const int& scalar, const DQ& dq);
+bool operator!=(const DQ& dq, const float &scalar);
+bool operator!=(const float &scalar, const DQ& dq);
+bool operator!=(const DQ& dq, const double& scalar);
+bool operator!=(const double& scalar, const DQ& dq);
 
 //Operator (<<) Overload
-std::ostream& operator<<(std::ostream& os, const DQ dq);
+std::ostream& operator<<(std::ostream &os, const DQ& dq);
 
 //Constants
 Matrix<double,8,8> C8();
@@ -217,7 +217,7 @@ DQ log(const DQ& dq);
 
 DQ exp(const DQ& dq);
 
-DQ pow(const DQ& dq, const double a);
+DQ pow(const DQ& dq, const double& a);
 
 DQ tplus(const DQ& dq);
 inline DQ T(const DQ& dq){return tplus(dq);};
