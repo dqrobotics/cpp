@@ -1,6 +1,18 @@
-This library requires the EIGEN3 library.
+##########################################################################
+[Ubuntu/PPA]
+##########################################################################
+Install from the ppa:
 
-To install and configure the library, run
+  sudo add-apt-repository ppa:dqrobotics-dev/release
+  sudo apt-get update
+  sudo apt-get install libdqrobotics
 
-1-) sudo apt-get install libeigen3-dev
-2-) sudo ln -s /usr/include/eigen3/Eigen/ /usr/local/include/
+##########################################################################
+Compile from source
+##########################################################################
+In this folder, run:
+
+  mkdir -p build
+  cd build
+  cmake ..
+  make
