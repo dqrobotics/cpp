@@ -1,5 +1,5 @@
 /**
-(C) Copyright 2015 DQ Robotics Developers
+(C) Copyright 2011-2018 DQ Robotics Developers
 
 This file is part of DQ Robotics.
 
@@ -201,7 +201,7 @@ MatrixXd  analyticalJacobian( const DQ_kinematics& dq_kin, const VectorXd& theta
 */
 MatrixXd  rotationJacobian( const MatrixXd& analytical_jacobian)
 {
-	return analytical_jacobian.block(0,0,4,analytical_jacobian.cols());
+    return analytical_jacobian.block(0,0,4,analytical_jacobian.cols());
 }
 
 /** Returns the translation Jacobian; that it, the Jacobian that satisfies the relation dot_p = Jp * dot_theta.
@@ -290,14 +290,14 @@ MatrixXd  pseudoInverse( const MatrixXd& matrix)
     for(int i=0;i<singular_values.size();i++)
     {
         if(singular_values(i) > tol)
-		    svd_sigma_inverted(i,i) = 1/(singular_values(i));
-	    else
-		    svd_sigma_inverted(i,i) = 0;
-     }
+            svd_sigma_inverted(i,i) = 1/(singular_values(i));
+        else
+            svd_sigma_inverted(i,i) = 0;
+    }
 
-     pseudo_inverse = svd.matrixV() * (svd_sigma_inverted * svd.matrixU().adjoint());
+    pseudo_inverse = svd.matrixV() * (svd_sigma_inverted * svd.matrixU().adjoint());
     
-     return pseudo_inverse;
+    return pseudo_inverse;
 }
 
 
@@ -322,12 +322,12 @@ MatrixXd  pseudoInverse( const MatrixXd& matrix)
 * \param std::string type contain the convention used in Denavit_Hartenberg.
 */
 DQ_kinematics::DQ_kinematics(const MatrixXd& dh_matrix, const std::string& convention ){
- 
+
     if (convention != "standard" && convention != "modified")
     {
         throw(std::range_error("Bad DQ_kinematics(dh_matrix, convention) call: convention must be 'standard' or 'modified' "));
     }
-	  if (dh_matrix.rows() != 4 && dh_matrix.rows() != 5)
+    if (dh_matrix.rows() != 4 && dh_matrix.rows() != 5)
     {
         throw(std::range_error("Bad DQ_kinematics(dh_matrix, convention) call: dh_matrix should be 5xn or 4xn"));
     }
@@ -337,14 +337,14 @@ DQ_kinematics::DQ_kinematics(const MatrixXd& dh_matrix, const std::string& conve
     curr_base_ = DQ(1);
     curr_effector_ = DQ(1);
     dh_matrix_convention_ = convention;
-};
+}
 
 /**
 * DQ_kinematics Destructor
 *
 * Deletes from memory the DQ_kinematics object caller. To use this destructor, type: 'dh_matrix__object.~DQ_kinematics();'. Dont need parameters.
 */
-DQ_kinematics::~DQ_kinematics(){};
+DQ_kinematics::~DQ_kinematics(){}
 
 // Public constant methods
 
@@ -367,7 +367,7 @@ MatrixXd DQ_kinematics::getDHMatrix()
 int  DQ_kinematics::links() const
 {
     return dh_matrix_.cols();
-};
+}
 
 /**
 * Returns a constant vector representing the theta joint angles offset of a robotic system DQ_kinematics object.
@@ -382,7 +382,7 @@ VectorXd  DQ_kinematics::theta() const
         aux_theta(i) = dh_matrix_(0,i);
     }
     return aux_theta;
-};
+}
 
 
 
@@ -399,7 +399,7 @@ VectorXd  DQ_kinematics::d() const
         aux_d(i) = dh_matrix_(1,i);
     }
     return aux_d;
-};
+}
 
 /**
 * Returns a constant vector representing each 'a' length of the common normal of a robotic system DQ_kinematics object.
@@ -414,7 +414,7 @@ VectorXd  DQ_kinematics::a() const
         aux_a(i) = dh_matrix_(2,i);
     }
     return aux_a;
-};
+}
 
 /**
 * Returns a constant vector representing each 'alpha' angle about common normal, from old z axis to new z axis of a
@@ -429,7 +429,7 @@ VectorXd  DQ_kinematics::alpha() const
         aux_alpha(i) = dh_matrix_(3,i);
     }
     return aux_alpha;
-};
+}
 
 /**
 * Returns a constant vector representing the existing 'dummy' axes of a robotic system DQ_kinematics object.
@@ -449,11 +449,11 @@ VectorXd  DQ_kinematics::dummy() const
     }
     else {
         for (int i = 0; i < dh_matrix_.cols(); i++) {
-        aux_dummy(i) = 0;
+            aux_dummy(i) = 0;
         }
         return aux_dummy;
     }
-};
+}
 
 
 void DQ_kinematics::set_dummy( const VectorXd& dummy_vector)
@@ -461,7 +461,7 @@ void DQ_kinematics::set_dummy( const VectorXd& dummy_vector)
 
     if(dummy_vector.size() != dh_matrix_.cols())
     {
-        std::cerr << std:: endl << "Cannot change dummy status: argument vector is of size = " 
+        std::cerr << std:: endl << "Cannot change dummy status: argument vector is of size = "
                   << dummy_vector.size() << " when it should be of size = " << dh_matrix_.cols() << std::endl;
         //Do nothing
         return;
@@ -473,7 +473,7 @@ void DQ_kinematics::set_dummy( const VectorXd& dummy_vector)
         }
     }
     else{
-        std::cerr << std::endl << "Kinematics body has no dummy information to change." << std::endl;        
+        std::cerr << std::endl << "Kinematics body has no dummy information to change." << std::endl;
         //Do nothing
     }
 
@@ -499,7 +499,7 @@ int  DQ_kinematics::n_dummy() const
     }
     else
         return aux_n_dummy;
-};
+}
 
 /**
 * Returns a constant std::string representing the Denavit Hartenberg convenction (standard or modified) used in a robotic system
@@ -509,7 +509,7 @@ int  DQ_kinematics::n_dummy() const
 std::string  DQ_kinematics::convention() const
 {
     return dh_matrix_convention_;
-};
+}
 
 /**
 * Returns a constant DQ object representing current defined base of a robotic system DQ_kinematics object.
@@ -519,7 +519,7 @@ std::string  DQ_kinematics::convention() const
 DQ  DQ_kinematics::base() const
 {
     return curr_base_;
-};
+}
 
 /**
 * Returns a constant DQ object representing current defined end effector of a robotic system DQ_kinematics object.
@@ -529,7 +529,7 @@ DQ  DQ_kinematics::base() const
 DQ  DQ_kinematics::effector() const
 {
     return curr_effector_;
-};
+}
 
 /**
 * Sets, by new_base parameter, the pose of current base of a robotic system DQ_kinematics object and returns it in a constant DQ object.
@@ -541,7 +541,7 @@ DQ  DQ_kinematics::set_base( const DQ& new_base)
 {
     curr_base_ = new_base;
     return curr_base_;
-};
+}
 
 /**
 * Sets, by new_effector parameter, the pose of current end effector of a robotic system DQ_kinematics object and returns it in a constant DQ object.
@@ -553,7 +553,7 @@ DQ  DQ_kinematics::set_effector( const DQ& new_effector)
 {
     curr_effector_ = new_effector;
     return curr_effector_;
-};
+}
 
 /**
 * Calculates the forward kinematic model and returns a DQ object corresponding to the last joint.
@@ -582,7 +582,7 @@ DQ  DQ_kinematics::raw_fkm( const VectorXd& theta_vec) const
             q = q * DQ_robotics::dh2dq((*this), theta_vec(i-j), i+1);
     }
     return q;
-};
+}
 
 /**
 * Calculates the forward kinematic model and returns a DQ object corresponding to the ith joint.
@@ -612,7 +612,7 @@ DQ  DQ_kinematics::raw_fkm( const VectorXd& theta_vec, const int& ith) const
             q = q * DQ_robotics::dh2dq( (*this) , theta_vec(i-j), i+1);
     }
     return q;
-};
+}
 
 /**
 * Calculates the forward kinematic model and returns a DQ object corresponding to the last joint.
@@ -625,7 +625,7 @@ DQ  DQ_kinematics::fkm( const VectorXd& theta_vec) const
 {
     DQ q = curr_base_ * ( this->raw_fkm(theta_vec) ) * curr_effector_;
     return q;
-};
+}
 
 
 /**
@@ -639,7 +639,7 @@ DQ  DQ_kinematics::fkm( const VectorXd& theta_vec, const int& ith) const
 {
     DQ q = curr_base_ * ( this->raw_fkm(theta_vec, ith) ) * curr_effector_;
     return q;
-};
+}
 
 /** Returns the correspondent DQ object, for a given link's Denavit Hartenberg parameters.
 * To use this member function type: 'dh_matrix__object.dh2dq(theta,i), where theta is the joint angle and i is the link number
@@ -686,7 +686,7 @@ DQ  DQ_kinematics::dh2dq( const double& theta_ang, const int& link_i) const {
         q(7)=d2*h1 - a2*h3;
     }
     return DQ(q);
-};
+}
 
 
 DQ  DQ_kinematics::get_z( const VectorXd& q) const
@@ -703,7 +703,7 @@ DQ  DQ_kinematics::get_z( const VectorXd& q) const
     z(7)=q(3)*q(7)-q(2)*q(6)-q(1)*q(5)+q(0)*q(4);
 
     return DQ(z);
-};
+}
 
 /** Returns a MatrixXd 8x(links - n_dummy) representing the Jacobian of a robotic system DQ_kinematics object.
 * theta_vec is the vector of joint variables.
@@ -728,26 +728,26 @@ MatrixXd  DQ_kinematics::jacobian( const VectorXd& theta_vec) const
     int ith = -1;
     for(int i = 0; i < this->links(); i++) {
 
-            // Use the standard DH convention
-            if(this->convention() == "standard") {
-                z = this->get_z(q.q);
-            }
-            // Use the modified DH convention
-            else {
-                DQ w(0, 0, -sin(this->alpha()(i)), cos(this->alpha()(i)), 0, 0, -this->a()(i)*cos(this->alpha()(i)), -this->a()(i)*sin(this->alpha()(i)));
-                z =0.5 * q * w * q.conj();
-            }
+        // Use the standard DH convention
+        if(this->convention() == "standard") {
+            z = this->get_z(q.q);
+        }
+        // Use the modified DH convention
+        else {
+            DQ w(0, 0, -sin(this->alpha()(i)), cos(this->alpha()(i)), 0, 0, -this->a()(i)*cos(this->alpha()(i)), -this->a()(i)*sin(this->alpha()(i)));
+            z =0.5 * q * w * q.conj();
+        }
 
-            if(this->dummy()(i) == 0) {
-            	q = q * this->dh2dq(theta_vec(ith+1), i+1);
-            	DQ aux_j = z * q_effector;
-            	for(int k = 0; k < J.rows(); k++) {
-            	    J(k,ith+1) = aux_j.q(k);
-            	}
-                ith = ith+1;
+        if(this->dummy()(i) == 0) {
+            q = q * this->dh2dq(theta_vec(ith+1), i+1);
+            DQ aux_j = z * q_effector;
+            for(int k = 0; k < J.rows(); k++) {
+                J(k,ith+1) = aux_j.q(k);
             }
-	    else
-		// Dummy joints don't contribute to the Jacobian
+            ith = ith+1;
+        }
+        else
+            // Dummy joints don't contribute to the Jacobian
             q = q * this->dh2dq(0.0,(i+1));
     }
 
@@ -758,7 +758,7 @@ MatrixXd  DQ_kinematics::jacobian( const VectorXd& theta_vec) const
     J = aux_J*J;
 
     return J;
-};
+}
 
 MatrixXd DQ_kinematics::analyticalJacobian( const VectorXd& theta_vec) const
 {

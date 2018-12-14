@@ -1,5 +1,5 @@
 /**
-(C) Copyright 2015 DQ Robotics Developers
+(C) Copyright 2011-2018 DQ Robotics Developers
 
 This file is part of DQ Robotics.
 
@@ -19,22 +19,6 @@ This file is part of DQ Robotics.
 Contributors:
 - Murilo M. Marinho (murilo@nml.t.u-tokyo.ac.jp)
 */
-
-/**
-* All controllers should inherit this class.
-*
-* \author Murilo Marques Marinho (murilomarinho@lara.unb.br)
-* \since 2012/07
-***********************************************************
-*              REVISION HISTORY
-***********************************************************
-* YYYY/MM/DD   Author (e-mail address)
-*            - Description
-***********************************************************
-* 2013/11/22   Murilo Marques Marinho (murilomarinho@lara.unb.br)
-             - Added const qualifiers and references whenever
-               possible.
-**/
 
 #ifndef DQCONTROLLER_H
 #define DQCONTROLLER_H
