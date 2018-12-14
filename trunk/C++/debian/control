@@ -2,7 +2,7 @@ Source: libdqrobotics
 Section: devel
 Priority: optional
 Maintainer: Murilo Marinho <murlou@gmail.com>
-Build-Depends: cmake, libeigen3-dev, debhelper
+Build-Depends: cmake, libeigen3-dev
 Homepage: http://dqrobotics.sourceforge.net/
 
 Package: libdqrobotics
@@ -10,9 +10,3 @@ Architecture: any
 Depends:
 Description: DQ Robotics
  The dual quaternion robotics library.
-
-Package: libdqrobotics-dbg
-Section: debug
-Architecture: any
-Depends: libdqrobotics
-Description: Debug symbols for the DQ Robotics library.
