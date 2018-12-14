@@ -1,5 +1,5 @@
 /**
-(C) Copyright 2016 DQ Robotics Developers
+(C) Copyright 2011-2018 DQ Robotics Developers
 
 This file is part of DQ Robotics.
 
@@ -22,6 +22,9 @@ Contributors:
 */
 
 #include<dqrobotics/DQ.h>
+#include <sstream>
+#include <math.h>
+#include <stdexcept> //for range_error
 
 using std::cout;
 
@@ -316,12 +319,12 @@ DQ normalize(const DQ& dq)
 
 VectorXd DQ::q_() const
 {
-  return q;
+    return q;
 }
 
 double DQ::q_(const int a) const
 {
-  return q(a);
+    return q(a);
 }
 
 /**
@@ -345,7 +348,7 @@ DQ::DQ(const VectorXd& v) {
     {
         q(i) = 0;
     }
-};
+}
 
 /**
 * DQ constructor using 8 scalar elements
@@ -368,18 +371,18 @@ DQ::DQ(const double& q0,const double& q1,const double& q2,const double& q3,const
 
     for(int n = 0; n < 8; n++)
     {
-      if(fabs(q(n)) < DQ_threshold)
-        q(n) = 0;
+        if(fabs(q(n)) < DQ_threshold)
+            q(n) = 0;
     }
 
-};
+}
 
 /**
 * DQ Destructor
 *
 * Deletes from memory the DQ object caller. To use this destructor, type: 'dq_object.~DQ();'. Dont need parameters.
 */
-DQ::~DQ(){};
+DQ::~DQ(){}
 
 
 // Public constant methods
@@ -395,7 +398,7 @@ DQ::~DQ(){};
 */
 DQ DQ::P() const{
     return DQ(q(0),q(1),q(2),q(3));
-};
+}
 
 
 /**
@@ -408,7 +411,7 @@ DQ DQ::P() const{
 */
 DQ DQ::D() const{
     return DQ(q(4),q(5),q(6),q(7));
-};
+}
 
 
 /**
@@ -416,8 +419,8 @@ DQ DQ::D() const{
 * Actually this function does the same as Re() changing only the way of calling, which is DQ::Re(dq_object).
 */
 DQ DQ::Re() const{
- return DQ(q(0),0,0,0,q(4),0,0,0);
-};
+    return DQ(q(0),0,0,0,q(4),0,0,0);
+}
 
 /**
 * Returns a constant DQ object representing the imaginary part of the DQ object caller.
@@ -429,7 +432,7 @@ DQ DQ::Re() const{
 */
 DQ DQ::Im() const{
     return DQ(0,q(1),q(2),q(3),0,q(5),q(6),q(7));
-};
+}
 
 /**
 * Returns a constant DQ object representing the conjugate of the DQ object caller.
@@ -441,7 +444,7 @@ DQ DQ::Im() const{
 */
 DQ DQ::conj() const{
     return DQ(q(0),-q(1),-q(2),-q(3),q(4),-q(5),-q(6),-q(7));
-};
+}
 
 /**
 * Returns a constant DQ object representing the norm of the DQ object caller.
@@ -457,9 +460,9 @@ DQ DQ::norm() const{
 
     for(int n = 0; n < 8; n++) {
         aux.q(n) = q(n);
-	}
-	if(aux.P() == 0)  //Primary == 0
-         return norm; // norm = 0
+    }
+    if(aux.P() == 0)  //Primary == 0
+        return norm; // norm = 0
     else {
         // norm calculation
         norm = aux.conj() * aux;
@@ -474,7 +477,7 @@ DQ DQ::norm() const{
 
         return norm;
     }
-};
+}
 
 
 /**
@@ -491,10 +494,10 @@ DQ DQ::inv() const{
 
     for(int n = 0; n < 8; n++) {
         aux.q(n) = q(n);
-	}
-	//inverse calculation
-	aux2 = aux * aux.conj(); //(dq norm)^2
-	DQ inv((1/aux2.q(0)),0,0,0,(-aux2.q(4)/(aux2.q(0)*aux2.q(0))),0,0,0);
+    }
+    //inverse calculation
+    aux2 = aux * aux.conj(); //(dq norm)^2
+    DQ inv((1/aux2.q(0)),0,0,0,(-aux2.q(4)/(aux2.q(0)*aux2.q(0))),0,0,0);
     inv = (aux.conj() * inv);
 
     // using threshold to verify zero values in DQ to be returned
@@ -503,8 +506,8 @@ DQ DQ::inv() const{
             inv.q(n) = 0;
     }
 
-	return inv;
-};
+    return inv;
+}
 
 
 /**
@@ -518,25 +521,25 @@ DQ DQ::inv() const{
 */
 DQ DQ::translation() const
 {
-  //Verify if unit quaternion
-  if (this->norm() != 1)
-  {
-    throw(std::range_error("Bad translation() call: Not a unit dual quaternion"));
-  }
-
-  //translation part calculation
-  DQ translation = this->P();
-     translation = (2.0 * this->D() * translation.conj() );
-
-  // using threshold to verify zero values in DQ to be returned
-  for(int n = 0; n < 8; n++) 
+    //Verify if unit quaternion
+    if (this->norm() != 1)
     {
-    if(fabs(translation.q(n)) < DQ_threshold )
-      translation.q(n) = 0;
+        throw(std::range_error("Bad translation() call: Not a unit dual quaternion"));
     }
 
-  return translation;
-};
+    //translation part calculation
+    DQ translation = this->P();
+    translation = (2.0 * this->D() * translation.conj() );
+
+    // using threshold to verify zero values in DQ to be returned
+    for(int n = 0; n < 8; n++)
+    {
+        if(fabs(translation.q(n)) < DQ_threshold )
+            translation.q(n) = 0;
+    }
+
+    return translation;
+}
 
 /**
 * Returns a constant DQ object representing the rotation axis (nx*i + ny*j + nz*k) of the unit DQ object caller.
@@ -548,31 +551,31 @@ DQ DQ::translation() const
 */
 DQ DQ::rot_axis() const{
 
-	// Verify if the object caller is a unit DQ
-	if (this->norm() != 1) {
-    throw(std::range_error("Bad rot_axis() call: Not a unit dual quaternion"));
-  }
-
-  double phi = acos(this->q(0));
-  if(phi == 0)
-    return k_; // DQ(0,0,0,1). This is only a convention;
-  else
-  {
-    //rotation axis calculation
-    DQ rot_axis = this->P();
-       rot_axis = ( rot_axis.Im() * (1/sin(phi)) );
-
-    // using threshold to verify zero values in DQ to be returned
-    for(int n = 0; n < 8; n++)
-    {
-      if(fabs(rot_axis.q(n)) < DQ_threshold )
-        rot_axis.q(n) = 0;
+    // Verify if the object caller is a unit DQ
+    if (this->norm() != 1) {
+        throw(std::range_error("Bad rot_axis() call: Not a unit dual quaternion"));
     }
 
-  return rot_axis;
-  }
+    double phi = acos(this->q(0));
+    if(phi == 0)
+        return k_; // DQ(0,0,0,1). This is only a convention;
+    else
+    {
+        //rotation axis calculation
+        DQ rot_axis = this->P();
+        rot_axis = ( rot_axis.Im() * (1/sin(phi)) );
 
-};
+        // using threshold to verify zero values in DQ to be returned
+        for(int n = 0; n < 8; n++)
+        {
+            if(fabs(rot_axis.q(n)) < DQ_threshold )
+                rot_axis.q(n) = 0;
+        }
+
+        return rot_axis;
+    }
+
+}
 
 /**
 * Returns a constant double value representing the rotation angle in rad/s of the unit DQ object caller.
@@ -584,16 +587,16 @@ DQ DQ::rot_axis() const{
 */
 double DQ::rot_angle() const{
 
-	// Verify if the object caller is a unit DQ
-	if (this->norm() != 1) {
-    throw(std::range_error("Bad rot_angle() call: Not a unit dual quaternion"));
-  }
+    // Verify if the object caller is a unit DQ
+    if (this->norm() != 1) {
+        throw(std::range_error("Bad rot_angle() call: Not a unit dual quaternion"));
+    }
 
-  //Rotation angle calculation
-  double rot_angle = 2*acos(this->q(0));
+    //Rotation angle calculation
+    double rot_angle = 2*acos(this->q(0));
 
-  return rot_angle;
-};
+    return rot_angle;
+}
 
 /**
 * Returns a constant DQ object representing the logaritm of the unit DQ object caller.
@@ -605,26 +608,26 @@ double DQ::rot_angle() const{
 */
 DQ DQ::log() const{
 
-	// Verify if the object caller is a unit DQ
-	if (this->norm() != 1) {
-    throw(std::range_error("Bad log() call: Not a unit dual quaternion"));
-  }
+    // Verify if the object caller is a unit DQ
+    if (this->norm() != 1) {
+        throw(std::range_error("Bad log() call: Not a unit dual quaternion"));
+    }
 
-  // log calculation
-  DQ p = acos(this->q(0)) * this->rot_axis(); //primary
-  DQ d = 0.5 * this->translation(); //dual
-  DQ log(p.q(0),p.q(1),p.q(2),p.q(3),d.q(0),d.q(1),d.q(2),d.q(3));
+    // log calculation
+    DQ p = acos(this->q(0)) * this->rot_axis(); //primary
+    DQ d = 0.5 * this->translation(); //dual
+    DQ log(p.q(0),p.q(1),p.q(2),p.q(3),d.q(0),d.q(1),d.q(2),d.q(3));
 
-  // using threshold to verify zero values in DQ to be returned
-  for(int n = 0; n < 8; n++)
-  {
-    if(fabs(log.q(n)) < DQ_threshold )
-      log.q(n) = 0;
-  }
+    // using threshold to verify zero values in DQ to be returned
+    for(int n = 0; n < 8; n++)
+    {
+        if(fabs(log.q(n)) < DQ_threshold )
+            log.q(n) = 0;
+    }
 
-  return log;
+    return log;
 
-};
+}
 
 /**
 * Returns a constant DQ object representing the exponential of the unit DQ object caller.
@@ -636,34 +639,34 @@ DQ DQ::log() const{
 */
 DQ DQ::exp() const{
 
-  double phi;
-  DQ prim;
-  DQ exp;
+    double phi;
+    DQ prim;
+    DQ exp;
 
-  if( this->Re() != 0.0 )
-  {
-    throw(std::range_error("Bad exp() call: Exponential operation is defined only for pure dual quaterions."));
-  }
+    if( this->Re() != 0.0 )
+    {
+        throw(std::range_error("Bad exp() call: Exponential operation is defined only for pure dual quaterions."));
+    }
 
-  prim = this->P();
-  phi  = prim.q.norm();
+    prim = this->P();
+    phi  = prim.q.norm();
 
-  if(phi != 0.0)
-    prim = cos(phi) + (sin(phi)/phi)*this->P();
-  else
-    prim = DQ(1.0);
+    if(phi != 0.0)
+        prim = cos(phi) + (sin(phi)/phi)*this->P();
+    else
+        prim = DQ(1.0);
 
-  exp = ( prim + E_*this->D()*prim );
+    exp = ( prim + E_*this->D()*prim );
 
-  // using threshold to verify zero values in DQ to be returned
-  for(int n = 0; n < 8; n++) {
-    if(fabs(exp.q(n)) < DQ_threshold )
-      exp.q(n) = 0;
-  }
+    // using threshold to verify zero values in DQ to be returned
+    for(int n = 0; n < 8; n++) {
+        if(fabs(exp.q(n)) < DQ_threshold )
+            exp.q(n) = 0;
+    }
 
-  return exp;
+    return exp;
 
-};
+}
 
 /**
 
@@ -672,7 +675,7 @@ DQ DQ::pow(const double a) const
 {
     DQ logtimesa = a*this->log();
     return logtimesa.exp();
-};
+}
 
 /**
 * Returns a constant DQ object representing the tplus operator applied to the unit DQ object caller.
@@ -684,27 +687,27 @@ DQ DQ::pow(const double a) const
 */
 DQ DQ::tplus() const{
 
-  DQ tplus;
+    DQ tplus;
 
-	// Verify if the object caller is a unit DQ
-	if (this->norm() != 1) {
-    throw(std::range_error("Bad tplus() call: Not a unit dual quaternion"));
-  }
+    // Verify if the object caller is a unit DQ
+    if (this->norm() != 1) {
+        throw(std::range_error("Bad tplus() call: Not a unit dual quaternion"));
+    }
 
-  // tplus operator calculation
-  tplus = this->P();
-  tplus = (*this) * tplus.conj();
+    // tplus operator calculation
+    tplus = this->P();
+    tplus = (*this) * tplus.conj();
 
-  // using threshold to verify zero values in DQ to be returned
-  for(int n = 0; n < 8; n++)
-  {
-    if(fabs(tplus.q(n)) < DQ_threshold )
-      tplus.q(n) = 0;
-  }
+    // using threshold to verify zero values in DQ to be returned
+    for(int n = 0; n < 8; n++)
+    {
+        if(fabs(tplus.q(n)) < DQ_threshold )
+            tplus.q(n) = 0;
+    }
 
-  return tplus;
+    return tplus;
 
-};
+}
 
 /**
 * Returns a constant DQ object representing the inverse of the unit DQ object caller under decompositional multiplication.
@@ -717,29 +720,29 @@ DQ DQ::tplus() const{
 DQ DQ::pinv() const{
 
 
-  DQ pinv;
-  DQ tinv;
+    DQ pinv;
+    DQ tinv;
 
-	// Verify if the object caller is a unit DQ
-	if (this->norm() != 1) {
-    throw(std::range_error("Bad pinv() call: Not a unit dual quaternion"));
-  }
+    // Verify if the object caller is a unit DQ
+    if (this->norm() != 1) {
+        throw(std::range_error("Bad pinv() call: Not a unit dual quaternion"));
+    }
 
-  // inverse calculation under decompositional multiplication
-  tinv = this->conj();
-  tinv = tinv.tplus() * this->tplus();
-  pinv = tinv.conj()  * this->conj();
+    // inverse calculation under decompositional multiplication
+    tinv = this->conj();
+    tinv = tinv.tplus() * this->tplus();
+    pinv = tinv.conj()  * this->conj();
 
-  // using threshold to verify zero values in DQ to be returned
-  for(int n = 0; n < 8; n++)
-  {
-    if(fabs(pinv.q(n)) < DQ_threshold )
-      pinv.q(n) = 0;
-  }
+    // using threshold to verify zero values in DQ to be returned
+    for(int n = 0; n < 8; n++)
+    {
+        if(fabs(pinv.q(n)) < DQ_threshold )
+            pinv.q(n) = 0;
+    }
 
-  return pinv;
+    return pinv;
 
-};
+}
 
 /**
 * Returns a constant 4x4 double boost matrix representing the Hamilton operator H+ of primary part of the DQ object caller.
@@ -756,7 +759,7 @@ Matrix4d DQ::Hplus4() const{
     op_Hplus4(2,0) = q(2); op_Hplus4(2,1) =  q(3); op_Hplus4(2,2) =  q(0); op_Hplus4(2,3) = -q(1);
     op_Hplus4(3,0) = q(3); op_Hplus4(3,1) = -q(2); op_Hplus4(3,2) =  q(1); op_Hplus4(3,3) =  q(0);
     return op_Hplus4;
-};
+}
 
 /**
 * Returns a constant 4x4 double boost matrix representing the Hamilton operator H- of primary part of the DQ object caller.
@@ -773,7 +776,7 @@ Matrix4d DQ::Hminus4() const{
     op_Hminus4(2,0) = q(2); op_Hminus4(2,1) = -q(3); op_Hminus4(2,2) =  q(0); op_Hminus4(2,3) =  q(1);
     op_Hminus4(3,0) = q(3); op_Hminus4(3,1) =  q(2); op_Hminus4(3,2) = -q(1); op_Hminus4(3,3) =  q(0);
     return op_Hminus4;
-};
+}
 
 
 /**
@@ -805,7 +808,7 @@ Matrix<double,8,8> DQ::Hplus8() const{
     op_Hplus8(6,4) = q(2); op_Hplus8(6,5) =  q(3); op_Hplus8(6,6) =  q(0); op_Hplus8(6,7) = -q(1);
     op_Hplus8(7,4) = q(3); op_Hplus8(7,5) = -q(2); op_Hplus8(7,6) =  q(1); op_Hplus8(7,7) =  q(0);
     return op_Hplus8;
-};
+}
 
 /**
 * Returns a constant 8x8 double boost matrix representing the Hamilton operator H- of the DQ object caller.
@@ -836,7 +839,7 @@ Matrix<double,8,8> DQ::Hminus8() const{
     op_Hminus8(6,4) = q(2); op_Hminus8(6,5) = -q(3); op_Hminus8(6,6) =  q(0); op_Hminus8(6,7) =  q(1);
     op_Hminus8(7,4) = q(3); op_Hminus8(7,5) =  q(2); op_Hminus8(7,6) = -q(1); op_Hminus8(7,7) =  q(0);
     return op_Hminus8;
-};
+}
 
 /**
 * Returns a constant 4x1 double Boost matrix representing the 'vec' operator of primary part of the DQ object caller.
@@ -853,7 +856,7 @@ Vector4d DQ::vec4() const{
     op_vec4(2,0) = q(2);
     op_vec4(3,0) = q(3);
     return op_vec4;
-};
+}
 
 /**
 * Returns a constant 8x1 double boost matrix representing the 'vec' operator of the DQ object caller.
@@ -873,7 +876,7 @@ Matrix<double,8,1>  DQ::vec8() const{
     op_vec8(6,0) = q(6);
     op_vec8(7,0) = q(7);
     return op_vec8;
-};
+}
 
 /** Returns the Generalized Jacobian; that it, the Jacobian that satisfies the relation Geometric_Jacobian = G * DQ_Jacobian.
 * To use this member function type: 'dq_object.jacobG(x_E).
@@ -903,7 +906,7 @@ Matrix<double,8,8> DQ::jacobG() const{
     jacobGen(7,4) = 0; jacobGen(7,5) = 0; jacobGen(7,6) = 0; jacobGen(7,7) = 0;
 
     return 2*jacobGen;
-};
+}
 
 /**
 * Generalized Jacobian, i.e, the Jacobian that satisfies the relation Geometric Jacobian = Generalized Jacobian * Analytical (DQ) Jacobian.
@@ -959,7 +962,23 @@ DQ DQ::unitDQ(const double& rot_angle, const int& x_axis,const int& y_axis,const
             h.q(n) = 0;
     }
     return h;
-};
+}
+
+
+std::string DQ::to_string() const
+{
+    std::stringstream ss;
+    ss << q(0) << " "
+       << q(1) << "i "
+       << q(2) << "j "
+       << q(3) << "k +E( "
+       << q(4) << " "
+       << q(5) << "i "
+       << q(6) << "j "
+       << q(7) << "k )";
+
+    return ss.str();
+}
 
 
 //Overloaded operators definitions
@@ -980,11 +999,11 @@ DQ operator+(const DQ& dq1, const DQ& dq2) {
         dq.q(n) = dq1.q(n) + dq2.q(n);
     }
     for(int n = 0; n < 8; n++) {
-            if(fabs(dq.q(n)) < DQ_threshold )
-                dq.q(n) = 0;
-        }
+        if(fabs(dq.q(n)) < DQ_threshold )
+            dq.q(n) = 0;
+    }
     return dq;
-};
+}
 
 
 /**
@@ -1000,7 +1019,7 @@ DQ operator+(const DQ& dq1, const DQ& dq2) {
 DQ operator+(const DQ& dq, const int& scalar) {
     DQ dq_scalar(scalar);
     return (dq + dq_scalar);
-};
+}
 
 /**
 * Operator (+) overload for the sum of an integer scalar and DQ object
@@ -1015,7 +1034,7 @@ DQ operator+(const DQ& dq, const int& scalar) {
 DQ operator+(const int& scalar, const DQ& dq) {
     DQ dq_scalar(scalar);
     return (dq_scalar + dq);
-};
+}
 
 /**
 * Operator (+) overload for the sum of a DQ object and a float scalar
@@ -1030,7 +1049,7 @@ DQ operator+(const int& scalar, const DQ& dq) {
 DQ operator+(const DQ& dq, const float& scalar) {
     DQ dq_scalar(scalar);
     return (dq + dq_scalar);
-};
+}
 
 /**
 * Operator (+) overload for the sum of a float scalar and DQ object
@@ -1045,7 +1064,7 @@ DQ operator+(const DQ& dq, const float& scalar) {
 DQ operator+(const float& scalar, const DQ& dq) {
     DQ dq_scalar(scalar);
     return (dq_scalar + dq);
-};
+}
 
 /**
 * Operator (+) overload for the sum of a DQ object and a double scalar
@@ -1060,7 +1079,7 @@ DQ operator+(const float& scalar, const DQ& dq) {
 DQ operator+(const DQ& dq, const double& scalar) {
     DQ dq_scalar(scalar);
     return (dq + dq_scalar);
-};
+}
 
 /**
 * Operator (+) overload for the sum of a double scalar and DQ object
@@ -1075,7 +1094,7 @@ DQ operator+(const DQ& dq, const double& scalar) {
 DQ operator+(const double& scalar, const DQ& dq) {
     DQ dq_scalar(scalar);
     return (dq_scalar + dq);
-};
+}
 
 // Operator (-) overload
 
@@ -1105,11 +1124,11 @@ DQ operator-(const DQ& dq1, const DQ& dq2){
         dq.q(n) = dq1.q(n) - dq2.q(n);
     }
     for(int n = 0; n < 8; n++) {
-            if(fabs(dq.q(n)) < DQ_threshold )
-                dq.q(n) = 0;
-        }
+        if(fabs(dq.q(n)) < DQ_threshold )
+            dq.q(n) = 0;
+    }
     return dq;
-};
+}
 
 /**
 * Operator (-) overload to subtract an integer scalar of one DQ object.
@@ -1124,7 +1143,7 @@ DQ operator-(const DQ& dq1, const DQ& dq2){
 DQ operator-(const DQ& dq, const int& scalar) {
     DQ dq_scalar(scalar);
     return (dq - dq_scalar);
-};
+}
 
 /**
 * Operator (-) overload to subtract a DQ object of one integer scalar.
@@ -1139,7 +1158,7 @@ DQ operator-(const DQ& dq, const int& scalar) {
 DQ operator-(const int& scalar, const DQ& dq){
     DQ dq_scalar(scalar);
     return (dq_scalar - dq);
-};
+}
 
 /**
 * Operator (-) overload to subtract an float scalar of one DQ object.
@@ -1154,7 +1173,7 @@ DQ operator-(const int& scalar, const DQ& dq){
 DQ operator-(const DQ& dq, const float& scalar){
     DQ dq_scalar(scalar);
     return (dq - dq_scalar);
-};
+}
 
 /**
 * Operator (-) overload to subtract a DQ object of one float scalar.
@@ -1169,7 +1188,7 @@ DQ operator-(const DQ& dq, const float& scalar){
 DQ operator-(const float& scalar, const DQ& dq){
     DQ dq_scalar(scalar);
     return (dq_scalar - dq);
-};
+}
 
 /**
 * Operator (-) overload to subtract an double scalar of one DQ object.
@@ -1184,7 +1203,7 @@ DQ operator-(const float& scalar, const DQ& dq){
 DQ operator-(const DQ& dq, const double& scalar){
     DQ dq_scalar(scalar);
     return (dq - dq_scalar);
-};
+}
 
 /**
 * Operator (-) overload to subtract a DQ object of one double scalar.
@@ -1199,7 +1218,7 @@ DQ operator-(const DQ& dq, const double& scalar){
 DQ operator-(const double& scalar, const DQ& dq){
     DQ dq_scalar(scalar);
     return (dq_scalar - dq);
-};
+}
 
 // Operator (*) overload
 
@@ -1232,12 +1251,12 @@ DQ operator*(const DQ& dq1, const DQ& dq2){
     dq.q(7) = dq.q(7) + dq1.D().q(0)*dq2.P().q(3) + dq1.D().q(1)*dq2.P().q(2) - dq1.D().q(2)*dq2.P().q(1) + dq1.D().q(3)*dq2.P().q(0);
 
     for(int n = 0; n < 8; n++) {
-            if(fabs(dq.q(n)) < DQ_threshold )
-                dq.q(n) = 0;
-        }
+        if(fabs(dq.q(n)) < DQ_threshold )
+            dq.q(n) = 0;
+    }
 
     return dq;
-};
+}
 
 /**
 * Operator (*) overload for the multiplication of a DQ object and an integer scalar
@@ -1252,7 +1271,7 @@ DQ operator*(const DQ& dq1, const DQ& dq2){
 DQ operator*(const DQ& dq, const int& scalar) {
     DQ dq_scalar(scalar);
     return (dq * dq_scalar);
-};
+}
 
 /**
 * Operator (*) overload for the multiplication of an integer scalar and DQ object
@@ -1267,7 +1286,7 @@ DQ operator*(const DQ& dq, const int& scalar) {
 DQ operator*(const int& scalar, const DQ& dq) {
     DQ dq_scalar(scalar);
     return (dq_scalar * dq);
-};
+}
 
 /**
 * Operator (*) overload for the multiplication of a DQ object and a float scalar
@@ -1282,7 +1301,7 @@ DQ operator*(const int& scalar, const DQ& dq) {
 DQ operator*(const DQ& dq, const float& scalar) {
     DQ dq_scalar(scalar);
     return (dq * dq_scalar);
-};
+}
 
 /**
 * Operator (*) overload for the multiplication of a float scalar and DQ object
@@ -1297,7 +1316,7 @@ DQ operator*(const DQ& dq, const float& scalar) {
 DQ operator*(const float& scalar, const DQ& dq){
     DQ dq_scalar(scalar);
     return (dq_scalar * dq);
-};
+}
 
 /**
 * Operator (*) overload for the multiplication of a DQ object and an double scalar
@@ -1312,7 +1331,7 @@ DQ operator*(const float& scalar, const DQ& dq){
 DQ operator*(const DQ& dq, const double& scalar){
     DQ dq_scalar(scalar);
     return (dq * dq_scalar);
-};
+}
 
 /**
 * Operator (*) overload for the multiplication of an double scalar and DQ object
@@ -1327,7 +1346,7 @@ DQ operator*(const DQ& dq, const double& scalar){
 DQ operator*(const double& scalar, const DQ& dq) {
     DQ dq_scalar(scalar);
     return (dq_scalar * dq);
-};
+}
 
 // Operator (==) overload
 
@@ -1343,10 +1362,10 @@ DQ operator*(const double& scalar, const DQ& dq) {
 bool DQ::operator==(const DQ& dq2) const{
     for(int n = 0; n<8; n++) {
         if(fabs(q(n) - dq2.q_(n)) > DQ_threshold )
-        return false; //elements of Dual Quaternion different of scalar
+            return false; //elements of Dual Quaternion different of scalar
     }
     return true; //elements of Dual Quaternion equal to scalar
-};
+}
 
 /**
 * Operator (==) overload for the comparison between a DQ object and an integer scalar.
@@ -1362,7 +1381,7 @@ bool DQ::operator==(const DQ& dq2) const{
 bool operator==(const DQ& dq, const int& scalar) {
     DQ dq_scalar(scalar);
     return (dq == dq_scalar);
-};
+}
 
 /**
 * Operator (==) overload for the comparison between an integer scalar and a DQ object
@@ -1378,7 +1397,7 @@ bool operator==(const DQ& dq, const int& scalar) {
 bool operator==(const int& scalar, const DQ& dq) {
     DQ dq_scalar(scalar);
     return (dq_scalar == dq);
-};
+}
 
 /**
 * Operator (==) overload for the comparison between a DQ object and a float scalar.
@@ -1394,7 +1413,7 @@ bool operator==(const int& scalar, const DQ& dq) {
 bool operator==(const DQ& dq, const float& scalar) {
     DQ dq_scalar(scalar);
     return (dq == dq_scalar);
-};
+}
 
 /**
 * Operator (==) overload for the comparison between a float scalar and a DQ object
@@ -1410,7 +1429,7 @@ bool operator==(const DQ& dq, const float& scalar) {
 bool operator==(const float& scalar, const DQ& dq) {
     DQ dq_scalar(scalar);
     return (dq_scalar == dq);
-};
+}
 
 /**
 * Operator (==) overload for the comparison between a DQ object and a double scalar.
@@ -1426,7 +1445,7 @@ bool operator==(const float& scalar, const DQ& dq) {
 bool operator==(const DQ& dq, const double& scalar) {
     DQ dq_scalar(scalar);
     return (dq == dq_scalar);
-};
+}
 
 /**
 * Operator (==) overload for the comparison between a double scalar and a DQ object
@@ -1442,7 +1461,7 @@ bool operator==(const DQ& dq, const double& scalar) {
 bool operator==(const double& scalar, const DQ& dq) {
     DQ dq_scalar(scalar);
     return (dq_scalar == dq);
-};
+}
 
 // Operator (!=) overload
 
@@ -1458,10 +1477,10 @@ bool operator==(const double& scalar, const DQ& dq) {
 bool DQ::operator!=(const DQ& dq2) const{
     for(int n = 0; n<8; n++){
         if(fabs(q(n) - dq2.q(n)) > DQ_threshold )
-        return true; //elements of Dual Quaternion different of scalar
+            return true; //elements of Dual Quaternion different of scalar
     }
     return false; //elements of Dual Quaternion equal to scalar
-};
+}
 
 /**
 * Operator (!=) overload for the comparison between a DQ object and an integer scalar.
@@ -1477,7 +1496,7 @@ bool DQ::operator!=(const DQ& dq2) const{
 bool operator!=(const DQ& dq, const int& scalar) {
     DQ dq_scalar(scalar);
     return (dq != dq_scalar);
-};
+}
 
 /**
 * Operator (!=) overload for the comparison between an integer scalar and a DQ object
@@ -1493,7 +1512,7 @@ bool operator!=(const DQ& dq, const int& scalar) {
 bool operator!=(int& scalar, DQ& dq) {
     DQ dq_scalar(scalar);
     return (dq_scalar != dq);
-};
+}
 
 /**
 * Operator (!=) overload for the comparison between a DQ object and a float scalar.
@@ -1509,7 +1528,7 @@ bool operator!=(int& scalar, DQ& dq) {
 bool operator!=(const DQ& dq, const float& scalar) {
     DQ dq_scalar(scalar);
     return (dq != dq_scalar);
-};
+}
 
 /**
 * Operator (!=) overload for the comparison between a float scalar and a DQ object
@@ -1525,7 +1544,7 @@ bool operator!=(const DQ& dq, const float& scalar) {
 bool operator!=(const float& scalar,const DQ& dq) {
     DQ dq_scalar(scalar);
     return (dq_scalar != dq);
-};
+}
 
 /**
 * Operator (!=) overload for the comparison between a DQ object and a double scalar.
@@ -1541,7 +1560,7 @@ bool operator!=(const float& scalar,const DQ& dq) {
 bool operator!=(const DQ& dq,const double& scalar) {
     DQ dq_scalar(scalar);
     return (dq != dq_scalar);
-};
+}
 
 /**
 * Operator (!=) overload for the comparison between a double scalar and a DQ object
@@ -1557,7 +1576,7 @@ bool operator!=(const DQ& dq,const double& scalar) {
 bool operator!=(const double& scalar, const DQ& dq) {
     DQ dq_scalar(scalar);
     return (dq_scalar != dq);
-};
+}
 
 std::ostream& operator<<(std::ostream& os, const DQ& dq)
 {
@@ -1571,7 +1590,7 @@ std::ostream& operator<<(std::ostream& os, const DQ& dq)
        << dq.q(7) << "k )";
 
     return os;
-};
+}
 
 /**
 * Returns a constant MatrixXd 8x8 dimensions representing C8, a diagonal negative unit matrix.
