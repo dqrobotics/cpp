@@ -185,6 +185,16 @@ MatrixXd  jacobian( const DQ_kinematics& dq_kin, const VectorXd& theta_vec)
     return dq_kin.jacobian(theta_vec);
 }
 
+MatrixXd jacobian(const DQ_kinematics& dq_kin, const VectorXd& theta_vec, const int& to_link)
+{
+    return dq_kin.jacobian(theta_vec,to_link);
+}
+
+MatrixXd raw_jacobian( const DQ_kinematics& dq_kin, const VectorXd& theta_vec, const int& to_link)
+{
+    return dq_kin.raw_jacobian(theta_vec,to_link);
+}
+
 /** 
 Returns a MatrixXd 8x(links - n_dummy) representing the Jacobian of a robotic system DQ_kinematics object.
 */
@@ -492,7 +502,7 @@ int  DQ_kinematics::n_dummy() const
     int aux_n_dummy = 0;
     if (dh_matrix_.rows() > 4){
         for (int i = 0; i < dh_matrix_.cols(); i++) {
-            if(dh_matrix_(4,i) == 1)
+            if(dh_matrix_(4,i) == 1.0)
                 aux_n_dummy = aux_n_dummy + 1;
         }
         return aux_n_dummy;
@@ -566,7 +576,7 @@ DQ  DQ_kinematics::set_effector( const DQ& new_effector)
 DQ  DQ_kinematics::raw_fkm( const VectorXd& theta_vec) const
 {
 
-    if((int)theta_vec.size() != (this->links() - this->n_dummy()) )
+    if(int(theta_vec.size()) != (this->links() - this->n_dummy()) )
     {
         throw(std::range_error("Bad raw_fkm(theta_vec) call: Incorrect number of joint variables"));
     }
@@ -574,7 +584,7 @@ DQ  DQ_kinematics::raw_fkm( const VectorXd& theta_vec) const
     DQ q(1);
     int j = 0;
     for (int i = 0; i < this->links(); i++) {
-        if(this->dummy()(i) == 1) {
+        if(this->dummy()(i) == 1.0) {
             q = q * DQ_robotics::dh2dq((*this), 0.0, i+1);
             j = j + 1;
         }
@@ -596,7 +606,7 @@ DQ  DQ_kinematics::raw_fkm( const VectorXd& theta_vec) const
 DQ  DQ_kinematics::raw_fkm( const VectorXd& theta_vec, const int& ith) const
 {
 
-    if((int)theta_vec.size() != (this->links() - this->n_dummy()) )
+    if(int(theta_vec.size()) != (this->links() - this->n_dummy()) )
     {
         throw(std::range_error("Bad raw_fkm(theta_vec,ith) call: Incorrect number of joint variables"));
     }
@@ -604,7 +614,7 @@ DQ  DQ_kinematics::raw_fkm( const VectorXd& theta_vec, const int& ith) const
     DQ q(1);
     int j = 0;
     for (int i = 0; i < ith; i++) {
-        if(this->dummy()(i) == 1) {
+        if(this->dummy()(i) == 1.0) {
             q = q * DQ_robotics::dh2dq( (*this) , 0, i+1);
             j = j + 1;
         }
@@ -705,28 +715,23 @@ DQ  DQ_kinematics::get_z( const VectorXd& q) const
     return DQ(z);
 }
 
-/** Returns a MatrixXd 8x(links - n_dummy) representing the Jacobian of a robotic system DQ_kinematics object.
-* theta_vec is the vector of joint variables.
-* \param Eigen::VectorXd theta_vec is the vector representing the theta joint angles.
-* \return A constant Eigen::MatrixXd (8,links - n_dummy).
-*/
-MatrixXd  DQ_kinematics::jacobian( const VectorXd& theta_vec) const
+
+MatrixXd DQ_kinematics::raw_jacobian(const VectorXd& theta_vec, const int& to_link) const
 {
-
-    DQ q_effector = this->raw_fkm(theta_vec);
-
+    DQ q_effector = this->raw_fkm(theta_vec,to_link);
     DQ z;
     DQ q(1);
 
-    MatrixXd J(8,(this->links() - this->n_dummy()) );
+    MatrixXd J(8,(to_link - this->n_dummy()) );
 
     for (int i = 0; i < J.rows(); i++) {
         for(int j = 0; j < J.cols(); j++) {
             J(i,j) = 0;
         }
     }
+
     int ith = -1;
-    for(int i = 0; i < this->links(); i++) {
+    for(int i = 0; i < to_link; i++) {
 
         // Use the standard DH convention
         if(this->convention() == "standard") {
@@ -737,8 +742,7 @@ MatrixXd  DQ_kinematics::jacobian( const VectorXd& theta_vec) const
             DQ w(0, 0, -sin(this->alpha()(i)), cos(this->alpha()(i)), 0, 0, -this->a()(i)*cos(this->alpha()(i)), -this->a()(i)*sin(this->alpha()(i)));
             z =0.5 * q * w * q.conj();
         }
-
-        if(this->dummy()(i) == 0) {
+        if(this->dummy()(i) == 0.0) {
             q = q * this->dh2dq(theta_vec(ith+1), i+1);
             DQ aux_j = z * q_effector;
             for(int k = 0; k < J.rows(); k++) {
@@ -751,21 +755,36 @@ MatrixXd  DQ_kinematics::jacobian( const VectorXd& theta_vec) const
             q = q * this->dh2dq(0.0,(i+1));
     }
 
-    // Takes the base's displacement into account
-    Matrix<double,8,8> aux_J(8,8);
-    aux_J = Hminus8(curr_effector_);
-    aux_J = Hplus8(curr_base_)*aux_J;
-    J = aux_J*J;
-
     return J;
+}
+
+/** Returns a MatrixXd 8x(links - n_dummy) representing the Jacobian of a robotic system DQ_kinematics object.
+* theta_vec is the vector of joint variables.
+* \param Eigen::VectorXd theta_vec is the vector representing the theta joint angles.
+* \return A constant Eigen::MatrixXd (8,links - n_dummy).
+*/
+MatrixXd  DQ_kinematics::jacobian(const VectorXd& theta_vec, const int &to_link) const
+{
+    MatrixXd J = raw_jacobian(theta_vec,to_link);
+    if(to_link==this->links())
+    {
+        J = Hplus8(curr_base_)*Hminus8(curr_effector_)*J;
+    }
+    else
+    {
+        J = Hplus8(curr_base_)*J;
+    }
+    return J;
+}
+
+MatrixXd DQ_kinematics::jacobian( const VectorXd& theta_vec) const
+{
+    return jacobian(theta_vec,this->links());
 }
 
 MatrixXd DQ_kinematics::analyticalJacobian( const VectorXd& theta_vec) const
 {
     return DQ_kinematics::jacobian(theta_vec);
 }
-
-
-
 
 }//namespace DQ_robotics

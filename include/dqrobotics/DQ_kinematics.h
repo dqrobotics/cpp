@@ -107,7 +107,9 @@ public:
     DQ get_z( const VectorXd& q) const;
 
     MatrixXd analyticalJacobian( const VectorXd& theta_vec) const;
-    MatrixXd jacobian( const VectorXd& theta_vec) const; //The MATLAB syntax, kept for legacy reasons.
+    MatrixXd jacobian(const VectorXd& theta_vec, const int& to_link) const;
+    MatrixXd jacobian(const VectorXd& theta_vec) const;
+    MatrixXd raw_jacobian(const VectorXd& theta_vec, const int& to_link) const;
 
 };
 
@@ -144,7 +146,9 @@ DQ dh2dq( const DQ_kinematics& dq_kin, const double& theta_ang, const int& link_
 DQ get_z( const DQ_kinematics& dq_kin, const VectorXd& q);
 
 MatrixXd analyticalJacobian( const DQ_kinematics& dq_kin, const VectorXd& theta_vec);
+MatrixXd jacobian(const DQ_kinematics& dq_kin, const VectorXd& theta_vec, const int &to_link);
 MatrixXd jacobian( const DQ_kinematics& dq_kin, const VectorXd& theta_vec); //The MATLAB syntax, kept for legacy reasons.
+MatrixXd raw_jacobian( const DQ_kinematics& dq_kin, const VectorXd& theta_vec, const int& to_link);
 
 MatrixXd rotationJacobian( const MatrixXd& analytical_jacobian);
 
