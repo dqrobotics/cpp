@@ -117,6 +117,8 @@ public:
 
     DQ normalize() const;
 
+    DQ sharp() const;
+
     //Operator (-) Overload
     DQ operator-();
     //Operator (==) Overload
@@ -247,6 +249,8 @@ Matrix<double,8,8> generalizedJacobian(const DQ& x_E);
 Matrix<double,8,8> jacobG(const DQ& x_E);
 
 DQ normalize (const DQ& dq);
+
+DQ sharp(const DQ& dq);
 
 }//Namespace DQRobotics
 

@@ -41,7 +41,7 @@ const DQ DQ::E(0,0,0,0,1,0,0,0);
 *****************************************************************/
 
 /**
-* P() operator -> retrieves the primary part of a DQ. 
+* P() operator -> retrieves the primary part of a DQ.
 *
 * @param dq The DQ which primary part you wish.
 * @return a constant DQ representing the primary part of dq.
@@ -52,7 +52,7 @@ DQ P(const DQ& dq)
 }
 
 /**
-* D() operator -> retrieves the dual part of a DQ. 
+* D() operator -> retrieves the dual part of a DQ.
 *
 * @param dq The DQ which dual part you wish.
 * @return a constant DQ representing the dual part of dq.
@@ -63,7 +63,7 @@ DQ D(const DQ& dq)
 }
 
 /**
-* Re() operator -> retrieves the real part of a DQ. 
+* Re() operator -> retrieves the real part of a DQ.
 *
 * @param dq The DQ which real part you wish.
 * @return a constant DQ representing the real part of dq.
@@ -74,7 +74,7 @@ DQ Re(const DQ& dq)
 }
 
 /**
-* Im() operator -> retrieves the imaginary part of a DQ. 
+* Im() operator -> retrieves the imaginary part of a DQ.
 *
 * @param dq The DQ which imaginary part you wish.
 * @return a constant DQ representing the imaginary part of dq.
@@ -85,7 +85,7 @@ DQ Im(const DQ& dq)
 }
 
 /**
-* Conjugate operator -> retrieves the conjugate of a DQ. 
+* Conjugate operator -> retrieves the conjugate of a DQ.
 *
 * @param dq The DQ which conjugate you wish.
 * @return a constant DQ representing the conjugate of dq.
@@ -96,7 +96,7 @@ DQ conj(const DQ& dq)
 }
 
 /**
-* Norm operator -> retrieves the norm of a DQ. 
+* Norm operator -> retrieves the norm of a DQ.
 *
 * @param dq The DQ which norm you wish.
 * @return a constant DQ representing the norm of dq.
@@ -107,7 +107,7 @@ DQ norm(const DQ& dq)
 }
 
 /**
-* Norm operator -> retrieves the norm of a DQ. 
+* Norm operator -> retrieves the norm of a DQ.
 *
 * @param dq The DQ which norm you wish.
 * @return a constant DQ representing the norm of dq.
@@ -118,7 +118,7 @@ DQ inv(const DQ& dq)
 }
 
 /**
-* Translation operator -> retrieves the Translation represented by a DQ. 
+* Translation operator -> retrieves the Translation represented by a DQ.
 *
 * @param dq The DQ which Translation you wish.
 * @return a constant DQ representing the Translation represented by dq.
@@ -129,7 +129,7 @@ DQ translation(const DQ& dq)
 }
 
 /**
-* Rotation Axis operator -> retrieves the Rotation Axis represented by a DQ. 
+* Rotation Axis operator -> retrieves the Rotation Axis represented by a DQ.
 *
 * @param dq The DQ which Rotation Axis you wish.
 * @return a constant DQ representing the Rotation Axis represented by dq.
@@ -140,7 +140,7 @@ DQ rot_axis(const DQ& dq)
 }
 
 /**
-* Rotation Angle operator -> retrieves the Rotation Angle represented by a DQ. 
+* Rotation Angle operator -> retrieves the Rotation Angle represented by a DQ.
 *
 * @param dq The DQ which Rotation Angle you wish.
 * @return a constant DQ representing the Rotation Angle represented by dq.
@@ -151,7 +151,7 @@ double rot_angle(const DQ& dq)
 }
 
 /**
-* Logarithm operator -> retrieves the Logarithm of a DQ. 
+* Logarithm operator -> retrieves the Logarithm of a DQ.
 *
 * @param dq The DQ which Logarithm you wish.
 * @return a constant DQ representing the Logarithm of dq.
@@ -162,7 +162,7 @@ DQ log(const DQ& dq)
 }
 
 /**
-* Exponential operator -> retrieves the Exponential of a DQ. 
+* Exponential operator -> retrieves the Exponential of a DQ.
 *
 * @param dq The DQ which Exponential you wish.
 * @return a constant DQ representing the Exponential of dq.
@@ -178,7 +178,7 @@ DQ pow(const DQ& dq, const double a)
 }
 
 /**
-* Exponential operator -> retrieves the Exponential of a DQ. 
+* Exponential operator -> retrieves the Exponential of a DQ.
 *
 * @param dq The DQ which Exponential you wish.
 * @return a constant DQ representing the Exponential of dq.
@@ -260,7 +260,7 @@ Matrix<double,8,8> Hminus8(const DQ& dq)
 /**
 * Vect operator on the primary part of a DQ.
 *
-* @param dq The DQ with the primary part you wish to obtain the vect of. 
+* @param dq The DQ with the primary part you wish to obtain the vect of.
 * @return A 4x1 vector representing the primary part of dq.
 */
 Vector4d vec4(const DQ& dq)
@@ -271,7 +271,7 @@ Vector4d vec4(const DQ& dq)
 /**
 * Vect operator on a DQ.
 *
-* @param dq The DQ in which you want to apply the operation. 
+* @param dq The DQ in which you want to apply the operation.
 * @return A 8x1 vector representing dq.
 */
 Matrix<double,8,1>  vec8(const DQ& dq)
@@ -925,6 +925,11 @@ DQ DQ::normalize() const
     return (*this)*((*this).norm().inv());
 }
 
+
+DQ DQ::sharp() const
+{
+    return (P()-E_*D());
+}
 
 /**
 * Unit Dual Quaternion constructor.
@@ -1635,6 +1640,11 @@ Matrix<double,4,4>  C4()
     diag_C4(3,3) = -1;
 
     return diag_C4;
+}
+
+DQ sharp(const DQ& dq)
+{
+    return dq.sharp();
 }
 
 
