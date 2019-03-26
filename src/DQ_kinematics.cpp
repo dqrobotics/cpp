@@ -310,7 +310,10 @@ MatrixXd  pseudoInverse( const MatrixXd& matrix)
     return pseudo_inverse;
 }
 
-
+MatrixXd jacobianDerivative( const DQ_kinematics& dq_kin,   const VectorXd& theta_vec, const VectorXd& theta_vec_dot, const int& to_link)
+{
+    return dq_kin.jacobianDerivative(theta_vec,theta_vec_dot,to_link);
+}
 
 /****************************************************************
 **************DQ KINEMATICS CLASS METHODS************************
@@ -785,6 +788,51 @@ MatrixXd DQ_kinematics::jacobian( const VectorXd& theta_vec) const
 MatrixXd DQ_kinematics::analyticalJacobian( const VectorXd& theta_vec) const
 {
     return DQ_kinematics::jacobian(theta_vec);
+}
+
+MatrixXd DQ_kinematics::jacobianDerivative(const VectorXd &theta_vec, const VectorXd &theta_vec_dot, const int &to_link) const
+{
+
+    int n = to_link;
+    DQ x_effector = raw_fkm(theta_vec,to_link);
+    MatrixXd J    = raw_jacobian(theta_vec,to_link);
+    VectorXd vec_x_effector_dot = J*theta_vec_dot.head(to_link);
+
+    DQ x = DQ(1);
+    MatrixXd J_dot = MatrixXd::Zero(8,n-n_dummy());
+    int jth=0;
+
+    for(int i=0;i<n;i++)
+    {
+        DQ w;
+        DQ z;
+        // Use the standard DH convention
+        if(this->convention() == "standard") {
+            w = k_;
+            z = get_z(x.q);
+        }
+        else //Use the modified DH convention
+        {
+            w = DQ(0,0,-sin(alpha()(i)),cos(alpha()(i)),0,0,-a()(i)*cos(alpha()(i)),-a()(i)*sin(alpha()(i)));
+            z = 0.5*x*w*conj(x);
+        }
+
+        if( dummy()(i)!=1.0 )
+        {
+            VectorXd vec_zdot = 0.5*(haminus8(w*conj(x)) + hamiplus8(x*w)*C8())*raw_jacobian(theta_vec,i)*theta_vec_dot.head(i);
+
+            J_dot.col(jth) = haminus8(x_effector)*vec_zdot + hamiplus8(z)*vec_x_effector_dot;
+            x = x*dh2dq(theta_vec(jth),i+1);
+            jth = jth+1;
+        }
+        else
+        {
+            //Dummy joints don't contribute to the Jacobian
+            x = x*dh2dq(0,i);
+        }
+    }
+
+    return J_dot;
 }
 
 }//namespace DQ_robotics

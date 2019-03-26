@@ -107,9 +107,10 @@ public:
     DQ get_z( const VectorXd& q) const;
 
     MatrixXd analyticalJacobian( const VectorXd& theta_vec) const;
-    MatrixXd jacobian(const VectorXd& theta_vec, const int& to_link) const;
-    MatrixXd jacobian(const VectorXd& theta_vec) const;
-    MatrixXd raw_jacobian(const VectorXd& theta_vec, const int& to_link) const;
+    MatrixXd jacobian(           const VectorXd& theta_vec, const int& to_link) const;
+    MatrixXd jacobian(           const VectorXd& theta_vec) const;
+    MatrixXd raw_jacobian(       const VectorXd& theta_vec, const int& to_link) const;
+    MatrixXd jacobianDerivative( const VectorXd& theta_vec, const VectorXd& theta_vec_dot, const int& to_link) const;
 
 };
 
@@ -145,19 +146,20 @@ DQ dh2dq( const DQ_kinematics& dq_kin, const double& theta_ang, const int& link_
 
 DQ get_z( const DQ_kinematics& dq_kin, const VectorXd& q);
 
-MatrixXd analyticalJacobian( const DQ_kinematics& dq_kin, const VectorXd& theta_vec);
-MatrixXd jacobian(const DQ_kinematics& dq_kin, const VectorXd& theta_vec, const int &to_link);
-MatrixXd jacobian( const DQ_kinematics& dq_kin, const VectorXd& theta_vec); //The MATLAB syntax, kept for legacy reasons.
-MatrixXd raw_jacobian( const DQ_kinematics& dq_kin, const VectorXd& theta_vec, const int& to_link);
+MatrixXd analyticalJacobian( const DQ_kinematics& dq_kin,   const VectorXd& theta_vec);
+MatrixXd jacobian(           const DQ_kinematics& dq_kin,   const VectorXd& theta_vec,  const int &to_link);
+MatrixXd jacobian(           const DQ_kinematics& dq_kin,   const VectorXd& theta_vec); //The MATLAB syntax, kept for legacy reasons.
+MatrixXd raw_jacobian(       const DQ_kinematics& dq_kin,   const VectorXd& theta_vec, const int& to_link);
+MatrixXd jacobianDerivative( const DQ_kinematics& dq_kin,   const VectorXd& theta_vec, const VectorXd& theta_vec_dot, const int& to_link);
 
 MatrixXd rotationJacobian( const MatrixXd& analytical_jacobian);
 
 MatrixXd translationJacobian( const MatrixXd& analytical_jacobian, const Matrix<double,8,1>& x);
-MatrixXd  jacobp( const MatrixXd& analytical_jacobian, const Matrix<double,8,1>& x); //The MATLAB syntax, kept for legacy reasons.
+MatrixXd jacobp(              const MatrixXd& analytical_jacobian, const Matrix<double,8,1>& x); //The MATLAB syntax, kept for legacy reasons.
 
 
 MatrixXd distanceJacobian( const DQ_kinematics& dq_kin, const MatrixXd& param_jacobian, const Matrix<double,8,1>& x);
-MatrixXd  jacobd( const DQ_kinematics& dq_kin, const MatrixXd& param_jacobian, const Matrix<double,8,1>& x); //The MATLAB syntax, kept for legacy reasons.
+MatrixXd jacobd(           const DQ_kinematics& dq_kin, const MatrixXd& param_jacobian, const Matrix<double,8,1>& x); //The MATLAB syntax, kept for legacy reasons.
 
 MatrixXd pseudoInverse( const MatrixXd& matrix);
 
