@@ -134,9 +134,9 @@ DQ translation(const DQ& dq)
 * @param dq The DQ which Rotation Axis you wish.
 * @return a constant DQ representing the Rotation Axis represented by dq.
 */
-DQ rot_axis(const DQ& dq)
+DQ rotation_axis(const DQ& dq)
 {
-    return dq.rot_axis();
+    return dq.rotation_axis();
 }
 
 /**
@@ -145,9 +145,9 @@ DQ rot_axis(const DQ& dq)
 * @param dq The DQ which Rotation Angle you wish.
 * @return a constant DQ representing the Rotation Angle represented by dq.
 */
-double rot_angle(const DQ& dq)
+double rotation_angle(const DQ& dq)
 {
-    return dq.rot_angle();
+    return dq.rotation_angle();
 }
 
 /**
@@ -219,9 +219,9 @@ DQ dec_mult(const DQ& dq1, const DQ& dq2)
 * @param dq The DQ which H+ you wish.
 * @return the 4x4 matrix representing the H+ operator of the primary part of dq.
 */
-Matrix4d Hplus4(const DQ& dq)
+Matrix4d hamiplus4(const DQ& dq)
 {
-    return dq.Hplus4();
+    return dq.hamiplus4();
 }
 
 /**
@@ -230,9 +230,9 @@ Matrix4d Hplus4(const DQ& dq)
 * @param dq The DQ which H- you wish.
 * @return the 4x4 matrix representing the H- operator of the primary part of dq.
 */
-Matrix4d Hminus4(const DQ& dq)
+Matrix4d haminus4(const DQ& dq)
 {
-    return dq.Hminus4();
+    return dq.haminus4();
 }
 
 /**
@@ -241,9 +241,9 @@ Matrix4d Hminus4(const DQ& dq)
 * @param dq The DQ which H+ you wish.
 * @return the 8x8 matrix representing the H+ operator of dq.
 */
-Matrix<double,8,8> Hplus8(const DQ& dq)
+Matrix<double,8,8> hamiplus8(const DQ& dq)
 {
-    return dq.Hplus8();
+    return dq.hamiplus8();
 }
 
 /**
@@ -252,9 +252,9 @@ Matrix<double,8,8> Hplus8(const DQ& dq)
 * @param dq The DQ which H- you wish.
 * @return the 8x8 matrix representing the H- operator of dq.
 */
-Matrix<double,8,8> Hminus8(const DQ& dq)
+Matrix<double,8,8> haminus8(const DQ& dq)
 {
-    return dq.Hminus8();
+    return dq.haminus8();
 }
 
 /**
@@ -286,21 +286,9 @@ Matrix<double,8,1>  vec8(const DQ& dq)
 * @param x_e.
 * @return A 8x8 matrix representing the Generalized Jacobian given the arguments.
 */
-Matrix<double,8,8> jacobG(const DQ& x_E)
+Matrix<double,8,8> generalized_jacobian(const DQ& x_E)
 {
-    return x_E.jacobG();
-}
-
-/**
-* Generalized Jacobian, i.e, the Jacobian that satisfies the relation Geometric Jacobian = Generalized Jacobian * Analytical (DQ) Jacobian.
-*
-* @param param_dq.
-* @param x_e.
-* @return A 8x8 matrix representing the Generalized Jacobian given the arguments.
-*/
-Matrix<double,8,8> generalizedJacobian(const DQ& x_E)
-{
-    return x_E.jacobG();
+    return x_E.generalized_jacobian();
 }
 
 /**
@@ -312,6 +300,20 @@ DQ normalize(const DQ& dq)
 {
     return dq*(dq.norm().inv());
 }
+
+DQ sharp(const DQ& dq)
+{
+    return dq.sharp();
+}
+
+Matrix4d Hplus4(const DQ& dq){return hamiplus4(dq);}
+Matrix4d Hminus4(const DQ& dq){return haminus4(dq);}
+Matrix<double,8,8> Hplus8(const DQ& dq){return hamiplus8(dq);}
+Matrix<double,8,8> Hminus8(const DQ& dq){return haminus8(dq);}
+Matrix<double,8,8> generalizedJacobian(const DQ& dq){return generalized_jacobian(dq);}
+Matrix<double,8,8> jacobG(const DQ& dq){return generalized_jacobian(dq);}
+double rot_angle(const DQ& dq){return rotation_angle(dq);}
+DQ rot_axis(const DQ& dq){return rotation_axis(dq);}
 
 /****************************************************************
 **************DQ CLASS METHODS***********************************
@@ -557,7 +559,7 @@ DQ DQ::rotation_axis() const{
     }
 
     double phi = acos(this->q(0));
-    if(phi == 0)
+    if(phi == 0.0)
         return k_; // DQ(0,0,0,1). This is only a convention;
     else
     {
@@ -614,7 +616,7 @@ DQ DQ::log() const{
     }
 
     // log calculation
-    DQ p = acos(this->q(0)) * this->rot_axis(); //primary
+    DQ p = acos(this->q(0)) * this->rotation_axis(); //primary
     DQ d = 0.5 * this->translation(); //dual
     DQ log(p.q(0),p.q(1),p.q(2),p.q(3),d.q(0),d.q(1),d.q(2),d.q(3));
 
@@ -1629,11 +1631,6 @@ Matrix<double,4,4>  C4()
     diag_C4(3,3) = -1;
 
     return diag_C4;
-}
-
-DQ sharp(const DQ& dq)
-{
-    return dq.sharp();
 }
 
 

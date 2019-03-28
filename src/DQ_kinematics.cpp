@@ -234,8 +234,8 @@ MatrixXd  jacobp( const MatrixXd& analytical_jacobian, const Matrix<double,8,1>&
             aux_J2(i,j) = analytical_jacobian((i+4),j);
         }
     }
-    MatrixXd aux = Hplus4(dq_x.D())*C4();
-    MatrixXd Jp = 2*(Hminus4(dq_x_conj_P)*aux_J2) + 2*(aux*aux_J1);
+    MatrixXd aux = hamiplus4(dq_x.D())*C4();
+    MatrixXd Jp = 2*(haminus4(dq_x_conj_P)*aux_J2) + 2*(aux*aux_J1);
     return Jp;
 }
 
@@ -771,11 +771,11 @@ MatrixXd  DQ_kinematics::jacobian(const VectorXd& theta_vec, const int &to_link)
     MatrixXd J = raw_jacobian(theta_vec,to_link);
     if(to_link==this->links())
     {
-        J = Hplus8(curr_base_)*Hminus8(curr_effector_)*J;
+        J = hamiplus8(curr_base_)*haminus8(curr_effector_)*J;
     }
     else
     {
-        J = Hplus8(curr_base_)*J;
+        J = hamiplus8(curr_base_)*J;
     }
     return J;
 }

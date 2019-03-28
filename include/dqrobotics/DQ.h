@@ -24,6 +24,15 @@ Contributors:
 #ifndef DQ_H
 #define DQ_H
 
+#if defined(__GNUC__) || defined(__clang__)
+#define DEPRECATED __attribute__((deprecated))
+#elif defined(_MSC_VER)
+#define DEPRECATED __declspec(deprecated)
+#else
+#pragma message("WARNING: You need to implement DEPRECATED for this compiler")
+#define DEPRECATED
+#endif
+
 #include <eigen3/Eigen/Dense>
 #include <iostream>
 using namespace Eigen;
@@ -121,14 +130,14 @@ public:
     std::string to_string() const;
 
     ///Deprecated signatures
-        Matrix<double,8,8> Hminus8() const{return haminus8();}
-        Matrix<double,8,8> Hplus8() const{return hamiplus8();}
-        Matrix4d Hminus4() const {return haminus4();}
-        Matrix4d Hplus4() const {return hamiplus4();}
-        Matrix<double,8,8> generalizedJacobian() const {return generalized_jacobian();}
-        Matrix<double,8,8> jacobG() const {return generalized_jacobian();}
-        DQ rot_axis() const {return rotation_axis();}
-        double rot_angle() const {return rotation_angle();}
+    DEPRECATED Matrix<double,8,8> Hminus8() const{return haminus8();}
+    DEPRECATED Matrix<double,8,8> Hplus8() const{return hamiplus8();}
+    DEPRECATED Matrix4d Hminus4() const {return haminus4();}
+    DEPRECATED Matrix4d Hplus4() const {return hamiplus4();}
+    DEPRECATED Matrix<double,8,8> generalizedJacobian() const {return generalized_jacobian();}
+    DEPRECATED Matrix<double,8,8> jacobG() const {return generalized_jacobian();}
+    DEPRECATED DQ rot_axis() const {return rotation_axis();}
+    DEPRECATED double rot_angle() const {return rotation_angle();}
 
 };//DQ Class END
 
@@ -211,11 +220,9 @@ DQ inv(const DQ& dq);
 
 DQ translation(const DQ& dq);
 
-DQ rot_axis(const DQ& dq);
-inline DQ rotation_axis(const DQ& dq){return rot_axis(dq);}
+DQ rotation_axis(const DQ& dq);
 
-double rot_angle(const DQ& dq);
-inline DQ rotation_angle(const DQ& dq){return rot_angle(dq);}
+double rotation_angle(const DQ& dq);
 
 DQ log(const DQ& dq);
 
@@ -230,29 +237,33 @@ DQ pinv(const DQ& dq);
 
 DQ dec_mult(const DQ& dq1, const DQ& dq2);
 
-Matrix4d Hplus4(const DQ& dq);
-inline Matrix4d hamiplus4(const DQ& dq){return Hplus4(dq);}
+Matrix4d hamiplus4(const DQ& dq);
 
-Matrix4d Hminus4(const DQ& dq);
-inline Matrix4d haminus4(const DQ& dq){return Hminus4(dq);}
+Matrix4d haminus4(const DQ& dq);
 
-Matrix<double,8,8> Hplus8(const DQ& dq);
-inline Matrix<double,8,8> hamiplus8(const DQ& dq){return Hplus8(dq);}
+Matrix<double,8,8> hamiplus8(const DQ& dq);
 
-Matrix<double,8,8> Hminus8(const DQ& dq);
-inline Matrix<double,8,8> haminus8(const DQ& dq){return Hminus8(dq);}
+Matrix<double,8,8> haminus8(const DQ& dq);
+
+Matrix<double,8,8> generalized_jacobian(const DQ& dq);
 
 Vector4d vec4(const DQ& dq);
 
 Matrix<double,8,1> vec8(const DQ& dq);
 
-Matrix<double,8,8> generalizedJacobian(const DQ& x_E);
-//The MATLAB syntax, kept for legacy reasons.
-Matrix<double,8,8> jacobG(const DQ& x_E);
-
 DQ normalize (const DQ& dq);
 
 DQ sharp(const DQ& dq);
+
+///Deprecated signatures
+DEPRECATED Matrix4d Hplus4(const DQ& dq);
+DEPRECATED Matrix4d Hminus4(const DQ& dq);
+DEPRECATED Matrix<double,8,8> Hplus8(const DQ& dq);
+DEPRECATED Matrix<double,8,8> Hminus8(const DQ& dq);
+DEPRECATED Matrix<double,8,8> generalizedJacobian(const DQ& dq);
+DEPRECATED Matrix<double,8,8> jacobG(const DQ& dq);
+DEPRECATED double rot_angle(const DQ& dq);
+DEPRECATED DQ rot_axis(const DQ& dq);
 
 }//Namespace DQRobotics
 
