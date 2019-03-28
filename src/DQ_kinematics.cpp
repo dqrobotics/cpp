@@ -180,38 +180,29 @@ DQ  get_z( const DQ_kinematics& dq_kin, const VectorXd& q)
 /** 
 Returns a MatrixXd 8x(links - n_dummy) representing the Jacobian of a robotic system DQ_kinematics object.
 */
-MatrixXd  jacobian( const DQ_kinematics& dq_kin, const VectorXd& theta_vec)
+MatrixXd  pose_jacobian( const DQ_kinematics& dq_kin, const VectorXd& theta_vec)
 {
-    return dq_kin.jacobian(theta_vec);
+    return dq_kin.pose_jacobian(theta_vec);
 }
 
-MatrixXd jacobian(const DQ_kinematics& dq_kin, const VectorXd& theta_vec, const int& to_link)
+MatrixXd pose_jacobian(const DQ_kinematics& dq_kin, const VectorXd& theta_vec, const int& to_link)
 {
-    return dq_kin.jacobian(theta_vec,to_link);
+    return dq_kin.pose_jacobian(theta_vec,to_link);
 }
 
-MatrixXd raw_jacobian( const DQ_kinematics& dq_kin, const VectorXd& theta_vec, const int& to_link)
+MatrixXd raw_pose_jacobian( const DQ_kinematics& dq_kin, const VectorXd& theta_vec, const int& to_link)
 {
-    return dq_kin.raw_jacobian(theta_vec,to_link);
+    return dq_kin.raw_pose_jacobian(theta_vec,to_link);
 }
-
-/** 
-Returns a MatrixXd 8x(links - n_dummy) representing the Jacobian of a robotic system DQ_kinematics object.
-*/
-MatrixXd  analyticalJacobian( const DQ_kinematics& dq_kin, const VectorXd& theta_vec)
-{
-    return dq_kin.jacobian(theta_vec);
-}
-
 
 /**
 * Obtains the rotation jacobian, relating the derivative of the rotation quaternion to the derivative of the joint variables as being the first 4 rows of the analytical jacobian.
-* \param MatrixXd analytical_jacobian The robot analytical jacobian.
+* \param MatrixXd pose_jacobian The robot analytical jacobian.
 * \return The rotation jacobian.
 */
-MatrixXd  rotationJacobian( const MatrixXd& analytical_jacobian)
+MatrixXd  rotation_jacobian( const MatrixXd& pose_jacobian)
 {
-    return analytical_jacobian.block(0,0,4,analytical_jacobian.cols());
+    return pose_jacobian.block(0,0,4,pose_jacobian.cols());
 }
 
 /** Returns the translation Jacobian; that it, the Jacobian that satisfies the relation dot_p = Jp * dot_theta.
@@ -221,27 +212,22 @@ MatrixXd  rotationJacobian( const MatrixXd& analytical_jacobian)
 * \param Eigen::Matrix<double,8,1> x is the vector which constructs a translation DQ object
 * \return A constant Eigen::MatrixXd
 */
-MatrixXd  jacobp( const MatrixXd& analytical_jacobian, const Matrix<double,8,1>& x)
+MatrixXd  translation_jacobian(const MatrixXd& pose_jacobian, const DQ &x)
 {
     DQ dq_x(x);
     DQ dq_x_conj_P = dq_x.P();
     dq_x_conj_P = dq_x_conj_P.conj();
-    MatrixXd aux_J1(4,analytical_jacobian.cols());
-    MatrixXd aux_J2(4,analytical_jacobian.cols());
+    MatrixXd aux_J1(4,pose_jacobian.cols());
+    MatrixXd aux_J2(4,pose_jacobian.cols());
     for(int i = 0; i < 4; i++) {
-        for(int j = 0; j < analytical_jacobian.cols(); j++) {
-            aux_J1(i,j) = analytical_jacobian(i,j);
-            aux_J2(i,j) = analytical_jacobian((i+4),j);
+        for(int j = 0; j < pose_jacobian.cols(); j++) {
+            aux_J1(i,j) = pose_jacobian(i,j);
+            aux_J2(i,j) = pose_jacobian((i+4),j);
         }
     }
     MatrixXd aux = hamiplus4(dq_x.D())*C4();
     MatrixXd Jp = 2*(haminus4(dq_x_conj_P)*aux_J2) + 2*(aux*aux_J1);
     return Jp;
-}
-
-MatrixXd  translationJacobian( const MatrixXd& analytical_jacobian, const Matrix<double,8,1>& x)
-{
-    return DQ_robotics::jacobp(analytical_jacobian,x);
 }
 
 /** Returns the distance Jacobian; that it, the Jacobian that satisfies the relation dot_(d^2) = Jd * dot_theta.
@@ -252,11 +238,11 @@ MatrixXd  translationJacobian( const MatrixXd& analytical_jacobian, const Matrix
 * \param Eigen::Matrix<double,8,1> x is the vector which constructs a translation DQ object
 * \return A constant Eigen::MatrixXd
 */
-MatrixXd  jacobd( const MatrixXd& param_jacobian, const Matrix<double,8,1>& x)
+MatrixXd  distance_jacobian( const MatrixXd& param_jacobian, const DQ& x)
 {
     DQ dq_x(x);
     DQ p = translation(dq_x);
-    MatrixXd Jp = jacobp(param_jacobian, x);
+    MatrixXd Jp = translation_jacobian(param_jacobian, x);
     MatrixXd vec4p_T(1,4);
     for (int i = 0; i < 4; i++) {
         vec4p_T(0,i) = vec4(p)(i,0);
@@ -266,18 +252,13 @@ MatrixXd  jacobd( const MatrixXd& param_jacobian, const Matrix<double,8,1>& x)
     return Jd;
 }
 
-MatrixXd  distanceJacobian( const MatrixXd& param_jacobian, const Matrix<double,8,1>& x)
-{
-    return DQ_robotics::jacobd(param_jacobian,x);
-}
-
 /**
 * Pseudo inverse implementation mimicking the on in MATLAB.
 * \param Eigen::MatrixXd matrix: the matrix whose pseudoinverse you want.
 * \return A constant Eigen::MatrixXd that is the Moore-Penrose pseudoinverse of matrix with the default MATLAB tolerance.
 * \see  http://www.mathworks.com/help/matlab/ref/pinv.html
 */
-MatrixXd  pseudoInverse( const MatrixXd& matrix)
+MatrixXd  pseudo_inverse( const MatrixXd& matrix)
 {
     int num_rows = matrix.rows();
     int num_cols = matrix.cols();
@@ -310,10 +291,26 @@ MatrixXd  pseudoInverse( const MatrixXd& matrix)
     return pseudo_inverse;
 }
 
-MatrixXd jacobianDerivative( const DQ_kinematics& dq_kin,   const VectorXd& theta_vec, const VectorXd& theta_vec_dot, const int& to_link)
+MatrixXd pose_jacobian_derivative(const DQ_kinematics& dq_kin,   const VectorXd& theta_vec, const VectorXd& theta_vec_dot, const int& to_link)
 {
-    return dq_kin.jacobianDerivative(theta_vec,theta_vec_dot,to_link);
+    return dq_kin.pose_jacobian_derivative(theta_vec,theta_vec_dot,to_link);
 }
+
+///DEPRECATED SIGNATURES
+MatrixXd analyticalJacobian( const DQ_kinematics& dq_kin,   const VectorXd& theta_vec){return pose_jacobian(dq_kin,theta_vec);}
+MatrixXd jacobian(           const DQ_kinematics& dq_kin,   const VectorXd& theta_vec,  const int &to_link){return pose_jacobian(dq_kin,theta_vec,to_link);}
+MatrixXd jacobian(           const DQ_kinematics& dq_kin,   const VectorXd& theta_vec){return pose_jacobian(dq_kin,theta_vec);} //The MATLAB syntax, kept for legacy reasons.
+MatrixXd jacobianDerivative( const DQ_kinematics& dq_kin,   const VectorXd& theta_vec, const VectorXd& theta_vec_dot, const int& to_link){return pose_jacobian_derivative(dq_kin,theta_vec,theta_vec_dot,to_link);}
+MatrixXd raw_jacobian(       const DQ_kinematics& dq_kin,   const VectorXd& theta_vec, const int& to_link){return raw_pose_jacobian(dq_kin,theta_vec,to_link);}
+MatrixXd rotationJacobian(   const MatrixXd& pose_jacobian){return rotation_jacobian(pose_jacobian);}
+MatrixXd translationJacobian(const MatrixXd& pose_jacobian, const DQ& x){return translation_jacobian(pose_jacobian,x);}
+MatrixXd jacobp(             const MatrixXd& pose_jacobian, const DQ& x){return translation_jacobian(pose_jacobian,x);} //The MATLAB syntax, kept for legacy reasons.
+MatrixXd distanceJacobian(   const MatrixXd& param_jacobian, const DQ& x){return distance_jacobian(param_jacobian,x);}
+MatrixXd jacobd(             const MatrixXd& param_jacobian, const DQ& x){return distance_jacobian(param_jacobian,x);}
+MatrixXd pseudoInverse(      const MatrixXd& matrix){return pseudo_inverse(matrix);}
+
+
+
 
 /****************************************************************
 **************DQ KINEMATICS CLASS METHODS************************
@@ -719,7 +716,7 @@ DQ  DQ_kinematics::get_z( const VectorXd& q) const
 }
 
 
-MatrixXd DQ_kinematics::raw_jacobian(const VectorXd& theta_vec, const int& to_link) const
+MatrixXd DQ_kinematics::raw_pose_jacobian(const VectorXd& theta_vec, const int& to_link) const
 {
     DQ q_effector = this->raw_fkm(theta_vec,to_link);
     DQ z;
@@ -766,9 +763,9 @@ MatrixXd DQ_kinematics::raw_jacobian(const VectorXd& theta_vec, const int& to_li
 * \param Eigen::VectorXd theta_vec is the vector representing the theta joint angles.
 * \return A constant Eigen::MatrixXd (8,links - n_dummy).
 */
-MatrixXd  DQ_kinematics::jacobian(const VectorXd& theta_vec, const int &to_link) const
+MatrixXd  DQ_kinematics::pose_jacobian(const VectorXd& theta_vec, const int &to_link) const
 {
-    MatrixXd J = raw_jacobian(theta_vec,to_link);
+    MatrixXd J = raw_pose_jacobian(theta_vec,to_link);
     if(to_link==this->links())
     {
         J = hamiplus8(curr_base_)*haminus8(curr_effector_)*J;
@@ -780,22 +777,17 @@ MatrixXd  DQ_kinematics::jacobian(const VectorXd& theta_vec, const int &to_link)
     return J;
 }
 
-MatrixXd DQ_kinematics::jacobian( const VectorXd& theta_vec) const
+MatrixXd DQ_kinematics::pose_jacobian(const VectorXd &theta_vec) const
 {
-    return jacobian(theta_vec,this->links());
+    return pose_jacobian(theta_vec,links());
 }
 
-MatrixXd DQ_kinematics::analyticalJacobian( const VectorXd& theta_vec) const
-{
-    return DQ_kinematics::jacobian(theta_vec);
-}
-
-MatrixXd DQ_kinematics::jacobianDerivative(const VectorXd &theta_vec, const VectorXd &theta_vec_dot, const int &to_link) const
+MatrixXd DQ_kinematics::pose_jacobian_derivative(const VectorXd &theta_vec, const VectorXd &theta_vec_dot, const int &to_link) const
 {
 
     int n = to_link;
     DQ x_effector = raw_fkm(theta_vec,to_link);
-    MatrixXd J    = raw_jacobian(theta_vec,to_link);
+    MatrixXd J    = raw_pose_jacobian(theta_vec,to_link);
     VectorXd vec_x_effector_dot = J*theta_vec_dot.head(to_link);
 
     DQ x = DQ(1);
@@ -819,7 +811,7 @@ MatrixXd DQ_kinematics::jacobianDerivative(const VectorXd &theta_vec, const Vect
 
         if( dummy()(i)!=1.0 )
         {
-            VectorXd vec_zdot = 0.5*(haminus8(w*conj(x)) + hamiplus8(x*w)*C8())*raw_jacobian(theta_vec,i)*theta_vec_dot.head(i);
+            VectorXd vec_zdot = 0.5*(haminus8(w*conj(x)) + hamiplus8(x*w)*C8())*raw_pose_jacobian(theta_vec,i)*theta_vec_dot.head(i);
 
             J_dot.col(jth) = haminus8(x_effector)*vec_zdot + hamiplus8(z)*vec_x_effector_dot;
             x = x*dh2dq(theta_vec(jth),i+1);
@@ -835,4 +827,13 @@ MatrixXd DQ_kinematics::jacobianDerivative(const VectorXd &theta_vec, const Vect
     return J_dot;
 }
 
+
+///DEPRECATED SIGNATURES
+MatrixXd DQ_kinematics::analyticalJacobian( const VectorXd& theta_vec) const{return pose_jacobian(theta_vec);}
+MatrixXd DQ_kinematics::jacobian(           const VectorXd& theta_vec, const int& to_link) const{return pose_jacobian(theta_vec,to_link);}
+MatrixXd DQ_kinematics::jacobian(           const VectorXd& theta_vec) const{return pose_jacobian(theta_vec);}
+MatrixXd DQ_kinematics::raw_jacobian(       const VectorXd& theta_vec, const int& to_link) const{return raw_pose_jacobian(theta_vec,to_link);}
+MatrixXd DQ_kinematics::jacobianDerivative( const VectorXd& theta_vec, const VectorXd& theta_vec_dot, const int& to_link) const{return pose_jacobian_derivative(theta_vec,theta_vec_dot,to_link);}
+
 }//namespace DQ_robotics
+
