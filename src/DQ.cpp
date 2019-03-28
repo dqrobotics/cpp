@@ -549,7 +549,7 @@ DQ DQ::translation() const
 * \return A constant DQ object.
 * \sa DQ().
 */
-DQ DQ::rot_axis() const{
+DQ DQ::rotation_axis() const{
 
     // Verify if the object caller is a unit DQ
     if (this->norm() != 1) {
@@ -585,7 +585,7 @@ DQ DQ::rot_axis() const{
 * \return A constant double value.
 * \sa DQ().
 */
-double DQ::rot_angle() const{
+double DQ::rotation_angle() const{
 
     // Verify if the object caller is a unit DQ
     if (this->norm() != 1) {
@@ -752,7 +752,7 @@ DQ DQ::pinv() const{
 * To use this member function, type: 'dq_object.Hplus4();'.
 * \return A constant boost::numeric::ublas::matrix <double> (4,4).
 */
-Matrix4d DQ::Hplus4() const{
+Matrix4d DQ::hamiplus4() const{
     Matrix4d op_Hplus4(4,4);
     op_Hplus4(0,0) = q(0); op_Hplus4(0,1) = -q(1); op_Hplus4(0,2) = -q(2); op_Hplus4(0,3) = -q(3);
     op_Hplus4(1,0) = q(1); op_Hplus4(1,1) =  q(0); op_Hplus4(1,2) = -q(3); op_Hplus4(1,3) =  q(2);
@@ -769,7 +769,7 @@ Matrix4d DQ::Hplus4() const{
 * To use this member function, type: 'dq_object.Hminus4();'.
 * \return A constant boost::numeric::ublas::matrix <double> (4,4).
 */
-Matrix4d DQ::Hminus4() const{
+Matrix4d DQ::haminus4() const{
     Matrix4d op_Hminus4(4,4);
     op_Hminus4(0,0) = q(0); op_Hminus4(0,1) = -q(1); op_Hminus4(0,2) = -q(2); op_Hminus4(0,3) = -q(3);
     op_Hminus4(1,0) = q(1); op_Hminus4(1,1) =  q(0); op_Hminus4(1,2) =  q(3); op_Hminus4(1,3) = -q(2);
@@ -786,7 +786,7 @@ Matrix4d DQ::Hminus4() const{
 * To use this member function, type: 'dq_object.Hplus8();'.
 * \return A constant boost::numeric::ublas::matrix <double> (8,8).
 */
-Matrix<double,8,8> DQ::Hplus8() const{
+Matrix<double,8,8> DQ::hamiplus8() const{
     Matrix<double,8,8> op_Hplus8;
     op_Hplus8(0,0) = q(0); op_Hplus8(0,1) = -q(1); op_Hplus8(0,2) = -q(2); op_Hplus8(0,3) = -q(3);
     op_Hplus8(1,0) = q(1); op_Hplus8(1,1) =  q(0); op_Hplus8(1,2) = -q(3); op_Hplus8(1,3) =  q(2);
@@ -817,7 +817,7 @@ Matrix<double,8,8> DQ::Hplus8() const{
 * To use this member function, type: 'dq_object.Hminus8();'.
 * \return A constant boost::numeric::ublas::matrix <double> (8,8).
 */
-Matrix<double,8,8> DQ::Hminus8() const{
+Matrix<double,8,8> DQ::haminus8() const{
     Matrix<double,8,8> op_Hminus8(8,8);
     op_Hminus8(0,0) = q(0); op_Hminus8(0,1) = -q(1); op_Hminus8(0,2) = -q(2); op_Hminus8(0,3) = -q(3);
     op_Hminus8(1,0) = q(1); op_Hminus8(1,1) =  q(0); op_Hminus8(1,2) =  q(3); op_Hminus8(1,3) = -q(2);
@@ -883,7 +883,7 @@ Matrix<double,8,1>  DQ::vec8() const{
 * \param DQ x_E is the dual position quaternion
 * \return A constant boost::numeric::ublas::matrix <double>
 */
-Matrix<double,8,8> DQ::jacobG() const{
+Matrix<double,8,8> DQ::generalized_jacobian() const{
     Matrix<double,8,8> jacobGen(8,8);
     jacobGen(0,0) = q(4); jacobGen(0,1) =  q(5); jacobGen(0,2) =  q(6); jacobGen(0,3) =  q(7);
     jacobGen(1,0) = q(5); jacobGen(1,1) = -q(4); jacobGen(1,2) =  q(7); jacobGen(1,3) = -q(6);
@@ -906,17 +906,6 @@ Matrix<double,8,8> DQ::jacobG() const{
     jacobGen(7,4) = 0; jacobGen(7,5) = 0; jacobGen(7,6) = 0; jacobGen(7,7) = 0;
 
     return 2*jacobGen;
-}
-
-/**
-* Generalized Jacobian, i.e, the Jacobian that satisfies the relation Geometric Jacobian = Generalized Jacobian * Analytical (DQ) Jacobian.
-*
-* @param x_e.
-* @return A 8x8 matrix representing the Generalized Jacobian given the arguments.
-*/
-Matrix<double,8,8> DQ::generalizedJacobian() const
-{
-    return jacobG();
 }
 
 

@@ -78,11 +78,9 @@ public:
 
     DQ translation() const;
 
-    DQ rot_axis() const;
-    inline DQ rotation_axis() const{return rot_axis();}
+    DQ rotation_axis() const;
 
-    double rot_angle() const;
-    inline DQ rotation_angle() const{return rot_angle();}
+    double rotation_angle() const;
 
     DQ log() const;
 
@@ -95,25 +93,19 @@ public:
 
     DQ pinv() const;
 
-    Matrix4d Hplus4() const;
-    inline Matrix4d hamiplus4() const{return Hplus4();}
+    Matrix4d hamiplus4() const;
 
-    Matrix4d Hminus4() const;
-    inline Matrix4d haminus4() const{return Hminus4();}
+    Matrix4d haminus4() const;
 
-    Matrix<double,8,8> Hplus8() const;
-    inline Matrix<double,8,8> hamiplus8() const{return Hplus8();}
+    Matrix<double,8,8> hamiplus8() const;
 
-    Matrix<double,8,8> Hminus8() const;
-    inline Matrix<double,8,8> haminus8() const{return Hminus8();}
+    Matrix<double,8,8> haminus8() const;
 
     Vector4d vec4() const;
 
     Matrix<double,8,1> vec8() const;
 
-    Matrix<double,8,8> generalizedJacobian() const;
-    //The MATLAB syntax, kept for legacy reasons.
-    Matrix<double,8,8> jacobG() const;
+    Matrix<double,8,8> generalized_jacobian() const;
 
     DQ normalize() const;
 
@@ -127,6 +119,16 @@ public:
     bool operator!=(const DQ& dq2) const;
 
     std::string to_string() const;
+
+    ///Deprecated signatures
+        Matrix<double,8,8> Hminus8() const{return haminus8();}
+        Matrix<double,8,8> Hplus8() const{return hamiplus8();}
+        Matrix4d Hminus4() const {return haminus4();}
+        Matrix4d Hplus4() const {return hamiplus4();}
+        Matrix<double,8,8> generalizedJacobian() const {return generalized_jacobian();}
+        Matrix<double,8,8> jacobG() const {return generalized_jacobian();}
+        DQ rot_axis() const {return rotation_axis();}
+        double rot_angle() const {return rotation_angle();}
 
 };//DQ Class END
 
