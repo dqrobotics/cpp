@@ -33,22 +33,22 @@ DQ_CooperativeDualTaskSpace::DQ_CooperativeDualTaskSpace(const DQ_kinematics& ro
 
 DQ DQ_CooperativeDualTaskSpace::pose1(const VectorXd &theta) const
 {
-    return robot1_.fkm(theta.head(robot1_.n_link()));
+    return robot1_.fkm(theta.head(robot1_.n_links()));
 }
 
 DQ DQ_CooperativeDualTaskSpace::pose2(const VectorXd &theta) const
 {
-    return robot2_.fkm(theta.tail(robot2_.n_link()));
+    return robot2_.fkm(theta.tail(robot2_.n_links()));
 }
 
 MatrixXd DQ_CooperativeDualTaskSpace::pose_jacobian1(const VectorXd &theta) const
 {
-    return robot1_.pose_jacobian(theta.head(robot1_.n_link()));
+    return robot1_.pose_jacobian(theta.head(robot1_.n_links()));
 }
 
 MatrixXd DQ_CooperativeDualTaskSpace::pose_jacobian2(const VectorXd &theta) const
 {
-    return robot2_.pose_jacobian(theta.tail(robot2_.n_link()));
+    return robot2_.pose_jacobian(theta.tail(robot2_.n_links()));
 }
 
 DQ DQ_CooperativeDualTaskSpace::relative_pose(const VectorXd &theta) const
@@ -88,10 +88,10 @@ MatrixXd DQ_CooperativeDualTaskSpace::absolute_pose_jacobian(const VectorXd &the
     MatrixXd Jxr2(8,Jrr2.cols());
     Jxr2 << Jrr2, 0.25*(haminus4(pow(xr.P(),0.5))*Jtr + hamiplus4(translation(xr))*Jrr2);
 
-    MatrixXd temp(8,robot1_.n_link()+robot2_.n_link());
-    temp << MatrixXd::Zero(8,robot1_.n_link()),Jx2;
+    MatrixXd temp(8,robot1_.n_links()+robot2_.n_links());
+    temp << MatrixXd::Zero(8,robot1_.n_links()),Jx2;
 
-    MatrixXd Jxa(8,robot1_.n_link()*robot2_.n_link());
+    MatrixXd Jxa(8,robot1_.n_links()*robot2_.n_links());
     Jxa << haminus8(pow(xr,0.5))*(temp) + hamiplus8(x2)*Jxr2;
 
     return Jxa;

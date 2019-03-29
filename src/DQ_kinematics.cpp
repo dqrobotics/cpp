@@ -33,9 +33,9 @@ namespace DQ_robotics
 
 /**
 */
-int n_link( const DQ_kinematics& dq_kin)
+int n_links( const DQ_kinematics& dq_kin)
 {
-    return dq_kin.n_link();
+    return dq_kin.n_links();
 }
 
 /**
@@ -308,7 +308,7 @@ MatrixXd jacobp(             const MatrixXd& pose_jacobian, const DQ& x){return 
 MatrixXd distanceJacobian(   const MatrixXd& param_jacobian, const DQ& x){return distance_jacobian(param_jacobian,x);}
 MatrixXd jacobd(             const MatrixXd& param_jacobian, const DQ& x){return distance_jacobian(param_jacobian,x);}
 MatrixXd pseudoInverse(      const MatrixXd& matrix){return pseudo_inverse(matrix);}
-int      links(              const DQ_kinematics& dq_kin){return n_link(dq_kin);}
+int      links(              const DQ_kinematics& dq_kin){return n_links(dq_kin);}
 
 
 
@@ -374,7 +374,7 @@ MatrixXd DQ_kinematics::getDHMatrix()
 * To use this member function, type: 'dh_matrix__object.links();'.
 * \return A constant int.
 */
-int  DQ_kinematics::n_link() const
+int  DQ_kinematics::n_links() const
 {
     return dh_matrix_.cols();
 }
@@ -576,14 +576,14 @@ DQ  DQ_kinematics::set_effector( const DQ& new_effector)
 DQ  DQ_kinematics::raw_fkm( const VectorXd& theta_vec) const
 {
 
-    if(int(theta_vec.size()) != (this->n_link() - this->n_dummy()) )
+    if(int(theta_vec.size()) != (this->n_links() - this->n_dummy()) )
     {
         throw(std::range_error("Bad raw_fkm(theta_vec) call: Incorrect number of joint variables"));
     }
 
     DQ q(1);
     int j = 0;
-    for (int i = 0; i < this->n_link(); i++) {
+    for (int i = 0; i < this->n_links(); i++) {
         if(this->dummy()(i) == 1.0) {
             q = q * DQ_robotics::dh2dq((*this), 0.0, i+1);
             j = j + 1;
@@ -606,7 +606,7 @@ DQ  DQ_kinematics::raw_fkm( const VectorXd& theta_vec) const
 DQ  DQ_kinematics::raw_fkm( const VectorXd& theta_vec, const int& ith) const
 {
 
-    if(int(theta_vec.size()) != (this->n_link() - this->n_dummy()) )
+    if(int(theta_vec.size()) != (this->n_links() - this->n_dummy()) )
     {
         throw(std::range_error("Bad raw_fkm(theta_vec,ith) call: Incorrect number of joint variables"));
     }
@@ -766,7 +766,7 @@ MatrixXd DQ_kinematics::raw_pose_jacobian(const VectorXd& theta_vec, const int& 
 MatrixXd  DQ_kinematics::pose_jacobian(const VectorXd& theta_vec, const int &to_link) const
 {
     MatrixXd J = raw_pose_jacobian(theta_vec,to_link);
-    if(to_link==this->n_link())
+    if(to_link==this->n_links())
     {
         J = hamiplus8(curr_base_)*haminus8(curr_effector_)*J;
     }
@@ -779,7 +779,7 @@ MatrixXd  DQ_kinematics::pose_jacobian(const VectorXd& theta_vec, const int &to_
 
 MatrixXd DQ_kinematics::pose_jacobian(const VectorXd &theta_vec) const
 {
-    return pose_jacobian(theta_vec,n_link());
+    return pose_jacobian(theta_vec,n_links());
 }
 
 MatrixXd DQ_kinematics::pose_jacobian_derivative(const VectorXd &theta_vec, const VectorXd &theta_vec_dot, const int &to_link) const
@@ -834,7 +834,7 @@ MatrixXd DQ_kinematics::jacobian(           const VectorXd& theta_vec, const int
 MatrixXd DQ_kinematics::jacobian(           const VectorXd& theta_vec) const{return pose_jacobian(theta_vec);}
 MatrixXd DQ_kinematics::raw_jacobian(       const VectorXd& theta_vec, const int& to_link) const{return raw_pose_jacobian(theta_vec,to_link);}
 MatrixXd DQ_kinematics::jacobianDerivative( const VectorXd& theta_vec, const VectorXd& theta_vec_dot, const int& to_link) const{return pose_jacobian_derivative(theta_vec,theta_vec_dot,to_link);}
-int      DQ_kinematics::links() const{return n_link();}
+int      DQ_kinematics::links() const{return n_links();}
 
 }//namespace DQ_robotics
 

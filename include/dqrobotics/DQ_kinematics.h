@@ -71,7 +71,7 @@ public:
 
     MatrixXd getDHMatrix();
 
-    int n_link() const;
+    int n_links() const;
 
     VectorXd theta() const;
 
@@ -120,7 +120,7 @@ public:
 };
 
 
-int n_link( const DQ_kinematics& dq_kin);
+int n_links( const DQ_kinematics& dq_kin);
 
 VectorXd theta( const DQ_kinematics& dq_kin);
 
@@ -176,7 +176,7 @@ DEPRECATED MatrixXd jacobp(             const MatrixXd& pose_jacobian, const DQ&
 DEPRECATED MatrixXd distanceJacobian(   const MatrixXd& param_jacobian, const DQ& x);
 DEPRECATED MatrixXd jacobd(             const MatrixXd& param_jacobian, const DQ& x);
 DEPRECATED MatrixXd pseudoInverse(      const MatrixXd& matrix);
-DEPRECATED int      links();
+DEPRECATED int      links(              const DQ_kinematics& dq_kin);
 
 }//Namespace DQRobotics
 
