@@ -172,7 +172,7 @@ DQ exp(const DQ& dq)
     return dq.exp();
 }
 
-DQ pow(const DQ& dq, const double a)
+DQ pow(const DQ& dq, const double& a)
 {
     return dq.pow(a);
 }
