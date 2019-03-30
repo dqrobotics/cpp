@@ -230,6 +230,64 @@ MatrixXd  translation_jacobian(const MatrixXd& pose_jacobian, const DQ &x)
     return Jp;
 }
 
+/**
+ * @brief The line Jacobian given the \p rotation_jacobian, the \p translation_jacobian, the \p pos, and a \p line_direction
+ * @param rotation_jacobian the current rotation Jacobian \see rotation_jacobian()
+ * @param translation_jacobian the current translation Jacobian \see translation_jacobian()
+ * @param pose the current end-effector pose \see fkm()
+ * @param line_direction the line direction w.r.t. the \p pose reference frame. For example using i_, j_, and k_
+ * will return the line Jacobian collinear with, respectively, the x-axis, y-axis, and z-axis of \p pose,
+ */
+MatrixXd line_jacobian(const MatrixXd& rotation_jacobian, const MatrixXd& translation_jacobian, const DQ& pose, const DQ& line_direction)
+{
+    /// Aliases
+    const DQ&       x  = pose;
+    const MatrixXd& Jt = translation_jacobian;
+    const MatrixXd& Jr = rotation_jacobian;
+
+    ///Translation
+    const DQ xt = translation(x);
+
+    ///Rotation and Rotation Jacobian
+    const DQ xr = rotation(x);
+
+    ///Line direction w.r.t. base
+    const DQ l = xr*(line_direction)*conj(xr);
+
+    ///Line direction and moment Jacobians
+    const MatrixXd Jrx = haminus4(line_direction*conj(xr))*Jr + hamiplus4(xr*line_direction)*C4()*Jr;
+    const MatrixXd Jmx = crossmatrix4(l).transpose()*Jt + crossmatrix4(xt)*Jrx;
+
+    ///Line Jacobian
+    MatrixXd Jlx(8,Jr.cols());
+    Jlx << Jrx,Jmx;
+    return Jlx;
+}
+
+MatrixXd plane_jacobian(const MatrixXd& rotation_jacobian, const MatrixXd& translation_jacobian, const DQ& pose, const DQ& plane_normal)
+{
+    /// Aliases
+    const DQ&       x  = pose;
+    const DQ&       xt = translation(x);
+    const DQ&       xr = rotation(x);
+    const MatrixXd& Jr = rotation_jacobian;
+    const MatrixXd& Jt = translation_jacobian;
+
+    ///Plane normal w.r.t base
+    const DQ nz = xr*(plane_normal)*conj(xr);
+
+    ///Plane normal Jacobian
+    const MatrixXd Jnz = haminus4(plane_normal*conj(xr))*Jr + hamiplus4(xr*plane_normal)*C4()*Jr;
+
+    ///Plane distance Jacobian
+    const MatrixXd Jdz  = (vec4(nz).transpose()*Jt+vec4(xt).transpose()*Jnz);
+
+    ///Plane Jacobian
+    MatrixXd JPI = MatrixXd::Zero(8,Jt.cols());
+    JPI << Jnz,Jdz,MatrixXd::Zero(3,Jdz.cols());
+    return JPI;
+}
+
 /** Returns the distance Jacobian; that it, the Jacobian that satisfies the relation dot_(d^2) = Jd * dot_theta.
 * where dot_(d^2) is the time derivative of the square of the distance between the end-effector and the base and dot_theta is
 * the time derivative of the joint vector.

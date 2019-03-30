@@ -290,6 +290,16 @@ Matrix<double,8,1>  vec8(const DQ& dq)
     return dq.vec8();
 }
 
+Matrix4d crossmatrix4(const DQ& dq)
+{
+    Matrix4d cm;
+    cm << 0, 0, 0, 0,
+            0, 0, -dq.q(3), dq.q(2),
+            0, dq.q(3), 0, -dq.q(1),
+            0, -dq.q(2), dq.q(1), 0;
+    return cm;
+}
+
 /**
 * Generalized Jacobian, i.e, the Jacobian that satisfies the relation Geometric Jacobian = Generalized Jacobian * Analytical (DQ) Jacobian.
 *

@@ -160,6 +160,10 @@ MatrixXd rotation_jacobian(const MatrixXd& pose_jacobian);
 
 MatrixXd translation_jacobian( const MatrixXd& pose_jacobian, const DQ& x);
 
+MatrixXd line_jacobian(const MatrixXd& rotation_jacobian, const MatrixXd& translation_jacobian, const DQ& pose, const DQ& line_direction);
+
+MatrixXd plane_jacobian(const MatrixXd& rotation_jacobian, const MatrixXd& translation_jacobian, const DQ& pose, const DQ& plane_normal);
+
 MatrixXd distance_jacobian( const DQ_kinematics& dq_kin, const MatrixXd& param_jacobian, const DQ& x);
 
 MatrixXd pseudo_inverse( const MatrixXd& matrix);

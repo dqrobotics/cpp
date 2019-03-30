@@ -254,6 +254,8 @@ Vector4d vec4(const DQ& dq);
 
 Matrix<double,8,1> vec8(const DQ& dq);
 
+Matrix4d crossmatrix4(const DQ& dq);
+
 DQ normalize (const DQ& dq);
 
 DQ sharp(const DQ& dq);
