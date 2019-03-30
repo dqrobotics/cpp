@@ -104,9 +104,9 @@ public:
 
     DQ get_z( const VectorXd& q) const;
 
-    MatrixXd pose_jacobian(           const VectorXd& theta_vec, const int& to_link) const;
-    MatrixXd pose_jacobian(           const VectorXd& theta_vec) const;
-    MatrixXd raw_pose_jacobian(       const VectorXd& theta_vec, const int& to_link) const;
+    MatrixXd pose_jacobian           ( const VectorXd& theta_vec, const int& to_link) const;
+    MatrixXd pose_jacobian           ( const VectorXd& theta_vec) const;
+    MatrixXd raw_pose_jacobian       ( const VectorXd& theta_vec, const int& to_link) const;
     MatrixXd pose_jacobian_derivative( const VectorXd& theta_vec, const VectorXd& theta_vec_dot, const int& to_link) const;
 
     ///DEPRECATED SIGNATURES
@@ -116,7 +116,6 @@ public:
     DEPRECATED MatrixXd raw_jacobian(       const VectorXd& theta_vec, const int& to_link) const;
     DEPRECATED MatrixXd jacobianDerivative( const VectorXd& theta_vec, const VectorXd& theta_vec_dot, const int& to_link) const;
     DEPRECATED int links() const;
-
 };
 
 
@@ -151,9 +150,9 @@ DQ dh2dq( const DQ_kinematics& dq_kin, const double& theta_ang, const int& link_
 
 DQ get_z( const DQ_kinematics& dq_kin, const VectorXd& q);
 
-MatrixXd pose_jacobian( const DQ_kinematics& dq_kin,   const VectorXd& theta_vec );
-MatrixXd pose_jacobian( const DQ_kinematics& dq_kin,   const VectorXd& theta_vec,  const int &to_link);
-MatrixXd raw_pose_jacobian( const DQ_kinematics& dq_kin,   const VectorXd& theta_vec, const int& to_link);
+MatrixXd pose_jacobian(            const DQ_kinematics& dq_kin,   const VectorXd& theta_vec );
+MatrixXd pose_jacobian(            const DQ_kinematics& dq_kin,   const VectorXd& theta_vec, const int &to_link);
+MatrixXd raw_pose_jacobian(        const DQ_kinematics& dq_kin,   const VectorXd& theta_vec, const int& to_link);
 MatrixXd pose_jacobian_derivative( const DQ_kinematics& dq_kin,   const VectorXd& theta_vec, const VectorXd& theta_vec_dot, const int& to_link);
 
 MatrixXd rotation_jacobian(const MatrixXd& pose_jacobian);

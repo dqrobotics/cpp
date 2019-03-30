@@ -231,7 +231,7 @@ MatrixXd  translation_jacobian(const MatrixXd& pose_jacobian, const DQ &x)
 }
 
 /**
- * @brief The line Jacobian given the \p rotation_jacobian, the \p translation_jacobian, the \p pos, and a \p line_direction
+ * @brief The line Jacobian given the \p rotation_jacobian, the \p translation_jacobian, the \p pose, and a \p line_direction
  * @param rotation_jacobian the current rotation Jacobian \see rotation_jacobian()
  * @param translation_jacobian the current translation Jacobian \see translation_jacobian()
  * @param pose the current end-effector pose \see fkm()
@@ -264,6 +264,14 @@ MatrixXd line_jacobian(const MatrixXd& rotation_jacobian, const MatrixXd& transl
     return Jlx;
 }
 
+/**
+ * @brief The plane Jacobian given the \p rotation_jacobian, the \p translation_jacobian, the \p pose, and a \p plane_normal
+ * @param rotation_jacobian the current rotation Jacobian \see rotation_jacobian()
+ * @param translation_jacobian the current translation Jacobian \see translation_jacobian()
+ * @param pose the current end-effector pose \see fkm()
+ * @param plane_normal the plane normal w.r.t. the \p pose reference frame. For example using i_, j_, and k_
+ * will return the plane Jacobian whose normal is collinear with, respectively, the x-axis, y-axis, and z-axis of \p pose,
+ */
 MatrixXd plane_jacobian(const MatrixXd& rotation_jacobian, const MatrixXd& translation_jacobian, const DQ& pose, const DQ& plane_normal)
 {
     /// Aliases
@@ -367,8 +375,6 @@ MatrixXd distanceJacobian(   const MatrixXd& param_jacobian, const DQ& x){return
 MatrixXd jacobd(             const MatrixXd& param_jacobian, const DQ& x){return distance_jacobian(param_jacobian,x);}
 MatrixXd pseudoInverse(      const MatrixXd& matrix){return pseudo_inverse(matrix);}
 int      links(              const DQ_kinematics& dq_kin){return n_links(dq_kin);}
-
-
 
 /****************************************************************
 **************DQ KINEMATICS CLASS METHODS************************
@@ -885,6 +891,12 @@ MatrixXd DQ_kinematics::pose_jacobian_derivative(const VectorXd &theta_vec, cons
     return J_dot;
 }
 
+MatrixXd DQ_kinematics::translation_jacobian(const VectorXd &theta_vec) const
+{
+    const  MatrixXd J = pose_jacobian(theta_vec);
+    const  DQ       x = fkm(theta_vec);
+    return DQ_robotics::translation_jacobian(J,x);
+}
 
 ///DEPRECATED SIGNATURES
 MatrixXd DQ_kinematics::analyticalJacobian( const VectorXd& theta_vec) const{return pose_jacobian(theta_vec);}
