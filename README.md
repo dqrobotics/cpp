@@ -1,7 +1,7 @@
 # dqrobotics-cpp
 The DQ Robotics library in C++
 
-#Installation in Ubuntu 16.04 or Ubuntu 18.04
+# Installation in Ubuntu 16.04 or Ubuntu 18.04
 
 Choose one of the approaches below, **DO NOT ADD BOTH STABLE AND DEVELOPMENT REPOSITORIES**.
 
