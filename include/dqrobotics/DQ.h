@@ -255,6 +255,14 @@ DQ normalize (const DQ& dq);
 
 DQ sharp(const DQ& dq);
 
+DQ line(const DQ& l, const DQ& pl);
+
+DQ plane(const DQ& n, const DQ& ppi);
+
+DQ cross(const DQ& a, const DQ& b);
+
+DQ dot(const DQ& a, const DQ& b);
+
 ///Deprecated signatures
 DEPRECATED Matrix4d Hplus4(const DQ& dq);
 DEPRECATED Matrix4d Hminus4(const DQ& dq);
