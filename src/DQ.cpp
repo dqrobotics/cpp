@@ -129,6 +129,17 @@ DQ translation(const DQ& dq)
 }
 
 /**
+ * @brief rotation Obtain the rotation of a unit DQ.
+ * @param dq the input DQ.
+ * @return the rotation of \p dq.
+ * @exception Will throw a std::range_error iff the input is a not unit DQ.
+ */
+DQ rotation(const DQ& dq)
+{
+    return dq.rotation();
+}
+
+/**
 * Rotation Axis operator -> retrieves the Rotation Axis represented by a DQ.
 *
 * @param dq The DQ which Rotation Axis you wish.
@@ -365,11 +376,10 @@ DQ cross(const DQ& a, const DQ& b)
 {
     if(a!=Im(a) || b!=Im(b))
     {
-        throw std::range_error("One of the inputs is not imaginary in dot");
+        throw std::range_error("One of the inputs is not imaginary in cross");
     }
     return (a*b-b*a)*0.5;
 }
-
 
 
 Matrix4d Hplus4(const DQ& dq){return hamiplus4(dq);}
@@ -583,7 +593,6 @@ DQ DQ::inv() const{
 *
 * Creates a dual quaternion with calculated values for the translation part and return a DQ object.
 * Assuming  dq=r + DQ.E * p * r * (0.5), the return is p.
-* To use this member function, type: 'dq_object.translation();'.
 * \return A constant DQ object.
 * \sa DQ().
 */
@@ -607,6 +616,23 @@ DQ DQ::translation() const
     }
 
     return translation;
+}
+
+/**
+ * @brief rotation Obtain the rotation of a unit DQ.
+ * @return the rotation of this DQ.
+ * @exception Will throw a std::range_error iff the input is a not unit DQ.
+ */
+DQ DQ::rotation() const
+{
+    //Verify if unit quaternion
+    if (this->norm() != 1)
+    {
+        throw(std::range_error("Bad rotation() call: Not a unit dual quaternion"));
+    }
+    const DQ rotation = this->P();
+
+    return rotation;
 }
 
 /**

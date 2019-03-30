@@ -87,6 +87,8 @@ public:
 
     DQ translation() const;
 
+    DQ rotation() const;
+
     DQ rotation_axis() const;
 
     double rotation_angle() const;
@@ -193,7 +195,6 @@ std::ostream& operator<<(std::ostream &os, const DQ& dq);
 
 //Constants
 Matrix<double,8,8> C8();
-
 Matrix<double,4,4> C4();
 
 const DQ E_ = DQ(0,0,0,0,1,0,0,0);
@@ -219,6 +220,8 @@ DQ norm(const DQ& dq);
 DQ inv(const DQ& dq);
 
 DQ translation(const DQ& dq);
+
+DQ rotation(const DQ& dq);
 
 DQ rotation_axis(const DQ& dq);
 
