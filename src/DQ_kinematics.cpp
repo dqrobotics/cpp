@@ -891,13 +891,6 @@ MatrixXd DQ_kinematics::pose_jacobian_derivative(const VectorXd &theta_vec, cons
     return J_dot;
 }
 
-MatrixXd DQ_kinematics::translation_jacobian(const VectorXd &theta_vec) const
-{
-    const  MatrixXd J = pose_jacobian(theta_vec);
-    const  DQ       x = fkm(theta_vec);
-    return DQ_robotics::translation_jacobian(J,x);
-}
-
 ///DEPRECATED SIGNATURES
 MatrixXd DQ_kinematics::analyticalJacobian( const VectorXd& theta_vec) const{return pose_jacobian(theta_vec);}
 MatrixXd DQ_kinematics::jacobian(           const VectorXd& theta_vec, const int& to_link) const{return pose_jacobian(theta_vec,to_link);}
