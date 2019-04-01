@@ -8,25 +8,7 @@ env:
 matrix:
   include:
     - os: linux
-      dist: trusty
-      sudo: true
-      compiler: g++
-      addons:
-       apt:
-         packages: 
-           - g++
-           - libeigen3-dev
-    - os: linux
       dist: xenial
-      sudo: true
-      compiler: g++
-      addons:
-       apt:
-         packages: 
-           - g++
-           - libeigen3-dev
-    - os: bionic
-      dist: trusty
       sudo: true
       compiler: g++
       addons:
@@ -41,5 +23,5 @@ script:
     ############################################################################
      - mkdir -p build
      - cd build
-     - cmake ${CMAKE_OPTIONS} -DCMAKE_CXX_FLAGS=${CXX_FLAGS} -DCMAKE_BUILD_TYPE=Release .. 
+     - cmake -DCMAKE_CXX_FLAGS=${CXX_FLAGS} -DCMAKE_BUILD_TYPE=Release .. 
      - make
