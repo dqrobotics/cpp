@@ -11,7 +11,7 @@ env:
 matrix:
   include:
     - os: linux
-      dist: trusty
+      dist: xenial
       sudo: true
       compiler: gcc
       addons:
