@@ -1,0 +1,36 @@
+language: cpp
+
+env:
+  global:
+    # Ubuntu version
+    - LINUX_DIST=xenial
+    - DEPS_DIR=${TRAVIS_BUILD_DIR}/deps
+    # Global build options and C++ flags
+    - CXX_FLAGS="-Wall -pedantic -Werror -Wno-variadic-macros -Wno-long-long -Wno-shadow"
+
+matrix:
+  include:
+    - os: linux
+      dist: trusty
+      sudo: true
+      compiler: gcc
+      addons:
+       apt:
+         packages: 
+           - g++-5.4.0
+           - libeigen3-dev
+
+    
+before_install:
+    # Combine global build options with OS/compiler-dependent options
+    - export CMAKE_OPTIONS=${CMAKE_OPTIONS}" "${ENV_CMAKE_OPTIONS}
+    - export CXX_FLAGS=${CXX_FLAGS}" "${ENV_CXX_FLAGS}
+
+script:
+    ############################################################################
+    # Build main and tests
+    ############################################################################
+     - mkdir -p build
+     - cd build
+     - cmake ${CMAKE_OPTIONS} -DCMAKE_CXX_FLAGS=${CXX_FLAGS} -DCMAKE_BUILD_TYPE=Release .. 
+     - make
