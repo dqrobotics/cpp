@@ -45,7 +45,7 @@ You shouldn't be doing this, but if you really have to, you can build the dqrobo
 ```
 sudo apt-get install git cmake libeigen3-dev
 git clone https://github.com/dqrobotics/cpp.git
-cd git
+cd cpp
 mkdir build
 cd build
 cmake ..
