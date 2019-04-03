@@ -433,14 +433,6 @@ DQ::DQ(const double& q0,const double& q1,const double& q2,const double& q3,const
 
 }
 
-/**
-* DQ Destructor
-*
-* Deletes from memory the DQ object caller. To use this destructor, type: 'dq_object.~DQ();'. Dont need parameters.
-*/
-DQ::~DQ(){}
-
-
 // Public constant methods
 
 

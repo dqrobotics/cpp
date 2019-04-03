@@ -68,8 +68,6 @@ public:
 
     DQ(const double& q0=0.0, const double& q1=0.0, const double& q2=0.0, const double& q3=0.0, const double& q4=0.0, const double& q5=0.0, const double& q6=0.0, const double& q7=0.0);
 
-    ~DQ();
-
     //Methods
     DQ P() const;
 

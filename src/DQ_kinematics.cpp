@@ -296,23 +296,163 @@ MatrixXd plane_jacobian(const MatrixXd& pose_jacobian, const DQ& pose, const DQ&
     return JPI;
 }
 
-MatrixXd point_to_point_distance_jacobian(const MatrixXd& translation_jacobian, const DQ& translation, const DQ& position)
+MatrixXd point_to_point_distance_jacobian(const MatrixXd& translation_jacobian, const DQ& robot_point_translation, const DQ& workspace_point_translation)
 {
-    if(Re(translation)!=0 || Re(position)!=0 || D(translation)!=0 || D(position)!=0)
+    if(Re(robot_point_translation)!=0 || Re(workspace_point_translation)!=0 || D(robot_point_translation)!=0 || D(workspace_point_translation)!=0)
     {
         throw std::range_error("The arguments translation and position have to be imaginary quaternions.");
     }
-    return 2*vec4(translation-position).transpose()*translation_jacobian;
+    return 2*vec4(robot_point_translation-workspace_point_translation).transpose()*translation_jacobian;
 }
 
-double   point_to_point_residual         (const DQ& translation, const DQ& position, const DQ& position_derivative)
+double   point_to_point_residual         (const DQ& robot_point_translation, const DQ& workspace_point_translation, const DQ& workspace_point_translation_derivative)
 {
-    if(Re(translation)!=0 || Re(position)!=0 || Re(position_derivative)!=0 || D(translation)!=0 || D(position)!=0 || D(position_derivative)!=0)
+    if(Re(robot_point_translation)!=0 || Re(workspace_point_translation)!=0 || Re(workspace_point_translation_derivative)!=0 || D(robot_point_translation)!=0 || D(workspace_point_translation)!=0 || D(workspace_point_translation_derivative)!=0)
     {
         throw std::range_error("The arguments translation, position, and position_derivative have to be imaginary quaternions.");
     }
-    DQ tmp = 2.0*dot(translation-position,-1.0*position_derivative);
+    DQ tmp = 2.0*dot(robot_point_translation-workspace_point_translation,-1.0*workspace_point_translation_derivative);
     return tmp.q(1);
+}
+
+MatrixXd point_to_line_distance_jacobian(const MatrixXd& translation_jacobian, const DQ& robot_point_translation, const DQ& workspace_line)
+{
+    if(Re(robot_point_translation)!=0 || D(robot_point_translation)!=0)
+    {
+        throw std::range_error("The argument translation has to be imaginary quaternions.");
+    }
+    const DQ& t = robot_point_translation;
+
+    const DQ l = P(workspace_line);
+    const DQ m = D(workspace_line);
+
+    return 2.0*vec4( cross(t,l)-m ).transpose()*crossmatrix4(l).transpose()*translation_jacobian;
+}
+
+double   point_to_line_residual(const DQ& robot_point_translation, const DQ& workspace_line, const DQ& workspace_line_derivative)
+{
+    if(Re(robot_point_translation)!=0 || D(robot_point_translation)!=0)
+    {
+        throw std::range_error("The argument translation has to be imaginary quaternions.");
+    }
+    const DQ& t = robot_point_translation;
+
+    const DQ& l = P(workspace_line);
+    const DQ& m = D(workspace_line);
+    const DQ& l_dot = P(workspace_line_derivative);
+    const DQ& m_dot = D(workspace_line_derivative);
+
+    DQ tmp = 2.0*dot( cross(t,l_dot) - m_dot , cross(t,l) - m );
+    return tmp.q(0);
+}
+
+MatrixXd point_to_plane_distance_jacobian(const MatrixXd& translation_jacobian, const DQ& robot_point_translation, const DQ& workspace_plane)
+{
+    if(Re(robot_point_translation)!=0 || D(robot_point_translation)!=0)
+    {
+        throw std::range_error("The argument translation has to be imaginary quaternions.");
+    }
+    const DQ n = P(workspace_plane);
+    const DQ d = D(workspace_plane);
+
+    return vec4(n).transpose()*translation_jacobian;
+}
+
+double point_to_plane_residual(const DQ& translation, const DQ& plane_derivative)
+{
+    if(Re(translation)!=0 || D(translation)!=0)
+    {
+        throw std::range_error("The argument translation has to be imaginary quaternions.");
+    }
+    const DQ& t = translation;
+    const DQ n_dot = P(plane_derivative);
+    const DQ d_dot = D(plane_derivative);
+
+    return vec4(dot(t,n_dot) - d_dot)(0);
+}
+
+MatrixXd line_to_line_distance_jacobian(const MatrixXd& line_jacobian, const DQ& robot_line, const DQ& workspace_line)
+{
+    const int DOFS  = line_jacobian.cols();
+    const DQ& l_dq  = workspace_line;
+
+    ///Dot product dual part square norm
+    //Dot product Jacobian
+    const MatrixXd Jdot     = -0.5*(hamiplus8(l_dq)+haminus8(l_dq))*line_jacobian;
+    const MatrixXd Jdotdual = Jdot.block(4,0,4,DOFS);
+    //Norm Jacobian
+    const DQ Dlzldot             = D(dot(robot_line,l_dq));
+    const MatrixXd Jnormdotdual  = 2*vec4(Dlzldot).transpose()*Jdotdual;
+
+    ///Cross product primary part square norm
+    //Cross product Jacobian
+    const MatrixXd Jcross        = 0.5*(haminus8(l_dq)-hamiplus8(l_dq))*line_jacobian;
+    const MatrixXd Jcrossprimary = Jcross.block(0,0,4,DOFS);
+    //Norm Jacobian
+    const DQ Plzlcross                = P(cross(robot_line,l_dq));
+    const MatrixXd Jnormcrossprimary  = 2*vec4(Plzlcross).transpose()*Jcrossprimary;
+
+    ///Distance Jacobian
+    // a
+    const double a_temp = vec4(Plzlcross).norm();
+    const double a = (1.0)/(a_temp*a_temp);
+    // b
+    const double b_temp = vec4(Dlzldot).norm();
+    const double b = -((b_temp*b_temp)/(a_temp*a_temp*a_temp*a_temp));
+
+    ///Robot line--line squared distance Jacobian
+    return a*Jnormdotdual+b*Jnormcrossprimary;
+}
+
+double   line_to_point_residual(const DQ& robot_line, const DQ& workspace_line, const DQ& workspace_line_derivative)
+{
+    const DQ& l_dq_dot = workspace_line_derivative;
+    const DQ& l_dq     = workspace_line;
+
+    //Dot product residual
+    const DQ zetadotdual         = D(dot(robot_line,l_dq_dot));
+    //Norm Jacobian
+    const DQ Dlzldot             = D(dot(robot_line,l_dq));
+    const double zetanormdotdual = 2*vec4(Dlzldot).transpose()*vec4(zetadotdual);
+
+    //Cross product residual
+    const DQ zetacrossprimary    = P(cross(robot_line,l_dq_dot));
+    //Norm Jacobian
+    const DQ Plzlcross                = P(cross(robot_line,l_dq));
+    const double zetanormcrossprimary = 2*vec4(Plzlcross).transpose()*vec4(zetacrossprimary);
+
+
+    ///Distance Jacobian
+    // a
+    const double a_temp = vec4(Plzlcross).norm();
+    const double a = (1.0)/(a_temp*a_temp);
+    // b
+    const double b_temp = vec4(Dlzldot).norm();
+    const double b = -((b_temp*b_temp)/(a_temp*a_temp*a_temp*a_temp));
+
+    return a*zetanormdotdual+b*zetanormcrossprimary;
+}
+
+MatrixXd plane_to_point_distance_jacobian(const MatrixXd& plane_jacobian, const DQ& robot_plane, const DQ& workspace_point)
+{
+    // Break Jpi into blocks
+    MatrixXd Jnz = plane_jacobian.block(0,0,4,plane_jacobian.cols());
+    MatrixXd Jdz = plane_jacobian.block(4,0,1,plane_jacobian.cols());
+
+    // Extract plane quaternions
+    DQ n_pi = P(robot_plane);
+    DQ d_pi = D(robot_plane);
+
+    // Plane distance Jacobian
+    return vec4(workspace_point).transpose()*Jnz-Jdz;
+}
+
+double   plane_to_point_residual(const DQ& robot_plane, const DQ& workspace_point_derivative)
+{
+    DQ n_pi = P(robot_plane);
+
+    DQ tmp = dot(workspace_point_derivative,n_pi);
+    return tmp.q(0);
 }
 
 

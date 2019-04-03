@@ -163,8 +163,23 @@ MatrixXd line_jacobian       ( const MatrixXd& pose_jacobian, const DQ& pose, co
 
 MatrixXd plane_jacobian      ( const MatrixXd& pose_jacobian, const DQ& pose, const DQ& plane_normal);
 
-MatrixXd point_to_point_distance_jacobian(const MatrixXd& translation_jacobian, const DQ& translation, const DQ& position);
-double   point_to_point_residual         (const DQ& translation, const DQ& position, const DQ& position_derivative);
+MatrixXd point_to_point_distance_jacobian(const MatrixXd& translation_jacobian, const DQ& robot_point_translation, const DQ& workspace_point_translation);
+double   point_to_point_residual         (const DQ& robot_point_translation, const DQ& workspace_point_translation, const DQ& workspace_point_translation_derivative);
+
+MatrixXd point_to_line_distance_jacobian (const MatrixXd& translation_jacobian, const DQ& robot_point_translation, const DQ& workspace_line);
+double   point_to_line_residual          (const DQ& robot_point_translation, const DQ& workspace_line, const DQ& workspace_line_derivative);
+
+MatrixXd point_to_plane_distance_jacobian(const MatrixXd& translation_jacobian, const DQ& robot_point_translation, const DQ& workspace_plane);
+double   point_to_plane_residual         (const DQ& translation, const DQ& plane_derivative);
+
+MatrixXd line_to_point_distance_jacobian (const MatrixXd& line_jacobian, const DQ& robot_line, const DQ& workspace_point_translation);
+double   line_to_point_residual          (const DQ& robot_line, const DQ& workspace_point_translation, const DQ& workspace_point_translation_derivative);
+
+MatrixXd line_to_line_distance_jacobian  (const MatrixXd& line_jacobian, const DQ& robot_line, const DQ& workspace_line);
+double   line_to_point_residual          (const DQ& robot_line, const DQ& workspace_line, const DQ& workspace_line_derivative);
+
+MatrixXd plane_to_point_distance_jacobian(const MatrixXd& plane_jacobian, const DQ& robot_plane, const DQ& workspace_point);
+double   plane_to_point_residual         (const DQ& robot_plane, const DQ& workspace_point_derivative);
 
 //MatrixXd distance_jacobian( const DQ_kinematics& dq_kin, const MatrixXd& param_jacobian, const DQ& x);
 
