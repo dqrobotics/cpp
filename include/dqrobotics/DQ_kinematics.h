@@ -155,15 +155,18 @@ MatrixXd pose_jacobian(            const DQ_kinematics& dq_kin,   const VectorXd
 MatrixXd raw_pose_jacobian(        const DQ_kinematics& dq_kin,   const VectorXd& theta_vec, const int& to_link);
 MatrixXd pose_jacobian_derivative( const DQ_kinematics& dq_kin,   const VectorXd& theta_vec, const VectorXd& theta_vec_dot, const int& to_link);
 
-MatrixXd rotation_jacobian(const MatrixXd& pose_jacobian);
+MatrixXd rotation_jacobian   ( const MatrixXd& pose_jacobian);
 
 MatrixXd translation_jacobian( const MatrixXd& pose_jacobian, const DQ& x);
 
-MatrixXd line_jacobian(const MatrixXd& rotation_jacobian, const MatrixXd& translation_jacobian, const DQ& pose, const DQ& line_direction);
+MatrixXd line_jacobian       ( const MatrixXd& pose_jacobian, const DQ& pose, const DQ& line_direction);
 
-MatrixXd plane_jacobian(const MatrixXd& rotation_jacobian, const MatrixXd& translation_jacobian, const DQ& pose, const DQ& plane_normal);
+MatrixXd plane_jacobian      ( const MatrixXd& pose_jacobian, const DQ& pose, const DQ& plane_normal);
 
-MatrixXd distance_jacobian( const DQ_kinematics& dq_kin, const MatrixXd& param_jacobian, const DQ& x);
+MatrixXd point_to_point_distance_jacobian(const MatrixXd& translation_jacobian, const DQ& translation, const DQ& position);
+double   point_to_point_residual         (const DQ& translation, const DQ& position, const DQ& position_derivative);
+
+//MatrixXd distance_jacobian( const DQ_kinematics& dq_kin, const MatrixXd& param_jacobian, const DQ& x);
 
 MatrixXd pseudo_inverse( const MatrixXd& matrix);
 
@@ -176,8 +179,8 @@ DEPRECATED MatrixXd raw_jacobian(       const DQ_kinematics& dq_kin,   const Vec
 DEPRECATED MatrixXd rotationJacobian(   const MatrixXd& pose_jacobian);
 DEPRECATED MatrixXd translationJacobian(const MatrixXd& pose_jacobian, const DQ& x);
 DEPRECATED MatrixXd jacobp(             const MatrixXd& pose_jacobian, const DQ& x); //The MATLAB syntax, kept for legacy reasons.
-DEPRECATED MatrixXd distanceJacobian(   const MatrixXd& param_jacobian, const DQ& x);
-DEPRECATED MatrixXd jacobd(             const MatrixXd& param_jacobian, const DQ& x);
+//DEPRECATED MatrixXd distanceJacobian(   const MatrixXd& param_jacobian, const DQ& x);
+//DEPRECATED MatrixXd jacobd(             const MatrixXd& param_jacobian, const DQ& x);
 DEPRECATED MatrixXd pseudoInverse(      const MatrixXd& matrix);
 DEPRECATED int      links(              const DQ_kinematics& dq_kin);
 

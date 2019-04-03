@@ -328,38 +328,6 @@ DQ sharp(const DQ& dq)
 }
 
 /**
- * @brief line Obtain the Plucker line representation of a line described by its direction \p l and a point on the line \p pl.
- * @param l the direction of the line as an imaginary quaternion.
- * @param pl any point on the line as an imaginary quaternion.
- * @return the Plucker line representation: l+E_*m
- * @exception Will throw a std::range_error iff one of the inputs is not imaginary.
- */
-DQ line(const DQ& l, const DQ& pl)
-{
-    if(l!=Im(l) || pl!=Im(pl))
-    {
-        throw std::range_error("One of the inputs is not imaginary in line");
-    }
-    return (l+E_*cross(pl,l));
-}
-
-/**
- * @brief plane Obtain the Plane representation of a plane described by its normal \p n and a point on the plane \p ppi.
- * @param n the normal to the plane as an imaginary quaternion.
- * @param ppi any point on the line as an imaginary quaternion.
- * @return the Plane representation: n+E_*dpi
- * @exception Will throw a std::range_error iff one of the inputs is not imaginary.
- */
-DQ plane(const DQ& n, const DQ& ppi)
-{
-    if(n!=Im(n) || ppi!=Im(ppi))
-    {
-        throw std::range_error("One of the inputs is not imaginary in plane");
-    }
-    return (n+E_*(dot(ppi,n)));
-}
-
-/**
  * @brief The dot product between \p a and \p b
  * @param a the left side DQ.
  * @param b the right side DQ.

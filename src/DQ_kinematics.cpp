@@ -238,12 +238,12 @@ MatrixXd  translation_jacobian(const MatrixXd& pose_jacobian, const DQ &x)
  * @param line_direction the line direction w.r.t. the \p pose reference frame. For example using i_, j_, and k_
  * will return the line Jacobian collinear with, respectively, the x-axis, y-axis, and z-axis of \p pose,
  */
-MatrixXd line_jacobian(const MatrixXd& rotation_jacobian, const MatrixXd& translation_jacobian, const DQ& pose, const DQ& line_direction)
+MatrixXd line_jacobian(const MatrixXd& pose_jacobian, const DQ& pose, const DQ& line_direction)
 {
     /// Aliases
     const DQ&       x  = pose;
-    const MatrixXd& Jt = translation_jacobian;
-    const MatrixXd& Jr = rotation_jacobian;
+    const MatrixXd& Jt = translation_jacobian(pose_jacobian,pose);
+    const MatrixXd& Jr = rotation_jacobian(pose_jacobian);
 
     ///Translation
     const DQ xt = translation(x);
@@ -272,14 +272,14 @@ MatrixXd line_jacobian(const MatrixXd& rotation_jacobian, const MatrixXd& transl
  * @param plane_normal the plane normal w.r.t. the \p pose reference frame. For example using i_, j_, and k_
  * will return the plane Jacobian whose normal is collinear with, respectively, the x-axis, y-axis, and z-axis of \p pose,
  */
-MatrixXd plane_jacobian(const MatrixXd& rotation_jacobian, const MatrixXd& translation_jacobian, const DQ& pose, const DQ& plane_normal)
+MatrixXd plane_jacobian(const MatrixXd& pose_jacobian, const DQ& pose, const DQ& plane_normal)
 {
     /// Aliases
     const DQ&       x  = pose;
     const DQ&       xt = translation(x);
     const DQ&       xr = rotation(x);
-    const MatrixXd& Jr = rotation_jacobian;
-    const MatrixXd& Jt = translation_jacobian;
+    const MatrixXd& Jr = rotation_jacobian(pose_jacobian);
+    const MatrixXd& Jt = translation_jacobian(pose_jacobian,pose);
 
     ///Plane normal w.r.t base
     const DQ nz = xr*(plane_normal)*conj(xr);
@@ -295,6 +295,26 @@ MatrixXd plane_jacobian(const MatrixXd& rotation_jacobian, const MatrixXd& trans
     JPI << Jnz,Jdz,MatrixXd::Zero(3,Jdz.cols());
     return JPI;
 }
+
+MatrixXd point_to_point_distance_jacobian(const MatrixXd& translation_jacobian, const DQ& translation, const DQ& position)
+{
+    if(Re(translation)!=0 || Re(position)!=0 || D(translation)!=0 || D(position)!=0)
+    {
+        throw std::range_error("The arguments translation and position have to be imaginary quaternions.");
+    }
+    return 2*vec4(translation-position).transpose()*translation_jacobian;
+}
+
+double   point_to_point_residual         (const DQ& translation, const DQ& position, const DQ& position_derivative)
+{
+    if(Re(translation)!=0 || Re(position)!=0 || Re(position_derivative)!=0 || D(translation)!=0 || D(position)!=0 || D(position_derivative)!=0)
+    {
+        throw std::range_error("The arguments translation, position, and position_derivative have to be imaginary quaternions.");
+    }
+    DQ tmp = 2.0*dot(translation-position,-1.0*position_derivative);
+    return tmp.q(1);
+}
+
 
 /** Returns the distance Jacobian; that it, the Jacobian that satisfies the relation dot_(d^2) = Jd * dot_theta.
 * where dot_(d^2) is the time derivative of the square of the distance between the end-effector and the base and dot_theta is
@@ -371,8 +391,8 @@ MatrixXd raw_jacobian(       const DQ_kinematics& dq_kin,   const VectorXd& thet
 MatrixXd rotationJacobian(   const MatrixXd& pose_jacobian){return rotation_jacobian(pose_jacobian);}
 MatrixXd translationJacobian(const MatrixXd& pose_jacobian, const DQ& x){return translation_jacobian(pose_jacobian,x);}
 MatrixXd jacobp(             const MatrixXd& pose_jacobian, const DQ& x){return translation_jacobian(pose_jacobian,x);} //The MATLAB syntax, kept for legacy reasons.
-MatrixXd distanceJacobian(   const MatrixXd& param_jacobian, const DQ& x){return distance_jacobian(param_jacobian,x);}
-MatrixXd jacobd(             const MatrixXd& param_jacobian, const DQ& x){return distance_jacobian(param_jacobian,x);}
+//MatrixXd distanceJacobian(   const MatrixXd& param_jacobian, const DQ& x){return distance_jacobian(param_jacobian,x);}
+//MatrixXd jacobd(             const MatrixXd& param_jacobian, const DQ& x){return distance_jacobian(param_jacobian,x);}
 MatrixXd pseudoInverse(      const MatrixXd& matrix){return pseudo_inverse(matrix);}
 int      links(              const DQ_kinematics& dq_kin){return n_links(dq_kin);}
 
