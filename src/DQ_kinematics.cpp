@@ -371,6 +371,32 @@ double point_to_plane_residual(const DQ& translation, const DQ& plane_derivative
     return vec4(dot(t,n_dot) - d_dot)(0);
 }
 
+MatrixXd line_to_point_distance_jacobian (const MatrixXd& line_jacobian, const DQ& robot_line, const DQ& workspace_point_translation)
+{
+    MatrixXd Jl = line_jacobian.block(0,0,4,line_jacobian.cols());
+    MatrixXd Jm = line_jacobian.block(4,0,4,line_jacobian.cols());
+
+    // Extract line quaternions
+    DQ l = P(robot_line);
+    DQ m = D(robot_line);
+
+    return 2.0*vec4(  cross(workspace_point_translation,l)-m ).transpose()*(crossmatrix4(workspace_point_translation)*Jl-Jm);
+}
+
+double   line_to_point_residual(const DQ& robot_line, const DQ& workspace_point_translation, const DQ& workspace_point_translation_derivative)
+{
+    // Extract line quaternions
+    DQ l = P(robot_line);
+    DQ m = D(robot_line);
+
+    // Notational simplicity
+    DQ hc1 = cross(workspace_point_translation,l)-m;
+    DQ hc2 = cross(workspace_point_translation_derivative,l);
+
+    DQ tmp = 2.0*dot(hc2,hc1);
+    return tmp.q(0);
+}
+
 MatrixXd line_to_line_distance_jacobian(const MatrixXd& line_jacobian, const DQ& robot_line, const DQ& workspace_line)
 {
     const int DOFS  = line_jacobian.cols();
@@ -404,7 +430,8 @@ MatrixXd line_to_line_distance_jacobian(const MatrixXd& line_jacobian, const DQ&
     return a*Jnormdotdual+b*Jnormcrossprimary;
 }
 
-double   line_to_point_residual(const DQ& robot_line, const DQ& workspace_line, const DQ& workspace_line_derivative)
+
+double   line_to_line_residual(const DQ& robot_line, const DQ& workspace_line, const DQ& workspace_line_derivative)
 {
     const DQ& l_dq_dot = workspace_line_derivative;
     const DQ& l_dq     = workspace_line;
@@ -421,8 +448,6 @@ double   line_to_point_residual(const DQ& robot_line, const DQ& workspace_line, 
     const DQ Plzlcross                = P(cross(robot_line,l_dq));
     const double zetanormcrossprimary = 2*vec4(Plzlcross).transpose()*vec4(zetacrossprimary);
 
-
-    ///Distance Jacobian
     // a
     const double a_temp = vec4(Plzlcross).norm();
     const double a = (1.0)/(a_temp*a_temp);
