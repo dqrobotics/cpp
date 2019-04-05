@@ -361,7 +361,12 @@ DQ cross(const DQ& dq1, const DQ& dq2)
 
 DQ Ad(const DQ& dq1, const DQ& dq2)
 {
-    return (dq2)*(dq1)*conj(dq2);
+    return (dq1)*(dq2)*conj(dq1);
+}
+
+DQ Adsharp(const DQ& dq1, const DQ& dq2)
+{
+    return sharp(dq1)*dq2*conj(dq1);
 }
 
 Matrix4d Hplus4(const DQ& dq){return hamiplus4(dq);}
@@ -991,6 +996,11 @@ DQ DQ::sharp() const
 DQ DQ::Ad(const DQ &dq2) const
 {
     return DQ_robotics::Ad(*this,dq2);
+}
+
+DQ DQ::Adsharp(const DQ& dq2) const
+{
+    return DQ_robotics::Adsharp(*this,dq2);
 }
 
 /**

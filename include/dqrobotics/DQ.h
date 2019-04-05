@@ -122,6 +122,8 @@ public:
 
     DQ Ad(const DQ& dq2) const;
 
+    DQ Adsharp(const DQ& dq2) const;
+
     //Operator (-) Overload
     DQ operator-();
     //Operator (==) Overload
@@ -265,6 +267,8 @@ DQ cross(const DQ& dq1, const DQ& dq2);
 DQ dot(const DQ& dq1, const DQ& dq2);
 
 DQ Ad(const DQ& dq1, const DQ& dq2);
+
+DQ Adsharp(const DQ& dq1, const DQ& dq2);
 
 ///Deprecated signatures
 DEPRECATED Matrix4d Hplus4(const DQ& dq);
