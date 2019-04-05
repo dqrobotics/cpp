@@ -334,13 +334,13 @@ DQ sharp(const DQ& dq)
  * @return the dot product between \p a and \p b
  * @exception Will throw a std::range_error iff one of the inputs is not imaginary.
  */
-DQ dot(const DQ& a,const DQ& b)
+DQ dot(const DQ& dq1, const DQ& dq2)
 {
-    if(a!=Im(a) || b!=Im(b))
+    if(dq1!=Im(dq1) || dq2!=Im(dq2))
     {
         throw std::range_error("One of the inputs is not imaginary in dot");
     }
-    return -1.0*(a*b+b*a)*0.5;
+    return -1.0*(dq1*dq2+dq2*dq1)*0.5;
 }
 
 /**
@@ -350,15 +350,19 @@ DQ dot(const DQ& a,const DQ& b)
  * @return the cross product between \p a and \p b
  * @exception Will throw a std::range_error iff one of the inputs is not imaginary.
  */
-DQ cross(const DQ& a, const DQ& b)
+DQ cross(const DQ& dq1, const DQ& dq2)
 {
-    if(a!=Im(a) || b!=Im(b))
+    if(dq1!=Im(dq1) || dq2!=Im(dq2))
     {
         throw std::range_error("One of the inputs is not imaginary in cross");
     }
-    return (a*b-b*a)*0.5;
+    return (dq1*dq2-dq2*dq1)*0.5;
 }
 
+DQ Ad(const DQ& dq1, const DQ& dq2)
+{
+    return (dq2)*(dq1)*conj(dq2);
+}
 
 Matrix4d Hplus4(const DQ& dq){return hamiplus4(dq);}
 Matrix4d Hminus4(const DQ& dq){return haminus4(dq);}
@@ -982,6 +986,11 @@ DQ DQ::normalize() const
 DQ DQ::sharp() const
 {
     return (P()-E_*D());
+}
+
+DQ DQ::Ad(const DQ &dq2) const
+{
+    return DQ_robotics::Ad(*this,dq2);
 }
 
 /**
