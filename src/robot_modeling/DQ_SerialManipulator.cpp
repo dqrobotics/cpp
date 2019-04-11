@@ -45,7 +45,8 @@ namespace DQ_robotics
 * \param MatrixXd A contain the Denavit-Hartenberg parameters for the kinematic model.
 * \param std::string type contain the convention used in Denavit_Hartenberg.
 */
-DQ_SerialManipulator::DQ_SerialManipulator(const MatrixXd& dh_matrix, const std::string& convention ){
+DQ_SerialManipulator::DQ_SerialManipulator(const MatrixXd& dh_matrix, const std::string& convention ):DQ_Kinematics()
+{
 
     if (convention != "standard" && convention != "modified")
     {
@@ -58,7 +59,6 @@ DQ_SerialManipulator::DQ_SerialManipulator(const MatrixXd& dh_matrix, const std:
 
     //dh_matrix_.resize(dh_matrix);
     dh_matrix_ = dh_matrix;
-    curr_base_ = DQ(1);
     curr_effector_ = DQ(1);
     dh_matrix_convention_ = convention;
 }
@@ -229,16 +229,6 @@ std::string  DQ_SerialManipulator::convention() const
 }
 
 /**
-* Returns a constant DQ object representing current defined base of a robotic system DQ_SerialManipulator object.
-* To use this member function, type: 'dh_matrix__object.base();'.
-* \return A constant DQ object.
-*/
-DQ  DQ_SerialManipulator::base() const
-{
-    return curr_base_;
-}
-
-/**
 * Returns a constant DQ object representing current defined end effector of a robotic system DQ_SerialManipulator object.
 * To use this member function, type: 'dh_matrix__object.effector();'.
 * \return A constant DQ object.
@@ -246,18 +236,6 @@ DQ  DQ_SerialManipulator::base() const
 DQ  DQ_SerialManipulator::effector() const
 {
     return curr_effector_;
-}
-
-/**
-* Sets, by new_base parameter, the pose of current base of a robotic system DQ_SerialManipulator object and returns it in a constant DQ object.
-* To use this member function, type: 'dh_matrix__object.set_base();'.
-* \param DQ new_base representing the new pose of robotic system base
-* \return A constant DQ object.
-*/
-DQ  DQ_SerialManipulator::set_base( const DQ& new_base)
-{
-    curr_base_ = new_base;
-    return curr_base_;
 }
 
 /**
@@ -340,7 +318,7 @@ DQ  DQ_SerialManipulator::raw_fkm( const VectorXd& theta_vec, const int& ith)
 */
 DQ  DQ_SerialManipulator::fkm( const VectorXd& theta_vec)
 {
-    DQ q = curr_base_ * ( this->raw_fkm(theta_vec) ) * curr_effector_;
+    DQ q = reference_frame_ * ( this->raw_fkm(theta_vec) ) * curr_effector_;
     return q;
 }
 
@@ -354,7 +332,7 @@ DQ  DQ_SerialManipulator::fkm( const VectorXd& theta_vec)
 */
 DQ  DQ_SerialManipulator::fkm( const VectorXd& theta_vec, const int& ith)
 {
-    DQ q = curr_base_ * ( this->raw_fkm(theta_vec, ith) ) * curr_effector_;
+    DQ q = reference_frame_ * ( this->raw_fkm(theta_vec, ith) ) * curr_effector_;
     return q;
 }
 
@@ -475,11 +453,11 @@ MatrixXd  DQ_SerialManipulator::pose_jacobian(const VectorXd& theta_vec, const i
     MatrixXd J = raw_pose_jacobian(theta_vec,to_link);
     if(to_link==this->get_dim_configuration_space())
     {
-        J = hamiplus8(curr_base_)*haminus8(curr_effector_)*J;
+        J = hamiplus8(reference_frame_)*haminus8(curr_effector_)*J;
     }
     else
     {
-        J = hamiplus8(curr_base_)*J;
+        J = hamiplus8(reference_frame_)*J;
     }
     return J;
 }

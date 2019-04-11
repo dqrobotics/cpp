@@ -48,7 +48,6 @@ private:
     MatrixXd    dh_matrix_;
     std::string dh_matrix_convention_;
 
-    DQ curr_base_;
     DQ curr_effector_;
 
     // public methods
@@ -77,9 +76,6 @@ public:
     int n_dummy() const;
 
     std::string convention() const;
-
-    DQ base() const;
-    DQ set_base( const DQ& new_base);
 
     DQ effector() const;
     DQ set_effector( const DQ& new_effector);

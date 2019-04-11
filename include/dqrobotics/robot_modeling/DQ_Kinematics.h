@@ -29,12 +29,10 @@ namespace DQ_robotics
 {
     class DQ_Kinematics
     {
-    private:
+    protected:
         DQ reference_frame_;
         DQ base_frame_;
         std::string name_;
-
-    protected:
         VectorXd q;
 
     public:
@@ -42,7 +40,7 @@ namespace DQ_robotics
         DQ_Kinematics();
 
         //Virtual destructor
-        virtual ~DQ_Kinematics()=default;
+        virtual ~DQ_Kinematics() = default;
 
         //Concrete methods
         void set_reference_frame(const DQ& reference_frame);
