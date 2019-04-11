@@ -81,7 +81,7 @@ MatrixXd DQ_SerialManipulator::getDHMatrix()
 * To use this member function, type: 'dh_matrix__object.links();'.
 * \return A constant int.
 */
-int  DQ_SerialManipulator::get_dim_configuration_space() const
+int  DQ_SerialManipulator::get_dim_configuration_space()
 {
     return dh_matrix_.cols();
 }
@@ -280,7 +280,7 @@ DQ  DQ_SerialManipulator::set_effector( const DQ& new_effector)
 * \param Eigen::VectorXd theta_vec is the vector representing the theta joint angles.
 * \return A constant DQ object.
 */
-DQ  DQ_SerialManipulator::raw_fkm( const VectorXd& theta_vec) const
+DQ  DQ_SerialManipulator::raw_fkm( const VectorXd& theta_vec)
 {
 
     if(int(theta_vec.size()) != (this->get_dim_configuration_space() - this->n_dummy()) )
@@ -310,7 +310,7 @@ DQ  DQ_SerialManipulator::raw_fkm( const VectorXd& theta_vec) const
 * \param int ith is the position of the least joint included in the forward kinematic model
 * \return A constant DQ object.
 */
-DQ  DQ_SerialManipulator::raw_fkm( const VectorXd& theta_vec, const int& ith) const
+DQ  DQ_SerialManipulator::raw_fkm( const VectorXd& theta_vec, const int& ith)
 {
 
     if(int(theta_vec.size()) != (this->get_dim_configuration_space() - this->n_dummy()) )
@@ -338,7 +338,7 @@ DQ  DQ_SerialManipulator::raw_fkm( const VectorXd& theta_vec, const int& ith) co
 * \param Eigen::VectorXd theta_vec is the vector representing the theta joint angles.
 * \return A constant DQ object.
 */
-DQ  DQ_SerialManipulator::fkm( const VectorXd& theta_vec) const
+DQ  DQ_SerialManipulator::fkm( const VectorXd& theta_vec)
 {
     DQ q = curr_base_ * ( this->raw_fkm(theta_vec) ) * curr_effector_;
     return q;
@@ -352,7 +352,7 @@ DQ  DQ_SerialManipulator::fkm( const VectorXd& theta_vec) const
 * \param Eigen::VectorXd theta_vec is the vector representing the theta joint angles.
 * \return A constant DQ object.
 */
-DQ  DQ_SerialManipulator::fkm( const VectorXd& theta_vec, const int& ith) const
+DQ  DQ_SerialManipulator::fkm( const VectorXd& theta_vec, const int& ith)
 {
     DQ q = curr_base_ * ( this->raw_fkm(theta_vec, ith) ) * curr_effector_;
     return q;
@@ -364,7 +364,7 @@ DQ  DQ_SerialManipulator::fkm( const VectorXd& theta_vec, const int& ith) const
 * \param int link_i is the link number
 * \return A constant DQ object
 */
-DQ  DQ_SerialManipulator::dh2dq( const double& theta_ang, const int& link_i) const {
+DQ  DQ_SerialManipulator::dh2dq( const double& theta_ang, const int& link_i) {
 
     Matrix<double,8,1> q(8);
 
@@ -423,7 +423,7 @@ DQ  DQ_SerialManipulator::get_z( const VectorXd& q) const
 }
 
 
-MatrixXd DQ_SerialManipulator::raw_pose_jacobian(const VectorXd& theta_vec, const int& to_link) const
+MatrixXd DQ_SerialManipulator::raw_pose_jacobian(const VectorXd& theta_vec, const int& to_link)
 {
     DQ q_effector = this->raw_fkm(theta_vec,to_link);
     DQ z;
@@ -470,7 +470,7 @@ MatrixXd DQ_SerialManipulator::raw_pose_jacobian(const VectorXd& theta_vec, cons
 * \param Eigen::VectorXd theta_vec is the vector representing the theta joint angles.
 * \return A constant Eigen::MatrixXd (8,links - n_dummy).
 */
-MatrixXd  DQ_SerialManipulator::pose_jacobian(const VectorXd& theta_vec, const int &to_link) const
+MatrixXd  DQ_SerialManipulator::pose_jacobian(const VectorXd& theta_vec, const int &to_link)
 {
     MatrixXd J = raw_pose_jacobian(theta_vec,to_link);
     if(to_link==this->get_dim_configuration_space())
@@ -484,12 +484,12 @@ MatrixXd  DQ_SerialManipulator::pose_jacobian(const VectorXd& theta_vec, const i
     return J;
 }
 
-MatrixXd DQ_SerialManipulator::pose_jacobian(const VectorXd &theta_vec) const
+MatrixXd DQ_SerialManipulator::pose_jacobian(const VectorXd &theta_vec)
 {
     return pose_jacobian(theta_vec,get_dim_configuration_space());
 }
 
-MatrixXd DQ_SerialManipulator::pose_jacobian_derivative(const VectorXd &theta_vec, const VectorXd &theta_vec_dot, const int &to_link) const
+MatrixXd DQ_SerialManipulator::pose_jacobian_derivative(const VectorXd &theta_vec, const VectorXd &theta_vec_dot, const int &to_link)
 {
 
     int n = to_link;
