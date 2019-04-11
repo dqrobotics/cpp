@@ -42,7 +42,7 @@ namespace DQ_robotics
         DQ_Kinematics();
 
         //Virtual destructor
-        virtual ~DQ_Kinematics()=0;
+        virtual ~DQ_Kinematics()=default;
 
         //Concrete methods
         void set_reference_frame(const DQ& reference_frame);
