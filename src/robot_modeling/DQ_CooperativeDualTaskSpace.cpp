@@ -20,48 +20,48 @@ Contributors:
 - Murilo M. Marinho (murilo@nml.t.u-tokyo.ac.jp)
 */
 
-#include<dqrobotics/DQ_CooperativeDualTaskSpace.h>
+#include<dqrobotics/robot_modeling/DQ_CooperativeDualTaskSpace.h>
 
 namespace DQ_robotics
 {
 
-DQ_CooperativeDualTaskSpace::DQ_CooperativeDualTaskSpace(const DQ_kinematics& robot1, const DQ_kinematics& robot2)
+DQ_CooperativeDualTaskSpace::DQ_CooperativeDualTaskSpace(DQ_Kinematics *robot1, DQ_Kinematics *robot2)
 {
     robot1_ = robot1;
     robot2_ = robot2;
 }
 
-DQ DQ_CooperativeDualTaskSpace::pose1(const VectorXd &theta) const
+DQ DQ_CooperativeDualTaskSpace::pose1(const VectorXd &theta)
 {
-    return robot1_.fkm(theta.head(robot1_.n_links()));
+    return robot1_->fkm(theta.head(robot1_->get_dim_configuration_space()));
 }
 
-DQ DQ_CooperativeDualTaskSpace::pose2(const VectorXd &theta) const
+DQ DQ_CooperativeDualTaskSpace::pose2(const VectorXd &theta)
 {
-    return robot2_.fkm(theta.tail(robot2_.n_links()));
+    return robot2_->fkm(theta.tail(robot2_->get_dim_configuration_space()));
 }
 
-MatrixXd DQ_CooperativeDualTaskSpace::pose_jacobian1(const VectorXd &theta) const
+MatrixXd DQ_CooperativeDualTaskSpace::pose_jacobian1(const VectorXd &theta)
 {
-    return robot1_.pose_jacobian(theta.head(robot1_.n_links()));
+    return robot1_->pose_jacobian(theta.head(robot1_->get_dim_configuration_space()),robot1_->get_dim_configuration_space());
 }
 
-MatrixXd DQ_CooperativeDualTaskSpace::pose_jacobian2(const VectorXd &theta) const
+MatrixXd DQ_CooperativeDualTaskSpace::pose_jacobian2(const VectorXd &theta)
 {
-    return robot2_.pose_jacobian(theta.tail(robot2_.n_links()));
+    return robot2_->pose_jacobian(theta.tail(robot2_->get_dim_configuration_space()),robot2_->get_dim_configuration_space());
 }
 
-DQ DQ_CooperativeDualTaskSpace::relative_pose(const VectorXd &theta) const
+DQ DQ_CooperativeDualTaskSpace::relative_pose(const VectorXd &theta)
 {
     return conj(pose2(theta))*pose1(theta);
 }
 
-DQ DQ_CooperativeDualTaskSpace::absolute_pose(const VectorXd &theta) const
+DQ DQ_CooperativeDualTaskSpace::absolute_pose(const VectorXd &theta)
 {
     return pose2(theta)*(pow(relative_pose(theta),0.5));
 }
 
-MatrixXd DQ_CooperativeDualTaskSpace::relative_pose_jacobian(const VectorXd &theta) const
+MatrixXd DQ_CooperativeDualTaskSpace::relative_pose_jacobian(const VectorXd &theta)
 {
     const MatrixXd Jx1 = pose_jacobian1(theta);
     const DQ       x1  = pose1(theta);
@@ -73,14 +73,14 @@ MatrixXd DQ_CooperativeDualTaskSpace::relative_pose_jacobian(const VectorXd &the
     return  Jxr;
 }
 
-MatrixXd DQ_CooperativeDualTaskSpace::absolute_pose_jacobian(const VectorXd &theta) const
+MatrixXd DQ_CooperativeDualTaskSpace::absolute_pose_jacobian(const VectorXd &theta)
 {
     //Preliminaries
     const MatrixXd Jx2 = pose_jacobian2(theta);
     const DQ       x2  = pose2(theta);
     const MatrixXd Jxr  = relative_pose_jacobian(theta);
     const DQ       xr  = relative_pose(theta);
-    const MatrixXd Jtr = translation_jacobian(Jxr,xr);
+    const MatrixXd Jtr = DQ_Kinematics::translation_jacobian(Jxr,xr);
 
     //Rotation part
     MatrixXd Jrr2    = 0.5*haminus4(conj(xr.P())*pow(xr.P(),0.5))*Jxr.block(0,0,4,Jxr.cols());
@@ -88,10 +88,10 @@ MatrixXd DQ_CooperativeDualTaskSpace::absolute_pose_jacobian(const VectorXd &the
     MatrixXd Jxr2(8,Jrr2.cols());
     Jxr2 << Jrr2, 0.25*(haminus4(pow(xr.P(),0.5))*Jtr + hamiplus4(translation(xr))*Jrr2);
 
-    MatrixXd temp(8,robot1_.n_links()+robot2_.n_links());
-    temp << MatrixXd::Zero(8,robot1_.n_links()),Jx2;
+    MatrixXd temp(8,robot1_->get_dim_configuration_space()+robot2_->get_dim_configuration_space());
+    temp << MatrixXd::Zero(8,robot1_->get_dim_configuration_space()),Jx2;
 
-    MatrixXd Jxa(8,robot1_.n_links()*robot2_.n_links());
+    MatrixXd Jxa(8,robot1_->get_dim_configuration_space()*robot2_->get_dim_configuration_space());
     Jxa << haminus8(pow(xr,0.5))*(temp) + hamiplus8(x2)*Jxr2;
 
     return Jxa;

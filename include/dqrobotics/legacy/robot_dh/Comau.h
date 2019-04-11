@@ -8,7 +8,7 @@ Comau Robot DH Parameters
 #ifndef DQ_ROBOTICS_COMAU_DH_H
 #define DQ_ROBOTICS_COMAU_DH_H
 
-#include<dqrobotics/DQ_kinematics.h>
+#include<dqrobotics/legacy/DQ_kinematics.h>
 #include<eigen3/Eigen/Dense>
 #include<cmath>
 
