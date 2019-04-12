@@ -20,26 +20,26 @@ Contributors:
 - Murilo M. Marinho (murilo@nml.t.u-tokyo.ac.jp)
 */
 
-#ifndef DQ_ROBOTICS_ROBOT_MODELING_DQ_MOBILEBASE
-#define DQ_ROBOTICS_ROBOT_MODELING_DQ_MOBILEBASE
+#ifndef DQ_ROBOTICS_ROBOT_MODELING_DQ_HOLONOMICBASE
+#define DQ_ROBOTICS_ROBOT_MODELING_DQ_HOLONOMICBASE
 
 #include<dqrobotics/DQ.h>
-#include<dqrobotics/robot_modeling/DQ_Kinematics.h>
+#include<dqrobotics/robot_modeling/DQ_MobileBase.h>
 
 namespace DQ_robotics
 {
 
-class DQ_MobileBase : public DQ_Kinematics
+
+class DQ_HolonomicBase: public DQ_MobileBase
 {
-protected:
-    DQ frame_displacement_;
-
 public:
-    DQ_MobileBase();
-    virtual ~DQ_MobileBase() = default;
+    DQ_HolonomicBase();
 
-    void set_frame_displacement(const DQ& pose);
-    DQ   frame_displacement();
+    //Virtual method overloads (DQ_Kinematics)
+    DQ raw_fkm(const VectorXd& q);
+    DQ fkm(const VectorXd& q);
+    MatrixXd raw_pose_jacobian(const VectorXd& q, const int& to_link);
+    MatrixXd pose_jacobian(const VectorXd& q, const int& to_link);
 
 };
 
