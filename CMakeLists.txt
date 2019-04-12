@@ -9,6 +9,7 @@ ADD_LIBRARY(dqrobotics SHARED
     src/robot_modeling/DQ_CooperativeDualTaskSpace.cpp
     src/robot_modeling/DQ_Kinematics.cpp
     src/robot_modeling/DQ_SerialManipulator.cpp
+    src/robot_modeling/DQ_MobileBase.cpp
     src/legacy/DQ_kinematics.cpp)
 
 FIND_PACKAGE(Eigen3 REQUIRED)
@@ -22,6 +23,7 @@ SET_TARGET_PROPERTIES(dqrobotics
     include/dqrobotics/robot_modeling/DQ_CooperativeDualTaskSpace.h;
     include/dqrobotics/robot_modeling/DQ_Kinematics.h;
     include/dqrobotics/robot_modeling/DQ_SerialManipulator.h;
+    include/dqrobotics/robot_modeling/DQ_MobileBase.h;
     include/dqrobotics/legacy/DQ_kinematics.h;"
     )
 
@@ -56,4 +58,5 @@ INSTALL(FILES
     src/robot_modeling/DQ_SerialManipulator.cpp
     src/robot_modeling/DQ_CooperativeDualTaskSpace.cpp
     src/robot_modeling/DQ_Kinematics.cpp
+    src/robot_modeling/DQ_MobileBase.cpp
     DESTINATION "src/dqrobotics/robot_modeling")

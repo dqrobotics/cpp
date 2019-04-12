@@ -34,6 +34,7 @@ namespace DQ_robotics
         DQ base_frame_;
         std::string name_;
         VectorXd q;
+        int dim_configuration_space_;
 
     public:
         //Constructor
@@ -53,7 +54,9 @@ namespace DQ_robotics
         //Abstract methods
         virtual int      get_dim_configuration_space()=0;
         virtual DQ       fkm(const VectorXd& joint_configurations)=0;
+        virtual DQ       raw_fkm(const VectorXd& joint_configurations)=0;
         virtual MatrixXd pose_jacobian(const VectorXd& joint_configurations,const int& to_link)=0;
+        virtual MatrixXd raw_pose_jacobian(const VectorXd& joint_configurations,const int& to_link)=0;
 
         //Static methods
         static MatrixXd distance_jacobian(const MatrixXd& pose_jacobian, const DQ& pose);
@@ -64,19 +67,14 @@ namespace DQ_robotics
 
         static MatrixXd point_to_point_distance_jacobian(const MatrixXd& translation_jacobian, const DQ& robot_point_translation, const DQ& workspace_point_translation);
         static double   point_to_point_residual         (const DQ& robot_point_translation, const DQ& workspace_point_translation, const DQ& workspace_point_translation_derivative);
-
         static MatrixXd point_to_line_distance_jacobian (const MatrixXd& translation_jacobian, const DQ& robot_point_translation, const DQ& workspace_line);
         static double   point_to_line_residual          (const DQ& robot_point_translation, const DQ& workspace_line, const DQ& workspace_line_derivative);
-
         static MatrixXd point_to_plane_distance_jacobian(const MatrixXd& translation_jacobian, const DQ& robot_point_translation, const DQ& workspace_plane);
         static double   point_to_plane_residual         (const DQ& translation, const DQ& plane_derivative);
-
         static MatrixXd line_to_point_distance_jacobian (const MatrixXd& line_jacobian, const DQ& robot_line, const DQ& workspace_point_translation);
         static double   line_to_point_residual          (const DQ& robot_line, const DQ& workspace_point_translation, const DQ& workspace_point_translation_derivative);
-
         static MatrixXd line_to_line_distance_jacobian  (const MatrixXd& line_jacobian, const DQ& robot_line, const DQ& workspace_line);
         static double   line_to_line_residual           (const DQ& robot_line, const DQ& workspace_line, const DQ& workspace_line_derivative);
-
         static MatrixXd plane_to_point_distance_jacobian(const MatrixXd& plane_jacobian, const DQ& robot_plane, const DQ& workspace_point);
         static double   plane_to_point_residual         (const DQ& robot_plane, const DQ& workspace_point_derivative);
     };
