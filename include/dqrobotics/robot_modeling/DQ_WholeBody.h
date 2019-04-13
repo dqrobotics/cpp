@@ -27,7 +27,7 @@ Contributors:
 namespace DQ_robotics
 {
 
-class DQ_WholeBody : DQ_Kinematics
+class DQ_WholeBody : public DQ_Kinematics
 {
 protected:
     std::vector<DQ_Kinematics*> chain_;
