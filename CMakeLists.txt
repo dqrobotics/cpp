@@ -21,14 +21,7 @@ INCLUDE_DIRECTORIES(dqrobotics include)
 
 SET_TARGET_PROPERTIES(dqrobotics 
     PROPERTIES PUBLIC_HEADER
-    "include/dqrobotics/DQ.h;
-    include/dqrobotics/robot_modeling/DQ_CooperativeDualTaskSpace.h;
-    include/dqrobotics/robot_modeling/DQ_Kinematics.h;
-    include/dqrobotics/robot_modeling/DQ_SerialManipulator.h;
-    include/dqrobotics/robot_modeling/DQ_MobileBase.h;
-    include/dqrobotics/robot_modeling/DQ_HolonomicBase.h;
-    include/dqrobotics/robot_modeling/DQ_DifferentialDriveBase.h;
-    include/dqrobotics/legacy/DQ_kinematics.h;"
+    "include/dqrobotics/DQ.h;include/dqrobotics/robot_modeling/DQ_CooperativeDualTaskSpace.h;include/dqrobotics/robot_modeling/DQ_Kinematics.h;include/dqrobotics/robot_modeling/DQ_SerialManipulator.h;include/dqrobotics/robot_modeling/DQ_MobileBase.h;include/dqrobotics/robot_modeling/DQ_HolonomicBase.h;include/dqrobotics/robot_modeling/DQ_DifferentialDriveBase.h;include/dqrobotics/legacy/DQ_kinematics.h;"
     )
 
 # INCLUDE FOLDER INSTALL
