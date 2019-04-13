@@ -42,6 +42,11 @@ void DQ_WholeBody::add(DQ_Kinematics *robot)
     chain_.push_back(robot);
 }
 
+DQ DQ_WholeBody::fkm(const VectorXd &q) const
+{
+    return fkm(q,chain_.size());
+}
+
 DQ DQ_WholeBody::fkm(const VectorXd &q, const int &to_chain) const
 {
     DQ pose(1);
