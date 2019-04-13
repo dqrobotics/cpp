@@ -60,7 +60,7 @@ public:
 
     MatrixXd getDHMatrix();
 
-    int get_dim_configuration_space();
+    int get_dim_configuration_space() const;
 
     VectorXd theta() const;
 
@@ -80,20 +80,20 @@ public:
     DQ effector() const;
     DQ set_effector( const DQ& new_effector);
 
-    DQ raw_fkm( const VectorXd& theta_vec);
-    DQ raw_fkm( const VectorXd& theta_vec, const int& ith);
+    DQ raw_fkm( const VectorXd& theta_vec) const;
+    DQ raw_fkm( const VectorXd& theta_vec, const int& ith) const;
 
-    DQ fkm( const VectorXd& theta_vec);
-    DQ fkm( const VectorXd& theta_vec, const int& ith);
+    DQ fkm( const VectorXd& theta_vec) const;
+    DQ fkm( const VectorXd& theta_vec, const int& ith) const;
 
-    DQ dh2dq( const double& theta_ang, const int& link_i);
+    DQ dh2dq( const double& theta_ang, const int& link_i) const;
 
     DQ get_z( const VectorXd& q) const;
 
-    MatrixXd pose_jacobian           ( const VectorXd& theta_vec, const int& to_link);
-    MatrixXd pose_jacobian           ( const VectorXd& theta_vec);
-    MatrixXd raw_pose_jacobian       ( const VectorXd& theta_vec, const int& to_link);
-    MatrixXd pose_jacobian_derivative( const VectorXd& theta_vec, const VectorXd& theta_vec_dot, const int& to_link);
+    MatrixXd pose_jacobian           ( const VectorXd& theta_vec, const int& to_link) const;
+    MatrixXd pose_jacobian           ( const VectorXd& theta_vec) const;
+    MatrixXd raw_pose_jacobian       ( const VectorXd& theta_vec, const int& to_link) const;
+    MatrixXd pose_jacobian_derivative( const VectorXd& theta_vec, const VectorXd& theta_vec_dot, const int& to_link) const;
 
 };
 
