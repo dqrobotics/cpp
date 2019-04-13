@@ -16,12 +16,10 @@ matrix:
          packages: 
            - g++
            - libeigen3-dev
+           - fakeroot
 
 script:
-    ############################################################################
-    # Build main and tests
-    ############################################################################
-     - mkdir -p build
-     - cd build
-     - cmake -DCMAKE_CXX_FLAGS=${CXX_FLAGS} -DCMAKE_BUILD_TYPE=Release .. 
-     - make
+     - fakeroot debian/rules clean
+     - fakeroot debian/rules build
+after_script:
+     - fakeroot debian/rules binary
