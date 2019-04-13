@@ -20,34 +20,29 @@ Contributors:
 - Murilo M. Marinho (murilo@nml.t.u-tokyo.ac.jp)
 */
 
-#ifndef DQ_ROBOTICS_ROBOT_MODELING_DQ_HOLONOMICBASE
-#define DQ_ROBOTICS_ROBOT_MODELING_DQ_HOLONOMICBASE
-
+#include<vector>
 #include<dqrobotics/DQ.h>
-#include<dqrobotics/robot_modeling/DQ_MobileBase.h>
+#include<dqrobotics/robot_modeling/DQ_Kinematics.h>
 
 namespace DQ_robotics
 {
 
-
-class DQ_HolonomicBase: public DQ_MobileBase
+class DQ_WholeBody : DQ_Kinematics
 {
 protected:
+    std::vector<DQ_Kinematics*> chain_;
     int dim_configuration_space_;
 public:
-    DQ_HolonomicBase();
+    DQ_WholeBody(DQ_Kinematics* robot);
 
-    //Virtual method overloads (DQ_Kinematics)
+    void add(const DQ_Kinematics& robot);
+    DQ fkm(const VectorXd& q, const int& to_link) const;
+
+    //Abstract methods' implementation
+    int get_dim_configuration_space() const;
     DQ fkm(const VectorXd& q) const;
     MatrixXd pose_jacobian(const VectorXd& q, const int& to_link) const;
-    int get_dim_configuration_space() const;
-
-
-    DQ raw_fkm(const VectorXd& q) const;
-    MatrixXd raw_pose_jacobian(const VectorXd& q, const int& to_link) const;
 
 };
 
 }
-
-#endif

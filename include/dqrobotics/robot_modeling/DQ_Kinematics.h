@@ -34,7 +34,6 @@ namespace DQ_robotics
         DQ base_frame_;
         std::string name_;
         VectorXd q;
-        int dim_configuration_space_;
 
     public:
         //Constructor
@@ -52,13 +51,11 @@ namespace DQ_robotics
         std::string name() const;
 
         //Abstract methods
-        virtual int      get_dim_configuration_space()=0;
-        virtual DQ       fkm(const VectorXd& joint_configurations)=0;
-        virtual DQ       raw_fkm(const VectorXd& joint_configurations)=0;
-        virtual MatrixXd pose_jacobian(const VectorXd& joint_configurations,const int& to_link)=0;
-        virtual MatrixXd raw_pose_jacobian(const VectorXd& joint_configurations,const int& to_link)=0;
+        virtual int      get_dim_configuration_space() const = 0;
+        virtual DQ       fkm(const VectorXd& joint_configurations) const = 0;
+        virtual MatrixXd pose_jacobian(const VectorXd& joint_configurations,const int& to_link) const = 0;
 
-        //Static methods
+        ///Static methods
         static MatrixXd distance_jacobian(const MatrixXd& pose_jacobian, const DQ& pose);
         static MatrixXd translation_jacobian(const MatrixXd& pose_jacobian, const DQ& pose);
         static MatrixXd rotation_jacobian(const MatrixXd& pose_jacobian);

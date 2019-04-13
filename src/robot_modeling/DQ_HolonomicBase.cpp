@@ -30,7 +30,7 @@ DQ_HolonomicBase::DQ_HolonomicBase()
     dim_configuration_space_ = 3;
 }
 
-DQ DQ_HolonomicBase::raw_fkm(const VectorXd& q)
+DQ DQ_HolonomicBase::raw_fkm(const VectorXd& q) const
 {
     const double& x   = q(0);
     const double& y   = q(1);
@@ -45,12 +45,12 @@ DQ DQ_HolonomicBase::raw_fkm(const VectorXd& q)
     return real_part + E_*dual_part;
 }
 
-DQ DQ_HolonomicBase::fkm(const VectorXd& q)
+DQ DQ_HolonomicBase::fkm(const VectorXd& q) const
 {
     return raw_fkm(q)*frame_displacement_;
 }
 
-MatrixXd DQ_HolonomicBase::raw_pose_jacobian(const VectorXd& q, const int& to_link)
+MatrixXd DQ_HolonomicBase::raw_pose_jacobian(const VectorXd& q, const int& to_link) const
 {
     const double& x   = q(0);
     const double& y   = q(1);
@@ -83,9 +83,14 @@ MatrixXd DQ_HolonomicBase::raw_pose_jacobian(const VectorXd& q, const int& to_li
     return J.block(0,1,8,to_link);
 }
 
-MatrixXd DQ_HolonomicBase::pose_jacobian(const VectorXd &q, const int &to_link)
+MatrixXd DQ_HolonomicBase::pose_jacobian(const VectorXd &q, const int &to_link) const
 {
     return haminus8(frame_displacement_)*raw_pose_jacobian(q,to_link);
+}
+
+int DQ_HolonomicBase::get_dim_configuration_space() const
+{
+    return dim_configuration_space_;
 }
 
 }
