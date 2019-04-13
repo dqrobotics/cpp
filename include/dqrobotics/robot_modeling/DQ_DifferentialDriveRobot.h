@@ -20,8 +20,8 @@ Contributors:
 - Murilo M. Marinho (murilo@nml.t.u-tokyo.ac.jp)
 */
 
-#ifndef DQ_ROBOTICS_ROBOT_MODELING_DQ_DIFFERENTIALDRIVEBASE
-#define DQ_ROBOTICS_ROBOT_MODELING_DQ_DIFFERENTIALDRIVEBASE
+#ifndef DQ_ROBOTICS_ROBOT_MODELING_DQ_DIFFERENTIALDRIVEROBOT
+#define DQ_ROBOTICS_ROBOT_MODELING_DQ_DIFFERENTIALDRIVEROBOT
 
 #include<dqrobotics/DQ.h>
 #include<dqrobotics/robot_modeling/DQ_HolonomicBase.h>

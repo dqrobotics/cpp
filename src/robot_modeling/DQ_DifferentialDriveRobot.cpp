@@ -20,7 +20,7 @@ Contributors:
 - Murilo M. Marinho (murilo@nml.t.u-tokyo.ac.jp)
 */
 
-#include<dqrobotics/robot_modeling/DQ_DifferentialDriveBase.h>
+#include<dqrobotics/robot_modeling/DQ_DifferentialDriveRobot.h>
 
 namespace DQ_robotics
 {
