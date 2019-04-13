@@ -1,9 +1,9 @@
 Source: libdqrobotics
 Section: devel
 Priority: optional
-Maintainer: Murilo Marinho <murlou@gmail.com>
+Maintainer: Murilo Marinho <murilo@nml.t.u-tokyo.ac.jp>
 Build-Depends: cmake, libeigen3-dev
-Homepage: http://dqrobotics.sourceforge.net/
+Homepage: https://dqrobotics.github.io/
 
 Package: libdqrobotics
 Architecture: any
