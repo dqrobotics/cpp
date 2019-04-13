@@ -19,6 +19,7 @@ matrix:
            - fakeroot
 
 script:
+     - chmod +x debian/rules
      - fakeroot debian/rules clean
      - fakeroot debian/rules build
 after_script:
