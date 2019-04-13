@@ -31,10 +31,10 @@ DQ_DifferentialDriveRobot::DQ_DifferentialDriveRobot(const double& wheel_radius,
     distance_between_wheels_ = distance_between_wheels;
 }
 
-MatrixXd DQ_DifferentialDriveRobot::constraint_jacobian(const double &phi)
+MatrixXd DQ_DifferentialDriveRobot::constraint_jacobian(const double &phi) const
 {
-    double& r = wheel_radius_;
-    double& l = distance_between_wheels_;
+    const double& r = wheel_radius_;
+    const double& l = distance_between_wheels_;
     double c = cos(phi);
     double s = sin(phi);
 
@@ -45,7 +45,7 @@ MatrixXd DQ_DifferentialDriveRobot::constraint_jacobian(const double &phi)
     return J;
 }
 
-MatrixXd DQ_DifferentialDriveRobot::pose_jacobian(const VectorXd &q, const int &to_link)
+MatrixXd DQ_DifferentialDriveRobot::pose_jacobian(const VectorXd &q, const int &to_link) const
 {
     MatrixXd J_holonomic = DQ_MobileBase::pose_jacobian(q,3);
     MatrixXd J = J_holonomic*constraint_jacobian(q(2));

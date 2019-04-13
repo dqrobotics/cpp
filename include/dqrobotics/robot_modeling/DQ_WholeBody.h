@@ -33,10 +33,10 @@ protected:
     std::vector<DQ_Kinematics*> chain_;
     int dim_configuration_space_;
 public:
-    DQ_WholeBody(DQ_Kinematics* robot);
+    DQ_WholeBody(DQ_Kinematics *robot);
 
-    void add(const DQ_Kinematics& robot);
-    DQ fkm(const VectorXd& q, const int& to_link) const;
+    void add(DQ_Kinematics* robot);
+    DQ fkm(const VectorXd& q, const int& to_chain) const;
 
     //Abstract methods' implementation
     int get_dim_configuration_space() const;

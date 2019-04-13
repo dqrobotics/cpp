@@ -31,4 +31,65 @@ DQ_WholeBody::DQ_WholeBody(DQ_Kinematics *robot)
     dim_configuration_space_ = robot->get_dim_configuration_space();
 }
 
+int DQ_WholeBody::get_dim_configuration_space() const
+{
+    return dim_configuration_space_;
+}
+
+void DQ_WholeBody::add(DQ_Kinematics *robot)
+{
+    dim_configuration_space_+= robot->get_dim_configuration_space();
+    chain_.push_back(robot);
+}
+
+DQ DQ_WholeBody::fkm(const VectorXd &q, const int &to_chain) const
+{
+    DQ pose(1);
+
+    int q_counter = 0;
+    for(int i=0;i<to_chain;i++)
+    {
+        const int current_robot_dim    = chain_[i]->get_dim_configuration_space();
+        const VectorXd current_robot_q = q.segment(q_counter,current_robot_dim);
+        pose = pose * chain_[i]->fkm(current_robot_q);
+        q_counter += current_robot_dim;
+    }
+
+    return pose;
+}
+
+MatrixXd DQ_WholeBody::pose_jacobian(const VectorXd &q, const int &to_link) const
+{
+    int n = chain_.size();
+    DQ x_0_to_n = fkm(q,n);
+    int q_counter = 0;
+
+    //Not a good implementation but similar to MATLAB
+    std::vector<MatrixXd> J_vector;
+    for(int i=0;i<n;i++)
+    {
+        DQ x_0_to_iplus1 = fkm(q,i);
+        DQ x_iplus1_to_n = conj(x_0_to_iplus1)*x_0_to_n;
+
+        int dim = chain_[i]->get_dim_configuration_space();
+        VectorXd q_iplus1 = q.segment(q_counter,dim);
+        q_counter += dim;
+        J_vector.push_back(hamiplus8(fkm(q,i))*haminus8(x_iplus1_to_n)*chain_[i]->pose_jacobian(q_iplus1,n));
+    }
+
+    MatrixXd J_pose(8,q_counter);
+    int col_counter = 0;
+    for(int i=0;i<n;i++)
+    {
+        int q_counter = chain_[i]->get_dim_configuration_space();
+        MatrixXd current_J = J_vector[i];
+        for(int j=0;j<q_counter;j++)
+        {
+            J_pose.col(col_counter)=current_J.col(j);
+            col_counter+=1;
+        }
+    }
+    return J_pose;
+}
+
 }
