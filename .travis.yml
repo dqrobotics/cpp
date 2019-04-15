@@ -22,5 +22,5 @@ script:
      - chmod +x debian/rules
      - fakeroot debian/rules clean
      - fakeroot debian/rules build
-after_script:
+after_success:
      - fakeroot debian/rules binary
