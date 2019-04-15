@@ -116,7 +116,7 @@ MatrixXd DQ_Kinematics::line_jacobian(const MatrixXd& pose_jacobian, const DQ& p
     const DQ l = xr*(line_direction)*conj(xr);
 
     ///Line direction and moment Jacobians
-    const MatrixXd Jrx = haminus4(line_direction*conj(xr))*Jr + hamiplus4(xr*line_direction)*C4()*Jr;
+    const MatrixXd Jrx = (haminus4(line_direction*conj(xr)) + hamiplus4(xr*line_direction)*C4())*Jr;
     const MatrixXd Jmx = crossmatrix4(l).transpose()*Jt + crossmatrix4(xt)*Jrx;
 
     ///Line Jacobian
