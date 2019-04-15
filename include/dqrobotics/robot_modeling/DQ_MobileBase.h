@@ -38,6 +38,11 @@ public:
     DQ_MobileBase();
     virtual ~DQ_MobileBase() = default;
 
+    //Abstract methods (Inherited from DQ_Kinematics)
+    //virtual int      get_dim_configuration_space() const = 0;
+    //virtual DQ       fkm(const VectorXd& joint_configurations) const = 0;
+    //virtual MatrixXd pose_jacobian(const VectorXd& joint_configurations,const int& to_link) const = 0;
+
     void set_frame_displacement(const DQ& pose);
     DQ   frame_displacement();
 
