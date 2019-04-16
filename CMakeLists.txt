@@ -6,6 +6,7 @@ set (CMAKE_CXX_STANDARD 11)
 
 ADD_LIBRARY(dqrobotics SHARED 
     src/DQ.cpp
+
     src/robot_modeling/DQ_CooperativeDualTaskSpace.cpp
     src/robot_modeling/DQ_Kinematics.cpp
     src/robot_modeling/DQ_SerialManipulator.cpp
@@ -13,7 +14,14 @@ ADD_LIBRARY(dqrobotics SHARED
     src/robot_modeling/DQ_HolonomicBase.cpp
     src/robot_modeling/DQ_DifferentialDriveRobot.cpp
     src/robot_modeling/DQ_WholeBody.cpp
-    src/legacy/DQ_kinematics.cpp)
+
+    src/robots/Ax18ManipulatorRobot.cpp
+    src/robots/BarrettWamArmRobot.cpp
+    src/robots/ComauSmartSixRobot.cpp
+    src/robots/KukaLw4Robot.cpp
+
+    src/legacy/DQ_kinematics.cpp
+    )
 
 FIND_PACKAGE(Eigen3 REQUIRED)
 INCLUDE_DIRECTORIES(EIGEN3_INCLUDE_DIR)
