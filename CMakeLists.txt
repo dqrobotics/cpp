@@ -3,6 +3,13 @@ PROJECT(dqrobotics)
 set (CMAKE_CXX_STANDARD 11)
 
 #ADD_DEFINITIONS(-g -O2 -Wall)
+FIND_PACKAGE(Eigen3 REQUIRED)
+INCLUDE_DIRECTORIES(EIGEN3_INCLUDE_DIR)
+INCLUDE_DIRECTORIES(dqrobotics include)
+
+################################################################
+# DEFINE AND INSTALL LIBRARY AND INCLUDE FOLDER
+################################################################
 
 ADD_LIBRARY(dqrobotics SHARED 
     src/DQ.cpp
@@ -19,46 +26,50 @@ ADD_LIBRARY(dqrobotics SHARED
     src/robots/BarrettWamArmRobot.cpp
     src/robots/ComauSmartSixRobot.cpp
     src/robots/KukaLw4Robot.cpp
-
-    src/legacy/DQ_kinematics.cpp
     )
-
-FIND_PACKAGE(Eigen3 REQUIRED)
-INCLUDE_DIRECTORIES(EIGEN3_INCLUDE_DIR)
-
-INCLUDE_DIRECTORIES(dqrobotics include)
 
 SET_TARGET_PROPERTIES(dqrobotics 
     PROPERTIES PUBLIC_HEADER
-    "include/dqrobotics/DQ.h;include/dqrobotics/robot_modeling/DQ_CooperativeDualTaskSpace.h;include/dqrobotics/robot_modeling/DQ_Kinematics.h;include/dqrobotics/robot_modeling/DQ_SerialManipulator.h;include/dqrobotics/robot_modeling/DQ_MobileBase.h;include/dqrobotics/robot_modeling/DQ_HolonomicBase.h;include/dqrobotics/robot_modeling/DQ_DifferentialDriveRobot.h;include/dqrobotics/robot_modeling/DQ_WholeBody.h;include/dqrobotics/legacy/DQ_kinematics.h;"
+    include/dqrobotics/DQ.h
     )
 
-# INCLUDE FOLDER INSTALL
 INSTALL(TARGETS dqrobotics 
     LIBRARY DESTINATION "lib"
     PUBLIC_HEADER DESTINATION "include/dqrobotics"
     PERMISSIONS OWNER_READ OWNER_WRITE GROUP_READ WORLD_READ)
 
-# ROBOT DH HEADERS
-INSTALL(FILES
-    include/dqrobotics/legacy/robot_dh/A2arm.h
-    include/dqrobotics/legacy/robot_dh/AX18.h
-    include/dqrobotics/legacy/robot_dh/Comau.h
-    include/dqrobotics/legacy/robot_dh/Kukka.h
-    include/dqrobotics/legacy/robot_dh/Schunk.h
-    include/dqrobotics/legacy/robot_dh/WAM4.h
-    include/dqrobotics/legacy/robot_dh/WAM.h
-    DESTINATION "include/dqrobotics/legacy/robot_dh")
+################################################################
+# INSTALL HEADERS IN SUBFOLDERS
+################################################################
 
-# SOURCE FILES
+# robot_modeling headers
+INSTALL(FILES
+    include/dqrobotics/robot_modeling/DQ_CooperativeDualTaskSpace.h
+    include/dqrobotics/robot_modeling/DQ_Kinematics.h
+    include/dqrobotics/robot_modeling/DQ_SerialManipulator.h
+    include/dqrobotics/robot_modeling/DQ_MobileBase.h
+    include/dqrobotics/robot_modeling/DQ_HolonomicBase.h
+    include/dqrobotics/robot_modeling/DQ_DifferentialDriveRobot.h
+    include/dqrobotics/robot_modeling/DQ_WholeBody.h
+    DESTINATION "include/dqrobotics/robot_modeling")
+
+# robots headers
+INSTALL(FILES
+    include/dqrobotics/robots/AX18ManipulatorRobot.h
+    include/dqrobotics/robots/BarrettWamArmRobot.h
+    include/dqrobotics/robots/ComauSmartSixRobot.h
+    include/dqrobotics/robots/KukaLw4Robot.h
+    DESTINATION "include/dqrobotics/robots")
+
+################################################################
+# INSTALL SOURCE FILES (So that the debugger can find them)
+################################################################
+
 # base folder
 INSTALL(FILES 
     src/DQ.cpp
     DESTINATION "src/dqrobotics")
-# legacy folder
-INSTALL(FILES 
-    src/legacy/DQ_kinematics.cpp
-    DESTINATION "src/dqrobotics/legacy")
+
 # robot_modeling folder
 INSTALL(FILES 
     src/robot_modeling/DQ_SerialManipulator.cpp
@@ -68,3 +79,11 @@ INSTALL(FILES
     src/robot_modeling/DQ_DifferentialDriveRobot.cpp
     src/robot_modeling/DQ_WholeBody.cpp
     DESTINATION "src/dqrobotics/robot_modeling")
+
+# robots folder
+INSTALL(FILES
+    src/robots/AX18ManipulatorRobot.cpp
+    src/robots/BarrettWamArmRobot.cpp
+    src/robots/ComauSmartSixRobot.cpp
+    src/robots/KukaLw4Robot.cpp
+    DESTINATION "src/dqrobotics/robots")
