@@ -103,8 +103,10 @@ MatrixXd DQ_Kinematics::line_jacobian(const MatrixXd& pose_jacobian, const DQ& p
 {
     /// Aliases
     const DQ&       x  = pose;
-    const MatrixXd& Jt = translation_jacobian(pose_jacobian,pose);
-    const MatrixXd& Jr = rotation_jacobian(pose_jacobian);
+
+    /// Requirements
+    const MatrixXd Jt = translation_jacobian(pose_jacobian,pose);
+    const MatrixXd Jr = rotation_jacobian(pose_jacobian);
 
     ///Translation
     const DQ xt = translation(x);
@@ -137,10 +139,12 @@ MatrixXd DQ_Kinematics::plane_jacobian(const MatrixXd& pose_jacobian, const DQ& 
 {
     /// Aliases
     const DQ&       x  = pose;
-    const DQ&       xt = translation(x);
-    const DQ&       xr = rotation(x);
-    const MatrixXd& Jr = rotation_jacobian(pose_jacobian);
-    const MatrixXd& Jt = translation_jacobian(pose_jacobian,pose);
+
+    ///Requirements
+    const DQ        xt = translation(x);
+    const DQ        xr = rotation(x);
+    const MatrixXd  Jr = rotation_jacobian(pose_jacobian);
+    const MatrixXd  Jt = translation_jacobian(pose_jacobian,pose);
 
     ///Plane normal w.r.t base
     const DQ nz = xr*(plane_normal)*conj(xr);
@@ -225,7 +229,7 @@ double DQ_Kinematics::point_to_plane_residual(const DQ& translation, const DQ& p
     {
         throw std::range_error("The argument translation has to be imaginary quaternions.");
     }
-    const DQ& t = translation;
+    const DQ& t    = translation;
     const DQ n_dot = P(plane_derivative);
     const DQ d_dot = D(plane_derivative);
 
