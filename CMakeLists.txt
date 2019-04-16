@@ -55,7 +55,7 @@ INSTALL(FILES
 
 # robots headers
 INSTALL(FILES
-    include/dqrobotics/robots/AX18ManipulatorRobot.h
+    include/dqrobotics/robots/Ax18ManipulatorRobot.h
     include/dqrobotics/robots/BarrettWamArmRobot.h
     include/dqrobotics/robots/ComauSmartSixRobot.h
     include/dqrobotics/robots/KukaLw4Robot.h
@@ -82,7 +82,7 @@ INSTALL(FILES
 
 # robots folder
 INSTALL(FILES
-    src/robots/AX18ManipulatorRobot.cpp
+    src/robots/Ax18ManipulatorRobot.cpp
     src/robots/BarrettWamArmRobot.cpp
     src/robots/ComauSmartSixRobot.cpp
     src/robots/KukaLw4Robot.cpp
