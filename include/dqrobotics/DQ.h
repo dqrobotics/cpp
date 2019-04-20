@@ -133,16 +133,6 @@ public:
 
     std::string to_string() const;
 
-    ///Deprecated signatures
-    DEPRECATED Matrix<double,8,8> Hminus8() const{return haminus8();}
-    DEPRECATED Matrix<double,8,8> Hplus8() const{return hamiplus8();}
-    DEPRECATED Matrix4d Hminus4() const {return haminus4();}
-    DEPRECATED Matrix4d Hplus4() const {return hamiplus4();}
-    DEPRECATED Matrix<double,8,8> generalizedJacobian() const {return generalized_jacobian();}
-    DEPRECATED Matrix<double,8,8> jacobG() const {return generalized_jacobian();}
-    DEPRECATED DQ rot_axis() const {return rotation_axis();}
-    DEPRECATED double rot_angle() const {return rotation_angle();}
-
 };//DQ Class END
 
 /*************************************************************************
@@ -270,15 +260,21 @@ DQ Ad(const DQ& dq1, const DQ& dq2);
 
 DQ Adsharp(const DQ& dq1, const DQ& dq2);
 
-///Deprecated signatures
-DEPRECATED Matrix4d Hplus4(const DQ& dq);
-DEPRECATED Matrix4d Hminus4(const DQ& dq);
-DEPRECATED Matrix<double,8,8> Hplus8(const DQ& dq);
-DEPRECATED Matrix<double,8,8> Hminus8(const DQ& dq);
-DEPRECATED Matrix<double,8,8> generalizedJacobian(const DQ& dq);
-DEPRECATED Matrix<double,8,8> jacobG(const DQ& dq);
-DEPRECATED double rot_angle(const DQ& dq);
-DEPRECATED DQ rot_axis(const DQ& dq);
+bool is_unit(const DQ& dq);
+
+bool is_pure(const DQ& dq);
+
+bool is_real(const DQ& dq);
+
+bool is_real_number(const DQ& dq);
+
+bool is_quaternion(const DQ& dq);
+
+bool is_pure_quaternion(const DQ& dq);
+
+bool is_line(const DQ& dq);
+
+bool is_plane(const DQ& dq);
 
 }//Namespace DQRobotics
 

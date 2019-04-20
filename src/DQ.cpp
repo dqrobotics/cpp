@@ -369,15 +369,6 @@ DQ Adsharp(const DQ& dq1, const DQ& dq2)
     return sharp(dq1)*dq2*conj(dq1);
 }
 
-Matrix4d Hplus4(const DQ& dq){return hamiplus4(dq);}
-Matrix4d Hminus4(const DQ& dq){return haminus4(dq);}
-Matrix<double,8,8> Hplus8(const DQ& dq){return hamiplus8(dq);}
-Matrix<double,8,8> Hminus8(const DQ& dq){return haminus8(dq);}
-Matrix<double,8,8> generalizedJacobian(const DQ& dq){return generalized_jacobian(dq);}
-Matrix<double,8,8> jacobG(const DQ& dq){return generalized_jacobian(dq);}
-double rot_angle(const DQ& dq){return rotation_angle(dq);}
-DQ rot_axis(const DQ& dq){return rotation_axis(dq);}
-
 /****************************************************************
 **************DQ CLASS METHODS***********************************
 *****************************************************************/
@@ -1712,6 +1703,110 @@ Matrix<double,4,4>  C4()
     diag_C4(3,3) = -1;
 
     return diag_C4;
+}
+
+/**
+ * @brief is_unit Checks if the input @p is unit norm.
+ * @param dq the input DQ.
+ * @return true if the norm is 1, false otherwise.
+ */
+bool is_unit(const DQ& dq)
+{
+    if(norm(dq)==1.0)
+        return true;
+    else
+        return false;
+}
+
+/**
+ * @brief is_pure Checks if the input @p dq is pure.
+ * @param dq the input DQ
+ * @return true if the real part of @p dq is 0, false otherwise
+ */
+bool is_pure(const DQ& dq)
+{
+    if(Re(dq)==0.0)
+        return true;
+    else
+        return false;
+}
+
+/**
+ * @brief is_real Checks if the input @p dq is real.
+ * @param dq the input DQ
+ * @return true if the imaginary part of @p dq is zero, false otherwise
+ */
+bool is_real(const DQ& dq)
+{
+    if(Im(dq)==0.0)
+        return true;
+    else
+        return false;
+}
+
+/**
+ * @brief is_real_number Checks if the input @p is a real number.
+ * @param dq the input DQ
+ * @return true if the imaginary and dual parts of @p dq are 0, false otherwise.
+ */
+bool is_real_number(const DQ& dq)
+{
+    if(Im(dq)==0.0 && D(dq)==0.0)
+        return true;
+    else
+        return false;
+}
+
+/**
+ * @brief is_quaternion Checks if the input @p is a quaternion.
+ * @param dq the input DQ
+ * @return true if the dual part of @p is zero, false otherwise.
+ */
+bool is_quaternion(const DQ& dq)
+{
+    if(D(dq)==0.0)
+        return true;
+    else
+        return false;
+}
+
+/**
+ * @brief is_pure_quaternion Checks if the input @p is a pure quaternion.
+ * @param dq the input DQ
+ * @return true if the input is both a quaternion and pure, false otherwise.
+ */
+bool is_pure_quaternion(const DQ& dq)
+{
+    if(is_pure(dq)&&is_quaternion(dq))
+        return true;
+    else
+        return false;
+}
+
+/**
+ * @brief is_line Checks if the input @p is a Plucker line.
+ * @param dq the input DQ
+ * @return true if the input is both pure and unit, false otherwise.
+ */
+bool is_line(const DQ& dq)
+{
+    if(is_unit(dq)&&is_pure(dq))
+        return true;
+    else
+        return false;
+}
+
+/**
+ * @brief is_plane Checks if the input @p is a plane.
+ * @param dq the input DQ.
+ * @return true if @p is unit and if its dual part is real, false otherwise.
+ */
+bool is_plane(const DQ& dq)
+{
+    if(is_unit(dq) && is_real(D(dq)))
+        return true;
+    else
+        return false;
 }
 
 
