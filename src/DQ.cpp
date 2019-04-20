@@ -1048,6 +1048,16 @@ std::string DQ::to_string() const
     return ss.str();
 }
 
+DQ::operator double() const
+{
+    return q(0);
+}
+
+DQ::operator int() const
+{
+    return static_cast<int>(q(0));
+}
+
 
 //Overloaded operators definitions
 

@@ -131,6 +131,10 @@ public:
     //Operator (!=) Overload
     bool operator!=(const DQ& dq2) const;
 
+    //Conversion of DQ to other types
+    explicit operator double() const;
+    explicit operator int()    const;
+
     std::string to_string() const;
 
 };//DQ Class END
