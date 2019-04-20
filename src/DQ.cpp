@@ -1800,7 +1800,7 @@ bool is_pure_quaternion(const DQ& dq)
  */
 bool is_line(const DQ& dq)
 {
-    if(is_unit(dq)&&is_pure(dq))
+    if(is_unit(dq) && is_pure(dq))
         return true;
     else
         return false;

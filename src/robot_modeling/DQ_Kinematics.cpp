@@ -161,32 +161,47 @@ MatrixXd DQ_Kinematics::plane_jacobian(const MatrixXd& pose_jacobian, const DQ& 
     return JPI;
 }
 
-MatrixXd DQ_Kinematics::point_to_point_distance_jacobian(const MatrixXd& translation_jacobian, const DQ& robot_point, const DQ& workspace_point_translation)
+MatrixXd DQ_Kinematics::point_to_point_distance_jacobian(const MatrixXd& translation_jacobian, const DQ& robot_point, const DQ& workspace_point)
 {
-    if(Re(robot_point)!=0 || Re(workspace_point_translation)!=0 || D(robot_point)!=0 || D(workspace_point_translation)!=0)
+    if(not is_pure_quaternion(robot_point))
     {
-        throw std::range_error("The arguments translation and position have to be imaginary quaternions.");
+        throw std::range_error("The argument robot_point has to be a pure quaternion.");
     }
-    return 2*vec4(robot_point-workspace_point_translation).transpose()*translation_jacobian;
+    if(not is_pure_quaternion(workspace_point))
+    {
+        throw std::range_error("The argument workspace_point has to be a pure quaternion.");
+    }
+
+    return 2*vec4(robot_point-workspace_point).transpose()*translation_jacobian;
 }
 
-double   DQ_Kinematics::point_to_point_residual         (const DQ& robot_point, const DQ& workspace_point_translation, const DQ& workspace_point_translation_derivative)
+double   DQ_Kinematics::point_to_point_residual         (const DQ& robot_point, const DQ& workspace_point, const DQ& workspace_point_derivative)
 {
-    if(Re(robot_point)!=0 || Re(workspace_point_translation)!=0 || Re(workspace_point_translation_derivative)!=0 || D(robot_point)!=0 || D(workspace_point_translation)!=0 || D(workspace_point_translation_derivative)!=0)
+    if(not is_pure_quaternion(robot_point))
     {
-        throw std::range_error("The arguments translation, position, and position_derivative have to be imaginary quaternions.");
+        throw std::range_error("The argument robot_point has to be a pure quaternion.");
     }
-    DQ result = 2.0*dot(robot_point-workspace_point_translation,-1.0*workspace_point_translation_derivative);
+    if(not is_pure_quaternion(workspace_point))
+    {
+        throw std::range_error("The argument workspace_point has to be a pure quaternion.");
+    }
+
+    DQ result = 2.0*dot(robot_point-workspace_point,-1.0*workspace_point_derivative);
 
     return static_cast<double>(result);
 }
 
 MatrixXd DQ_Kinematics::point_to_line_distance_jacobian(const MatrixXd& translation_jacobian, const DQ& robot_point, const DQ& workspace_line)
 {
-    if(Re(robot_point)!=0 || D(robot_point)!=0)
+    if(not is_pure_quaternion(robot_point))
     {
-        throw std::range_error("The argument translation has to be imaginary quaternions.");
+        throw std::range_error("The argument robot_point has to be a pure quaternion.");
     }
+    if(not is_line(workspace_line))
+    {
+        throw std::range_error("The argument workspace_line has to be a line.");
+    }
+
     const DQ& t = robot_point;
 
     const DQ l = P(workspace_line);
@@ -197,10 +212,15 @@ MatrixXd DQ_Kinematics::point_to_line_distance_jacobian(const MatrixXd& translat
 
 double   DQ_Kinematics::point_to_line_residual(const DQ& robot_point, const DQ& workspace_line, const DQ& workspace_line_derivative)
 {
-    if(Re(robot_point)!=0 || D(robot_point)!=0)
+    if(not is_pure_quaternion(robot_point))
     {
-        throw std::range_error("The argument translation has to be imaginary quaternions.");
+        throw std::range_error("The argument robot_point has to be a pure quaternion.");
     }
+    if(not is_line(workspace_line))
+    {
+        throw std::range_error("The argument workspace_line has to be a line.");
+    }
+
     const DQ& t = robot_point;
 
     const DQ& l = P(workspace_line);
@@ -215,22 +235,27 @@ double   DQ_Kinematics::point_to_line_residual(const DQ& robot_point, const DQ& 
 
 MatrixXd DQ_Kinematics::point_to_plane_distance_jacobian(const MatrixXd& translation_jacobian, const DQ& robot_point, const DQ& workspace_plane)
 {
-    if(Re(robot_point)!=0 || D(robot_point)!=0)
+    if(not is_pure_quaternion(robot_point))
     {
-        throw std::range_error("The argument translation has to be imaginary quaternions.");
+        throw std::range_error("The argument robot_point has to be a pure quaternion.");
     }
+    if(not is_plane(workspace_plane))
+    {
+        throw std::range_error("The argument workspace_plane has to be a plane.");
+    }
+
     const DQ n = P(workspace_plane);
-    const DQ d = D(workspace_plane);
 
     return vec4(n).transpose()*translation_jacobian;
 }
 
 double DQ_Kinematics::point_to_plane_residual(const DQ& translation, const DQ& plane_derivative)
 {
-    if(Re(translation)!=0 || D(translation)!=0)
+    if(not is_pure_quaternion(translation))
     {
-        throw std::range_error("The argument translation has to be imaginary quaternions.");
+        throw std::range_error("The argument translation has to be a pure quaternion.");
     }
+
     const DQ& t    = translation;
     const DQ n_dot = P(plane_derivative);
     const DQ d_dot = D(plane_derivative);
@@ -239,8 +264,17 @@ double DQ_Kinematics::point_to_plane_residual(const DQ& translation, const DQ& p
     return static_cast<double>(result);
 }
 
-MatrixXd DQ_Kinematics::line_to_point_distance_jacobian (const MatrixXd& line_jacobian, const DQ& robot_line, const DQ& workspace_point_translation)
+MatrixXd DQ_Kinematics::line_to_point_distance_jacobian (const MatrixXd& line_jacobian, const DQ& robot_line, const DQ& workspace_point)
 {
+    if(not is_line(robot_line))
+    {
+        throw std::range_error("The argument robot_line has to be a line.");
+    }
+    if(not is_pure_quaternion(workspace_point))
+    {
+        throw std::range_error("The argument workspace_point has to be a pure quaternion");
+    }
+
     MatrixXd Jl = line_jacobian.block(0,0,4,line_jacobian.cols());
     MatrixXd Jm = line_jacobian.block(4,0,4,line_jacobian.cols());
 
@@ -248,18 +282,27 @@ MatrixXd DQ_Kinematics::line_to_point_distance_jacobian (const MatrixXd& line_ja
     DQ l = P(robot_line);
     DQ m = D(robot_line);
 
-    return 2.0*vec4(  cross(workspace_point_translation,l)-m ).transpose()*(crossmatrix4(workspace_point_translation)*Jl-Jm);
+    return 2.0*vec4(  cross(workspace_point,l)-m ).transpose()*(crossmatrix4(workspace_point)*Jl-Jm);
 }
 
-double   DQ_Kinematics::line_to_point_residual(const DQ& robot_line, const DQ& workspace_point_translation, const DQ& workspace_point_translation_derivative)
+double   DQ_Kinematics::line_to_point_residual(const DQ& robot_line, const DQ& workspace_point, const DQ& workspace_point_derivative)
 {
+    if(not is_line(robot_line))
+    {
+        throw std::range_error("The argument robot_line has to be a line.");
+    }
+    if(not is_pure_quaternion(workspace_point))
+    {
+        throw std::range_error("The argument workspace_point has to be a pure quaternion");
+    }
+
     // Extract line quaternions
     DQ l = P(robot_line);
     DQ m = D(robot_line);
 
     // Notational simplicity
-    DQ hc1 = cross(workspace_point_translation,l)-m;
-    DQ hc2 = cross(workspace_point_translation_derivative,l);
+    DQ hc1 = cross(workspace_point,l)-m;
+    DQ hc2 = cross(workspace_point_derivative,l);
 
     DQ result = 2.0*dot(hc2,hc1);
     return static_cast<double>(result);
@@ -267,6 +310,15 @@ double   DQ_Kinematics::line_to_point_residual(const DQ& robot_line, const DQ& w
 
 MatrixXd DQ_Kinematics::line_to_line_distance_jacobian(const MatrixXd& line_jacobian, const DQ& robot_line, const DQ& workspace_line)
 {
+    if(not is_line(robot_line))
+    {
+        throw std::range_error("The argument robot_line has to be a line.");
+    }
+    if(not is_line(workspace_line))
+    {
+        throw std::range_error("The argument workspace_line has to be a line.");
+    }
+
     const int DOFS  = line_jacobian.cols();
     const DQ& l_dq  = workspace_line;
 
@@ -275,6 +327,7 @@ MatrixXd DQ_Kinematics::line_to_line_distance_jacobian(const MatrixXd& line_jaco
     const MatrixXd Jdot     = -0.5*(hamiplus8(l_dq)+haminus8(l_dq))*line_jacobian;
     const MatrixXd Jdotdual = Jdot.block(4,0,4,DOFS);
     //Norm Jacobian
+    const DQ Plzldot             = P(dot(robot_line,l_dq));
     const DQ Dlzldot             = D(dot(robot_line,l_dq));
     const MatrixXd Jnormdotdual  = 2*vec4(Dlzldot).transpose()*Jdotdual;
 
@@ -282,59 +335,97 @@ MatrixXd DQ_Kinematics::line_to_line_distance_jacobian(const MatrixXd& line_jaco
     //Cross product Jacobian
     const MatrixXd Jcross        = 0.5*(haminus8(l_dq)-hamiplus8(l_dq))*line_jacobian;
     const MatrixXd Jcrossprimary = Jcross.block(0,0,4,DOFS);
+    const MatrixXd Jcrossdual    = Jcross.block(5,8,4,DOFS);
     //Norm Jacobian
     const DQ Plzlcross                = P(cross(robot_line,l_dq));
+    const DQ Dlzlcross                = D(cross(robot_line,l_dq));
     const MatrixXd Jnormcrossprimary  = 2*vec4(Plzlcross).transpose()*Jcrossprimary;
 
-    ///Distance Jacobian
-    // a
-    const double a_temp = vec4(Plzlcross).norm();
-    const double a = (1.0)/(a_temp*a_temp);
-    // b
-    const double b_temp = vec4(Dlzldot).norm();
-    const double b = -((b_temp*b_temp)/(a_temp*a_temp*a_temp*a_temp));
+    /// TODO, check input to acos to be sure it won't be negative.
+    /// that happens sometimes in CPP due to rounding errors.
+    const double phi = acos(static_cast<double>(Plzldot));
 
-    ///Robot line--line squared distance Jacobian
-    return a*Jnormdotdual+b*Jnormcrossprimary;
+    /// TODO, add a threshold because this will never be zero.
+    if( fmod(phi,M_PI) != 0.0)
+    {
+        ///Distance Jacobian
+        // a
+        const double a_temp = vec4(Plzlcross).norm();
+        const double a = (1.0)/(a_temp*a_temp);
+        // b
+        const double b_temp = vec4(Dlzldot).norm();
+        const double b = -((b_temp*b_temp)/(a_temp*a_temp*a_temp*a_temp));
+
+        ///Robot line--line squared distance Jacobian
+        return a*Jnormdotdual+b*Jnormcrossprimary;
+    }
+    else
+    {
+        return 2.0*vec4(Dlzlcross).transpose()*Jcrossdual;
+    }
+
 }
-
 
 double   DQ_Kinematics::line_to_line_residual(const DQ& robot_line, const DQ& workspace_line, const DQ& workspace_line_derivative)
 {
+    if(not is_line(robot_line))
+    {
+        throw std::range_error("The argument robot_line has to be a line.");
+    }
+    if(not is_line(workspace_line))
+    {
+        throw std::range_error("The argument workspace_line has to be a line.");
+    }
+
     const DQ& l_dq_dot = workspace_line_derivative;
     const DQ& l_dq     = workspace_line;
 
     //Dot product residual
     const DQ zetadotdual         = D(dot(robot_line,l_dq_dot));
     //Norm Jacobian
+    const DQ Plzldot             = P(dot(robot_line,l_dq));
     const DQ Dlzldot             = D(dot(robot_line,l_dq));
     const double zetanormdotdual = 2*vec4(Dlzldot).transpose()*vec4(zetadotdual);
 
     //Cross product residual
     const DQ zetacrossprimary    = P(cross(robot_line,l_dq_dot));
+    const DQ zetacrossdual       = D(cross(robot_line,l_dq_dot));
     //Norm Jacobian
     const DQ Plzlcross                = P(cross(robot_line,l_dq));
+    const DQ Dlzlcross                = D(cross(robot_line,l_dq));
     const double zetanormcrossprimary = 2*vec4(Plzlcross).transpose()*vec4(zetacrossprimary);
 
-    // a
-    const double a_temp = vec4(Plzlcross).norm();
-    const double a = (1.0)/(a_temp*a_temp);
-    // b
-    const double b_temp = vec4(Dlzldot).norm();
-    const double b = -((b_temp*b_temp)/(a_temp*a_temp*a_temp*a_temp));
+    /// TODO, check input to acos to be sure it won't be negative.
+    /// that happens sometimes in CPP due to rounding errors.
+    const double phi = acos(static_cast<double>(Plzldot));
 
-    return a*zetanormdotdual+b*zetanormcrossprimary;
+    /// TODO, add a threshold because this will never be zero.
+    if( fmod(phi,M_PI) != 0.0)
+    {
+        // a
+        const double a_temp = vec4(Plzlcross).norm();
+        const double a = (1.0)/(a_temp*a_temp);
+        // b
+        const double b_temp = vec4(Dlzldot).norm();
+        const double b = -((b_temp*b_temp)/(a_temp*a_temp*a_temp*a_temp));
+        return a*zetanormdotdual+b*zetanormcrossprimary;
+    }
+    else
+    {
+        return 2.0*vec4(Dlzlcross).transpose()*vec4(zetacrossdual);
+    }
 }
 
-MatrixXd DQ_Kinematics::plane_to_point_distance_jacobian(const MatrixXd& plane_jacobian, const DQ& robot_plane, const DQ& workspace_point)
+MatrixXd DQ_Kinematics::plane_to_point_distance_jacobian(const MatrixXd& plane_jacobian, const DQ& workspace_point)
 {
+    if(not is_pure_quaternion(workspace_point))
+    {
+        throw std::range_error("The argument workspace_point has to be a pure quaternion.");
+    }
+
     // Break Jpi into blocks
     MatrixXd Jnz = plane_jacobian.block(0,0,4,plane_jacobian.cols());
     MatrixXd Jdz = plane_jacobian.block(4,0,1,plane_jacobian.cols());
-
-    // Extract plane quaternions
-    DQ n_pi = P(robot_plane);
-    DQ d_pi = D(robot_plane);
 
     // Plane distance Jacobian
     return vec4(workspace_point).transpose()*Jnz-Jdz;
@@ -342,6 +433,11 @@ MatrixXd DQ_Kinematics::plane_to_point_distance_jacobian(const MatrixXd& plane_j
 
 double   DQ_Kinematics::plane_to_point_residual(const DQ& robot_plane, const DQ& workspace_point_derivative)
 {
+    if(not is_pure_quaternion(workspace_point_derivative))
+    {
+        throw std::range_error("The argument workspace_point_derivative has to be a pure quaternion.");
+    }
+
     DQ n_pi = P(robot_plane);
 
     DQ result = dot(workspace_point_derivative,n_pi);
