@@ -91,7 +91,7 @@ MatrixXd DQ_CooperativeDualTaskSpace::absolute_pose_jacobian(const VectorXd &the
     MatrixXd temp(8,robot1_->get_dim_configuration_space()+robot2_->get_dim_configuration_space());
     temp << MatrixXd::Zero(8,robot1_->get_dim_configuration_space()),Jx2;
 
-    MatrixXd Jxa(8,robot1_->get_dim_configuration_space()*robot2_->get_dim_configuration_space());
+    MatrixXd Jxa(8,robot1_->get_dim_configuration_space()+robot2_->get_dim_configuration_space());
     Jxa << haminus8(pow(xr,0.5))*(temp) + hamiplus8(x2)*Jxr2;
 
     return Jxa;
