@@ -14,6 +14,9 @@ INCLUDE_DIRECTORIES(dqrobotics include)
 ADD_LIBRARY(dqrobotics SHARED 
     src/DQ.cpp
 
+    src/utils/DQ_Geometry.cpp
+    src/utils/DQ_LinearAlgebra.cpp
+
     src/robot_modeling/DQ_CooperativeDualTaskSpace.cpp
     src/robot_modeling/DQ_Kinematics.cpp
     src/robot_modeling/DQ_SerialManipulator.cpp
@@ -42,6 +45,14 @@ INSTALL(TARGETS dqrobotics
 # INSTALL HEADERS IN SUBFOLDERS
 ################################################################
 
+# utils headers
+INSTALL(FILES
+    include/dqrobotics/utils/DQ_Math.h
+    include/dqrobotics/utils/DQ_Geometry.h
+    include/dqrobotics/utils/DQ_LinearAlgebra.h
+    include/dqrobotics/utils/DQ_Constants.h
+    DESTINATION "include/dqrobotics/utils")
+
 # robot_modeling headers
 INSTALL(FILES
     include/dqrobotics/robot_modeling/DQ_CooperativeDualTaskSpace.h
@@ -69,6 +80,12 @@ INSTALL(FILES
 INSTALL(FILES 
     src/DQ.cpp
     DESTINATION "src/dqrobotics")
+
+# utils folder
+INSTALL(FILES
+    src/utils/DQ_Geometry.cpp
+    src/utils/DQ_LinearAlgebra.cpp
+    DESTINATION "src/dqrobotics/utils")
 
 # robot_modeling folder
 INSTALL(FILES 
