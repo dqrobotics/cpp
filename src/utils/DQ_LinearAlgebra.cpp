@@ -25,6 +25,13 @@ Contributors:
 namespace DQ_robotics
 {
 
+/**
+ * @brief pinv Calculates the pseudo inverse of the input @p matrix using Singular Value Decomposition with
+ * a given tolerance for small singular values.
+ * http://www.mathworks.com/help/matlab/ref/pinv.html
+ * @param matrix the input matrix
+ * @return the pseudo-inverse of @p matrix such that pinv(matrix)*matrix is as close as possible to the identity matrix.
+ */
 MatrixXd pinv(const MatrixXd& matrix)
 {
     int num_rows = matrix.rows();

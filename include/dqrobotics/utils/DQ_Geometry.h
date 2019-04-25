@@ -19,6 +19,10 @@ This file is part of DQ Robotics.
 Contributors:
 - Murilo M. Marinho (murilo@nml.t.u-tokyo.ac.jp)
 */
+
+#ifndef DQ_UTILS_DQ_GEOMETRY_H
+#define DQ_UTILS_DQ_GEOMETRY_H
+
 #include<dqrobotics/DQ.h>
 
 namespace DQ_robotics
@@ -33,3 +37,5 @@ double point_to_plane_distance(const DQ& point, const DQ& plane);
 double line_to_line_squared_distance(const DQ& line1, const DQ& line2);
 
 }
+
+#endif

@@ -20,19 +20,17 @@ Contributors:
 - Murilo M. Marinho (murilo@nml.t.u-tokyo.ac.jp)
 */
 
+#ifndef DQ_UTILS_DQ_LINEARALGEBRA_H
+#define DQ_UTILS_DQ_LINEARALGEBRA_H
+
 #include<eigen3/Eigen/Dense>
 using namespace Eigen;
 
 namespace DQ_robotics
 {
 
-/**
- * @brief pinv Calculates the pseudo inverse of the input @p matrix using Singular Value Decomposition with
- * a given tolerance for small singular values.
- * http://www.mathworks.com/help/matlab/ref/pinv.html
- * @param matrix the input matrix
- * @return the pseudo-inverse of @p matrix such that pinv(matrix)*matrix is as close as possible to the identity matrix.
- */
 MatrixXd pinv(const MatrixXd& matrix);
+
+#endif
 
 }
