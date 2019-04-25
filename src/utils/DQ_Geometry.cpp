@@ -21,3 +21,114 @@ Contributors:
 */
 
 #include<dqrobotics/utils/DQ_Geometry.h>
+
+namespace DQ_robotics
+{
+
+/**
+ * @brief point_to_point_square_distance obtains the squared distance between
+ * @p point1 and @p point2 which have to be pure quaternions.
+ * @param point1.
+ * @param point2.
+ * @return The squared distance between @p point1 and @p point2 as a double.
+ * @exception Throws a std::range_error if either of the inputs are not
+ * pure quaternions @see DQ_robotics::is_pure_quaternion().
+ */
+double point_to_point_squared_distance(const DQ& point1, const DQ& point2)
+{
+    if(not is_pure_quaternion(point1))
+    {
+        throw std::range_error("Input point1 is not a pure quaternion.");
+    }
+    if(not is_pure_quaternion(point2))
+    {
+        throw std::range_error("Input point2 is not a pure quaternion.");
+    }
+
+    return std::pow(vec4(point1-point2).norm(),2);
+}
+
+/**
+ * @brief point_to_line_squared_distance obtains the squared distance between @p point
+ * and @p line.
+ * @param point.
+ * @param line.
+ * @return The squared distance between @p point and @p line as a double.
+ * @exception Throws a std::range_error if the @p point is not a pure quaternion
+ * @see DQ_robotics::is_pure_quaternion() or if @p line is not a Plucker line
+ * @see DQ_robotics::is_line().
+ */
+double point_to_line_squared_distance(const DQ& point, const DQ& line)
+{
+    if(not is_pure_quaternion(point))
+    {
+        throw std::range_error("Input point is not a pure quaternion.");
+    }
+    if(not is_line(line))
+    {
+        throw std::range_error("Input line is not a line.");
+    }
+
+    const DQ l = P(line);
+    const DQ m = D(line);
+
+    return std::pow((vec4(cross(point,l)-m).norm()),2);
+}
+
+/**
+ * @brief point_to_plane_distance obtains the distance between @p point
+ * and @p plane.
+ * @param point.
+ * @param plane.
+ * @return The distance between @p point and @p plane as a double.
+ * @exception Throws a std::range_error if the @p point is not a pure quaternion
+ * @see DQ_robotics::is_pure_quaternion() or if @p plane is not a plane
+ * @see DQ_robotics::is_plane().
+ */
+double point_to_plane_distance(const DQ& point, const DQ& plane)
+{
+    if(not is_pure_quaternion(point))
+    {
+        throw std::range_error("Input point is not a pure quaternion.");
+    }
+    if(not is_plane(plane))
+    {
+        throw std::range_error("Input plane is not a plane.");
+    }
+
+    const DQ plane_n = P(plane);
+    const DQ plane_d = D(plane);
+
+    return static_cast<double>((dot(point,plane_n)-plane_d));
+}
+
+/**
+ * @brief line_to_line_squared_distance obtains the squared distance between @p line1
+ * and @p line2.
+ * @param line1.
+ * @param line2.
+ * @return The squared distance between @p line1 and @p line2 as a double.
+ * @exception Throws a std::range_error if either of the input lines,
+ * @p line1 or @p line2, are not Plucker lines (@see DQ_robotics::is_line()).
+ */
+double line_to_line_squared_distance(const DQ& line1, const DQ& line2)
+{
+    if(not is_line(line1))
+    {
+        throw std::range_error("Input line1 is not a line.");
+    }
+    if(not is_line(line2))
+    {
+        throw std::range_error("Input line2 is not a line.");
+    }
+
+    const DQ l1_cross_l2 = cross(line1,line2);
+    const DQ l1_dot_l2   = dot(line1,line2);
+
+    const double a = vec4(P(l1_cross_l2)).norm();
+    const double b = vec4(D(l1_dot_l2)).norm();
+
+    return std::pow(static_cast<double>(a/b),2);
+}
+
+}

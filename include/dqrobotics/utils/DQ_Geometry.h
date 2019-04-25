@@ -19,3 +19,17 @@ This file is part of DQ Robotics.
 Contributors:
 - Murilo M. Marinho (murilo@nml.t.u-tokyo.ac.jp)
 */
+#include<dqrobotics/DQ.h>
+
+namespace DQ_robotics
+{
+
+double point_to_point_squared_distance(const DQ& point1, const DQ& point2);
+
+double point_to_line_squared_distance(const DQ& point, const DQ& line);
+
+double point_to_plane_distance(const DQ& point, const DQ& plane);
+
+double line_to_line_squared_distance(const DQ& line1, const DQ& line2);
+
+}
