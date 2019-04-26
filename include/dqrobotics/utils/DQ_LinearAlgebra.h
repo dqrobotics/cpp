@@ -31,6 +31,6 @@ namespace DQ_robotics
 
 MatrixXd pinv(const MatrixXd& matrix);
 
-#endif
-
 }
+
+#endif
