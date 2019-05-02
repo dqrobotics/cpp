@@ -34,7 +34,7 @@ namespace DQ_robotics
  * @exception Throws a std::range_error if either of the inputs are not
  * pure quaternions @see DQ_robotics::is_pure_quaternion().
  */
-double point_to_point_squared_distance(const DQ& point1, const DQ& point2)
+double DQ_Geometry::point_to_point_squared_distance(const DQ& point1, const DQ& point2)
 {
     if(not is_pure_quaternion(point1))
     {
@@ -45,7 +45,8 @@ double point_to_point_squared_distance(const DQ& point1, const DQ& point2)
         throw std::range_error("Input point2 is not a pure quaternion.");
     }
 
-    return std::pow(vec4(point1-point2).norm(),2);
+    const DQ a = point1-point2;
+    return vec4(a).transpose()*vec4(a);
 }
 
 /**
@@ -58,7 +59,7 @@ double point_to_point_squared_distance(const DQ& point1, const DQ& point2)
  * @see DQ_robotics::is_pure_quaternion() or if @p line is not a Plucker line
  * @see DQ_robotics::is_line().
  */
-double point_to_line_squared_distance(const DQ& point, const DQ& line)
+double DQ_Geometry::point_to_line_squared_distance(const DQ& point, const DQ& line)
 {
     if(not is_pure_quaternion(point))
     {
@@ -72,7 +73,8 @@ double point_to_line_squared_distance(const DQ& point, const DQ& line)
     const DQ l = P(line);
     const DQ m = D(line);
 
-    return std::pow((vec4(cross(point,l)-m).norm()),2);
+    const DQ a = cross(point,l)-m;
+    return (vec4(a).transpose())*(vec4(a));
 }
 
 /**
@@ -85,7 +87,7 @@ double point_to_line_squared_distance(const DQ& point, const DQ& line)
  * @see DQ_robotics::is_pure_quaternion() or if @p plane is not a plane
  * @see DQ_robotics::is_plane().
  */
-double point_to_plane_distance(const DQ& point, const DQ& plane)
+double DQ_Geometry::point_to_plane_distance(const DQ& point, const DQ& plane)
 {
     if(not is_pure_quaternion(point))
     {
@@ -111,7 +113,7 @@ double point_to_plane_distance(const DQ& point, const DQ& plane)
  * @exception Throws a std::range_error if either of the input lines,
  * @p line1 or @p line2, are not Plucker lines (@see DQ_robotics::is_line()).
  */
-double line_to_line_squared_distance(const DQ& line1, const DQ& line2)
+double DQ_Geometry::line_to_line_squared_distance(const DQ& line1, const DQ& line2)
 {
     if(not is_line(line1))
     {
@@ -128,7 +130,7 @@ double line_to_line_squared_distance(const DQ& line1, const DQ& line2)
     const double a = vec4(P(l1_cross_l2)).norm();
     const double b = vec4(D(l1_dot_l2)).norm();
 
-    return std::pow(static_cast<double>(a/b),2);
+    return std::pow(static_cast<double>(b/a),2);
 }
 
 }
