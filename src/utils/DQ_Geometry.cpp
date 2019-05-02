@@ -45,8 +45,8 @@ double DQ_Geometry::point_to_point_squared_distance(const DQ& point1, const DQ& 
         throw std::range_error("Input point2 is not a pure quaternion.");
     }
 
-    const DQ a = point1-point2;
-    return vec4(a).transpose()*vec4(a);
+    const Vector4d a = vec4(point1-point2);
+    return a.transpose()*a;
 }
 
 /**
@@ -73,8 +73,8 @@ double DQ_Geometry::point_to_line_squared_distance(const DQ& point, const DQ& li
     const DQ l = P(line);
     const DQ m = D(line);
 
-    const DQ a = cross(point,l)-m;
-    return (vec4(a).transpose())*(vec4(a));
+    const Vector4d a = vec4(cross(point,l)-m);
+    return a.transpose()*a;
 }
 
 /**
@@ -130,7 +130,20 @@ double DQ_Geometry::line_to_line_squared_distance(const DQ& line1, const DQ& lin
     const double a = vec4(P(l1_cross_l2)).norm();
     const double b = vec4(D(l1_dot_l2)).norm();
 
-    return std::pow(static_cast<double>(b/a),2);
+    /// TODO, check input to acos to be sure it won't be negative.
+    /// that happens sometimes in CPP due to rounding errors.
+    const double phi = acos(static_cast<double>(P(l1_dot_l2)));
+
+    /// TODO, add a threshold because this will never be zero.
+    if( fmod(phi,M_PI) != 0.0)
+    {
+        return std::pow(static_cast<double>(b/a),2);
+    }
+    else
+    {
+        const Vector4d a = vec4(D(l1_cross_l2));
+        return a.transpose()*a;
+    }
 }
 
 }
