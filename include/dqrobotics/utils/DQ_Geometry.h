@@ -30,6 +30,7 @@ namespace DQ_robotics
 
 class DQ_Geometry
 {
+public:
     static double point_to_point_squared_distance(const DQ& point1, const DQ& point2);
 
     static double point_to_line_squared_distance(const DQ& point, const DQ& line);
