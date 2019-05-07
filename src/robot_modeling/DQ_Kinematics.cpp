@@ -150,7 +150,7 @@ MatrixXd DQ_Kinematics::plane_jacobian(const MatrixXd& pose_jacobian, const DQ& 
     const DQ nz = xr*(plane_normal)*conj(xr);
 
     ///Plane normal Jacobian
-    const MatrixXd Jnz = haminus4(plane_normal*conj(xr))*Jr + hamiplus4(xr*plane_normal)*C4()*Jr;
+    const MatrixXd Jnz = (haminus4(plane_normal*conj(xr)) + hamiplus4(xr*plane_normal)*C4())*Jr;
 
     ///Plane distance Jacobian
     const MatrixXd Jdz  = (vec4(nz).transpose()*Jt+vec4(xt).transpose()*Jnz);
