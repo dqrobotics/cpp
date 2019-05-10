@@ -1,0 +1,84 @@
+/**
+(C) Copyright 2019 DQ Robotics Developers
+
+This file is part of DQ Robotics.
+
+    DQ Robotics is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Lesser General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    DQ Robotics is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public License
+    along with DQ Robotics.  If not, see <http://www.gnu.org/licenses/>.
+
+Contributors:
+- Murilo M. Marinho (murilo@nml.t.u-tokyo.ac.jp)
+*/
+
+#ifndef DQ_ROBOT_CONTROL_DQ_KINEMATICCONTROLLER_H
+#define DQ_ROBOT_CONTROL_DQ_KINEMATICCONTROLLER_H
+
+#include <dqrobotics/DQ.h>
+#include <dqrobotics/robot_modeling/DQ_Kinematics.h>
+
+enum ControlObjective
+{
+    None,
+    Distance,
+    Line,
+    Plane,
+    Pose,
+    Rotation,
+    Translation
+};
+
+namespace DQ_robotics
+{
+
+class DQ_KinematicController
+{
+protected:
+    DQ_Kinematics* robot_;
+    ControlObjective control_objective_;
+
+    MatrixXd gain_;
+
+    bool is_stable_;
+    VectorXd last_control_signal_;
+    VectorXd last_error_signal_;
+    double stability_threshold_;
+public:
+    //Virtual
+    virtual ~DQ_KinematicController() = default;
+
+    //Concrete
+    DQ_KinematicController(DQ_Kinematics *robot);
+
+    ControlObjective get_control_objective() const;
+
+    MatrixXd get_jacobian(const VectorXd& q, const DQ& primitive=DQ(1)) const;
+
+    VectorXd get_task_variable(const VectorXd& q, const DQ& primitive=DQ(1)) const;
+
+    bool is_set() const;
+
+    bool is_stable() const;
+
+    void set_control_objective(const ControlObjective& control_objective);
+
+    void set_gain(const MatrixXd& gain);
+
+    void set_stability_threshold(const double& threshold);
+
+};
+
+}
+
+
+
+#endif
