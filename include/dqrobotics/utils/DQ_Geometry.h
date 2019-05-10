@@ -38,6 +38,8 @@ public:
     static double point_to_plane_distance(const DQ& point, const DQ& plane);
 
     static double line_to_line_squared_distance(const DQ& line1, const DQ& line2);
+
+    static double line_to_line_angle(const DQ& line1, const DQ& line2);
 };
 
 }

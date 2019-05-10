@@ -146,4 +146,25 @@ double DQ_Geometry::line_to_line_squared_distance(const DQ& line1, const DQ& lin
     }
 }
 
+
+double DQ_Geometry::line_to_line_angle(const DQ &line1, const DQ &line2)
+{
+    if(not is_line(line1))
+    {
+        throw std::range_error("Input line1 is not a line.");
+    }
+    if(not is_line(line2))
+    {
+        throw std::range_error("Input line2 is not a line.");
+    }
+
+    const DQ l1_dot_l2   = dot(line1,line2);
+
+    /// TODO, check input to acos to be sure it won't be negative.
+    /// that happens sometimes in CPP due to rounding errors.
+    const double phi     = acos(static_cast<double>(P(l1_dot_l2)));
+
+    return phi;
+}
+
 }
