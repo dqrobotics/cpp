@@ -68,8 +68,8 @@ INSTALL(FILES
     DESTINATION "include/dqrobotics/robot_modeling")
 
 INSTALL(FILES
-    include/dqrobotics/robot_control/DQ_KinematicController.cpp
-    include/dqrobotics/robot_control/DQ_TaskSpacePseudoInverseController.cpp
+    include/dqrobotics/robot_control/DQ_KinematicController.h
+    include/dqrobotics/robot_control/DQ_TaskSpacePseudoInverseController.h
     DESTINATION "include/dqrobotics/robot_control")
 
 # robots headers
