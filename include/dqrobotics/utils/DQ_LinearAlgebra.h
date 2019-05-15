@@ -23,7 +23,12 @@ Contributors:
 #ifndef DQ_UTILS_DQ_LINEARALGEBRA_H
 #define DQ_UTILS_DQ_LINEARALGEBRA_H
 
-#include<eigen3/Eigen/Dense>
+#ifdef _WIN32
+#include <Eigen/Dense>
+#else
+#include <eigen3/Eigen/Dense>
+#endif
+
 using namespace Eigen;
 
 namespace DQ_robotics

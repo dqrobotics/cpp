@@ -27,12 +27,6 @@ Contributors:
 #include <dqrobotics/DQ.h>
 #include <dqrobotics/robot_modeling/DQ_Kinematics.h>
 
-#include <math.h>       //library for math functions
-#include <stdexcept>    //For range_error
-#include <eigen3/Eigen/Dense>  //Library for matrix usage
-#include <limits>       //Used in pseudoinverse()
-#include <string>
-
 using namespace Eigen;
 
 namespace DQ_robotics

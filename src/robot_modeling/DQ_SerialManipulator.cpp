@@ -21,8 +21,11 @@ Contributors:
 - Mateus Rodrigues Martins (martinsrmateus@gmail.com)
 */
 
-#include<dqrobotics/robot_modeling/DQ_SerialManipulator.h>
-#include<dqrobotics/DQ.h>
+#include <dqrobotics/robot_modeling/DQ_SerialManipulator.h>
+#include <math.h>       //library for math functions
+#include <stdexcept>    //For range_error
+#include <limits>       //Used in pseudoinverse()
+#include <string>
 
 namespace DQ_robotics
 {
