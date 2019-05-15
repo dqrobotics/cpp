@@ -20,14 +20,14 @@ Contributors:
 - Murilo M. Marinho (murilo@nml.t.u-tokyo.ac.jp)
 */
 #include<dqrobotics/robots/ComauSmartSixRobot.h>
+#include<dqrobotics/utils/DQ_Constants.h>
 
 namespace DQ_robotics
 {
 
 DQ_SerialManipulator ComauSmartSixRobot::kinematics()
 {
-    const double pi2 = M_PI_2;
-    const double pi  = M_PI;
+    const double pi2 = pi/2.0;
 
     Matrix<double,5,7> comau_dh(5,7);
     comau_dh << 0,   -pi2,   pi2,    0,       0,    0,     pi,

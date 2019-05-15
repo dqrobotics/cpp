@@ -21,13 +21,14 @@ Contributors:
 */
 
 #include<dqrobotics/robots/BarrettWamArmRobot.h>
+#include<dqrobotics/utils/DQ_Constants.h>
 
 namespace DQ_robotics
 {
 
 DQ_SerialManipulator BarrettWamArmRobot::kinematics()
 {
-    const double pi2 = M_PI_2;
+    const double pi2 = pi/2.0;
 
     Matrix<double,5,7> wam_dh(5,7);
     wam_dh << 0,    0,    0,      0,      0,   0,   0,

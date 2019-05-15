@@ -24,13 +24,14 @@ Contributors:
 #define DQ_ROBOTICS_KUKKA_DH_H
 
 #include<dqrobotics/robots/KukaLw4Robot.h>
+#include<dqrobotics/utils/DQ_Constants.h>
 
 namespace DQ_robotics
 {
 
 DQ_SerialManipulator KukaLw4Robot::kinematics()
 {
-    const double pi2 = M_PI_2;
+    const double pi2 = pi/2.0;
 
     Matrix<double,4,7> kukka_dh(4,7);
     kukka_dh <<  0,     0,     0,   0,   0,    0,   0,

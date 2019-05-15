@@ -20,13 +20,14 @@ Contributors:
 - Murilo M. Marinho (murilo@nml.t.u-tokyo.ac.jp)
 */
 #include<dqrobotics/robots/Ax18ManipulatorRobot.h>
+#include<dqrobotics/utils/DQ_Constants.h>
 
 namespace DQ_robotics
 {
 
 DQ_SerialManipulator Ax18ManipulatorRobot::kinematics()
 {
-    const double pi2 = M_PI_2;
+    const double pi2 = pi/2.0;
 
     Matrix<double,5,5> ax18_dh(5,5);
     ax18_dh <<   0,    0,   -pi2,  -pi2,   -pi2,

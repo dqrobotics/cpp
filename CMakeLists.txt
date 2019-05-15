@@ -3,9 +3,12 @@ PROJECT(dqrobotics)
 set (CMAKE_CXX_STANDARD 11)
 
 #ADD_DEFINITIONS(-g -O2 -Wall)
-FIND_PACKAGE(Eigen3 REQUIRED)
-INCLUDE_DIRECTORIES(EIGEN3_INCLUDE_DIR)
-INCLUDE_DIRECTORIES(dqrobotics include)
+ADD_DEFINITIONS(-D_USE_MATH_DEFINES) #Need this to find M_PI on Windows
+
+FIND_PACKAGE(Eigen3 REQUIRED) 
+INCLUDE_DIRECTORIES(${EIGEN3_INCLUDE_DIR}) #Writing this way is more OS agnostic
+
+INCLUDE_DIRECTORIES(include)
 
 ################################################################
 # DEFINE AND INSTALL LIBRARY AND INCLUDE FOLDER
