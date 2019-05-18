@@ -14,14 +14,14 @@ mkdir -p $VS_2015_ZIP_FOLDER/lib/x86/Debug
 
 cp -r "$VS_2015_WIN32_FOLDER"/Release/* "$VS_2015_ZIP_FOLDER"/lib/x86/Release
 cp -r "$VS_2015_WIN32_FOLDER"/Debug/* "$VS_2015_ZIP_FOLDER"/lib/x86/Debug
-cp -r include "$VS_2015_ZIP_FOLDER"/
+cp -r ../include "$VS_2015_ZIP_FOLDER"/
 
 mkdir -p $VS_2015_ZIP_FOLDER/lib/x64/Release
 mkdir -p $VS_2015_ZIP_FOLDER/lib/x64/Debug
 
 cp -r "$VS_2015_WIN64_FOLDER"/Release/* "$VS_2015_ZIP_FOLDER"/lib/x64/Release
 cp -r "$VS_2015_WIN64_FOLDER"/Debug/* "$VS_2015_ZIP_FOLDER"/lib/x64/Debug
-cp -r include "$VS_2015_ZIP_FOLDER"/
+cp -r ../include "$VS_2015_ZIP_FOLDER"/
 
 /c/Program\ Files/7-Zip/7z.exe a -r -tzip "$VS_2015_ZIP_FOLDER".zip $VS_2015_ZIP_FOLDER
 
@@ -37,14 +37,14 @@ mkdir -p $VS_2017_ZIP_FOLDER/lib/x86/Debug
 
 cp -r "$VS_2017_WIN32_FOLDER"/Release/* "$VS_2017_ZIP_FOLDER"/lib/x86/Release
 cp -r "$VS_2017_WIN32_FOLDER"/Debug/* "$VS_2017_ZIP_FOLDER"/lib/x86/Debug
-cp -r include "$VS_2017_ZIP_FOLDER"/
+cp -r ../include "$VS_2017_ZIP_FOLDER"/
 
 mkdir -p $VS_2017_ZIP_FOLDER/lib/x64/Release
 mkdir -p $VS_2017_ZIP_FOLDER/lib/x64/Debug
 
 cp -r "$VS_2017_WIN64_FOLDER"/Release/* "$VS_2017_ZIP_FOLDER"/lib/x64/Release
 cp -r "$VS_2017_WIN64_FOLDER"/Debug/* "$VS_2017_ZIP_FOLDER"/lib/x64/Debug
-cp -r include "$VS_2017_ZIP_FOLDER"/
+cp -r ../include "$VS_2017_ZIP_FOLDER"/
 
 /c/Program\ Files/7-Zip/7z.exe a -r -tzip "$VS_2017_ZIP_FOLDER".zip $VS_2017_ZIP_FOLDER
 
@@ -59,6 +59,6 @@ mkdir -p $VS_2019_ZIP_FOLDER/lib/x64/Debug
 
 cp -r "$VS_2019_WIN64_FOLDER"/Release/* "$VS_2019_ZIP_FOLDER"/lib/x64/Release
 cp -r "$VS_2019_WIN64_FOLDER"/Debug/* "$VS_2019_ZIP_FOLDER"/lib/x64/Debug
-cp -r include "$VS_2019_ZIP_FOLDER"/
+cp -r ../include "$VS_2019_ZIP_FOLDER"/
 
 /c/Program\ Files/7-Zip/7z.exe a -r -tzip "$VS_2019_ZIP_FOLDER".zip $VS_2019_ZIP_FOLDER
