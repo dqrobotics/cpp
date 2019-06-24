@@ -20,32 +20,18 @@ Contributors:
 - Murilo M. Marinho (murilo@nml.t.u-tokyo.ac.jp)
 */
 
-#ifndef DQ_ROBOT_MODELLING_DQ_WHOLE_BODY_H
-#define DQ_ROBOT_MODELLING_DQ_WHOLE_BODY_H
+#ifndef DQ_ROBOTS_KUKAYOUBOTROBOT_H
+#define DQ_ROBOTS_KUKAYOUBOTROBOT_H
 
-#include<vector>
-#include<dqrobotics/DQ.h>
-#include<dqrobotics/robot_modeling/DQ_Kinematics.h>
+#include<dqrobotics/robot_modeling/DQ_WholeBody.h>
 
 namespace DQ_robotics
 {
 
-class DQ_WholeBody : public DQ_Kinematics
+class KukaYoubotRobot
 {
-protected:
-    std::vector<DQ_Kinematics*> chain_;
-    int dim_configuration_space_;
 public:
-    DQ_WholeBody(DQ_Kinematics *robot);
-
-    void add(DQ_Kinematics* robot);
-    DQ fkm(const VectorXd& q, const int& to_chain) const;
-
-    //Abstract methods' implementation
-    int get_dim_configuration_space() const;
-    DQ fkm(const VectorXd& q) const;
-    MatrixXd pose_jacobian(const VectorXd& q, const int& to_link) const;
-
+    static DQ_WholeBody kinematics();
 };
 
 }

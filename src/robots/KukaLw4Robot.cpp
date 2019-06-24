@@ -23,24 +23,35 @@ Contributors:
 #ifndef DQ_ROBOTICS_KUKKA_DH_H
 #define DQ_ROBOTICS_KUKKA_DH_H
 
-#include<dqrobotics/robots/KukaLw4Robot.h>
+#include<dqrobotics/robots/KukaYoubotRobot.h>
 #include<dqrobotics/utils/DQ_Constants.h>
+#include<dqrobotics/robot_modeling/DQ_HolonomicBase.h>
+#include<dqrobotics/robot_modeling/DQ_SerialManipulator.h>
+#include<dqrobotics/robot_modeling/DQ_WholeBody.h>
 
 namespace DQ_robotics
 {
 
-DQ_SerialManipulator KukaLw4Robot::kinematics()
+DQ_WholeBody KukaYoubotRobot::kinematics()
 {
     const double pi2 = pi/2.0;
+    MatrixXd arm_DH_matrix(4,5);
+    arm_DH_matrix <<    0,    pi2,       0,      pi2,        0,
+                    0.147,      0,       0,        0,    0.218,
+                        0,  0.155,   0.135,        0,        0,
+                      pi2,      0,       0,      pi2,        0;
 
-    Matrix<double,4,7> kukka_dh(4,7);
-    kukka_dh <<  0,     0,     0,   0,   0,    0,   0,
-                 0.310, 0,     0.4, 0,   0.39, 0,   0,
-                 0,     0,     0,   0,   0,    0,   0,
-                 pi2,   -pi2, -pi2, pi2, pi2, -pi2, 0;
-    DQ_SerialManipulator kukka(kukka_dh,"standard");
+    DQ_SerialManipulator arm(arm_DH_matrix,"standard");
+    DQ_HolonomicBase     base;
 
-    return kukka;
+    DQ x_bm= 1 + E_*0.5*(0.22575*i_ + 0.1441*k_);
+
+    base.set_frame_displacement(x_bm);
+
+    DQ_WholeBody robot(&base);
+    robot.add(&arm);
+
+    return robot;
 }
 
 }

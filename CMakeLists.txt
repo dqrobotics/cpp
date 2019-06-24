@@ -81,6 +81,7 @@ INSTALL(FILES
     include/dqrobotics/robots/BarrettWamArmRobot.h
     include/dqrobotics/robots/ComauSmartSixRobot.h
     include/dqrobotics/robots/KukaLw4Robot.h
+    include/dqrobotics/robots/KukaYoubotRobot.h
     DESTINATION "include/dqrobotics/robots")
 
 ################################################################
@@ -120,4 +121,5 @@ INSTALL(FILES
     src/robots/BarrettWamArmRobot.cpp
     src/robots/ComauSmartSixRobot.cpp
     src/robots/KukaLw4Robot.cpp
+    src/robots/KukaYoubotRobot.cpp
     DESTINATION "src/dqrobotics/robots")
