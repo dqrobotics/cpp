@@ -25,13 +25,13 @@ Contributors:
 namespace DQ_robotics
 {
 
-VectorXd DQ_TaskSpacePseudoInverseController::compute_control_signal(const VectorXd &q, const VectorXd &task_reference, const DQ &primitive)
+VectorXd DQ_TaskSpacePseudoInverseController::compute_setpoint_control_signal(const VectorXd& q, const VectorXd& task_reference)
 {
     if(is_set())
     {
-        const VectorXd task_variable = get_task_variable(q,primitive);
+        const VectorXd task_variable = get_task_variable(q);
 
-        const MatrixXd J = get_jacobian(q,primitive);
+        const MatrixXd J = get_jacobian(q);
 
         const VectorXd task_error = task_reference-task_variable;
 
@@ -47,6 +47,14 @@ VectorXd DQ_TaskSpacePseudoInverseController::compute_control_signal(const Vecto
 
         return u;
     }
+
+    throw std::runtime_error("Tried computing the control signal of an unset controller.");
+}
+
+VectorXd DQ_TaskSpacePseudoInverseController::compute_tracking_control_signal(const VectorXd &q, const VectorXd &task_reference, const VectorXd &feed_forward)
+{
+    return compute_setpoint_control_signal(q,task_reference);
 }
 
 }
+

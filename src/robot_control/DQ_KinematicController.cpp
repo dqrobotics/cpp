@@ -36,6 +36,8 @@ DQ_KinematicController::DQ_KinematicController(DQ_Kinematics* robot)
     last_error_signal_   = VectorXd::Zero(1);
     last_error_signal_   = VectorXd::Zero(1);
     stability_threshold_ = 0.0;
+
+    attached_primitive_ = 0.0;
 }
 
 ControlObjective DQ_KinematicController::get_control_objective() const
@@ -43,7 +45,7 @@ ControlObjective DQ_KinematicController::get_control_objective() const
     return control_objective_;
 }
 
-MatrixXd DQ_KinematicController::get_jacobian(const VectorXd &q, const DQ &primitive) const
+MatrixXd DQ_KinematicController::get_jacobian(const VectorXd &q) const
 {
     const MatrixXd J_pose = robot_->pose_jacobian(q,robot_->get_dim_configuration_space());
     const DQ       x_pose = robot_->fkm(q);
@@ -57,10 +59,10 @@ MatrixXd DQ_KinematicController::get_jacobian(const VectorXd &q, const DQ &primi
         return DQ_Kinematics::distance_jacobian(J_pose,x_pose);
 
     case ControlObjective::Line:
-        return DQ_Kinematics::line_jacobian(J_pose,x_pose,primitive);
+        return DQ_Kinematics::line_jacobian(J_pose,x_pose,attached_primitive_);
 
     case ControlObjective::Plane:
-        return DQ_Kinematics::plane_jacobian(J_pose,x_pose,primitive);
+        return DQ_Kinematics::plane_jacobian(J_pose,x_pose,attached_primitive_);
 
     case ControlObjective::Rotation:
         return DQ_Kinematics::rotation_jacobian(J_pose);
@@ -73,7 +75,7 @@ MatrixXd DQ_KinematicController::get_jacobian(const VectorXd &q, const DQ &primi
     }
 }
 
-VectorXd DQ_KinematicController::get_task_variable(const VectorXd &q, const DQ &primitive) const
+VectorXd DQ_KinematicController::get_task_variable(const VectorXd &q) const
 {
     const DQ       x_pose = robot_->fkm(q);
 
@@ -89,10 +91,10 @@ VectorXd DQ_KinematicController::get_task_variable(const VectorXd &q, const DQ &
     }
 
     case ControlObjective::Line:
-        return vec8(Ad(x_pose,primitive));
+        return vec8(Ad(x_pose,attached_primitive_));
 
     case ControlObjective::Plane:
-        return vec4(Adsharp(x_pose,primitive));
+        return vec4(Adsharp(x_pose,attached_primitive_));
 
     case ControlObjective::Rotation:
         return vec4(rotation(x_pose));
@@ -154,6 +156,16 @@ void DQ_KinematicController::set_gain(const MatrixXd &gain)
 void DQ_KinematicController::set_stability_threshold(const double &threshold)
 {
     stability_threshold_ = threshold;
+}
+
+void DQ_KinematicController::attach_primitive_to_effector(const DQ &primitive)
+{
+    attached_primitive_ = primitive;
+}
+
+void DQ_KinematicController::set_damping(const double &damping)
+{
+    damping_ = damping;
 }
 
 }

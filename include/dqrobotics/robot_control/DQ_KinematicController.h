@@ -45,8 +45,10 @@ class DQ_KinematicController
 protected:
     DQ_Kinematics* robot_;
     ControlObjective control_objective_;
+    DQ attached_primitive_;
 
     MatrixXd gain_;
+    double damping_;
 
     bool is_stable_;
     VectorXd last_control_signal_;
@@ -56,14 +58,17 @@ public:
     //Virtual
     virtual ~DQ_KinematicController() = default;
 
+    virtual VectorXd compute_setpoint_control_signal(const VectorXd& q, const VectorXd& task_reference);
+    virtual VectorXd compute_tracking_control_signal(const VectorXd& q, const VectorXd& task_reference, const VectorXd& feed_forward);
+
     //Concrete
     DQ_KinematicController(DQ_Kinematics *robot);
 
     ControlObjective get_control_objective() const;
 
-    MatrixXd get_jacobian(const VectorXd& q, const DQ& primitive=DQ(1)) const;
+    MatrixXd get_jacobian(const VectorXd& q) const;
 
-    VectorXd get_task_variable(const VectorXd& q, const DQ& primitive=DQ(1)) const;
+    VectorXd get_task_variable(const VectorXd& q) const;
 
     bool is_set() const;
 
@@ -73,7 +78,11 @@ public:
 
     void set_gain(const MatrixXd& gain);
 
+    void set_damping(const double& damping);
+
     void set_stability_threshold(const double& threshold);
+
+    void attach_primitive_to_effector(const DQ& primitive);
 
 };
 

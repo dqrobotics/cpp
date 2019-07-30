@@ -32,7 +32,8 @@ namespace DQ_robotics
 class DQ_TaskSpacePseudoInverseController: public DQ_KinematicController
 {
 public:
-    VectorXd compute_control_signal(const VectorXd& q, const VectorXd& task_reference, const DQ& primitive=DQ(1));
+    VectorXd compute_setpoint_control_signal(const VectorXd& q, const VectorXd& task_reference);
+    VectorXd compute_tracking_control_signal(const VectorXd& q, const VectorXd& task_reference, const VectorXd& feed_forward);
 };
 
 }
