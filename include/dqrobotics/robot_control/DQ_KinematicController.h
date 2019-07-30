@@ -26,6 +26,9 @@ Contributors:
 #include <dqrobotics/DQ.h>
 #include <dqrobotics/robot_modeling/DQ_Kinematics.h>
 
+namespace DQ_robotics
+{
+
 enum ControlObjective
 {
     None,
@@ -36,9 +39,6 @@ enum ControlObjective
     Rotation,
     Translation
 };
-
-namespace DQ_robotics
-{
 
 class DQ_KinematicController
 {

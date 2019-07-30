@@ -19,6 +19,7 @@ This file is part of DQ Robotics.
 Contributors:
 - Murilo M. Marinho (murilo@nml.t.u-tokyo.ac.jp)
 */
+
 #include <dqrobotics/robot_control/DQ_TaskSpacePseudoInverseController.h>
 #include <dqrobotics/utils/DQ_LinearAlgebra.h>
 
