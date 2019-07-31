@@ -60,6 +60,7 @@ public:
 
     virtual VectorXd compute_setpoint_control_signal(const VectorXd& q, const VectorXd& task_reference);
     virtual VectorXd compute_tracking_control_signal(const VectorXd& q, const VectorXd& task_reference, const VectorXd& feed_forward);
+    virtual void verify_stability(const VectorXd& task_error);
 
     //Concrete
     DQ_KinematicController(DQ_Kinematics *robot);

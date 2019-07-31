@@ -31,6 +31,7 @@ ADD_LIBRARY(dqrobotics SHARED
     src/robot_control/DQ_KinematicController.cpp
     src/robot_control/DQ_TaskSpacePseudoInverseController.cpp
     src/robot_control/DQ_KinematicConstrainedController.cpp
+    src/robot_control/DQ_TaskspaceQuadraticProgrammingController.cpp
 
     src/robots/Ax18ManipulatorRobot.cpp
     src/robots/BarrettWamArmRobot.cpp
@@ -72,10 +73,12 @@ INSTALL(FILES
     include/dqrobotics/robot_modeling/DQ_WholeBody.h
     DESTINATION "include/dqrobotics/robot_modeling")
 
+# robot_control headers
 INSTALL(FILES
     include/dqrobotics/robot_control/DQ_KinematicController.h
     include/dqrobotics/robot_control/DQ_TaskSpacePseudoInverseController.h
     include/dqrobotics/robot_control/DQ_KinematicConstrainedController.h
+    include/dqrobotics/robot_control/DQ_TaskspaceQuadraticProgrammingController.h
     DESTINATION "include/dqrobotics/robot_control")
 
 # robots headers
@@ -86,6 +89,11 @@ INSTALL(FILES
     include/dqrobotics/robots/KukaLw4Robot.h
     include/dqrobotics/robots/KukaYoubotRobot.h
     DESTINATION "include/dqrobotics/robots")
+
+# solvers headers
+INSTALL(FILES
+    include/dqrobotics/solvers/DQ_QuadraticProgrammingSolver.h
+    DESTINATION "include/dqrobotics/solvers")
 
 ################################################################
 # INSTALL SOURCE FILES (So that the debugger can find them)
@@ -107,6 +115,7 @@ INSTALL(FILES
     src/robot_control/DQ_KinematicController.cpp
     src/robot_control/DQ_TaskSpacePseudoInverseController.cpp
     src/robot_control/DQ_KinematicConstrainedController.cpp
+    src/robot_control/DQ_TaskspaceQuadraticProgrammingController.cpp
     DESTINATION "src/dqrobotics/robot_control")
 
 # robot_modeling folder

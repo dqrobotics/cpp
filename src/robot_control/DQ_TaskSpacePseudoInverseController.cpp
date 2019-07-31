@@ -38,10 +38,7 @@ VectorXd DQ_TaskSpacePseudoInverseController::compute_setpoint_control_signal(co
 
         const VectorXd u = pinv(J)*gain_*task_error;
 
-        if((last_error_signal_-task_error).norm() < stability_threshold_)
-        {
-            is_stable_ = true;
-        }
+        verify_stability(task_error);
 
         last_control_signal_ = u;
         last_error_signal_   = task_error;
