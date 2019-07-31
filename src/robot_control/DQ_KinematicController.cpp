@@ -158,7 +158,7 @@ void DQ_KinematicController::set_stability_threshold(const double &threshold)
     stability_threshold_ = threshold;
 }
 
-void DQ_KinematicController::attach_primitive_to_effector(const DQ &primitive)
+void DQ_KinematicController::set_primitive_to_effector(const DQ &primitive)
 {
     attached_primitive_ = primitive;
 }

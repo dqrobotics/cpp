@@ -82,7 +82,7 @@ public:
 
     void set_stability_threshold(const double& threshold);
 
-    void attach_primitive_to_effector(const DQ& primitive);
+    void set_primitive_to_effector(const DQ& primitive);
 
 };
 
