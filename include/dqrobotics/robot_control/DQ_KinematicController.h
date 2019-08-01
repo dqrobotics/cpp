@@ -63,6 +63,9 @@ public:
     virtual void verify_stability(const VectorXd& task_error);
 
     //Concrete
+    //Remove default constructor
+    DQ_KinematicController()=delete;
+
     DQ_KinematicController(DQ_Kinematics *robot);
 
     ControlObjective get_control_objective() const;

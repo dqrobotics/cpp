@@ -36,6 +36,9 @@ private:
     DQ_Kinematics* robot2_;
 
 public:
+    //Remove default constructor
+    DQ_CooperativeDualTaskSpace()=delete;
+
     DQ_CooperativeDualTaskSpace(DQ_Kinematics* robot1, DQ_Kinematics* robot2);
 
     DQ pose1(const VectorXd& theta);

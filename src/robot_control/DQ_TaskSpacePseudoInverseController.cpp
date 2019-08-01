@@ -26,6 +26,11 @@ Contributors:
 namespace DQ_robotics
 {
 
+DQ_TaskSpacePseudoInverseController::DQ_TaskSpacePseudoInverseController(DQ_Kinematics* robot):DQ_KinematicController (robot)
+{
+    //Do nothing
+}
+
 VectorXd DQ_TaskSpacePseudoInverseController::compute_setpoint_control_signal(const VectorXd& q, const VectorXd& task_reference)
 {
     if(is_set())
@@ -45,8 +50,10 @@ VectorXd DQ_TaskSpacePseudoInverseController::compute_setpoint_control_signal(co
 
         return u;
     }
-
-    throw std::runtime_error("Tried computing the control signal of an unset controller.");
+    else
+    {
+        throw std::runtime_error("Tried computing the control signal of an unset controller.");
+    }
 }
 
 VectorXd DQ_TaskSpacePseudoInverseController::compute_tracking_control_signal(const VectorXd &q, const VectorXd &task_reference, const VectorXd &feed_forward)
