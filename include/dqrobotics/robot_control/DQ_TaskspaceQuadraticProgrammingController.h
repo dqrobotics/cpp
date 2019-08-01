@@ -41,7 +41,7 @@ public:
 
     DQ_TaskspaceQuadraticProgrammingController(DQ_Kinematics* robot, DQ_QuadraticProgrammingSolver* solver);
 
-    virtual VectorXd compute_objective_function_symmetric_matrix(const MatrixXd& J, const VectorXd& task_error)=0;
+    virtual MatrixXd compute_objective_function_symmetric_matrix(const MatrixXd& J, const VectorXd& task_error)=0;
     virtual VectorXd compute_objective_function_linear_component(const MatrixXd& J, const VectorXd& task_error)=0;
 
     VectorXd compute_setpoint_control_signal(const VectorXd&q, const VectorXd& task_reference);
