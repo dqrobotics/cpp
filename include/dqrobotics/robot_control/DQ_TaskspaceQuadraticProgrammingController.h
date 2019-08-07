@@ -44,8 +44,8 @@ public:
     virtual MatrixXd compute_objective_function_symmetric_matrix(const MatrixXd& J, const VectorXd& task_error)=0;
     virtual VectorXd compute_objective_function_linear_component(const MatrixXd& J, const VectorXd& task_error)=0;
 
-    VectorXd compute_setpoint_control_signal(const VectorXd&q, const VectorXd& task_reference);
-    VectorXd compute_tracking_control_signal(const VectorXd&q, const VectorXd& task_reference, const VectorXd& feed_forward);
+    virtual VectorXd compute_setpoint_control_signal(const VectorXd&q, const VectorXd& task_reference);
+    virtual VectorXd compute_tracking_control_signal(const VectorXd&q, const VectorXd& task_reference, const VectorXd& feed_forward);
 
 };
 }

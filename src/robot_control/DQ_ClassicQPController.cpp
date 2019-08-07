@@ -37,7 +37,7 @@ namespace DQ_robotics
 
     VectorXd DQ_ClassicQPController::compute_objective_function_linear_component(const MatrixXd &J, const VectorXd &task_error)
     {
-        return gain_*task_error.transpose()*J;
+        return gain_*J.transpose()*task_error;
     }
 }
 

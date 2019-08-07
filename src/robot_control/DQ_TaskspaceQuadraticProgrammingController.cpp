@@ -63,5 +63,11 @@ VectorXd DQ_TaskspaceQuadraticProgrammingController::compute_setpoint_control_si
     }
 
 }
+
+VectorXd DQ_TaskspaceQuadraticProgrammingController::compute_tracking_control_signal(const VectorXd &q, const VectorXd &task_reference, const VectorXd &feed_forward)
+{
+    return compute_setpoint_control_signal(q,task_reference);
+}
+
 }
 
