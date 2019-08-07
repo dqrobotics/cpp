@@ -40,6 +40,12 @@ DQ_KinematicController::DQ_KinematicController(DQ_Kinematics* robot)
     attached_primitive_ = 0.0;
 }
 
+
+DQ_KinematicController::~DQ_KinematicController()
+{
+
+}
+
 void DQ_KinematicController::verify_stability(const VectorXd& task_error)
 {
     if((last_error_signal_-task_error).norm() < stability_threshold_)
