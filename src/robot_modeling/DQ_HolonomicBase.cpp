@@ -80,7 +80,7 @@ MatrixXd DQ_HolonomicBase::raw_pose_jacobian(const VectorXd& q, const int& to_li
             j61, j62, j63,
             j71, j72, j73,
             0.0, 0.0, 0.0;
-    return J.block(0,1,8,to_link);
+    return J.block(0,0,8,to_link);
 }
 
 MatrixXd DQ_HolonomicBase::pose_jacobian(const VectorXd &q, const int &to_link) const
