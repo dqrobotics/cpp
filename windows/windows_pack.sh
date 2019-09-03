@@ -51,7 +51,7 @@ cp -r ../include "$VS_2017_ZIP_FOLDER"/
 #######################
 ## Visual Studio 2019
 #######################
-VS_2019_WIN64_FOLDER=build_2017_x64
+VS_2019_WIN64_FOLDER=build_2019_x64
 VS_2019_ZIP_FOLDER=dqrobotics_"$DQ_ROBOTICS_VERSION"_VS2019
 
 mkdir -p $VS_2019_ZIP_FOLDER/lib/x64/Release
