@@ -631,7 +631,7 @@ DQ DQ::rotation_axis() const{
         throw(std::range_error("Bad rot_axis() call: Not a unit dual quaternion"));
     }
 
-    double phi = acos(this->q(0));
+    double phi = rotation_angle()/2.0;
     if(phi == 0.0)
         return k_; // DQ(0,0,0,1). This is only a convention;
     else
@@ -667,8 +667,14 @@ double DQ::rotation_angle() const{
         throw(std::range_error("Bad rot_angle() call: Not a unit dual quaternion"));
     }
 
-    //Rotation angle calculation
-    double rot_angle = 2*acos(this->q(0));
+    //Hotfix for issue #25, we might need to think more about this one in the future
+    double rot_angle;
+    if(this->q(0) > 1.0)
+        rot_angle = 2*acos(1.0);
+    else if(this->q(0) < -1.0)
+        rot_angle = 2*acos(-1.0);
+    else
+        rot_angle = 2*acos(1.0);
 
     return rot_angle;
 }
