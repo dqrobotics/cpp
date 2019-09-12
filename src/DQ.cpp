@@ -674,7 +674,7 @@ double DQ::rotation_angle() const{
     else if(this->q(0) < -1.0)
         rot_angle = 2*acos(-1.0);
     else
-        rot_angle = 2*acos(1.0);
+        rot_angle = 2*acos(this->q(0));
 
     return rot_angle;
 }
