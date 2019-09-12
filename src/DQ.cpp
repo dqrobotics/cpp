@@ -21,7 +21,7 @@ Contributors:
 - Mateus Rodrigues Martins (martinsrmateus@gmail.com)
 */
 
-#include<dqrobotics/DQ.h>
+#include <dqrobotics/DQ.h>
 #include <sstream>
 #include <math.h>
 #include <stdexcept> //for range_error
@@ -390,19 +390,38 @@ double DQ::q_(const int a) const
 * \param vector <double> v contain the values to copied to the attribute q.
 */
 DQ::DQ(const VectorXd& v) {
+
     q.resize(8);
-    if(v.size()>8)
+
+    switch (v.size())
     {
-        throw std::range_error("Trying to initialize a DQ with a vector of size >8 is not allowed.");
-    }
-    int i=0;
-    for(;i<v.size();i++)
-    {
-        q(i)=v(i);
-    }
-    for(;i<8;i++)
-    {
-        q(i) = 0;
+    //An eight-dimensional v contains the coefficients of general dual quaternions
+    case 8:
+        q << v(0), v(1), v(2), v(3),
+             v(4), v(5), v(6), v(7);
+        break;
+        //A six-dimensional v contains the coefficientes of a pure dual quaternion
+    case 6:
+        q << 0.0 , v(0), v(1), v(2),
+             0.0 , v(3), v(4), v(5);
+        break;
+        //A four-dimensional v contains the coefficients of a general quaternion
+    case 4:
+        q << v(0), v(1), v(2), v(3),
+             0.0 , 0.0 , 0.0 , 0.0 ;
+        break;
+        //A three-dimensional v contains the coefficients of a pure quaternion
+    case 3:
+        q << 0.0 , v(0), v(1), v(2),
+             0.0 , 0.0 , 0.0 , 0.0 ;
+        break;
+        //An one-dimensional v contains the coefficient of a real number.
+    case 1:
+        q << v(0), 0.0 , 0.0 , 0.0,
+             0.0 , 0.0 , 0.0 , 0.0 ;
+        break;
+    default:
+        throw std::range_error(std::string("Trying to initialize a DQ with a size of ") + std::to_string(v.size()) + std::string(" which is not allowed."));
     }
 }
 
@@ -414,7 +433,6 @@ DQ::DQ(const VectorXd& v) {
 * \param double q0,q1,q2,q3,q4,q5,q6 and q7 are the values to be copied to the member 'q'.
 */
 DQ::DQ(const double& q0,const double& q1,const double& q2,const double& q3,const double& q4,const double& q5,const double& q6,const double& q7) {
-
     q.resize(8);
     q(0) = q0;
     q(1) = q1;
@@ -424,13 +442,6 @@ DQ::DQ(const double& q0,const double& q1,const double& q2,const double& q3,const
     q(5) = q5;
     q(6) = q6;
     q(7) = q7;
-
-    for(int n = 0; n < 8; n++)
-    {
-        if(fabs(q(n)) < DQ_threshold)
-            q(n) = 0;
-    }
-
 }
 
 // Public constant methods
