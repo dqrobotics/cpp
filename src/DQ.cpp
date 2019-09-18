@@ -1193,7 +1193,7 @@ DQ operator+(const double& scalar, const DQ& dq) {
 
 // Operator (-) overload
 
-DQ DQ::operator-()
+DQ DQ::operator-() const
 {
     DQ dq;
     for(int n = 0; n<8; n++)
@@ -1202,6 +1202,20 @@ DQ DQ::operator-()
     }
     return dq;
 }
+
+/*DQ operator-(const DQ& dq)
+{
+    const DQ minusdq = DQ(-dq.q(0),
+                          -dq.q(1),
+                          -dq.q(2),
+                          -dq.q(3),
+                          -dq.q(4),
+                          -dq.q(5),
+                          -dq.q(6),
+                          -dq.q(7));
+    return minusdq;
+}*/
+
 
 /**
 * Operator (-) overload to subtract one DQ object of other.

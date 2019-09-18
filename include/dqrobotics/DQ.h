@@ -130,7 +130,7 @@ public:
     DQ Adsharp(const DQ& dq2) const;
 
     //Operator (-) Overload
-    DQ operator-();
+    DQ operator-() const;
     //Operator (==) Overload
     bool operator==(const DQ& dq2) const;
     //Operator (!=) Overload
@@ -158,6 +158,9 @@ DQ operator+(const DQ& dq, const double& scalar);
 DQ operator+(const double& scalar, const DQ& dq);
 
 //Operator (-) Overload
+//Unary
+// DQ operator-(const DQ& dq); -> We already have this as a method
+//Binary
 DQ operator-(const DQ& dq1, const DQ& dq2);
 DQ operator-(const DQ& dq, const int& scalar);
 DQ operator-(const int& scalar, const DQ& dq);
