@@ -54,7 +54,7 @@ private:
 
     //Attributes
 public:
-    VectorXd q;
+    Matrix<double,8,1> q;
 
     //Static Methods
 public:

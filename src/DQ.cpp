@@ -391,7 +391,7 @@ double DQ::q_(const int a) const
 */
 DQ::DQ(const VectorXd& v) {
 
-    q.resize(8);
+    //q.resize(8);
 
     switch (v.size())
     {
@@ -433,7 +433,7 @@ DQ::DQ(const VectorXd& v) {
 * \param double q0,q1,q2,q3,q4,q5,q6 and q7 are the values to be copied to the member 'q'.
 */
 DQ::DQ(const double& q0,const double& q1,const double& q2,const double& q3,const double& q4,const double& q5,const double& q6,const double& q7) {
-    q.resize(8);
+    //q.resize(8);
     q(0) = q0;
     q(1) = q1;
     q(2) = q2;
