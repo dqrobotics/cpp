@@ -42,6 +42,9 @@ private:
     MatrixXd    dh_matrix_;
     std::string dh_matrix_convention_;
 
+    VectorXd lower_q_limit_;
+    VectorXd upper_q_limit_;
+
     DQ curr_effector_;
 
     // public methods
@@ -64,6 +67,11 @@ public:
 
     VectorXd dummy() const;
     void set_dummy( const VectorXd& dummy_vector);
+
+    VectorXd set_lower_q_limit(const VectorXd& lower_q_limit);
+    VectorXd lower_q_limit() const;
+    VectorXd set_upper_q_limit(const VectorXd& upper_q_limit);
+    VectorXd upper_q_limit() const;
 
     int n_dummy() const;
 

@@ -64,6 +64,9 @@ DQ_SerialManipulator::DQ_SerialManipulator(const MatrixXd& dh_matrix, const std:
     dh_matrix_ = dh_matrix;
     curr_effector_ = DQ(1);
     dh_matrix_convention_ = convention;
+
+    lower_q_limit_.resize(dh_matrix_.cols());
+    upper_q_limit_.resize(dh_matrix_.cols());
 }
 
 // Public constant methods
@@ -87,6 +90,40 @@ MatrixXd DQ_SerialManipulator::getDHMatrix()
 int  DQ_SerialManipulator::get_dim_configuration_space() const
 {
     return dh_matrix_.cols();
+}
+
+VectorXd DQ_SerialManipulator::set_lower_q_limit(const VectorXd &lower_q_limit)
+{
+    if(lower_q_limit.size() != lower_q_limit_.size())
+    {
+        throw std::range_error(std::string("Error in set_lower_q_limit, size should be ")
+                               + std::to_string(lower_q_limit_.size())
+                               + std::string(" and not ")
+                               + std::to_string(lower_q_limit.size()));
+    }
+    lower_q_limit_ = lower_q_limit;
+}
+
+VectorXd DQ_SerialManipulator::lower_q_limit() const
+{
+    return lower_q_limit_;
+}
+
+VectorXd DQ_SerialManipulator::set_upper_q_limit(const VectorXd &upper_q_limit)
+{
+    if(upper_q_limit.size() != upper_q_limit_.size())
+    {
+        throw std::range_error(std::string("Error in set_upper_q_limit, size should be ")
+                               + std::to_string(upper_q_limit_.size())
+                               + std::string(" and not ")
+                               + std::to_string(upper_q_limit.size()));
+    }
+    upper_q_limit_ = upper_q_limit;
+}
+
+VectorXd DQ_SerialManipulator::upper_q_limit() const
+{
+    return upper_q_limit_;
 }
 
 /**
