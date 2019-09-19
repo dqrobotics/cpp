@@ -336,10 +336,10 @@ DQ sharp(const DQ& dq)
  */
 DQ dot(const DQ& dq1, const DQ& dq2)
 {
-    if(dq1!=Im(dq1) || dq2!=Im(dq2))
+    /*if(dq1!=Im(dq1) || dq2!=Im(dq2))
     {
         throw std::range_error("One of the inputs is not imaginary in dot");
-    }
+    }*/
     return -1.0*(dq1*dq2+dq2*dq1)*0.5;
 }
 
@@ -352,10 +352,10 @@ DQ dot(const DQ& dq1, const DQ& dq2)
  */
 DQ cross(const DQ& dq1, const DQ& dq2)
 {
-    if(dq1!=Im(dq1) || dq2!=Im(dq2))
+    /*if(dq1!=Im(dq1) || dq2!=Im(dq2))
     {
         throw std::range_error("One of the inputs is not imaginary in cross");
-    }
+    }*/
     return (dq1*dq2-dq2*dq1)*0.5;
 }
 
