@@ -92,7 +92,7 @@ int  DQ_SerialManipulator::get_dim_configuration_space() const
     return dh_matrix_.cols();
 }
 
-VectorXd DQ_SerialManipulator::set_lower_q_limit(const VectorXd &lower_q_limit)
+void DQ_SerialManipulator::set_lower_q_limit(const VectorXd &lower_q_limit)
 {
     if(lower_q_limit.size() != lower_q_limit_.size())
     {
@@ -109,7 +109,7 @@ VectorXd DQ_SerialManipulator::lower_q_limit() const
     return lower_q_limit_;
 }
 
-VectorXd DQ_SerialManipulator::set_upper_q_limit(const VectorXd &upper_q_limit)
+void DQ_SerialManipulator::set_upper_q_limit(const VectorXd &upper_q_limit)
 {
     if(upper_q_limit.size() != upper_q_limit_.size())
     {

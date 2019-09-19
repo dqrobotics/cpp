@@ -68,9 +68,9 @@ public:
     VectorXd dummy() const;
     void set_dummy( const VectorXd& dummy_vector);
 
-    VectorXd set_lower_q_limit(const VectorXd& lower_q_limit);
+    void set_lower_q_limit(const VectorXd& lower_q_limit);
     VectorXd lower_q_limit() const;
-    VectorXd set_upper_q_limit(const VectorXd& upper_q_limit);
+    void set_upper_q_limit(const VectorXd& upper_q_limit);
     VectorXd upper_q_limit() const;
 
     int n_dummy() const;
