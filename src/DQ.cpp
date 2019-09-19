@@ -398,27 +398,27 @@ DQ::DQ(const VectorXd& v) {
     //An eight-dimensional v contains the coefficients of general dual quaternions
     case 8:
         q << v(0), v(1), v(2), v(3),
-             v(4), v(5), v(6), v(7);
+                v(4), v(5), v(6), v(7);
         break;
         //A six-dimensional v contains the coefficientes of a pure dual quaternion
     case 6:
         q << 0.0 , v(0), v(1), v(2),
-             0.0 , v(3), v(4), v(5);
+                0.0 , v(3), v(4), v(5);
         break;
         //A four-dimensional v contains the coefficients of a general quaternion
     case 4:
         q << v(0), v(1), v(2), v(3),
-             0.0 , 0.0 , 0.0 , 0.0 ;
+                0.0 , 0.0 , 0.0 , 0.0 ;
         break;
         //A three-dimensional v contains the coefficients of a pure quaternion
     case 3:
         q << 0.0 , v(0), v(1), v(2),
-             0.0 , 0.0 , 0.0 , 0.0 ;
+                0.0 , 0.0 , 0.0 , 0.0 ;
         break;
         //An one-dimensional v contains the coefficient of a real number.
     case 1:
         q << v(0), 0.0 , 0.0 , 0.0,
-             0.0 , 0.0 , 0.0 , 0.0 ;
+                0.0 , 0.0 , 0.0 , 0.0 ;
         break;
     default:
         throw std::range_error(std::string("Trying to initialize a DQ with a size of ") + std::to_string(v.size()) + std::string(" which is not allowed."));
@@ -559,12 +559,6 @@ DQ DQ::inv() const{
     DQ inv((1/aux2.q(0)),0,0,0,(-aux2.q(4)/(aux2.q(0)*aux2.q(0))),0,0,0);
     inv = (aux.conj() * inv);
 
-    // using threshold to verify zero values in DQ to be returned
-    for(int n = 0; n < 8; n++) {
-        if(fabs(inv.q(n)) < DQ_threshold )
-            inv.q(n) = 0;
-    }
-
     return inv;
 }
 
@@ -588,13 +582,6 @@ DQ DQ::translation() const
     //translation part calculation
     DQ translation = this->P();
     translation = (2.0 * this->D() * translation.conj() );
-
-    // using threshold to verify zero values in DQ to be returned
-    for(int n = 0; n < 8; n++)
-    {
-        if(fabs(translation.q(n)) < DQ_threshold )
-            translation.q(n) = 0;
-    }
 
     return translation;
 }
@@ -639,13 +626,6 @@ DQ DQ::rotation_axis() const{
         //rotation axis calculation
         DQ rot_axis = this->P();
         rot_axis = ( rot_axis.Im() * (1/sin(phi)) );
-
-        // using threshold to verify zero values in DQ to be returned
-        for(int n = 0; n < 8; n++)
-        {
-            if(fabs(rot_axis.q(n)) < DQ_threshold )
-                rot_axis.q(n) = 0;
-        }
 
         return rot_axis;
     }
@@ -699,13 +679,6 @@ DQ DQ::log() const{
     DQ d = 0.5 * this->translation(); //dual
     DQ log(p.q(0),p.q(1),p.q(2),p.q(3),d.q(0),d.q(1),d.q(2),d.q(3));
 
-    // using threshold to verify zero values in DQ to be returned
-    for(int n = 0; n < 8; n++)
-    {
-        if(fabs(log.q(n)) < DQ_threshold )
-            log.q(n) = 0;
-    }
-
     return log;
 
 }
@@ -738,12 +711,6 @@ DQ DQ::exp() const{
         prim = DQ(1.0);
 
     exp = ( prim + E_*this->D()*prim );
-
-    // using threshold to verify zero values in DQ to be returned
-    for(int n = 0; n < 8; n++) {
-        if(fabs(exp.q(n)) < DQ_threshold )
-            exp.q(n) = 0;
-    }
 
     return exp;
 
@@ -779,13 +746,6 @@ DQ DQ::tplus() const{
     tplus = this->P();
     tplus = (*this) * tplus.conj();
 
-    // using threshold to verify zero values in DQ to be returned
-    for(int n = 0; n < 8; n++)
-    {
-        if(fabs(tplus.q(n)) < DQ_threshold )
-            tplus.q(n) = 0;
-    }
-
     return tplus;
 
 }
@@ -813,13 +773,6 @@ DQ DQ::pinv() const{
     tinv = this->conj();
     tinv = tinv.tplus() * this->tplus();
     pinv = tinv.conj()  * this->conj();
-
-    // using threshold to verify zero values in DQ to be returned
-    for(int n = 0; n < 8; n++)
-    {
-        if(fabs(pinv.q(n)) < DQ_threshold )
-            pinv.q(n) = 0;
-    }
 
     return pinv;
 
@@ -1041,11 +994,6 @@ DQ DQ::unitDQ(const double& rot_angle, const int& x_axis,const int& y_axis,const
     DQ p = DQ(translation);
     DQ h = r + E_*0.5*p*r;
 
-    // using threshold to verify zero values in DQ to be returned
-    for(int n = 0; n < 8; n++) {
-        if(fabs(h.q(n)) < DQ_threshold )
-            h.q(n) = 0;
-    }
     return h;
 }
 
@@ -1089,15 +1037,7 @@ DQ::operator int() const
 * \sa DQ(), threshold().
 */
 DQ operator+(const DQ& dq1, const DQ& dq2) {
-    DQ dq;
-    for(int n = 0; n<8; n++) {
-        dq.q(n) = dq1.q(n) + dq2.q(n);
-    }
-    for(int n = 0; n < 8; n++) {
-        if(fabs(dq.q(n)) < DQ_threshold )
-            dq.q(n) = 0;
-    }
-    return dq;
+    return DQ(dq1.q + dq2.q);
 }
 
 
@@ -1203,20 +1143,6 @@ DQ DQ::operator-() const
     return dq;
 }
 
-/*DQ operator-(const DQ& dq)
-{
-    const DQ minusdq = DQ(-dq.q(0),
-                          -dq.q(1),
-                          -dq.q(2),
-                          -dq.q(3),
-                          -dq.q(4),
-                          -dq.q(5),
-                          -dq.q(6),
-                          -dq.q(7));
-    return minusdq;
-}*/
-
-
 /**
 * Operator (-) overload to subtract one DQ object of other.
 *
@@ -1228,15 +1154,7 @@ DQ DQ::operator-() const
 * \sa DQ(), threshold().
 */
 DQ operator-(const DQ& dq1, const DQ& dq2){
-    DQ dq;
-    for(int n = 0; n<8; n++) {
-        dq.q(n) = dq1.q(n) - dq2.q(n);
-    }
-    for(int n = 0; n < 8; n++) {
-        if(fabs(dq.q(n)) < DQ_threshold )
-            dq.q(n) = 0;
-    }
-    return dq;
+    return DQ(dq1.q - dq2.q);
 }
 
 /**
@@ -1359,11 +1277,6 @@ DQ operator*(const DQ& dq1, const DQ& dq2){
     dq.q(6) = dq.q(6) + dq1.D().q(0)*dq2.P().q(2) - dq1.D().q(1)*dq2.P().q(3) + dq1.D().q(2)*dq2.P().q(0) + dq1.D().q(3)*dq2.P().q(1);
     dq.q(7) = dq.q(7) + dq1.D().q(0)*dq2.P().q(3) + dq1.D().q(1)*dq2.P().q(2) - dq1.D().q(2)*dq2.P().q(1) + dq1.D().q(3)*dq2.P().q(0);
 
-    for(int n = 0; n < 8; n++) {
-        if(fabs(dq.q(n)) < DQ_threshold )
-            dq.q(n) = 0;
-    }
-
     return dq;
 }
 
@@ -1469,7 +1382,8 @@ DQ operator*(const double& scalar, const DQ& dq) {
 * \sa threshold().
 */
 bool DQ::operator==(const DQ& dq2) const{
-    for(int n = 0; n<8; n++) {
+    for(int n = 0; n<8; n++)
+    {
         if(fabs(q(n) - dq2.q_(n)) > DQ_threshold )
             return false; //elements of Dual Quaternion different of scalar
     }
@@ -1584,7 +1498,8 @@ bool operator==(const double& scalar, const DQ& dq) {
 * \sa threshold().
 */
 bool DQ::operator!=(const DQ& dq2) const{
-    for(int n = 0; n<8; n++){
+    for(int n = 0; n<8; n++)
+    {
         if(fabs(q(n) - dq2.q(n)) > DQ_threshold )
             return true; //elements of Dual Quaternion different of scalar
     }

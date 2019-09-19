@@ -37,14 +37,14 @@ namespace DQ_robotics
  */
 double DQ_Geometry::point_to_point_squared_distance(const DQ& point1, const DQ& point2)
 {
-    /*if(! is_pure_quaternion(point1))
+    if(! is_pure_quaternion(point1))
     {
         throw std::range_error("Input point1 is ! a pure quaternion.");
     }
     if(! is_pure_quaternion(point2))
     {
         throw std::range_error("Input point2 is ! a pure quaternion.");
-    }*/
+    }
 
     const Vector4d a = vec4(point1-point2);
     return a.transpose()*a;
@@ -62,14 +62,14 @@ double DQ_Geometry::point_to_point_squared_distance(const DQ& point1, const DQ& 
  */
 double DQ_Geometry::point_to_line_squared_distance(const DQ& point, const DQ& line)
 {
-    /*if(! is_pure_quaternion(point))
+    if(! is_pure_quaternion(point))
     {
         throw std::range_error("Input point is ! a pure quaternion.");
     }
     if(! is_line(line))
     {
         throw std::range_error("Input line is ! a line.");
-    }*/
+    }
 
     const DQ l = P(line);
     const DQ m = D(line);
@@ -90,14 +90,14 @@ double DQ_Geometry::point_to_line_squared_distance(const DQ& point, const DQ& li
  */
 double DQ_Geometry::point_to_plane_distance(const DQ& point, const DQ& plane)
 {
-    /*if(! is_pure_quaternion(point))
+    if(! is_pure_quaternion(point))
     {
         throw std::range_error("Input point is ! a pure quaternion.");
     }
     if(! is_plane(plane))
     {
         throw std::range_error("Input plane is ! a plane.");
-    }*/
+    }
 
     const DQ plane_n = P(plane);
     const DQ plane_d = D(plane);
@@ -116,14 +116,14 @@ double DQ_Geometry::point_to_plane_distance(const DQ& point, const DQ& plane)
  */
 double DQ_Geometry::line_to_line_squared_distance(const DQ& line1, const DQ& line2)
 {
-    /*if(! is_line(line1))
+    if(! is_line(line1))
     {
         throw std::range_error("Input line1 is ! a line.");
     }
     if(! is_line(line2))
     {
         throw std::range_error("Input line2 is ! a line.");
-    }*/
+    }
 
     const DQ l1_cross_l2 = cross(line1,line2);
     const DQ l1_dot_l2   = dot(line1,line2);
@@ -150,14 +150,14 @@ double DQ_Geometry::line_to_line_squared_distance(const DQ& line1, const DQ& lin
 
 double DQ_Geometry::line_to_line_angle(const DQ &line1, const DQ &line2)
 {
-    /*if(! is_line(line1))
+    if(! is_line(line1))
     {
         throw std::range_error("Input line1 is ! a line.");
     }
     if(! is_line(line2))
     {
         throw std::range_error("Input line2 is ! a line.");
-    }*/
+    }
 
     const DQ l1_dot_l2   = dot(line1,line2);
 
