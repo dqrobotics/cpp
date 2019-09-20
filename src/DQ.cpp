@@ -675,7 +675,7 @@ DQ DQ::log() const{
     }
 
     // log calculation
-    DQ p = acos(this->q(0)) * this->rotation_axis(); //primary
+    DQ p = (0.5 * this->rotation_angle()) * this->rotation_axis(); //primary
     DQ d = 0.5 * this->translation(); //dual
     DQ log(p.q(0),p.q(1),p.q(2),p.q(3),d.q(0),d.q(1),d.q(2),d.q(3));
 
