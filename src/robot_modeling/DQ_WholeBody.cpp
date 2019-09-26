@@ -21,11 +21,12 @@ Contributors:
 */
 
 #include<dqrobotics/robot_modeling/DQ_WholeBody.h>
+#include<dqrobotics/robot_modeling/DQ_SerialManipulator.h>
 
 namespace DQ_robotics
 {
 
-DQ_WholeBody::DQ_WholeBody(DQ_Kinematics *robot)
+DQ_WholeBody::DQ_WholeBody(std::shared_ptr<DQ_Kinematics> robot)
 {
     chain_.push_back(robot);
     dim_configuration_space_ = robot->get_dim_configuration_space();
@@ -36,7 +37,7 @@ int DQ_WholeBody::get_dim_configuration_space() const
     return dim_configuration_space_;
 }
 
-void DQ_WholeBody::add(DQ_Kinematics *robot)
+void DQ_WholeBody::add(std::shared_ptr<DQ_Kinematics> robot)
 {
     dim_configuration_space_+= robot->get_dim_configuration_space();
     chain_.push_back(robot);
@@ -95,6 +96,18 @@ MatrixXd DQ_WholeBody::pose_jacobian(const VectorXd &q, const int &to_link) cons
         }
     }
     return J_pose;
+}
+
+void DQ_WholeBody::set_effector(const DQ &effector)
+{
+    try
+    {
+        dynamic_cast<DQ_SerialManipulator*>(chain_[chain_.size()-1].get())->set_effector(effector);
+    }
+    catch (const std::bad_cast& e)
+    {
+        throw std::runtime_error("The last element of the chain needs to be a DQ_SerialManipulator to use set_effector in a DQ_WholeBody " + std::string(e.what()));
+    }
 }
 
 }

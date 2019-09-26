@@ -24,6 +24,7 @@ Contributors:
 #define DQ_ROBOT_MODELLING_DQ_WHOLE_BODY_H
 
 #include<vector>
+#include<memory>
 #include<dqrobotics/DQ.h>
 #include<dqrobotics/robot_modeling/DQ_Kinematics.h>
 
@@ -33,13 +34,15 @@ namespace DQ_robotics
 class DQ_WholeBody : public DQ_Kinematics
 {
 protected:
-    std::vector<DQ_Kinematics*> chain_;
+    std::vector<std::shared_ptr<DQ_Kinematics>> chain_;
     int dim_configuration_space_;
 public:
-    DQ_WholeBody(DQ_Kinematics *robot);
+    //DQ_WholeBody(DQ_Kinematics *robot);
+    DQ_WholeBody(std::shared_ptr<DQ_Kinematics> robot);
 
-    void add(DQ_Kinematics* robot);
+    void add(std::shared_ptr<DQ_Kinematics> robot);
     DQ fkm(const VectorXd& q, const int& to_chain) const;
+    void set_effector(const DQ& effector);
 
     //Abstract methods' implementation
     int get_dim_configuration_space() const;
