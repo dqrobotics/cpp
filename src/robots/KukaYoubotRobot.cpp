@@ -28,6 +28,7 @@ Contributors:
 #include<dqrobotics/robot_modeling/DQ_HolonomicBase.h>
 #include<dqrobotics/robot_modeling/DQ_SerialManipulator.h>
 #include<dqrobotics/robot_modeling/DQ_WholeBody.h>
+#include<memory>
 
 namespace DQ_robotics
 {
@@ -41,17 +42,17 @@ DQ_WholeBody KukaYoubotRobot::kinematics()
                         0,  0.155,   0.135,        0,        0,
                       pi2,      0,       0,      pi2,        0;
 
-    DQ_SerialManipulator arm(arm_DH_matrix,"standard");
-    DQ_HolonomicBase     base;
+    auto arm = std::make_shared<DQ_SerialManipulator>(DQ_SerialManipulator(arm_DH_matrix,"standard"));
+    auto base = std::make_shared<DQ_HolonomicBase>(DQ_HolonomicBase());
 
     DQ x_bm= 1 + E_*0.5*(0.22575*i_ + 0.1441*k_);
 
-    base.set_frame_displacement(x_bm);
+    base->set_frame_displacement(x_bm);
 
-    DQ_WholeBody robot(&base);
-    robot.add(&arm);
+    DQ_WholeBody kin(std::static_pointer_cast<DQ_Kinematics>(arm));
+    kin.add(std::static_pointer_cast<DQ_Kinematics>(base));
 
-    return robot;
+    return kin;
 }
 
 }
