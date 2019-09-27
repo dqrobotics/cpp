@@ -85,7 +85,7 @@ MatrixXd DQ_WholeBody::pose_jacobian(const VectorXd &q, const int &to_link) cons
         int dim = chain_[i]->get_dim_configuration_space();
         VectorXd q_iplus1 = q.segment(q_counter,dim);
         q_counter += dim;
-        J_vector.push_back(hamiplus8(fkm(q,i))*haminus8(x_iplus1_to_n)*chain_[i]->pose_jacobian(q_iplus1,n));
+        J_vector.push_back(hamiplus8(fkm(q,i))*haminus8(x_iplus1_to_n)*chain_[i]->pose_jacobian(q_iplus1,dim));
     }
 
     MatrixXd J_pose(8,q_counter);

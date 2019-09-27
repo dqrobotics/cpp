@@ -39,11 +39,11 @@ public:
 
     //Virtual method overloads (DQ_Kinematics)
     virtual DQ fkm(const VectorXd& q) const;
-    virtual MatrixXd pose_jacobian(const VectorXd& q, const int& to_link=2) const;
+    virtual MatrixXd pose_jacobian(const VectorXd& q, const int& to_link=3) const;
     virtual int get_dim_configuration_space() const;
 
     DQ raw_fkm(const VectorXd& q) const;
-    MatrixXd raw_pose_jacobian(const VectorXd& q, const int& to_link=2) const;
+    MatrixXd raw_pose_jacobian(const VectorXd& q, const int& to_link=3) const;
 
 };
 
