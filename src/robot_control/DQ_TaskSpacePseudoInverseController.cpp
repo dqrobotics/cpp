@@ -39,9 +39,9 @@ VectorXd DQ_TaskSpacePseudoInverseController::compute_setpoint_control_signal(co
 
         const MatrixXd J = get_jacobian(q);
 
-        const VectorXd task_error = task_reference-task_variable;
+        const VectorXd task_error = task_variable-task_reference;
 
-        const VectorXd u = pinv(J)*gain_*task_error;
+        const VectorXd u = -pinv(J)*gain_*task_error;
 
         verify_stability(task_error);
 
@@ -58,7 +58,30 @@ VectorXd DQ_TaskSpacePseudoInverseController::compute_setpoint_control_signal(co
 
 VectorXd DQ_TaskSpacePseudoInverseController::compute_tracking_control_signal(const VectorXd &q, const VectorXd &task_reference, const VectorXd &feed_forward)
 {
-    return compute_setpoint_control_signal(q,task_reference);
+    if(is_set())
+    {
+        const VectorXd task_variable = get_task_variable(q);
+
+        const MatrixXd J = get_jacobian(q);
+
+        const VectorXd task_error = task_variable-task_reference;
+
+        VectorXd u;
+        if(damping_ == 0.0)
+            u = pinv(J)*(-gain_*task_error + feed_forward);
+        else
+            u = (J.transpose()*J + damping_*damping_*MatrixXd::Identity(q.size(), q.size())).inverse()*(-gain_*task_error + feed_forward);
+
+        verify_stability(task_error);
+
+        last_control_signal_ = u;
+        last_error_signal_   = task_error;
+        return u;
+    }
+    else
+    {
+        throw std::runtime_error("Tried computing the control signal of an unset controller.");
+    }
 }
 
 }
