@@ -47,6 +47,7 @@ public:
     void add(std::shared_ptr<DQ_Kinematics> robot);
     DQ fkm(const VectorXd& q, const int& to_chain) const;
     void set_effector(const DQ& effector);
+    DQ_Kinematics* get_chain(const int& index);
 
     //Abstract methods' implementation
     int get_dim_configuration_space() const;
