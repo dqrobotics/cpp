@@ -23,6 +23,8 @@ Contributors:
 #ifndef DQ_ROBOT_CONTROL_DQ_TASKSPACEPSEUDOINVERSECONTROLLER_H
 #define DQ_ROBOT_CONTROL_DQ_TASKSPACEPSEUDOINVERSECONTROLLER_H
 
+#include <memory>
+
 #include <dqrobotics/DQ.h>
 #include <dqrobotics/robot_control/DQ_KinematicController.h>
 

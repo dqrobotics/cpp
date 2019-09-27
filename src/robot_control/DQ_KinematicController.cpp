@@ -26,9 +26,8 @@ Contributors:
 namespace DQ_robotics
 {
 
-DQ_KinematicController::DQ_KinematicController(DQ_Kinematics* robot)
+DQ_KinematicController::DQ_KinematicController(DQ_Kinematics* robot):robot_(robot)
 {
-    robot_             = robot;
     control_objective_ = ControlObjective::None;
     gain_              = MatrixXd::Zero(1,1);
 
@@ -61,6 +60,11 @@ void DQ_KinematicController::verify_stability(const VectorXd& task_error)
 ControlObjective DQ_KinematicController::get_control_objective() const
 {
     return control_objective_;
+}
+
+VectorXd DQ_KinematicController::get_last_error_signal() const
+{
+    return last_error_signal_;
 }
 
 MatrixXd DQ_KinematicController::get_jacobian(const VectorXd &q) const

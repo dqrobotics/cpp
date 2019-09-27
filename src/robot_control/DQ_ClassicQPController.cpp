@@ -25,7 +25,7 @@ Contributors:
 namespace DQ_robotics
 {
 
-    DQ_ClassicQPController::DQ_ClassicQPController(DQ_Kinematics* robot,DQ_QuadraticProgrammingSolver* solver):DQ_TaskspaceQuadraticProgrammingController (robot,solver)
+    DQ_ClassicQPController::DQ_ClassicQPController(DQ_Kinematics* robot, DQ_QuadraticProgrammingSolver* solver):DQ_TaskspaceQuadraticProgrammingController (robot,solver)
     {
         //Nothing to do
     }

@@ -23,6 +23,8 @@ Contributors:
 #ifndef DQ_ROBOT_CONTROL_DQ_TASKSPACEQUADRATICPROGRAMMINGCONTROLLER_H
 #define DQ_ROBOT_CONTROL_DQ_TASKSPACEQUADRATICPROGRAMMINGCONTROLLER_H
 
+#include<memory>
+
 #include<dqrobotics/robot_control/DQ_KinematicConstrainedController.h>
 #include<dqrobotics/solvers/DQ_QuadraticProgrammingSolver.h>
 
@@ -33,13 +35,14 @@ namespace DQ_robotics
 class DQ_TaskspaceQuadraticProgrammingController:public DQ_KinematicConstrainedController
 {
 protected:
+    //Only observer no shared ownership
     DQ_QuadraticProgrammingSolver* qp_solver_;
 
 public:
     //Remove default constructor
     DQ_TaskspaceQuadraticProgrammingController()=delete;
 
-    DQ_TaskspaceQuadraticProgrammingController(DQ_Kinematics* robot, DQ_QuadraticProgrammingSolver* solver);
+    DQ_TaskspaceQuadraticProgrammingController(DQ_Kinematics *robot, DQ_QuadraticProgrammingSolver *solver);
 
     virtual MatrixXd compute_objective_function_symmetric_matrix(const MatrixXd& J, const VectorXd& task_error)=0;
     virtual VectorXd compute_objective_function_linear_component(const MatrixXd& J, const VectorXd& task_error)=0;

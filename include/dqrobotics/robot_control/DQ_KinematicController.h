@@ -23,6 +23,8 @@ Contributors:
 #ifndef DQ_ROBOT_CONTROL_DQ_KINEMATICCONTROLLER_H
 #define DQ_ROBOT_CONTROL_DQ_KINEMATICCONTROLLER_H
 
+#include <memory>
+
 #include <dqrobotics/DQ.h>
 #include <dqrobotics/robot_modeling/DQ_Kinematics.h>
 
@@ -43,6 +45,7 @@ enum ControlObjective
 class DQ_KinematicController
 {
 protected:
+    //Only observer, no ownership
     DQ_Kinematics* robot_;
     ControlObjective control_objective_;
     DQ attached_primitive_;
@@ -59,13 +62,15 @@ public:
     //Remove default constructor
     DQ_KinematicController()=delete;
 
-    DQ_KinematicController(DQ_Kinematics *robot);
+    DQ_KinematicController(DQ_Kinematics* robot);
 
     ControlObjective get_control_objective() const;
 
     MatrixXd get_jacobian(const VectorXd& q) const;
 
     VectorXd get_task_variable(const VectorXd& q) const;
+
+    VectorXd get_last_error_signal() const;
 
     bool is_set() const;
 

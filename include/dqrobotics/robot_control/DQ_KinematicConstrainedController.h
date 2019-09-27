@@ -23,6 +23,8 @@ Contributors:
 #ifndef DQ_ROBOT_CONTROL_DQ_KINEMATICCONSTRAINEDCONTROLLER_H
 #define DQ_ROBOT_CONTROL_DQ_KINEMATICCONSTRAINEDCONTROLLER_H
 
+#include <memory>
+
 #include <dqrobotics/robot_control/DQ_KinematicController.h>
 
 using namespace Eigen;

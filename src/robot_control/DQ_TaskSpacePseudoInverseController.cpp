@@ -26,7 +26,7 @@ Contributors:
 namespace DQ_robotics
 {
 
-DQ_TaskSpacePseudoInverseController::DQ_TaskSpacePseudoInverseController(DQ_Kinematics* robot):DQ_KinematicController (robot)
+DQ_TaskSpacePseudoInverseController::DQ_TaskSpacePseudoInverseController(DQ_Kinematics *robot):DQ_KinematicController (robot)
 {
     //Do nothing
 }

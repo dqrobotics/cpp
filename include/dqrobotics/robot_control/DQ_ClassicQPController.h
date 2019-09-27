@@ -31,6 +31,7 @@ namespace DQ_robotics
 class DQ_ClassicQPController:public DQ_TaskspaceQuadraticProgrammingController
 {
 public:
+    //Only observers, no ownership
     DQ_ClassicQPController(DQ_Kinematics* robot, DQ_QuadraticProgrammingSolver* solver);
 
     MatrixXd compute_objective_function_symmetric_matrix(const MatrixXd& J, const VectorXd& task_error);

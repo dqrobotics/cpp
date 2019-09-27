@@ -34,10 +34,14 @@ namespace DQ_robotics
 class DQ_WholeBody : public DQ_Kinematics
 {
 protected:
+    //The most common use-case I can imagine is for the DQ_Kinematics
+    //instanced to generate the caller thread to go out of scope
+    //fairly soon.
+    //So I'm using a shared_ptr to extend the lifetime of the instance.
+    //If a raw pointer is used instead we will have a segfault fest.
     std::vector<std::shared_ptr<DQ_Kinematics>> chain_;
     int dim_configuration_space_;
 public:
-    //DQ_WholeBody(DQ_Kinematics *robot);
     DQ_WholeBody(std::shared_ptr<DQ_Kinematics> robot);
 
     void add(std::shared_ptr<DQ_Kinematics> robot);
@@ -48,7 +52,6 @@ public:
     int get_dim_configuration_space() const;
     DQ fkm(const VectorXd& q) const;
     MatrixXd pose_jacobian(const VectorXd& q, const int& to_link) const;
-
 };
 
 }

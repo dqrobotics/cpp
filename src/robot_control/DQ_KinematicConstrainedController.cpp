@@ -25,7 +25,7 @@ Contributors:
 namespace DQ_robotics
 {
 
-DQ_KinematicConstrainedController::DQ_KinematicConstrainedController(DQ_Kinematics *robot):DQ_KinematicController(robot)
+DQ_KinematicConstrainedController::DQ_KinematicConstrainedController(DQ_Kinematics* robot):DQ_KinematicController(robot)
 {
     //Nothing to do
 }

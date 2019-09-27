@@ -25,9 +25,12 @@ Contributors:
 namespace DQ_robotics
 {
 
-DQ_TaskspaceQuadraticProgrammingController::DQ_TaskspaceQuadraticProgrammingController(DQ_Kinematics* robot, DQ_QuadraticProgrammingSolver *solver):DQ_KinematicConstrainedController (robot)
+DQ_TaskspaceQuadraticProgrammingController::DQ_TaskspaceQuadraticProgrammingController(DQ_Kinematics* robot,
+                                                                                       DQ_QuadraticProgrammingSolver* solver)
+    :DQ_KinematicConstrainedController (robot),
+      qp_solver_(solver)
 {
-    qp_solver_ = solver;
+
 }
 
 VectorXd DQ_TaskspaceQuadraticProgrammingController::compute_setpoint_control_signal(const VectorXd &q, const VectorXd &task_reference)
