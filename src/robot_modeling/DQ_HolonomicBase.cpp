@@ -52,6 +52,11 @@ DQ DQ_HolonomicBase::fkm(const VectorXd& q) const
 
 MatrixXd DQ_HolonomicBase::raw_pose_jacobian(const VectorXd& q, const int& to_link) const
 {
+    if(to_link >= 3 || to_link < 0)
+    {
+        throw std::runtime_error(std::string("Tried to access link index ") + std::to_string(to_link) + std::string(" which is unnavailable."));
+    }
+
     const double& x   = q(0);
     const double& y   = q(1);
     const double& phi = q(2);
@@ -80,7 +85,7 @@ MatrixXd DQ_HolonomicBase::raw_pose_jacobian(const VectorXd& q, const int& to_li
             j61, j62, j63,
             j71, j72, j73,
             0.0, 0.0, 0.0;
-    return J.block(0,0,8,to_link);
+    return J.block(0,0,8,to_link+1);
 }
 
 MatrixXd DQ_HolonomicBase::pose_jacobian(const VectorXd &q, const int &to_link) const

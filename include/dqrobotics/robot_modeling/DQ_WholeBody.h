@@ -45,14 +45,17 @@ public:
     DQ_WholeBody(std::shared_ptr<DQ_Kinematics> robot);
 
     void add(std::shared_ptr<DQ_Kinematics> robot);
-    DQ fkm(const VectorXd& q, const int& to_chain) const;
+    //Starts count from 0
+    DQ raw_fkm(const VectorXd& q, const int& to_chain) const;
+    DQ raw_fkm(const VectorXd& q) const;
     void set_effector(const DQ& effector);
     DQ_Kinematics* get_chain(const int& index);
 
     //Abstract methods' implementation
-    int get_dim_configuration_space() const;
-    DQ fkm(const VectorXd& q) const;
-    MatrixXd pose_jacobian(const VectorXd& q, const int& to_link) const;
+    int get_dim_configuration_space() const override;
+    DQ fkm(const VectorXd& q) const override;
+    DQ fkm(const VectorXd&, const int& to_chain) const;
+    MatrixXd pose_jacobian(const VectorXd& q, const int& to_link) const override;
 };
 
 }

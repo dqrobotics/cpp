@@ -330,6 +330,11 @@ DQ  DQ_SerialManipulator::raw_fkm( const VectorXd& theta_vec) const
 */
 DQ  DQ_SerialManipulator::raw_fkm( const VectorXd& theta_vec, const int& ith) const
 {
+    if(ith >= this->get_dim_configuration_space() || ith < 0)
+    {
+        throw std::runtime_error(std::string("Tried to access link index ") + std::to_string(ith) + std::string(" which is unnavailable."));
+    }
+
 
     if(int(theta_vec.size()) != (this->get_dim_configuration_space() - this->n_dummy()) )
     {
@@ -338,7 +343,7 @@ DQ  DQ_SerialManipulator::raw_fkm( const VectorXd& theta_vec, const int& ith) co
 
     DQ q(1);
     int j = 0;
-    for (int i = 0; i < ith; i++) {
+    for (int i = 0; i < ith+1; i++) {
         if(this->dummy()(i) == 1.0) {
             q = q * dh2dq(0, i+1);
             j = j + 1;
@@ -443,11 +448,16 @@ DQ  DQ_SerialManipulator::get_z( const VectorXd& q) const
 
 MatrixXd DQ_SerialManipulator::raw_pose_jacobian(const VectorXd& theta_vec, const int& to_link) const
 {
+    if(to_link >= this->get_dim_configuration_space() || to_link < 0)
+    {
+        throw std::runtime_error(std::string("Tried to access link index ") + std::to_string(to_link) + std::string(" which is unnavailable."));
+    }
+
     DQ q_effector = this->raw_fkm(theta_vec,to_link);
     DQ z;
     DQ q(1);
 
-    MatrixXd J(8,(to_link - this->n_dummy()) );
+    MatrixXd J(8,(to_link+1 - this->n_dummy()) );
 
     for (int i = 0; i < J.rows(); i++) {
         for(int j = 0; j < J.cols(); j++) {
@@ -456,7 +466,7 @@ MatrixXd DQ_SerialManipulator::raw_pose_jacobian(const VectorXd& theta_vec, cons
     }
 
     int ith = -1;
-    for(int i = 0; i < to_link; i++) {
+    for(int i = 0; i < to_link+1; i++) {
 
         // Use the standard DH convention
         if(this->convention() == "standard") {

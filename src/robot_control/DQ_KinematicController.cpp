@@ -69,7 +69,7 @@ VectorXd DQ_KinematicController::get_last_error_signal() const
 
 MatrixXd DQ_KinematicController::get_jacobian(const VectorXd &q) const
 {
-    const MatrixXd J_pose = robot_->pose_jacobian(q,robot_->get_dim_configuration_space());
+    const MatrixXd J_pose = robot_->pose_jacobian(q,robot_->get_dim_configuration_space()-1);
     const DQ       x_pose = robot_->fkm(q);
 
     switch(control_objective_)

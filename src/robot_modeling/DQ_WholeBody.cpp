@@ -48,17 +48,32 @@ void DQ_WholeBody::add(std::shared_ptr<DQ_Kinematics> robot)
     chain_.push_back(robot);
 }
 
-DQ DQ_WholeBody::fkm(const VectorXd &q) const
+DQ DQ_WholeBody::fkm(const VectorXd& q) const
 {
-    return fkm(q,chain_.size());
+    return reference_frame_ * raw_fkm(q);
 }
 
-DQ DQ_WholeBody::fkm(const VectorXd &q, const int &to_chain) const
+DQ DQ_WholeBody::fkm(const VectorXd& q, const int& to_chain) const
 {
+    return reference_frame_ * raw_fkm(q,to_chain);
+}
+
+DQ DQ_WholeBody::raw_fkm(const VectorXd &q) const
+{
+    return raw_fkm(q,chain_.size()-1);
+}
+
+DQ DQ_WholeBody::raw_fkm(const VectorXd &q, const int &to_chain) const
+{
+    if(to_chain >= chain_.size() || to_chain < 0)
+    {
+        throw std::runtime_error(std::string("Tried to access chain index ") + std::to_string(to_chain) + std::string(" which is unnavailable."));
+    }
+
     DQ pose(1);
 
     int q_counter = 0;
-    for(int i=0;i<to_chain;i++)
+    for(int i=0;i<to_chain+1;i++)
     {
         const int current_robot_dim    = chain_[i]->get_dim_configuration_space();
         const VectorXd current_robot_q = q.segment(q_counter,current_robot_dim);
@@ -72,20 +87,21 @@ DQ DQ_WholeBody::fkm(const VectorXd &q, const int &to_chain) const
 MatrixXd DQ_WholeBody::pose_jacobian(const VectorXd &q, const int &to_link) const
 {
     int n = chain_.size();
-    DQ x_0_to_n = fkm(q,n);
+    DQ x_0_to_n = fkm(q,n-1);
     int q_counter = 0;
 
     //Not a good implementation but similar to MATLAB
     std::vector<MatrixXd> J_vector;
     for(int i=0;i<n;i++)
     {
-        DQ x_0_to_iplus1 = fkm(q,i);
-        DQ x_iplus1_to_n = conj(x_0_to_iplus1)*x_0_to_n;
+        const int dim = chain_[i]->get_dim_configuration_space();
 
-        int dim = chain_[i]->get_dim_configuration_space();
-        VectorXd q_iplus1 = q.segment(q_counter,dim);
+        const DQ x_0_to_iplus1 = fkm(q,i);
+        const DQ x_iplus1_to_n = conj(x_0_to_iplus1)*x_0_to_n;
+
+        const VectorXd q_iplus1 = q.segment(q_counter,dim);
         q_counter += dim;
-        J_vector.push_back(hamiplus8(fkm(q,i))*haminus8(x_iplus1_to_n)*chain_[i]->pose_jacobian(q_iplus1,dim));
+        J_vector.push_back(hamiplus8(fkm(q,i))*haminus8(x_iplus1_to_n)*chain_[i]->pose_jacobian(q_iplus1,dim-1));
     }
 
     MatrixXd J_pose(8,q_counter);
