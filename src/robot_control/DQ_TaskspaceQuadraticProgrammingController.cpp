@@ -69,7 +69,34 @@ VectorXd DQ_TaskspaceQuadraticProgrammingController::compute_setpoint_control_si
 
 VectorXd DQ_TaskspaceQuadraticProgrammingController::compute_tracking_control_signal(const VectorXd &q, const VectorXd &task_reference, const VectorXd &feed_forward)
 {
-    return compute_setpoint_control_signal(q,task_reference);
+    if(is_set())
+    {
+        const VectorXd task_variable = get_task_variable(q);
+
+        const MatrixXd J = get_jacobian(q);
+
+        const VectorXd task_error = task_variable - task_reference;
+
+        const MatrixXd& A = inequality_constraint_matrix_;
+        const VectorXd& b = inequality_constraint_vector_;
+        const MatrixXd& Aeq = equality_constraint_matrix_;
+        const VectorXd& beq = equality_constraint_vector_;
+
+        const MatrixXd H = compute_objective_function_symmetric_matrix(J,task_error - gain_.inverse()*feed_forward);
+        const MatrixXd f = compute_objective_function_linear_component(J,task_error - gain_.inverse()*feed_forward);
+
+        VectorXd u = qp_solver_->solve_quadratic_program(H,f,A,b,Aeq,beq);
+
+        verify_stability(task_error);
+
+        last_control_signal_ = u;
+        last_error_signal_   = task_error;
+
+        return u;
+    }
+    {
+        throw std::runtime_error("Trying to compute the control signal using an unset controller");
+    }
 }
 
 }
