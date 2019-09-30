@@ -70,7 +70,9 @@ VectorXd DQ_TaskSpacePseudoInverseController::compute_tracking_control_signal(co
         if(damping_ == 0.0)
             u = pinv(J)*(-gain_*task_error + feed_forward);
         else
-            u = (J.transpose()*J + damping_*damping_*MatrixXd::Identity(q.size(), q.size())).inverse()*(-gain_*task_error + feed_forward);
+            u = (J.transpose()*J + damping_*damping_*MatrixXd::Identity(q.size(), q.size())).inverse()*
+                    J.transpose()*
+                    (-gain_*task_error + feed_forward);
 
         verify_stability(task_error);
 

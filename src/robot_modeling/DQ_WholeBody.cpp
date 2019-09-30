@@ -107,7 +107,7 @@ void DQ_WholeBody::set_effector(const DQ &effector)
 {
     try
     {
-        std::dynamic_pointer_cast<DQ_SerialManipulator>(chain_[0])->set_effector(effector);
+        std::dynamic_pointer_cast<DQ_SerialManipulator>(chain_[chain_.size()-1])->set_effector(effector);
     }
     catch (const std::bad_cast& e)
     {
