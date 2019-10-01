@@ -46,6 +46,7 @@ public:
 
     virtual VectorXd compute_setpoint_control_signal(const VectorXd&q, const VectorXd& task_reference) override;
     virtual VectorXd compute_tracking_control_signal(const VectorXd&q, const VectorXd& task_reference, const VectorXd& feed_forward) override;
+    VectorXd compute_tracking_control_signal_test(const VectorXd&q, const VectorXd& task_reference, const VectorXd& feed_forward, DQ_QuadraticProgrammingSolver* solver);
 
 };
 }
