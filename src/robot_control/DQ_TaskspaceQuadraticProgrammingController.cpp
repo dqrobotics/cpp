@@ -26,7 +26,7 @@ namespace DQ_robotics
 {
 
 DQ_TaskspaceQuadraticProgrammingController::DQ_TaskspaceQuadraticProgrammingController(DQ_Kinematics* robot,
-                                                                                       const DQ_QuadraticProgrammingSolver &solver)
+                                                                                       DQ_QuadraticProgrammingSolver* solver)
     :DQ_KinematicConstrainedController (robot),
       qp_solver_(solver)
 {
@@ -131,9 +131,12 @@ VectorXd DQ_TaskspaceQuadraticProgrammingController::compute_tracking_control_si
         if(J.cols() != task_error.size())
             throw std::runtime_error("Incompatible sizes the Jacobian and the task error in compute_tracking_control_signal");
         if(task_error.size() != feed_forward.size())
-            throw std::runtime_error("Incompatible sizes between task error and feedoforward in compute_tracking_control_signal");
+            throw std::runtime_error("Incompatible sizes between task error and feedforward in compute_tracking_control_signal");
         const MatrixXd H = compute_objective_function_symmetric_matrix(J,task_error - (1.0/gain_)*feed_forward);
         const MatrixXd f = compute_objective_function_linear_component(J,task_error - (1.0/gain_)*feed_forward);
+
+        std::cout << "H: " << H << std::endl;
+        std::cout << "f: " << f.transpose() << std::endl;
 
         VectorXd u = solver->solve_quadratic_program(H,f,A,b,Aeq,beq);
 
