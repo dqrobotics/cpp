@@ -32,6 +32,9 @@ namespace DQ_robotics
 class DQ_QuadraticProgrammingSolver
 {
 public:
+    //Remove default constructor
+    DQ_QuadraticProgrammingSolver() = delete;
+
     virtual VectorXd solve_quadratic_program(const MatrixXd& H, const MatrixXd& f, const MatrixXd A, const MatrixXd& b, const MatrixXd& Aeq, const MatrixXd& beq)=0;
 };
 }

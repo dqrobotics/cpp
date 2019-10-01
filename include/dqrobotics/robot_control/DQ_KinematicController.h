@@ -57,12 +57,11 @@ protected:
     VectorXd last_control_signal_;
     VectorXd last_error_signal_;
     double stability_threshold_;
-public:
-    //Concrete
-    //Remove default constructor
-    DQ_KinematicController()=delete;
 
     DQ_KinematicController(DQ_Kinematics* robot);
+public:
+    //Remove default constructor
+    DQ_KinematicController()=delete;
 
     ControlObjective get_control_objective() const;
 
