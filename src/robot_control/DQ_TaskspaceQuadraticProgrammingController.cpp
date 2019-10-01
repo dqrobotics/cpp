@@ -99,7 +99,8 @@ VectorXd DQ_TaskspaceQuadraticProgrammingController::compute_tracking_control_si
         const MatrixXd f = compute_objective_function_linear_component(J,task_error - (1.0/gain_)*feed_forward);
 
         std::cout << "Going to solve quadratic program!" << std::endl;
-        VectorXd u = qp_solver_->solve_quadratic_program(H,f,A,b,Aeq,beq);
+        //VectorXd u = qp_solver_->solve_quadratic_program(H,f,A,b,Aeq,beq);
+        VectorXd u;
 
         std::cout << "Going to verify stability!" << std::endl;
         verify_stability(task_error);
