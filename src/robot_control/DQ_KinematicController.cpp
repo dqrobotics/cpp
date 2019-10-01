@@ -29,7 +29,7 @@ namespace DQ_robotics
 DQ_KinematicController::DQ_KinematicController(DQ_Kinematics* robot):robot_(robot)
 {
     control_objective_ = ControlObjective::None;
-    gain_              = MatrixXd::Zero(1,1);
+    gain_              = 0.0;
 
     is_stable_           = false;
     last_error_signal_   = VectorXd::Zero(1);
@@ -170,7 +170,7 @@ void DQ_KinematicController::set_control_objective(const ControlObjective &contr
 
 }
 
-void DQ_KinematicController::set_gain(const MatrixXd &gain)
+void DQ_KinematicController::set_gain(const double& gain)
 {
     gain_ = gain;
 }

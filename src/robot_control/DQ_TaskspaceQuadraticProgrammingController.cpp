@@ -82,8 +82,8 @@ VectorXd DQ_TaskspaceQuadraticProgrammingController::compute_tracking_control_si
         const MatrixXd& Aeq = equality_constraint_matrix_;
         const VectorXd& beq = equality_constraint_vector_;
 
-        const MatrixXd H = compute_objective_function_symmetric_matrix(J,task_error - gain_.inverse()*feed_forward);
-        const MatrixXd f = compute_objective_function_linear_component(J,task_error - gain_.inverse()*feed_forward);
+        const MatrixXd H = compute_objective_function_symmetric_matrix(J,task_error - (1.0/gain_)*feed_forward);
+        const MatrixXd f = compute_objective_function_linear_component(J,task_error - (1.0/gain_)*feed_forward);
 
         VectorXd u = qp_solver_->solve_quadratic_program(H,f,A,b,Aeq,beq);
 

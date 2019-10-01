@@ -50,7 +50,7 @@ protected:
     ControlObjective control_objective_;
     DQ attached_primitive_;
 
-    MatrixXd gain_;
+    double gain_;
     double damping_;
 
     bool is_stable_;
@@ -77,7 +77,7 @@ public:
 
     void set_control_objective(const ControlObjective& control_objective);
 
-    void set_gain(const MatrixXd& gain);
+    void set_gain(const double& gain);
 
     void set_damping(const double& damping);
 
