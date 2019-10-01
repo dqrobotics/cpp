@@ -34,11 +34,7 @@ namespace DQ_robotics
 
 class DQ_SerialManipulator: public DQ_Kinematics
 {
-
-    // private attributtes
 private:
-
-    //Para uso nas funções Jacobian...
     MatrixXd    dh_matrix_;
     std::string dh_matrix_convention_;
 
@@ -46,14 +42,9 @@ private:
     VectorXd upper_q_limit_;
 
     DQ curr_effector_;
-
-    // public methods
 public:
-    // Class constructors: Creates a Dual Quaternion as a DQ object.
-
-    DQ_SerialManipulator(const MatrixXd& dh_matrix, const std::string& convention = "standard" );
-
-    DQ_SerialManipulator(){}
+    DQ_SerialManipulator() = delete;
+    DQ_SerialManipulator(const MatrixXd& dh_matrix, const std::string& convention = "standard");
 
     MatrixXd getDHMatrix();
 
@@ -94,9 +85,9 @@ public:
     MatrixXd pose_jacobian_derivative( const VectorXd& theta_vec, const VectorXd& theta_vec_dot, const int& to_link) const;
 
     //Abstract methods' implementation
-    int get_dim_configuration_space() const;
-    MatrixXd pose_jacobian           ( const VectorXd& theta_vec, const int& to_link) const;
-    DQ fkm( const VectorXd& theta_vec) const;
+    int get_dim_configuration_space() const override;
+    MatrixXd pose_jacobian           ( const VectorXd& theta_vec, const int& to_link) const override;
+    DQ fkm( const VectorXd& theta_vec) const override;
 
 };
 

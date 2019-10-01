@@ -44,6 +44,7 @@ protected:
     std::vector<std::shared_ptr<DQ_Kinematics>> chain_;
     int dim_configuration_space_;
 public:
+    DQ_WholeBody()=delete;
     DQ_WholeBody(std::shared_ptr<DQ_Kinematics> robot);
 
     void add(std::shared_ptr<DQ_Kinematics> robot);
