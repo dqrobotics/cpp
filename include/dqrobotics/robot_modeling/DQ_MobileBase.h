@@ -34,8 +34,8 @@ class DQ_MobileBase : public DQ_Kinematics
 protected:
     DQ frame_displacement_;
 
-public:
     DQ_MobileBase();
+public:
     virtual ~DQ_MobileBase() = default;
 
     //Abstract methods (Inherited from DQ_Kinematics)

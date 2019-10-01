@@ -35,11 +35,10 @@ protected:
     std::string name_;
     VectorXd q;
 
-public:
     //Constructor
     DQ_Kinematics();
-
-    //Virtual destructor
+public:
+   //Virtual destructor
     virtual ~DQ_Kinematics() = default;
 
     //Concrete methods
