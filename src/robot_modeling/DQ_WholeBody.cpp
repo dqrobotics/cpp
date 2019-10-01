@@ -39,6 +39,11 @@ int DQ_WholeBody::get_dim_configuration_space() const
 
 DQ_Kinematics* DQ_WholeBody::get_chain(const int& index)
 {
+    if(index >= chain_.size() || index < 0)
+    {
+        throw std::runtime_error(std::string("Tried to access chain index ") + std::to_string(index) + std::string(" which is unnavailable."));
+    }
+
     return chain_[index].get();
 }
 
