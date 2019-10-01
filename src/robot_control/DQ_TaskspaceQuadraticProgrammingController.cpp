@@ -51,7 +51,7 @@ VectorXd DQ_TaskspaceQuadraticProgrammingController::compute_setpoint_control_si
         const VectorXd& beq = equality_constraint_vector_;
 
         if(J.cols() != task_error.size())
-            throw std::runtime_error("Incompatible sizes the Jacobian and the task error");
+            throw std::runtime_error("Incompatible sizes the Jacobian and the task error in compute_setpoint_control_signal");
 
         const MatrixXd H = compute_objective_function_symmetric_matrix(J,task_error);
         const MatrixXd f = compute_objective_function_linear_component(J,task_error);
@@ -75,12 +75,15 @@ VectorXd DQ_TaskspaceQuadraticProgrammingController::compute_setpoint_control_si
 
 VectorXd DQ_TaskspaceQuadraticProgrammingController::compute_tracking_control_signal(const VectorXd &q, const VectorXd &task_reference, const VectorXd &feed_forward)
 {
+    std::cout << "Entered in compute_tracking_control_signal!" << std::endl;
     if(is_set())
     {
         const VectorXd task_variable = get_task_variable(q);
 
         const MatrixXd J = get_jacobian(q);
 
+        if(task_variable.size() != task_reference.size())
+            throw std::runtime_error("Incompatible sizes between task variable and task reference in compute_tracking_control_signal");
         const VectorXd task_error = task_variable - task_reference;
 
         const MatrixXd& A = inequality_constraint_matrix_;
@@ -88,11 +91,17 @@ VectorXd DQ_TaskspaceQuadraticProgrammingController::compute_tracking_control_si
         const MatrixXd& Aeq = equality_constraint_matrix_;
         const VectorXd& beq = equality_constraint_vector_;
 
+        if(J.cols() != task_error.size())
+            throw std::runtime_error("Incompatible sizes the Jacobian and the task error in compute_tracking_control_signal");
+        if(task_error.size() != feed_forward.size())
+            throw std::runtime_error("Incompatible sizes between task error and feedoforward in compute_tracking_control_signal");
         const MatrixXd H = compute_objective_function_symmetric_matrix(J,task_error - (1.0/gain_)*feed_forward);
         const MatrixXd f = compute_objective_function_linear_component(J,task_error - (1.0/gain_)*feed_forward);
 
+        std::cout << "Going to solve quadratic program!" << std::endl;
         VectorXd u = qp_solver_->solve_quadratic_program(H,f,A,b,Aeq,beq);
 
+        std::cout << "Going to verify stability!" << std::endl;
         verify_stability(task_error);
 
         last_control_signal_ = u;
