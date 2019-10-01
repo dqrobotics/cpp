@@ -27,10 +27,10 @@ namespace DQ_robotics
 
 DQ_KinematicConstrainedController::DQ_KinematicConstrainedController(DQ_Kinematics* robot):DQ_KinematicController(robot)
 {
-    equality_constraint_matrix_ = MatrixXd(0,0);
-    equality_constraint_vector_ = VectorXd(0);
-    inequality_constraint_matrix_ = MatrixXd(0,0);
-    inequality_constraint_vector_ = VectorXd(0);
+    equality_constraint_matrix_ = MatrixXd::Zero(1,robot->get_dim_configuration_space());
+    equality_constraint_vector_ = VectorXd::Zero(1);
+    inequality_constraint_matrix_ = MatrixXd::Zero(1,robot->get_dim_configuration_space());
+    inequality_constraint_vector_ = VectorXd::Zero(1);
     //Nothing to do
 }
 

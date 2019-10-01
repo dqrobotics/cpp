@@ -41,6 +41,8 @@ VectorXd DQ_TaskspaceQuadraticProgrammingController::compute_setpoint_control_si
 
         const MatrixXd J = get_jacobian(q);
 
+        if(task_variable.size() != task_reference.size())
+            throw std::runtime_error("Incompatible sizes between task variable and task reference in compute_setpoint_control_signal");
         const VectorXd task_error = task_variable - task_reference;
 
         const MatrixXd& A = inequality_constraint_matrix_;
@@ -48,9 +50,13 @@ VectorXd DQ_TaskspaceQuadraticProgrammingController::compute_setpoint_control_si
         const MatrixXd& Aeq = equality_constraint_matrix_;
         const VectorXd& beq = equality_constraint_vector_;
 
+        if(J.cols() != task_error.size())
+            throw std::runtime_error("Incompatible sizes the Jacobian and the task error");
+
         const MatrixXd H = compute_objective_function_symmetric_matrix(J,task_error);
         const MatrixXd f = compute_objective_function_linear_component(J,task_error);
 
+        std::cout << "Going to solve quadratic program!" << std::endl;
         VectorXd u = qp_solver_->solve_quadratic_program(H,f,A,b,Aeq,beq);
 
         verify_stability(task_error);

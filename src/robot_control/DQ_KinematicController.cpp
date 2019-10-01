@@ -69,6 +69,9 @@ VectorXd DQ_KinematicController::get_last_error_signal() const
 
 MatrixXd DQ_KinematicController::get_jacobian(const VectorXd &q) const
 {
+    if(q.size() != robot_->get_dim_configuration_space())
+        throw std::runtime_error("Calling get_jacobian with an incorrect number of joints " + std::to_string(q.size()));
+
     const MatrixXd J_pose = robot_->pose_jacobian(q,robot_->get_dim_configuration_space()-1);
     const DQ       x_pose = robot_->fkm(q);
 
@@ -99,7 +102,10 @@ MatrixXd DQ_KinematicController::get_jacobian(const VectorXd &q) const
 
 VectorXd DQ_KinematicController::get_task_variable(const VectorXd &q) const
 {
-    const DQ       x_pose = robot_->fkm(q);
+    if(q.size() != robot_->get_dim_configuration_space())
+        throw std::runtime_error("Calling get_task_variable with an incorrect number of joints " + std::to_string(q.size()));
+
+    const DQ x_pose = robot_->fkm(q);
 
     switch(control_objective_)
     {
