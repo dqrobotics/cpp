@@ -47,22 +47,22 @@ DQ_Kinematics* DQ_WholeBody::get_chain(const int& index)
     return chain_[index].get();
 }
 
-DQ_SerialManipulator* DQ_WholeBody::get_chain_as_serial_manipulator(const int &index)
+DQ_SerialManipulator DQ_WholeBody::get_chain_as_serial_manipulator(const int &index)
 {
     try
     {
-        return dynamic_cast<DQ_SerialManipulator*>(get_chain(index));
+        return DQ_SerialManipulator(*dynamic_cast<DQ_SerialManipulator*>(get_chain(index)));
     } catch (const std::bad_cast& e)
     {
         throw std::runtime_error("Index requested in get_chain_as_serial_manipulator is not a SerialManipulator" + std::string(e.what()));
     }
 }
 
-DQ_HolonomicBase* DQ_WholeBody::get_chain_as_holonomic_base(const int &index)
+DQ_HolonomicBase DQ_WholeBody::get_chain_as_holonomic_base(const int &index)
 {
     try
     {
-        return dynamic_cast<DQ_HolonomicBase*>(get_chain(index));
+        return DQ_HolonomicBase(*dynamic_cast<DQ_HolonomicBase*>(get_chain(index)));
     } catch (const std::bad_cast& e)
     {
         throw std::runtime_error("Index requested in get_chain_as_holonomic_base is not a DQ_HolonomicBase" + std::string(e.what()));

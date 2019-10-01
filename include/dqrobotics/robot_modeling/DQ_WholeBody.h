@@ -53,8 +53,8 @@ public:
     DQ raw_fkm(const VectorXd& q) const;
     void set_effector(const DQ& effector);
     DQ_Kinematics* get_chain(const int& index);
-    DQ_SerialManipulator* get_chain_as_serial_manipulator(const int& index);
-    DQ_HolonomicBase* get_chain_as_holonomic_base(const int& index);
+    DQ_SerialManipulator get_chain_as_serial_manipulator(const int& index);
+    DQ_HolonomicBase get_chain_as_holonomic_base(const int& index);
 
     //Abstract methods' implementation
     int get_dim_configuration_space() const override;
