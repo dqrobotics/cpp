@@ -514,7 +514,7 @@ MatrixXd  DQ_SerialManipulator::pose_jacobian(const VectorXd& theta_vec, const i
 
 MatrixXd DQ_SerialManipulator::pose_jacobian(const VectorXd &theta_vec) const
 {
-    return pose_jacobian(theta_vec,get_dim_configuration_space());
+    return pose_jacobian(theta_vec,get_dim_configuration_space()-1);
 }
 
 MatrixXd DQ_SerialManipulator::pose_jacobian_derivative(const VectorXd &theta_vec, const VectorXd &theta_vec_dot, const int &to_link) const
