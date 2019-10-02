@@ -20,18 +20,18 @@ Contributors:
 - Murilo M. Marinho (murilo@nml.t.u-tokyo.ac.jp)
 */
 
-#include <dqrobotics/robot_control/DQ_TaskSpacePseudoInverseController.h>
+#include <dqrobotics/robot_control/DQ_PseudoinverseController.h>
 #include <dqrobotics/utils/DQ_LinearAlgebra.h>
 
 namespace DQ_robotics
 {
 
-DQ_TaskSpacePseudoInverseController::DQ_TaskSpacePseudoInverseController(DQ_Kinematics *robot):DQ_KinematicController (robot)
+DQ_PseudoinverseController::DQ_PseudoinverseController(DQ_Kinematics *robot):DQ_KinematicController (robot)
 {
     //Do nothing
 }
 
-VectorXd DQ_TaskSpacePseudoInverseController::compute_setpoint_control_signal(const VectorXd& q, const VectorXd& task_reference)
+VectorXd DQ_PseudoinverseController::compute_setpoint_control_signal(const VectorXd& q, const VectorXd& task_reference)
 {
     if(is_set())
     {
@@ -56,7 +56,7 @@ VectorXd DQ_TaskSpacePseudoInverseController::compute_setpoint_control_signal(co
     }
 }
 
-VectorXd DQ_TaskSpacePseudoInverseController::compute_tracking_control_signal(const VectorXd &q, const VectorXd &task_reference, const VectorXd &feed_forward)
+VectorXd DQ_PseudoinverseController::compute_tracking_control_signal(const VectorXd &q, const VectorXd &task_reference, const VectorXd &feed_forward)
 {
     if(is_set())
     {

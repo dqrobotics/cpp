@@ -29,9 +29,9 @@ ADD_LIBRARY(dqrobotics SHARED
     src/robot_modeling/DQ_WholeBody.cpp
 
     src/robot_control/DQ_KinematicController.cpp
-    src/robot_control/DQ_TaskSpacePseudoInverseController.cpp
+    src/robot_control/DQ_PseudoinverseController.cpp
     src/robot_control/DQ_KinematicConstrainedController.cpp
-    src/robot_control/DQ_TaskspaceQuadraticProgrammingController.cpp
+    src/robot_control/DQ_QuadraticProgrammingController.cpp
     src/robot_control/DQ_ClassicQPController.cpp
 
     src/robots/Ax18ManipulatorRobot.cpp
@@ -77,9 +77,9 @@ INSTALL(FILES
 # robot_control headers
 INSTALL(FILES
     include/dqrobotics/robot_control/DQ_KinematicController.h
-    include/dqrobotics/robot_control/DQ_TaskSpacePseudoInverseController.h
+    include/dqrobotics/robot_control/DQ_PseudoinverseController.h
     include/dqrobotics/robot_control/DQ_KinematicConstrainedController.h
-    include/dqrobotics/robot_control/DQ_TaskspaceQuadraticProgrammingController.h
+    include/dqrobotics/robot_control/DQ_QuadraticProgrammingController.h
     include/dqrobotics/robot_control/DQ_ClassicQPController.h
     DESTINATION "include/dqrobotics/robot_control")
 
@@ -115,9 +115,9 @@ INSTALL(FILES
 # robot_control folder
 INSTALL(FILES
     src/robot_control/DQ_KinematicController.cpp
-    src/robot_control/DQ_TaskSpacePseudoInverseController.cpp
+    src/robot_control/DQ_PseudoinverseController.cpp
     src/robot_control/DQ_KinematicConstrainedController.cpp
-    src/robot_control/DQ_TaskspaceQuadraticProgrammingController.cpp
+    src/robot_control/DQ_QuadraticProgrammingController.cpp
     src/robot_control/DQ_ClassicQPController.cpp
     DESTINATION "src/dqrobotics/robot_control")
 

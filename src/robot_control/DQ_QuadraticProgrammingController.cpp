@@ -20,12 +20,12 @@ Contributors:
 - Murilo M. Marinho (murilo@nml.t.u-tokyo.ac.jp)
 */
 
-#include <dqrobotics/robot_control/DQ_TaskspaceQuadraticProgrammingController.h>
+#include <dqrobotics/robot_control/DQ_QuadraticProgrammingController.h>
 
 namespace DQ_robotics
 {
 
-DQ_TaskspaceQuadraticProgrammingController::DQ_TaskspaceQuadraticProgrammingController(DQ_Kinematics* robot,
+DQ_QuadraticProgrammingController::DQ_QuadraticProgrammingController(DQ_Kinematics* robot,
                                                                                        DQ_QuadraticProgrammingSolver* solver)
     :DQ_KinematicConstrainedController (robot),
       qp_solver_(solver)
@@ -33,7 +33,7 @@ DQ_TaskspaceQuadraticProgrammingController::DQ_TaskspaceQuadraticProgrammingCont
 
 }
 
-VectorXd DQ_TaskspaceQuadraticProgrammingController::compute_setpoint_control_signal(const VectorXd &q, const VectorXd &task_reference)
+VectorXd DQ_QuadraticProgrammingController::compute_setpoint_control_signal(const VectorXd &q, const VectorXd &task_reference)
 {
     if(is_set())
     {
@@ -73,7 +73,7 @@ VectorXd DQ_TaskspaceQuadraticProgrammingController::compute_setpoint_control_si
 
 }
 
-VectorXd DQ_TaskspaceQuadraticProgrammingController::compute_tracking_control_signal(const VectorXd &q, const VectorXd &task_reference, const VectorXd &feed_forward)
+VectorXd DQ_QuadraticProgrammingController::compute_tracking_control_signal(const VectorXd &q, const VectorXd &task_reference, const VectorXd &feed_forward)
 {
     if(is_set())
     {

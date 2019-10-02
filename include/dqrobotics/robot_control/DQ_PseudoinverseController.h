@@ -20,8 +20,8 @@ Contributors:
 - Murilo M. Marinho (murilo@nml.t.u-tokyo.ac.jp)
 */
 
-#ifndef DQ_ROBOT_CONTROL_DQ_TASKSPACEPSEUDOINVERSECONTROLLER_H
-#define DQ_ROBOT_CONTROL_DQ_TASKSPACEPSEUDOINVERSECONTROLLER_H
+#ifndef DQ_ROBOT_CONTROL_DQ_PSEUDOINVERSECONTROLLER_H
+#define DQ_ROBOT_CONTROL_DQ_PSEUDOINVERSECONTROLLER_H
 
 #include <dqrobotics/DQ.h>
 #include <dqrobotics/robot_control/DQ_KinematicController.h>
@@ -29,13 +29,13 @@ Contributors:
 namespace DQ_robotics
 {
 
-class DQ_TaskSpacePseudoInverseController: public DQ_KinematicController
+class DQ_PseudoinverseController: public DQ_KinematicController
 {
 public:
     //Remove default constructor
-    DQ_TaskSpacePseudoInverseController() = delete;
+    DQ_PseudoinverseController() = delete;
 
-    DQ_TaskSpacePseudoInverseController(DQ_Kinematics* robot);
+    DQ_PseudoinverseController(DQ_Kinematics* robot);
 
     VectorXd compute_setpoint_control_signal(const VectorXd& q, const VectorXd& task_reference);
     VectorXd compute_tracking_control_signal(const VectorXd& q, const VectorXd& task_reference, const VectorXd& feed_forward);

@@ -23,12 +23,12 @@ Contributors:
 #ifndef DQ_ROBOT_CONTROL_DQ_CLASSICQPCONTROLLER_H
 #define DQ_ROBOT_CONTROL_DQ_CLASSICQPCONTROLLER_H
 
-#include<dqrobotics/robot_control/DQ_TaskspaceQuadraticProgrammingController.h>
+#include<dqrobotics/robot_control/DQ_QuadraticProgrammingController.h>
 
 namespace DQ_robotics
 {
 
-class DQ_ClassicQPController:public DQ_TaskspaceQuadraticProgrammingController
+class DQ_ClassicQPController:public DQ_QuadraticProgrammingController
 {
 public:
     //Remove the default constructor

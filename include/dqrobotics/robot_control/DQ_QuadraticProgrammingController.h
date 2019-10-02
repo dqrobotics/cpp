@@ -30,16 +30,16 @@ using namespace Eigen;
 
 namespace DQ_robotics
 {
-class DQ_TaskspaceQuadraticProgrammingController:public DQ_KinematicConstrainedController
+class DQ_QuadraticProgrammingController:public DQ_KinematicConstrainedController
 {
 protected:
     //Only observer no shared ownership
     DQ_QuadraticProgrammingSolver* qp_solver_;
 
-    DQ_TaskspaceQuadraticProgrammingController(DQ_Kinematics *robot, DQ_QuadraticProgrammingSolver *solver);
+    DQ_QuadraticProgrammingController(DQ_Kinematics *robot, DQ_QuadraticProgrammingSolver *solver);
 public:
     //Remove default constructor
-    DQ_TaskspaceQuadraticProgrammingController()=delete;
+    DQ_QuadraticProgrammingController()=delete;
 
     virtual MatrixXd compute_objective_function_symmetric_matrix(const MatrixXd& J, const VectorXd& task_error)=0;
     virtual VectorXd compute_objective_function_linear_component(const MatrixXd& J, const VectorXd& task_error)=0;
