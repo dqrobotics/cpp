@@ -40,11 +40,10 @@ protected:
     MatrixXd inequality_constraint_matrix_;
     VectorXd inequality_constraint_vector_;
 
+    DQ_KinematicConstrainedController(DQ_Kinematics* robot);
 public:
     //Remove default constructor
     DQ_KinematicConstrainedController()=delete;
-
-    DQ_KinematicConstrainedController(DQ_Kinematics* robot);
 
     virtual void set_equality_constraint(const MatrixXd& B, const VectorXd& b);
     virtual void set_inequality_constraint(const MatrixXd& B, const VectorXd& b);

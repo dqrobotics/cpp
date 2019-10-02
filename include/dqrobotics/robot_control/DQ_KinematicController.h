@@ -50,19 +50,18 @@ protected:
     ControlObjective control_objective_;
     DQ attached_primitive_;
 
-    MatrixXd gain_;
+    double gain_;
     double damping_;
 
     bool is_stable_;
     VectorXd last_control_signal_;
     VectorXd last_error_signal_;
     double stability_threshold_;
-public:
-    //Concrete
-    //Remove default constructor
-    DQ_KinematicController()=delete;
 
     DQ_KinematicController(DQ_Kinematics* robot);
+public:
+    //Remove default constructor
+    DQ_KinematicController()=delete;
 
     ControlObjective get_control_objective() const;
 
@@ -78,7 +77,7 @@ public:
 
     void set_control_objective(const ControlObjective& control_objective);
 
-    void set_gain(const MatrixXd& gain);
+    void set_gain(const double& gain);
 
     void set_damping(const double& damping);
 

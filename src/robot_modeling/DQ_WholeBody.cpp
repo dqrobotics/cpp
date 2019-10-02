@@ -39,7 +39,34 @@ int DQ_WholeBody::get_dim_configuration_space() const
 
 DQ_Kinematics* DQ_WholeBody::get_chain(const int& index)
 {
+    if(index >= chain_.size() || index < 0)
+    {
+        throw std::runtime_error(std::string("Tried to access chain index ") + std::to_string(index) + std::string(" which is unnavailable."));
+    }
+
     return chain_[index].get();
+}
+
+DQ_SerialManipulator DQ_WholeBody::get_chain_as_serial_manipulator(const int &index)
+{
+    try
+    {
+        return DQ_SerialManipulator(*dynamic_cast<DQ_SerialManipulator*>(get_chain(index)));
+    } catch (const std::bad_cast& e)
+    {
+        throw std::runtime_error("Index requested in get_chain_as_serial_manipulator is not a SerialManipulator" + std::string(e.what()));
+    }
+}
+
+DQ_HolonomicBase DQ_WholeBody::get_chain_as_holonomic_base(const int &index)
+{
+    try
+    {
+        return DQ_HolonomicBase(*dynamic_cast<DQ_HolonomicBase*>(get_chain(index)));
+    } catch (const std::bad_cast& e)
+    {
+        throw std::runtime_error("Index requested in get_chain_as_holonomic_base is not a DQ_HolonomicBase" + std::string(e.what()));
+    }
 }
 
 void DQ_WholeBody::add(std::shared_ptr<DQ_Kinematics> robot)

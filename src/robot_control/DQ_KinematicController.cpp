@@ -29,7 +29,7 @@ namespace DQ_robotics
 DQ_KinematicController::DQ_KinematicController(DQ_Kinematics* robot):robot_(robot)
 {
     control_objective_ = ControlObjective::None;
-    gain_              = MatrixXd::Zero(1,1);
+    gain_              = 0.0;
 
     is_stable_           = false;
     last_error_signal_   = VectorXd::Zero(1);
@@ -69,6 +69,9 @@ VectorXd DQ_KinematicController::get_last_error_signal() const
 
 MatrixXd DQ_KinematicController::get_jacobian(const VectorXd &q) const
 {
+    if(q.size() != robot_->get_dim_configuration_space())
+        throw std::runtime_error("Calling get_jacobian with an incorrect number of joints " + std::to_string(q.size()));
+
     const MatrixXd J_pose = robot_->pose_jacobian(q,robot_->get_dim_configuration_space()-1);
     const DQ       x_pose = robot_->fkm(q);
 
@@ -99,7 +102,10 @@ MatrixXd DQ_KinematicController::get_jacobian(const VectorXd &q) const
 
 VectorXd DQ_KinematicController::get_task_variable(const VectorXd &q) const
 {
-    const DQ       x_pose = robot_->fkm(q);
+    if(q.size() != robot_->get_dim_configuration_space())
+        throw std::runtime_error("Calling get_task_variable with an incorrect number of joints " + std::to_string(q.size()));
+
+    const DQ x_pose = robot_->fkm(q);
 
     switch(control_objective_)
     {
@@ -170,7 +176,7 @@ void DQ_KinematicController::set_control_objective(const ControlObjective &contr
 
 }
 
-void DQ_KinematicController::set_gain(const MatrixXd &gain)
+void DQ_KinematicController::set_gain(const double& gain)
 {
     gain_ = gain;
 }
