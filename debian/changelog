@@ -1,3 +1,9 @@
+libdqrobotics (19.10.0) UNRELEASED; urgency=medium
+
+  * Initial 19.10.0 release 
+
+ -- Murilo <murilo@nml.t.u-tokyo.ac.jp>  Tue, 01 Oct 2019 19:56:43 -0700
+
 libdqrobotics (0.1-0ppa0) oneiric; urgency=low
 
   * Initial upload!
