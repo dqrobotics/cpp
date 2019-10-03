@@ -26,7 +26,7 @@ namespace DQ_robotics
 {
 
 DQ_QuadraticProgrammingController::DQ_QuadraticProgrammingController(DQ_Kinematics* robot,
-                                                                                       DQ_QuadraticProgrammingSolver* solver)
+                                                                     DQ_QuadraticProgrammingSolver* solver)
     :DQ_KinematicConstrainedController (robot),
       qp_solver_(solver)
 {
@@ -43,15 +43,16 @@ VectorXd DQ_QuadraticProgrammingController::compute_setpoint_control_signal(cons
 
         if(task_variable.size() != task_reference.size())
             throw std::runtime_error("Incompatible sizes between task variable and task reference in compute_setpoint_control_signal");
+
         const VectorXd task_error = task_variable - task_reference;
+
+        if(J.rows() != task_error.size())
+            throw std::runtime_error("Incompatible sizes between the Jacobian and the task error in compute_setpoint_control_signal");
 
         const MatrixXd& A = inequality_constraint_matrix_;
         const VectorXd& b = inequality_constraint_vector_;
         const MatrixXd& Aeq = equality_constraint_matrix_;
         const VectorXd& beq = equality_constraint_vector_;
-
-        if(J.cols() != task_error.size())
-            throw std::runtime_error("Incompatible sizes the Jacobian and the task error in compute_setpoint_control_signal");
 
         const MatrixXd H = compute_objective_function_symmetric_matrix(J,task_error);
         const MatrixXd f = compute_objective_function_linear_component(J,task_error);
@@ -83,17 +84,19 @@ VectorXd DQ_QuadraticProgrammingController::compute_tracking_control_signal(cons
 
         if(task_variable.size() != task_reference.size())
             throw std::runtime_error("Incompatible sizes between task variable and task reference in compute_tracking_control_signal");
+
         const VectorXd task_error = task_variable - task_reference;
+
+        if(J.rows() != task_error.size())
+            throw std::runtime_error("Incompatible sizes between the Jacobian and the task error in compute_tracking_control_signal");
+        if(task_error.size() != feed_forward.size())
+            throw std::runtime_error("Incompatible sizes between task error and feedoforward in compute_tracking_control_signal");
 
         const MatrixXd& A = inequality_constraint_matrix_;
         const VectorXd& b = inequality_constraint_vector_;
         const MatrixXd& Aeq = equality_constraint_matrix_;
         const VectorXd& beq = equality_constraint_vector_;
 
-        if(J.cols() != task_error.size())
-            throw std::runtime_error("Incompatible sizes the Jacobian and the task error in compute_tracking_control_signal");
-        if(task_error.size() != feed_forward.size())
-            throw std::runtime_error("Incompatible sizes between task error and feedoforward in compute_tracking_control_signal");
         const MatrixXd H = compute_objective_function_symmetric_matrix(J,task_error - (1.0/gain_)*feed_forward);
         const MatrixXd f = compute_objective_function_linear_component(J,task_error - (1.0/gain_)*feed_forward);
 
