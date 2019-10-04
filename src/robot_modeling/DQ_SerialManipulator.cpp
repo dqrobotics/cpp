@@ -512,13 +512,17 @@ MatrixXd  DQ_SerialManipulator::pose_jacobian(const VectorXd& theta_vec, const i
     return J;
 }
 
-MatrixXd DQ_SerialManipulator::pose_jacobian(const VectorXd &theta_vec) const
+MatrixXd DQ_SerialManipulator::pose_jacobian_derivative(const VectorXd &theta_vec, const VectorXd &theta_vec_dot) const
 {
-    return pose_jacobian(theta_vec,get_dim_configuration_space()-1);
+    return pose_jacobian_derivative(theta_vec, theta_vec_dot, get_dim_configuration_space()-1);
 }
 
 MatrixXd DQ_SerialManipulator::pose_jacobian_derivative(const VectorXd &theta_vec, const VectorXd &theta_vec_dot, const int &to_link) const
 {
+    if(to_link >= this->get_dim_configuration_space() || to_link < 0)
+    {
+        throw std::runtime_error(std::string("Tried to access link index ") + std::to_string(to_link) + std::string(" which is unnavailable."));
+    }
 
     int n = to_link;
     DQ x_effector = raw_fkm(theta_vec,to_link);

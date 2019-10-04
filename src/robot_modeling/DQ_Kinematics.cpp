@@ -69,6 +69,11 @@ std::string DQ_Kinematics::name() const
     return name_;
 }
 
+MatrixXd DQ_Kinematics::pose_jacobian(const VectorXd &joint_configurations) const
+{
+    return pose_jacobian(joint_configurations, get_dim_configuration_space()-1);
+}
+
 /* **********************************************************************
  *  STATIC METHODS
  * *********************************************************************/
@@ -84,7 +89,7 @@ MatrixXd DQ_Kinematics::distance_jacobian(const MatrixXd &pose_jacobian, const D
 MatrixXd DQ_Kinematics::translation_jacobian(const MatrixXd &pose_jacobian, const DQ &pose)
 {
     return 2.0*haminus4(conj(P(pose)))*pose_jacobian.block(4,0,4,pose_jacobian.cols())+
-           2.0*hamiplus4(D(pose))*C4()*DQ_Kinematics::rotation_jacobian(pose_jacobian);
+            2.0*hamiplus4(D(pose))*C4()*DQ_Kinematics::rotation_jacobian(pose_jacobian);
 }
 
 

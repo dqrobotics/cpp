@@ -80,15 +80,15 @@ public:
 
     DQ get_z( const VectorXd& q) const;
 
-    MatrixXd pose_jacobian           ( const VectorXd& theta_vec) const;
     MatrixXd raw_pose_jacobian       ( const VectorXd& theta_vec, const int& to_link) const;
+
+    MatrixXd pose_jacobian_derivative( const VectorXd& theta_vec, const VectorXd& theta_vec_dot) const;
     MatrixXd pose_jacobian_derivative( const VectorXd& theta_vec, const VectorXd& theta_vec_dot, const int& to_link) const;
 
     //Abstract methods' implementation
     int get_dim_configuration_space() const override;
-    MatrixXd pose_jacobian           ( const VectorXd& theta_vec, const int& to_link) const override;
+    MatrixXd pose_jacobian(const VectorXd& theta_vec, const int& to_link) const override;
     DQ fkm( const VectorXd& theta_vec) const override;
-
 };
 
 }//Namespace DQRobotics

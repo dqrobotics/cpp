@@ -49,12 +49,14 @@ public:
     void set_name(const std::string& name);
     std::string name() const;
 
-    //Abstract methods
+    //PURE virtual methods
     virtual int      get_dim_configuration_space() const = 0;
     virtual DQ       fkm(const VectorXd& joint_configurations) const = 0;
     virtual MatrixXd pose_jacobian(const VectorXd& joint_configurations,const int& to_link) const = 0;
+    //Virtual methods
+    virtual MatrixXd pose_jacobian(const VectorXd& joint_configurations) const;
 
-    ///Static methods
+    //Static methods
     static MatrixXd distance_jacobian(const MatrixXd& pose_jacobian, const DQ& pose);
     static MatrixXd translation_jacobian(const MatrixXd& pose_jacobian, const DQ& pose);
     static MatrixXd rotation_jacobian(const MatrixXd& pose_jacobian);
