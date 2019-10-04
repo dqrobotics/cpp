@@ -74,6 +74,11 @@ MatrixXd DQ_Kinematics::pose_jacobian(const VectorXd &joint_configurations) cons
     return pose_jacobian(joint_configurations, get_dim_configuration_space()-1);
 }
 
+int DQ_Kinematics::get_dim_configuration_space() const
+{
+    return dim_configuration_space_;
+}
+
 /* **********************************************************************
  *  STATIC METHODS
  * *********************************************************************/

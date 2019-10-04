@@ -32,11 +32,6 @@ DQ_WholeBody::DQ_WholeBody(std::shared_ptr<DQ_Kinematics> robot)
     dim_configuration_space_ = robot->get_dim_configuration_space();
 }
 
-int DQ_WholeBody::get_dim_configuration_space() const
-{
-    return dim_configuration_space_;
-}
-
 DQ_Kinematics* DQ_WholeBody::get_chain(const int& index)
 {
     if(index >= chain_.size() || index < 0)

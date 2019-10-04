@@ -42,7 +42,6 @@ protected:
     //So I'm using a shared_ptr to extend the lifetime of the instance.
     //If a raw pointer is used instead we will have a segfault fest.
     std::vector<std::shared_ptr<DQ_Kinematics>> chain_;
-    int dim_configuration_space_;
 public:
     DQ_WholeBody()=delete;
     DQ_WholeBody(std::shared_ptr<DQ_Kinematics> robot);
@@ -57,7 +56,6 @@ public:
     DQ_HolonomicBase get_chain_as_holonomic_base(const int& index);
 
     //Abstract methods' implementation
-    int get_dim_configuration_space() const override;
     DQ fkm(const VectorXd& q) const override;
     DQ fkm(const VectorXd&, const int& to_chain) const;
     MatrixXd pose_jacobian(const VectorXd& q, const int& to_link) const override;

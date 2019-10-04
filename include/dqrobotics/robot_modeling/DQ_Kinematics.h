@@ -34,6 +34,7 @@ protected:
     DQ base_frame_;
     std::string name_;
     VectorXd q;
+    int dim_configuration_space_;
 
     //Constructor
     DQ_Kinematics();
@@ -50,11 +51,11 @@ public:
     std::string name() const;
 
     //PURE virtual methods
-    virtual int      get_dim_configuration_space() const = 0;
     virtual DQ       fkm(const VectorXd& joint_configurations) const = 0;
     virtual MatrixXd pose_jacobian(const VectorXd& joint_configurations,const int& to_link) const = 0;
     //Virtual methods
     virtual MatrixXd pose_jacobian(const VectorXd& joint_configurations) const;
+    virtual int      get_dim_configuration_space() const;
 
     //Static methods
     static MatrixXd distance_jacobian(const MatrixXd& pose_jacobian, const DQ& pose);

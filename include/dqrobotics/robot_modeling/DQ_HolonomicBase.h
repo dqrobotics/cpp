@@ -32,15 +32,12 @@ namespace DQ_robotics
 
 class DQ_HolonomicBase: public DQ_MobileBase
 {
-protected:
-    int dim_configuration_space_;
 public:
     DQ_HolonomicBase();
 
     //Virtual method overloads (DQ_Kinematics)
     virtual DQ fkm(const VectorXd& q) const override;
-    virtual MatrixXd pose_jacobian(const VectorXd& q, const int& to_link=2) const override;
-    virtual int get_dim_configuration_space() const override;
+    virtual MatrixXd pose_jacobian(const VectorXd& q, const int& to_link) const override;
 
     DQ raw_fkm(const VectorXd& q) const;
     MatrixXd raw_pose_jacobian(const VectorXd& q, const int& to_link=2) const;
