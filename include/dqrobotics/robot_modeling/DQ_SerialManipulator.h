@@ -88,6 +88,7 @@ public:
     //Abstract methods' implementation
     int get_dim_configuration_space() const override;
     MatrixXd pose_jacobian(const VectorXd& theta_vec, const int& to_link) const override;
+    MatrixXd pose_jacobian(const VectorXd& theta_vec) const override;
     DQ fkm( const VectorXd& theta_vec) const override;
 };
 
