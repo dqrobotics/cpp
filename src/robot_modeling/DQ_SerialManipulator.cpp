@@ -442,6 +442,13 @@ DQ  DQ_SerialManipulator::_get_z(const DQ_robotics::DQ &h) const
     return DQ(z);
 }
 
+MatrixXd DQ_SerialManipulator::raw_pose_jacobian(const VectorXd &q_vec) const
+{
+    _check_q_vec(q_vec);
+
+    return raw_pose_jacobian(q_vec, get_dim_configuration_space()-1);
+}
+
 
 MatrixXd DQ_SerialManipulator::raw_pose_jacobian(const VectorXd& q_vec, const int& to_ith_link) const
 {

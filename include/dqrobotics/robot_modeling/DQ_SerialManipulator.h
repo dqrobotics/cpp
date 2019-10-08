@@ -70,19 +70,19 @@ public:
     VectorXd upper_q_limit() const;
 
     DQ effector() const;
-    DQ set_effector( const DQ& new_effector);
+    DQ set_effector(const DQ& new_effector);
 
-    DQ raw_fkm( const VectorXd& q_vec) const;
-    DQ raw_fkm( const VectorXd& q_vec, const int& to_ith_link) const;
+    DQ raw_fkm(const VectorXd& q_vec) const;
+    DQ raw_fkm(const VectorXd& q_vec, const int& to_ith_link) const;
 
-    DQ fkm( const VectorXd& q_vec) const override; //Override from DQ_Kinematics
-    DQ fkm( const VectorXd& q_vec, const int& to_ith_link) const;
+    DQ fkm(const VectorXd& q_vec) const override; //Override from DQ_Kinematics
+    DQ fkm(const VectorXd& q_vec, const int& to_ith_link) const;
 
-    MatrixXd raw_pose_jacobian (const VectorXd& q_vec) const;
-    MatrixXd raw_pose_jacobian ( const VectorXd& q_vec, const int& to_ith_link) const;
+    MatrixXd raw_pose_jacobian(const VectorXd& q_vec) const;
+    MatrixXd raw_pose_jacobian(const VectorXd& q_vec, const int& to_ith_link) const;
 
-    MatrixXd pose_jacobian_derivative( const VectorXd& q_vec, const VectorXd& q_vec_dot) const;
-    MatrixXd pose_jacobian_derivative( const VectorXd& q_vec, const VectorXd& q_vec_dot, const int& to_ith_link) const;
+    MatrixXd pose_jacobian_derivative(const VectorXd& q_vec, const VectorXd& q_vec_dot) const;
+    MatrixXd pose_jacobian_derivative(const VectorXd& q_vec, const VectorXd& q_vec_dot, const int& to_ith_link) const;
 
     int get_dim_configuration_space() const override; //Override from DQ_Kinematics
 
