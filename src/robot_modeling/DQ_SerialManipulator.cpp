@@ -33,6 +33,23 @@ namespace DQ_robotics
 **************DQ SERIALMANIPULATOR CLASS METHODS*****************
 *****************************************************************/
 
+
+void DQ_SerialManipulator::_check_to_ith_link(const int &to_ith_link) const
+{
+    if(to_ith_link >= this->get_dim_configuration_space() || to_ith_link < 0)
+    {
+        throw std::runtime_error(std::string("Tried to access link index ") + std::to_string(to_ith_link) + std::string(" which is unnavailable."));
+    }
+}
+
+void DQ_SerialManipulator::_check_q_vec(const VectorXd &q_vec) const
+{
+    if(q_vec.size() != get_dim_configuration_space())
+    {
+        throw std::runtime_error(std::string("Input vector must have size ") + std::to_string(get_dim_configuration_space()));
+    }
+}
+
 /**
 * DQ_SerialManipulator constructor using boost matrix
 *
@@ -66,6 +83,7 @@ DQ_SerialManipulator::DQ_SerialManipulator(const MatrixXd& dh_matrix, const std:
 
     lower_q_limit_.resize(dh_matrix_.cols());
     upper_q_limit_.resize(dh_matrix_.cols());
+    dim_configuration_space_ = dh_matrix.cols();
 }
 
 // Public constant methods
@@ -293,9 +311,11 @@ DQ  DQ_SerialManipulator::set_effector( const DQ& new_effector)
 * \param Eigen::VectorXd theta_vec is the vector representing the theta joint angles.
 * \return A constant DQ object.
 */
-DQ  DQ_SerialManipulator::raw_fkm( const VectorXd& theta_vec) const
+DQ  DQ_SerialManipulator::raw_fkm(const VectorXd& q_vec) const
 {
-    return raw_fkm(theta_vec, get_dim_configuration_space() - 1);
+    _check_q_vec(q_vec);
+
+    return raw_fkm(q_vec, get_dim_configuration_space() - 1);
 }
 
 /**
@@ -307,26 +327,20 @@ DQ  DQ_SerialManipulator::raw_fkm( const VectorXd& theta_vec) const
 * \param int ith is the position of the least joint included in the forward kinematic model
 * \return A constant DQ object.
 */
-DQ  DQ_SerialManipulator::raw_fkm( const VectorXd& theta_vec, const int& ith) const
+DQ  DQ_SerialManipulator::raw_fkm(const VectorXd& q_vec, const int& to_ith_link) const
 {
-    if(ith >= this->get_dim_configuration_space() || ith < 0)
-    {
-        throw std::runtime_error(std::string("Tried to access link index ") + std::to_string(ith) + std::string(" which is unnavailable."));
-    }
-    if(int(theta_vec.size()) != (this->get_dim_configuration_space() - this->n_dummy()) )
-    {
-        throw(std::range_error("Bad raw_fkm(theta_vec,ith) call: Incorrect number of joint variables"));
-    }
+    _check_q_vec(q_vec);
+    _check_to_ith_link(to_ith_link);
 
     DQ q(1);
     int j = 0;
-    for (int i = 0; i < (ith+1); i++) {
+    for (int i = 0; i < (to_ith_link+1); i++) {
         if(this->dummy()(i) == 1.0) {
-            q = q * dh2dq(0, i);
+            q = q * _dh2dq(0, i);
             j = j + 1;
         }
         else
-            q = q * dh2dq(theta_vec(i-j), i);
+            q = q * _dh2dq(q_vec(i-j), i);
     }
     return q;
 }
@@ -338,9 +352,9 @@ DQ  DQ_SerialManipulator::raw_fkm( const VectorXd& theta_vec, const int& ith) co
 * \param Eigen::VectorXd theta_vec is the vector representing the theta joint angles.
 * \return A constant DQ object.
 */
-DQ  DQ_SerialManipulator::fkm( const VectorXd& theta_vec) const
+DQ  DQ_SerialManipulator::fkm(const VectorXd& q_vec) const
 {
-    return fkm(theta_vec, get_dim_configuration_space()-1);
+    return fkm(q_vec, get_dim_configuration_space()-1);
 }
 
 /**
@@ -350,9 +364,16 @@ DQ  DQ_SerialManipulator::fkm( const VectorXd& theta_vec) const
 * \param Eigen::VectorXd theta_vec is the vector representing the theta joint angles.
 * \return A constant DQ object.
 */
-DQ  DQ_SerialManipulator::fkm( const VectorXd& theta_vec, const int& ith) const
+DQ  DQ_SerialManipulator::fkm(const VectorXd& q_vec, const int& to_ith_link) const
 {
-    DQ q = reference_frame_ * ( this->raw_fkm(theta_vec, ith) ) * curr_effector_;
+    _check_q_vec(q_vec);
+    _check_to_ith_link(to_ith_link);
+
+    DQ q = reference_frame_ * ( this->raw_fkm(q_vec, to_ith_link) ); //Take the base into account
+
+    if(to_ith_link == get_dim_configuration_space() - 1)
+        q = q * curr_effector_; //Take into account the end effector
+
     return q;
 }
 
@@ -362,24 +383,21 @@ DQ  DQ_SerialManipulator::fkm( const VectorXd& theta_vec, const int& ith) const
 * \param int link_i is the link number
 * \return A constant DQ object
 */
-DQ  DQ_SerialManipulator::dh2dq(const double& theta_ang, const int& link_i) const {
-    if(link_i >= this->get_dim_configuration_space() || link_i < 0)
-    {
-        throw std::runtime_error(std::string("Tried to access link index ") + std::to_string(link_i) + std::string(" which is unnavailable."));
-    }
+DQ  DQ_SerialManipulator::_dh2dq(const double& theta, const int& to_ith_link) const {
+    _check_to_ith_link(to_ith_link);
 
     Matrix<double,8,1> q(8);
 
-    double d     = this->d()(link_i);
-    double a     = this->a()(link_i);
-    double alpha = this->alpha()(link_i);
+    double d     = this->d()(to_ith_link);
+    double a     = this->a()(to_ith_link);
+    double alpha = this->alpha()(to_ith_link);
 
     if(this->convention() == "standard") {
 
-        q(0)=cos((theta_ang + this->theta()(link_i) )/2.0)*cos(alpha/2.0);
-        q(1)=cos((theta_ang + this->theta()(link_i) )/2.0)*sin(alpha/2.0);
-        q(2)=sin((theta_ang + this->theta()(link_i) )/2.0)*sin(alpha/2.0);
-        q(3)=sin((theta_ang + this->theta()(link_i) )/2.0)*cos(alpha/2.0);
+        q(0)=cos((theta + this->theta()(to_ith_link) )/2.0)*cos(alpha/2.0);
+        q(1)=cos((theta + this->theta()(to_ith_link) )/2.0)*sin(alpha/2.0);
+        q(2)=sin((theta + this->theta()(to_ith_link) )/2.0)*sin(alpha/2.0);
+        q(3)=sin((theta + this->theta()(to_ith_link) )/2.0)*cos(alpha/2.0);
         double d2=d/2.0;
         double a2=a/2.0;
         q(4)= -d2*q(3) - a2*q(1);
@@ -389,10 +407,10 @@ DQ  DQ_SerialManipulator::dh2dq(const double& theta_ang, const int& link_i) cons
     }
     else{
 
-        double h1 = cos((theta_ang + this->theta()(link_i) )/2.0)*cos(alpha/2.0);
-        double h2 = cos((theta_ang + this->theta()(link_i) )/2.0)*sin(alpha/2.0);
-        double h3 = sin((theta_ang + this->theta()(link_i) )/2.0)*sin(alpha/2.0);
-        double h4 = sin((theta_ang + this->theta()(link_i) )/2.0)*cos(alpha/2.0);
+        double h1 = cos((theta + this->theta()(to_ith_link) )/2.0)*cos(alpha/2.0);
+        double h2 = cos((theta + this->theta()(to_ith_link) )/2.0)*sin(alpha/2.0);
+        double h3 = sin((theta + this->theta()(to_ith_link) )/2.0)*sin(alpha/2.0);
+        double h4 = sin((theta + this->theta()(to_ith_link) )/2.0)*cos(alpha/2.0);
         q(0)= h1;
         q(1)= h2;
         q(2)= -h3;
@@ -408,48 +426,40 @@ DQ  DQ_SerialManipulator::dh2dq(const double& theta_ang, const int& link_i) cons
 }
 
 
-DQ  DQ_SerialManipulator::get_z( const VectorXd& q) const
+DQ  DQ_SerialManipulator::_get_z(const DQ_robotics::DQ &h) const
 {
     Matrix<double,8,1> z(8);
 
     z(0) = 0.0;
-    z(1)=q(1)*q(3) + q(0)*q(2);
-    z(2)=q(2)*q(3) - q(0)* q(1);
-    z(3)=(q(3)*q(3)-q(2)*q(2)-q(1)*q(1)+q(0)*q(0))/2.0;
+    z(1)=h.q(1)*h.q(3) + h.q(0)*h.q(2);
+    z(2)=h.q(2)*h.q(3) - h.q(0)* h.q(1);
+    z(3)=(h.q(3)*h.q(3)-h.q(2)*h.q(2)-h.q(1)*h.q(1)+h.q(0)*h.q(0))/2.0;
     z(4)=0.0;
-    z(5)=q(1)*q(7)+q(5)*q(3)+q(0)*q(6)+q(4)*q(2);
-    z(6)=q(2)*q(7)+q(6)*q(3)-q(0)*q(5)-q(4)*q(1);
-    z(7)=q(3)*q(7)-q(2)*q(6)-q(1)*q(5)+q(0)*q(4);
+    z(5)=h.q(1)*h.q(7)+h.q(5)*h.q(3)+h.q(0)*h.q(6)+h.q(4)*h.q(2);
+    z(6)=h.q(2)*h.q(7)+h.q(6)*h.q(3)-h.q(0)*h.q(5)-h.q(4)*h.q(1);
+    z(7)=h.q(3)*h.q(7)-h.q(2)*h.q(6)-h.q(1)*h.q(5)+h.q(0)*h.q(4);
 
     return DQ(z);
 }
 
 
-MatrixXd DQ_SerialManipulator::raw_pose_jacobian(const VectorXd& theta_vec, const int& to_link) const
+MatrixXd DQ_SerialManipulator::raw_pose_jacobian(const VectorXd& q_vec, const int& to_ith_link) const
 {
-    if(to_link >= this->get_dim_configuration_space() || to_link < 0)
-    {
-        throw std::runtime_error(std::string("Tried to access link index ") + std::to_string(to_link) + std::string(" which is unnavailable."));
-    }
+    _check_q_vec(q_vec);
+    _check_to_ith_link(to_ith_link);
 
-    DQ q_effector = this->raw_fkm(theta_vec,to_link);
+    DQ q_effector = this->raw_fkm(q_vec,to_ith_link);
     DQ z;
     DQ q(1);
 
-    MatrixXd J(8,(to_link+1 - this->n_dummy()) );
-
-    for (int i = 0; i < J.rows(); i++) {
-        for(int j = 0; j < J.cols(); j++) {
-            J(i,j) = 0;
-        }
-    }
+    MatrixXd J = MatrixXd::Zero(8,(to_ith_link+1 - this->n_dummy()) );
 
     int ith = -1;
-    for(int i = 0; i < to_link+1; i++) {
+    for(int i = 0; i < to_ith_link+1; i++) {
 
         // Use the standard DH convention
         if(this->convention() == "standard") {
-            z = this->get_z(q.q);
+            z = this->_get_z(q);
         }
         // Use the modified DH convention
         else {
@@ -457,7 +467,7 @@ MatrixXd DQ_SerialManipulator::raw_pose_jacobian(const VectorXd& theta_vec, cons
             z =0.5 * q * w * q.conj();
         }
         if(this->dummy()(i) == 0.0) {
-            q = q * this->dh2dq(theta_vec(ith+1), i);
+            q = q * this->_dh2dq(q_vec(ith+1), i);
             DQ aux_j = z * q_effector;
             for(int k = 0; k < J.rows(); k++) {
                 J(k,ith+1) = aux_j.q(k);
@@ -466,7 +476,7 @@ MatrixXd DQ_SerialManipulator::raw_pose_jacobian(const VectorXd& theta_vec, cons
         }
         else
             // Dummy joints don't contribute to the Jacobian
-            q = q * this->dh2dq(0.0,(i));
+            q = q * this->_dh2dq(0.0, i);
     }
 
     return J;
@@ -477,10 +487,14 @@ MatrixXd DQ_SerialManipulator::raw_pose_jacobian(const VectorXd& theta_vec, cons
 * \param Eigen::VectorXd theta_vec is the vector representing the theta joint angles.
 * \return A constant Eigen::MatrixXd (8,links - n_dummy).
 */
-MatrixXd  DQ_SerialManipulator::pose_jacobian(const VectorXd& theta_vec, const int &to_link) const
+MatrixXd  DQ_SerialManipulator::pose_jacobian(const VectorXd& q_vec, const int &to_ith_link) const
 {
-    MatrixXd J = raw_pose_jacobian(theta_vec,to_link);
-    if(to_link==this->get_dim_configuration_space())
+    _check_q_vec(q_vec);
+    _check_to_ith_link(to_ith_link);
+
+    MatrixXd J = raw_pose_jacobian(q_vec,to_ith_link);
+
+    if(to_ith_link==this->get_dim_configuration_space()-1)
     {
         J = hamiplus8(reference_frame_)*haminus8(curr_effector_)*J;
     }
@@ -488,30 +502,35 @@ MatrixXd  DQ_SerialManipulator::pose_jacobian(const VectorXd& theta_vec, const i
     {
         J = hamiplus8(reference_frame_)*J;
     }
+
     return J;
 }
 
-MatrixXd DQ_SerialManipulator::pose_jacobian(const VectorXd &theta_vec) const
+MatrixXd DQ_SerialManipulator::pose_jacobian(const VectorXd &q_vec) const
 {
-    return this->DQ_Kinematics::pose_jacobian(theta_vec);
+    _check_q_vec(q_vec);
+
+    return this->DQ_Kinematics::pose_jacobian(q_vec);
 }
 
-MatrixXd DQ_SerialManipulator::pose_jacobian_derivative(const VectorXd &theta_vec, const VectorXd &theta_vec_dot) const
+MatrixXd DQ_SerialManipulator::pose_jacobian_derivative(const VectorXd &q_vec, const VectorXd &q_vec_dot) const
 {
-    return pose_jacobian_derivative(theta_vec, theta_vec_dot, get_dim_configuration_space()-1);
+    _check_q_vec(q_vec);
+    _check_q_vec(q_vec_dot);
+
+    return pose_jacobian_derivative(q_vec, q_vec_dot, get_dim_configuration_space()-1);
 }
 
-MatrixXd DQ_SerialManipulator::pose_jacobian_derivative(const VectorXd &theta_vec, const VectorXd &theta_vec_dot, const int &to_link) const
+MatrixXd DQ_SerialManipulator::pose_jacobian_derivative(const VectorXd &q_vec, const VectorXd &q_vec_dot, const int &to_ith_link) const
 {
-    if(to_link >= this->get_dim_configuration_space() || to_link < 0)
-    {
-        throw std::runtime_error(std::string("Tried to access link index ") + std::to_string(to_link) + std::string(" which is unnavailable."));
-    }
+    _check_q_vec(q_vec);
+    _check_q_vec(q_vec_dot);
+    _check_to_ith_link(to_ith_link);
 
-    int n = to_link;
-    DQ x_effector = raw_fkm(theta_vec,to_link);
-    MatrixXd J    = raw_pose_jacobian(theta_vec,to_link);
-    VectorXd vec_x_effector_dot = J*theta_vec_dot.head(to_link);
+    int n = to_ith_link;
+    DQ x_effector = raw_fkm(q_vec,to_ith_link);
+    MatrixXd J    = raw_pose_jacobian(q_vec,to_ith_link);
+    VectorXd vec_x_effector_dot = J*q_vec_dot.head(to_ith_link);
 
     DQ x = DQ(1);
     MatrixXd J_dot = MatrixXd::Zero(8,n-n_dummy());
@@ -524,7 +543,7 @@ MatrixXd DQ_SerialManipulator::pose_jacobian_derivative(const VectorXd &theta_ve
         // Use the standard DH convention
         if(this->convention() == "standard") {
             w = k_;
-            z = get_z(x.q);
+            z = _get_z(x);
         }
         else //Use the modified DH convention
         {
@@ -534,16 +553,16 @@ MatrixXd DQ_SerialManipulator::pose_jacobian_derivative(const VectorXd &theta_ve
 
         if( dummy()(i)!=1.0 )
         {
-            VectorXd vec_zdot = 0.5*(haminus8(w*conj(x)) + hamiplus8(x*w)*C8())*raw_pose_jacobian(theta_vec,i)*theta_vec_dot.head(i);
+            VectorXd vec_zdot = 0.5*(haminus8(w*conj(x)) + hamiplus8(x*w)*C8())*raw_pose_jacobian(q_vec,i)*q_vec_dot.head(i);
 
             J_dot.col(jth) = haminus8(x_effector)*vec_zdot + hamiplus8(z)*vec_x_effector_dot;
-            x = x*dh2dq(theta_vec(jth),i);
+            x = x*_dh2dq(q_vec(jth),i);
             jth = jth+1;
         }
         else
         {
             //Dummy joints don't contribute to the Jacobian
-            x = x*dh2dq(0,i);
+            x = x*_dh2dq(0,i);
         }
     }
 

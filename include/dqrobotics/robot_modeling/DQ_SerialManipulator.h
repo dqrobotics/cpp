@@ -42,54 +42,53 @@ private:
     VectorXd upper_q_limit_;
 
     DQ curr_effector_;
+
+    DQ _dh2dq(const double& theta, const int& to_ith_link) const;
+    DQ _get_z(const DQ& h) const;
+
+    void _check_to_ith_link(const int& to_ith_link) const;
+    void _check_q_vec(const VectorXd& q_vec) const;
 public:
     DQ_SerialManipulator() = delete;
     DQ_SerialManipulator(const MatrixXd& dh_matrix, const std::string& convention = "standard");
 
     MatrixXd getDHMatrix();
-
     VectorXd theta() const;
-
     VectorXd d() const;
-
     VectorXd a() const;
-
     VectorXd alpha() const;
+    std::string convention() const;
 
     VectorXd dummy() const;
     void set_dummy( const VectorXd& dummy_vector);
+    int n_dummy() const;
 
     void set_lower_q_limit(const VectorXd& lower_q_limit);
     VectorXd lower_q_limit() const;
+
     void set_upper_q_limit(const VectorXd& upper_q_limit);
     VectorXd upper_q_limit() const;
-
-    int n_dummy() const;
-
-    std::string convention() const;
 
     DQ effector() const;
     DQ set_effector( const DQ& new_effector);
 
-    DQ raw_fkm( const VectorXd& theta_vec) const;
-    DQ raw_fkm( const VectorXd& theta_vec, const int& ith) const;
+    DQ raw_fkm( const VectorXd& q_vec) const;
+    DQ raw_fkm( const VectorXd& q_vec, const int& to_ith_link) const;
 
-    DQ fkm( const VectorXd& theta_vec, const int& ith) const;
+    DQ fkm( const VectorXd& q_vec) const override; //Override from DQ_Kinematics
+    DQ fkm( const VectorXd& q_vec, const int& to_ith_link) const;
 
-    DQ dh2dq( const double& theta_ang, const int& link_i) const;
+    MatrixXd raw_pose_jacobian (const VectorXd& q_vec) const;
+    MatrixXd raw_pose_jacobian ( const VectorXd& q_vec, const int& to_ith_link) const;
 
-    DQ get_z( const VectorXd& q) const;
+    MatrixXd pose_jacobian_derivative( const VectorXd& q_vec, const VectorXd& q_vec_dot) const;
+    MatrixXd pose_jacobian_derivative( const VectorXd& q_vec, const VectorXd& q_vec_dot, const int& to_ith_link) const;
 
-    MatrixXd raw_pose_jacobian       ( const VectorXd& theta_vec, const int& to_link) const;
+    int get_dim_configuration_space() const override; //Override from DQ_Kinematics
 
-    MatrixXd pose_jacobian_derivative( const VectorXd& theta_vec, const VectorXd& theta_vec_dot) const;
-    MatrixXd pose_jacobian_derivative( const VectorXd& theta_vec, const VectorXd& theta_vec_dot, const int& to_link) const;
+    MatrixXd pose_jacobian(const VectorXd& q_vec, const int& to_ith_link) const override; //Override from DQ_Kinematics
+    MatrixXd pose_jacobian(const VectorXd& q_vec) const override; //Override from DQ_Kinematics
 
-    //Abstract methods' implementation
-    int get_dim_configuration_space() const override;
-    MatrixXd pose_jacobian(const VectorXd& theta_vec, const int& to_link) const override;
-    MatrixXd pose_jacobian(const VectorXd& theta_vec) const override;
-    DQ fkm( const VectorXd& theta_vec) const override;
 };
 
 }//Namespace DQRobotics
