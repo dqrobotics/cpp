@@ -115,7 +115,11 @@ public:
 
     Matrix<double,8,8> haminus8() const;
 
+    Vector3d vec3() const;
+
     Vector4d vec4() const;
+
+    Matrix<double,6,1> vec6() const;
 
     Matrix<double,8,1> vec8() const;
 
@@ -254,7 +258,11 @@ Matrix<double,8,8> haminus8(const DQ& dq);
 
 Matrix<double,8,8> generalized_jacobian(const DQ& dq);
 
+Vector3d vec3(const DQ& dq);
+
 Vector4d vec4(const DQ& dq);
+
+Matrix<double,6,1> vec6(const DQ& dq);
 
 Matrix<double,8,1> vec8(const DQ& dq);
 

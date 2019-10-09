@@ -268,6 +268,11 @@ Matrix<double,8,8> haminus8(const DQ& dq)
     return dq.haminus8();
 }
 
+Vector3d vec3(const DQ& dq)
+{
+    return dq.vec3();
+}
+
 /**
 * Vect operator on the primary part of a DQ.
 *
@@ -277,6 +282,12 @@ Matrix<double,8,8> haminus8(const DQ& dq)
 Vector4d vec4(const DQ& dq)
 {
     return dq.vec4();
+}
+
+
+Matrix<double,6,1> vec6(const DQ& dq)
+{
+    return dq.vec6();
 }
 
 /**
@@ -875,6 +886,13 @@ Matrix<double,8,8> DQ::haminus8() const{
     return op_Hminus8;
 }
 
+Vector3d DQ::vec3() const
+{
+    Vector3d ret;
+    ret << q(1),q(2),q(3);
+    return ret;
+}
+
 /**
 * Returns a constant 4x1 double Boost matrix representing the 'vec' operator of primary part of the DQ object caller.
 *
@@ -890,6 +908,14 @@ Vector4d DQ::vec4() const{
     op_vec4(2,0) = q(2);
     op_vec4(3,0) = q(3);
     return op_vec4;
+}
+
+
+Matrix<double,6,1> DQ::vec6() const
+{
+    Matrix<double,6,1> ret;
+    ret << q(1),q(2),q(3),q(5),q(6),q(7);
+    return ret;
 }
 
 /**
