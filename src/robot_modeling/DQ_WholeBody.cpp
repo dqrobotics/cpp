@@ -108,6 +108,9 @@ DQ DQ_WholeBody::raw_fkm(const VectorXd &q, const int &to_chain) const
 
 MatrixXd DQ_WholeBody::pose_jacobian(const VectorXd &q, const int &to_link) const
 {
+    _check_q_vec(q);
+    //_check_to_ith_link(to_link); //TODO fix this for 19.10.1
+
     int n = chain_.size();
     DQ x_0_to_n = fkm(q,n-1);
     int q_counter = 0;
@@ -123,7 +126,11 @@ MatrixXd DQ_WholeBody::pose_jacobian(const VectorXd &q, const int &to_link) cons
 
         const VectorXd q_iplus1 = q.segment(q_counter,dim);
         q_counter += dim;
-        J_vector.push_back(hamiplus8(fkm(q,i))*haminus8(x_iplus1_to_n)*chain_[i]->pose_jacobian(q_iplus1,dim-1));
+
+        if(i==0)
+            J_vector.push_back(haminus8(x_iplus1_to_n)*chain_[i]->pose_jacobian(q_iplus1,dim-1));
+        else
+            J_vector.push_back(hamiplus8(fkm(q,i-1))*haminus8(x_iplus1_to_n)*chain_[i]->pose_jacobian(q_iplus1,dim-1));
     }
 
     MatrixXd J_pose(8,q_counter);
@@ -139,6 +146,11 @@ MatrixXd DQ_WholeBody::pose_jacobian(const VectorXd &q, const int &to_link) cons
         }
     }
     return J_pose;
+}
+
+MatrixXd DQ_WholeBody::pose_jacobian(const VectorXd &q) const
+{
+    return pose_jacobian(q, chain_.size()-1); //The behavior for fkm(q, to_link) is weird in 19.10
 }
 
 void DQ_WholeBody::set_effector(const DQ &effector)

@@ -49,8 +49,8 @@ DQ_WholeBody KukaYoubotRobot::kinematics()
 
     base->set_frame_displacement(x_bm);
 
-    DQ_WholeBody kin(std::static_pointer_cast<DQ_Kinematics>(arm));
-    kin.add(std::static_pointer_cast<DQ_Kinematics>(base));
+    DQ_WholeBody kin(std::static_pointer_cast<DQ_Kinematics>(base));
+    kin.add(std::static_pointer_cast<DQ_Kinematics>(arm));
 
     return kin;
 }

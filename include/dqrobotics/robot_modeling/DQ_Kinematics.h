@@ -36,6 +36,9 @@ protected:
     VectorXd q;
     int dim_configuration_space_;
 
+    void _check_to_ith_link(const int& to_ith_link) const;
+    void _check_q_vec(const VectorXd& q_vec) const;
+
     //Constructor
     DQ_Kinematics();
 public:

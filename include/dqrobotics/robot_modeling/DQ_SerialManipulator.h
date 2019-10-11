@@ -46,8 +46,6 @@ private:
     DQ _dh2dq(const double& theta, const int& to_ith_link) const;
     DQ _get_z(const DQ& h) const;
 
-    void _check_to_ith_link(const int& to_ith_link) const;
-    void _check_q_vec(const VectorXd& q_vec) const;
 public:
     DQ_SerialManipulator() = delete;
     DQ_SerialManipulator(const MatrixXd& dh_matrix, const std::string& convention = "standard");

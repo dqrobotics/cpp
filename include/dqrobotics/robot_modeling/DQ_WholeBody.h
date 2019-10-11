@@ -59,6 +59,7 @@ public:
     DQ fkm(const VectorXd& q) const override;
     DQ fkm(const VectorXd&, const int& to_chain) const;
     MatrixXd pose_jacobian(const VectorXd& q, const int& to_link) const override;
+    MatrixXd pose_jacobian(const VectorXd& q) const;
 };
 
 }

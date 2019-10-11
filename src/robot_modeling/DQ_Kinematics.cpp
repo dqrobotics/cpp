@@ -39,6 +39,24 @@ DQ_Kinematics::DQ_Kinematics()
  *  CONCRETE METHODS
  * *********************************************************************/
 
+
+void DQ_Kinematics::_check_to_ith_link(const int &to_ith_link) const
+{
+    if(to_ith_link >= this->get_dim_configuration_space() || to_ith_link < 0)
+    {
+        throw std::runtime_error(std::string("Tried to access link index ") + std::to_string(to_ith_link) + std::string(" which is unnavailable."));
+    }
+}
+
+void DQ_Kinematics::_check_q_vec(const VectorXd &q_vec) const
+{
+    if(q_vec.size() != get_dim_configuration_space())
+    {
+        throw std::runtime_error(std::string("Input vector must have size ") + std::to_string(get_dim_configuration_space()));
+    }
+}
+
+
 void DQ_Kinematics::set_reference_frame(const DQ &reference_frame)
 {
     reference_frame_ = reference_frame;

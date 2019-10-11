@@ -33,23 +33,6 @@ namespace DQ_robotics
 **************DQ SERIALMANIPULATOR CLASS METHODS*****************
 *****************************************************************/
 
-
-void DQ_SerialManipulator::_check_to_ith_link(const int &to_ith_link) const
-{
-    if(to_ith_link >= this->get_dim_configuration_space() || to_ith_link < 0)
-    {
-        throw std::runtime_error(std::string("Tried to access link index ") + std::to_string(to_ith_link) + std::string(" which is unnavailable."));
-    }
-}
-
-void DQ_SerialManipulator::_check_q_vec(const VectorXd &q_vec) const
-{
-    if(q_vec.size() != get_dim_configuration_space())
-    {
-        throw std::runtime_error(std::string("Input vector must have size ") + std::to_string(get_dim_configuration_space()));
-    }
-}
-
 /**
 * DQ_SerialManipulator constructor using boost matrix
 *
