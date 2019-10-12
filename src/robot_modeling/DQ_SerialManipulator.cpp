@@ -517,7 +517,7 @@ MatrixXd DQ_SerialManipulator::pose_jacobian_derivative(const VectorXd &q_vec, c
     _check_q_vec(q_vec_dot);
     _check_to_ith_link(to_ith_link);
 
-    int n = to_ith_link;
+    int n = to_ith_link+1;
     DQ x_effector = raw_fkm(q_vec,to_ith_link);
     MatrixXd J    = raw_pose_jacobian(q_vec,to_ith_link);
     VectorXd vec_x_effector_dot = J*q_vec_dot.head(to_ith_link);
@@ -537,13 +537,28 @@ MatrixXd DQ_SerialManipulator::pose_jacobian_derivative(const VectorXd &q_vec, c
         }
         else //Use the modified DH convention
         {
-            w = DQ(0,0,-sin(alpha()(i)),cos(alpha()(i)),0,0,-a()(i)*cos(alpha()(i)),-a()(i)*sin(alpha()(i)));
+            w = DQ(0.,
+                   0.,
+                   -sin(alpha()(i)),
+                   cos(alpha()(i)),
+                   0.,
+                   0.,
+                   -a()(i)*cos(alpha()(i)),
+                   -a()(i)*sin(alpha()(i)));
             z = 0.5*x*w*conj(x);
         }
 
         if( dummy()(i)!=1.0 )
         {
-            VectorXd vec_zdot = 0.5*(haminus8(w*conj(x)) + hamiplus8(x*w)*C8())*raw_pose_jacobian(q_vec,i)*q_vec_dot.head(i);
+            VectorXd vec_zdot;
+            if(i==0)
+            {
+                vec_zdot = VectorXd::Zero(8,1);
+            }
+            else
+            {
+                vec_zdot = 0.5*(haminus8(w*conj(x)) + hamiplus8(x*w)*C8())*raw_pose_jacobian(q_vec,i-1)*q_vec_dot.head(i);
+            }
 
             J_dot.col(jth) = haminus8(x_effector)*vec_zdot + hamiplus8(z)*vec_x_effector_dot;
             x = x*_dh2dq(q_vec(jth),i);
