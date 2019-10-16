@@ -79,6 +79,7 @@ public:
     static double   line_to_line_residual           (const DQ& robot_line, const DQ& workspace_line, const DQ& workspace_line_derivative);
     static MatrixXd plane_to_point_distance_jacobian(const MatrixXd& plane_jacobian, const DQ& workspace_point);
     static double   plane_to_point_residual         (const DQ& robot_plane, const DQ& workspace_point_derivative);
+    static MatrixXd line_to_line_angle_jacobian(const MatrixXd& line_jacobian, const DQ& robot_line, const DQ& workspace_line);
 };
 }
 

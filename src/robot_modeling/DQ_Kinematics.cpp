@@ -474,4 +474,19 @@ double   DQ_Kinematics::plane_to_point_residual(const DQ& robot_plane, const DQ&
     return static_cast<double>(result);
 }
 
+MatrixXd DQ_Kinematics::line_to_line_angle_jacobian(const MatrixXd &line_jacobian, const DQ &robot_line, const DQ &workspace_line)
+{
+    if(! is_line(robot_line))
+    {
+        throw std::range_error("The argument robot_line has to be a line.");
+    }
+    if(! is_line(workspace_line))
+    {
+        throw std::range_error("The argument workspace_line has to be a line.");
+    }
+
+    MatrixXd Jl = line_jacobian.block(0,0,4,line_jacobian.cols());
+    return 2.0*vec4(robot_line - workspace_line).transpose()*Jl;
+}
+
 }
