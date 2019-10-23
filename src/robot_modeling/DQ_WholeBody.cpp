@@ -26,38 +26,47 @@ Contributors:
 namespace DQ_robotics
 {
 
+void DQ_WholeBody::_check_to_ith_chain(const int &to_ith_chain) const
+{
+    if(to_ith_chain >= chain_.size() || to_ith_chain < 0)
+    {
+        throw std::runtime_error(std::string("Tried to access chain index ") + std::to_string(to_ith_chain) + std::string(" which is unnavailable."));
+    }
+}
+
 DQ_WholeBody::DQ_WholeBody(std::shared_ptr<DQ_Kinematics> robot)
 {
     chain_.push_back(robot);
     dim_configuration_space_ = robot->get_dim_configuration_space();
 }
 
-DQ_Kinematics* DQ_WholeBody::get_chain(const int& index)
+DQ_Kinematics* DQ_WholeBody::get_chain(const int& to_ith_chain)
 {
-    if(index >= chain_.size() || index < 0)
-    {
-        throw std::runtime_error(std::string("Tried to access chain index ") + std::to_string(index) + std::string(" which is unnavailable."));
-    }
+    _check_to_ith_chain(to_ith_chain);
 
-    return chain_[index].get();
+    return chain_[to_ith_chain].get();
 }
 
-DQ_SerialManipulator DQ_WholeBody::get_chain_as_serial_manipulator(const int &index)
+DQ_SerialManipulator DQ_WholeBody::get_chain_as_serial_manipulator(const int &to_ith_chain) const
 {
+    _check_to_ith_chain(to_ith_chain);
+
     try
     {
-        return DQ_SerialManipulator(*dynamic_cast<DQ_SerialManipulator*>(get_chain(index)));
+        return DQ_SerialManipulator(*dynamic_cast<DQ_SerialManipulator*>(chain_[to_ith_chain].get()));
     } catch (const std::bad_cast& e)
     {
         throw std::runtime_error("Index requested in get_chain_as_serial_manipulator is not a SerialManipulator" + std::string(e.what()));
     }
 }
 
-DQ_HolonomicBase DQ_WholeBody::get_chain_as_holonomic_base(const int &index)
+DQ_HolonomicBase DQ_WholeBody::get_chain_as_holonomic_base(const int &to_ith_chain) const
 {
+    _check_to_ith_chain(to_ith_chain);
+
     try
     {
-        return DQ_HolonomicBase(*dynamic_cast<DQ_HolonomicBase*>(get_chain(index)));
+        return DQ_HolonomicBase(*dynamic_cast<DQ_HolonomicBase*>(chain_[to_ith_chain].get()));
     } catch (const std::bad_cast& e)
     {
         throw std::runtime_error("Index requested in get_chain_as_holonomic_base is not a DQ_HolonomicBase" + std::string(e.what()));
@@ -85,17 +94,14 @@ DQ DQ_WholeBody::raw_fkm(const VectorXd &q) const
     return raw_fkm(q,chain_.size()-1);
 }
 
-DQ DQ_WholeBody::raw_fkm(const VectorXd &q, const int &to_chain) const
+DQ DQ_WholeBody::raw_fkm(const VectorXd &q, const int &to_ith_chain) const
 {
-    if(to_chain >= chain_.size() || to_chain < 0)
-    {
-        throw std::runtime_error(std::string("Tried to access chain index ") + std::to_string(to_chain) + std::string(" which is unnavailable."));
-    }
+    _check_to_ith_chain(to_ith_chain);
 
     DQ pose(1);
 
     int q_counter = 0;
-    for(int i=0;i<to_chain+1;i++)
+    for(int i=0;i<to_ith_chain+1;i++)
     {
         const int current_robot_dim    = chain_[i]->get_dim_configuration_space();
         const VectorXd current_robot_q = q.segment(q_counter,current_robot_dim);
@@ -106,10 +112,10 @@ DQ DQ_WholeBody::raw_fkm(const VectorXd &q, const int &to_chain) const
     return pose;
 }
 
-MatrixXd DQ_WholeBody::pose_jacobian(const VectorXd &q, const int &to_link) const
+MatrixXd DQ_WholeBody::pose_jacobian(const VectorXd &q, const int &to_ith_chain) const
 {
     _check_q_vec(q);
-    //_check_to_ith_link(to_link); //TODO fix this for 19.10.1
+    _check_to_ith_chain(to_ith_chain);
 
     int n = chain_.size();
     DQ x_0_to_n = fkm(q,n-1);

@@ -36,30 +36,25 @@ namespace DQ_robotics
 class DQ_WholeBody : public DQ_Kinematics
 {
 protected:
-    //The most common use-case I can imagine is for the DQ_Kinematics
-    //instanced to generate the caller thread to go out of scope
-    //fairly soon.
-    //So I'm using a shared_ptr to extend the lifetime of the instance.
-    //If a raw pointer is used instead we will have a segfault fest.
     std::vector<std::shared_ptr<DQ_Kinematics>> chain_;
+    void _check_to_ith_chain(const int& to_ith_chain) const;
 public:
     DQ_WholeBody()=delete;
     DQ_WholeBody(std::shared_ptr<DQ_Kinematics> robot);
 
     void add(std::shared_ptr<DQ_Kinematics> robot);
-    //Starts count from 0
-    DQ raw_fkm(const VectorXd& q, const int& to_chain) const;
+    DQ raw_fkm(const VectorXd& q, const int& to_ith_chain) const;
     DQ raw_fkm(const VectorXd& q) const;
     void set_effector(const DQ& effector);
-    DQ_Kinematics* get_chain(const int& index);
-    DQ_SerialManipulator get_chain_as_serial_manipulator(const int& index);
-    DQ_HolonomicBase get_chain_as_holonomic_base(const int& index);
+    DQ_Kinematics* get_chain(const int& to_ith_chain);
+    DQ_SerialManipulator get_chain_as_serial_manipulator(const int& to_ith_chain) const;
+    DQ_HolonomicBase get_chain_as_holonomic_base(const int& to_ith_chain) const;
 
     //Abstract methods' implementation
     DQ fkm(const VectorXd& q) const override;
     DQ fkm(const VectorXd&, const int& to_chain) const;
-    MatrixXd pose_jacobian(const VectorXd& q, const int& to_link) const override;
-    MatrixXd pose_jacobian(const VectorXd& q) const;
+    MatrixXd pose_jacobian(const VectorXd& q, const int& to_ith_chain) const override;
+    MatrixXd pose_jacobian(const VectorXd& q) const override;
 };
 
 }
