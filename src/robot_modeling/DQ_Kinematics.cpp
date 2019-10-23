@@ -62,7 +62,7 @@ void DQ_Kinematics::set_reference_frame(const DQ &reference_frame)
     reference_frame_ = reference_frame;
 }
 
-DQ   DQ_Kinematics::reference_frame() const
+DQ   DQ_Kinematics::get_reference_frame() const
 {
     return reference_frame_;
 }
@@ -72,7 +72,7 @@ void DQ_Kinematics::set_base_frame(const DQ &base_frame)
     base_frame_ = base_frame;
 }
 
-DQ DQ_Kinematics::base_frame() const
+DQ DQ_Kinematics::get_base_frame() const
 {
     return base_frame_;
 }
@@ -82,7 +82,7 @@ void DQ_Kinematics::set_name(const std::string &name)
     name_ = name;
 }
 
-std::string DQ_Kinematics::name() const
+std::string DQ_Kinematics::get_name() const
 {
     return name_;
 }
