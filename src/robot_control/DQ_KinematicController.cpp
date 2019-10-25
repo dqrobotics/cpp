@@ -39,12 +39,6 @@ DQ_KinematicController::DQ_KinematicController(DQ_Kinematics* robot):robot_(robo
     attached_primitive_ = 0.0;
 }
 
-
-DQ_KinematicController::~DQ_KinematicController()
-{
-
-}
-
 void DQ_KinematicController::verify_stability(const VectorXd& task_error)
 {
     if((last_error_signal_-task_error).norm() < stability_threshold_)
@@ -122,7 +116,7 @@ VectorXd DQ_KinematicController::get_task_variable(const VectorXd &q) const
         return vec8(Ad(x_pose,attached_primitive_));
 
     case ControlObjective::Plane:
-        return vec4(Adsharp(x_pose,attached_primitive_));
+        return vec8(Adsharp(x_pose,attached_primitive_));
 
     case ControlObjective::Rotation:
         return vec4(rotation(x_pose));
