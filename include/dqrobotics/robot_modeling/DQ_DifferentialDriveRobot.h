@@ -40,7 +40,6 @@ public:
     MatrixXd constraint_jacobian(const double& phi) const;
 
     MatrixXd pose_jacobian(const VectorXd& q, const int& to_link) const override;
-    MatrixXd pose_jacobian(const VectorXd& q) const;
 };
 
 }
