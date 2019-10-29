@@ -30,7 +30,7 @@ namespace DQ_robotics
         //Nothing to do
     }
 
-    MatrixXd DQ_ClassicQPController::compute_objective_function_symmetric_matrix(const MatrixXd &J, const VectorXd &task_error)
+    MatrixXd DQ_ClassicQPController::compute_objective_function_symmetric_matrix(const MatrixXd &J, const VectorXd&)
     {
         return (J.transpose()*J + damping_*MatrixXd::Identity(robot_->get_dim_configuration_space(),robot_->get_dim_configuration_space()));
     }

@@ -1559,7 +1559,7 @@ bool operator!=(const DQ& dq, const int& scalar) {
 * \return A boolean variable.
 * \sa DQ(double scalar), operator!=(DQ dq2).
 */
-bool operator!=(int& scalar, DQ& dq) {
+bool operator!=(const int& scalar, const DQ& dq) {
     DQ dq_scalar(scalar);
     return (dq_scalar != dq);
 }

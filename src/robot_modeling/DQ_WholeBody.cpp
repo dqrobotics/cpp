@@ -22,13 +22,14 @@ Contributors:
 
 #include<dqrobotics/robot_modeling/DQ_WholeBody.h>
 #include<dqrobotics/robot_modeling/DQ_SerialManipulator.h>
+#include<vector>
 
 namespace DQ_robotics
 {
 
 void DQ_WholeBody::_check_to_ith_chain(const int &to_ith_chain) const
 {
-    if(to_ith_chain >= chain_.size() || to_ith_chain < 0)
+    if(to_ith_chain >= static_cast<int>(chain_.size()) || to_ith_chain < 0)
     {
         throw std::runtime_error(std::string("Tried to access chain index ") + std::to_string(to_ith_chain) + std::string(" which is unnavailable."));
     }
@@ -44,7 +45,7 @@ DQ_Kinematics* DQ_WholeBody::get_chain(const int& to_ith_chain)
 {
     _check_to_ith_chain(to_ith_chain);
 
-    return chain_[to_ith_chain].get();
+    return chain_[static_cast<std::vector<DQ_Kinematics*>::size_type>(to_ith_chain)].get();
 }
 
 DQ_SerialManipulator DQ_WholeBody::get_chain_as_serial_manipulator(const int &to_ith_chain) const
@@ -53,7 +54,7 @@ DQ_SerialManipulator DQ_WholeBody::get_chain_as_serial_manipulator(const int &to
 
     try
     {
-        return DQ_SerialManipulator(*dynamic_cast<DQ_SerialManipulator*>(chain_[to_ith_chain].get()));
+        return DQ_SerialManipulator(*dynamic_cast<DQ_SerialManipulator*>(chain_[static_cast<std::vector<DQ_Kinematics*>::size_type>(to_ith_chain)].get()));
     } catch (const std::bad_cast& e)
     {
         throw std::runtime_error("Index requested in get_chain_as_serial_manipulator is not a SerialManipulator" + std::string(e.what()));
@@ -66,7 +67,7 @@ DQ_HolonomicBase DQ_WholeBody::get_chain_as_holonomic_base(const int &to_ith_cha
 
     try
     {
-        return DQ_HolonomicBase(*dynamic_cast<DQ_HolonomicBase*>(chain_[to_ith_chain].get()));
+        return DQ_HolonomicBase(*dynamic_cast<DQ_HolonomicBase*>(chain_[static_cast<std::vector<DQ_Kinematics*>::size_type>(to_ith_chain)].get()));
     } catch (const std::bad_cast& e)
     {
         throw std::runtime_error("Index requested in get_chain_as_holonomic_base is not a DQ_HolonomicBase" + std::string(e.what()));

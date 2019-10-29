@@ -35,7 +35,7 @@ protected:
     DQ reference_frame_;
     DQ base_frame_;
 
-    VectorXd q;
+    VectorXd q_;
     int dim_configuration_space_;
 
     void _check_to_ith_link(const int& to_ith_link) const;
@@ -59,7 +59,7 @@ public:
     virtual DQ fkm                (const VectorXd& joint_configurations) const = 0;
     virtual MatrixXd pose_jacobian(const VectorXd& joint_configurations, const int& to_link) const = 0;
     //Virtual methods
-    virtual MatrixXd pose_jacobian         (const VectorXd& joint_configurations) const;
+    virtual MatrixXd pose_jacobian (const VectorXd& joint_configurations) const;
     virtual int get_dim_configuration_space() const;
 
     //Static methods

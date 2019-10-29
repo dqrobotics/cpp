@@ -176,7 +176,7 @@ DQ operator-(const double& scalar, const DQ& dq);
 //Operator (*) Overload
 DQ operator*(const DQ& dq1, const DQ& dq2);
 DQ operator*(const DQ& dq, const int& scalar);
-DQ operator*(int& scalar, const DQ& dq);
+DQ operator*(const int& scalar, const DQ& dq);
 DQ operator*(const DQ& dq, const float &scalar);
 DQ operator*(const float &scalar, const DQ& dq);
 DQ operator*(const DQ& dq, const double& scalar);
