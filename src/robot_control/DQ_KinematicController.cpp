@@ -92,6 +92,9 @@ MatrixXd DQ_KinematicController::get_jacobian(const VectorXd &q) const
     case ControlObjective::Pose:
         return J_pose;
     }
+
+    //The only way I found to fix both possible warnings of either having a default in the switch or not having the default.
+    throw std::runtime_error("Unknown ControlObjective");
 }
 
 VectorXd DQ_KinematicController::get_task_variable(const VectorXd &q) const
@@ -127,6 +130,9 @@ VectorXd DQ_KinematicController::get_task_variable(const VectorXd &q) const
     case ControlObjective::Pose:
         return vec8(x_pose);
     }
+
+    //The only way I found to fix both possible warnings of either having a default in the switch or not having the default.
+    throw std::runtime_error("Unknown ControlObjective");
 }
 
 bool DQ_KinematicController::is_set() const
