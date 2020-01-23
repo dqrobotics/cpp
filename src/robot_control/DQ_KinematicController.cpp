@@ -22,6 +22,7 @@ Contributors:
 
 #include <dqrobotics/robot_control/DQ_KinematicController.h>
 #include <stdexcept>
+#include <dqrobotics/utils/DQ_Geometry.h>
 
 namespace DQ_robotics
 {
@@ -35,19 +36,28 @@ DQ_KinematicController::DQ_KinematicController(DQ_Kinematics* robot):robot_(robo
     last_error_signal_   = VectorXd::Zero(1);
     last_error_signal_   = VectorXd::Zero(1);
     stability_threshold_ = 0.0;
+    stability_counter_ = 0.0;
+    stability_counter_max_ = 10.0;
 
     attached_primitive_ = 0.0;
+    target_primitive_ = 0.0;
 }
 
 void DQ_KinematicController::verify_stability(const VectorXd& task_error)
 {
     if((last_error_signal_-task_error).norm() < stability_threshold_)
     {
-        is_stable_ = true;
+        stability_counter_++;
     }
     else
     {
+        stability_counter_=0;
         is_stable_ = false;
+    }
+
+    if(stability_counter_ >= stability_counter_max_)
+    {
+        is_stable_ = true;
     }
 }
 
@@ -76,6 +86,17 @@ MatrixXd DQ_KinematicController::get_jacobian(const VectorXd &q) const
 
     case ControlObjective::Distance:
         return DQ_Kinematics::distance_jacobian(J_pose,x_pose);
+
+    case ControlObjective::DistanceToPlane:
+    {
+        if(~is_plane(target_primitive_))
+        {
+            throw std::runtime_error("Please set the target plane with the method set_target_primitive()");
+        }
+        MatrixXd Jt = robot_->translation_jacobian(J_pose, x_pose);
+        DQ t = translation(x_pose);
+        MatrixXd J = robot_->point_to_plane_distance_jacobian(Jt, t, target_primitive_);
+    }
 
     case ControlObjective::Line:
         return DQ_Kinematics::line_jacobian(J_pose,x_pose,attached_primitive_);
@@ -113,6 +134,16 @@ VectorXd DQ_KinematicController::get_task_variable(const VectorXd &q) const
     {
         VectorXd p = vec4(translation(x_pose));
         return p.transpose()*p;
+    }
+
+    case ControlObjective::DistanceToPlane:
+    {
+        if(~is_plane(target_primitive_))
+        {
+            throw std::runtime_error("Set the target plane with the method set_target_primitive()");
+        }
+        DQ t = translation(x_pose);
+        return VectorXd(DQ_Geometry::point_to_plane_distance(t, target_primitive_));
     }
 
     case ControlObjective::Line:
@@ -158,7 +189,8 @@ void DQ_KinematicController::set_control_objective(const ControlObjective &contr
 
     switch(control_objective)
     {
-    case ControlObjective::Distance:
+    case ControlObjective::Distance: //This was intentional https://en.cppreference.com/w/cpp/language/attributes/fallthrough
+    case ControlObjective::DistanceToPlane:
         last_error_signal_ = VectorXd::Zero(1);
         break;
     case ControlObjective::Line: //This was intentional https://en.cppreference.com/w/cpp/language/attributes/fallthrough
@@ -191,9 +223,19 @@ void DQ_KinematicController::set_primitive_to_effector(const DQ &primitive)
     attached_primitive_ = primitive;
 }
 
+void DQ_KinematicController::set_target_primitive(const DQ &primitive)
+{
+    target_primitive_ = primitive;
+}
+
 void DQ_KinematicController::set_damping(const double &damping)
 {
     damping_ = damping;
+}
+
+void DQ_KinematicController::set_max_stability_counter(const int &max)
+{
+    stability_counter_max_ = max;
 }
 
 }

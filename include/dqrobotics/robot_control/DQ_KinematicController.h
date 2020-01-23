@@ -35,6 +35,7 @@ enum ControlObjective
 {
     None,
     Distance,
+    DistanceToPlane,
     Line,
     Plane,
     Pose,
@@ -49,6 +50,7 @@ protected:
     DQ_Kinematics* robot_;
     ControlObjective control_objective_;
     DQ attached_primitive_;
+    DQ target_primitive_;
 
     double gain_;
     double damping_;
@@ -56,7 +58,10 @@ protected:
     bool is_stable_;
     VectorXd last_control_signal_;
     VectorXd last_error_signal_;
+
     double stability_threshold_;
+    int stability_counter_;
+    int stability_counter_max_;
 
     DQ_KinematicController(DQ_Kinematics* robot);
 public:
@@ -84,6 +89,10 @@ public:
     void set_stability_threshold(const double& threshold);
 
     void set_primitive_to_effector(const DQ& primitive);
+
+    void set_target_primitive(const DQ& primitive);
+
+    void set_max_stability_counter(const int& max);
 
     //Virtual
     virtual ~DQ_KinematicController()=default;
