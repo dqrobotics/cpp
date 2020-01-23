@@ -89,13 +89,13 @@ MatrixXd DQ_KinematicController::get_jacobian(const VectorXd &q) const
 
     case ControlObjective::DistanceToPlane:
     {
-        if(~is_plane(target_primitive_))
+        if(!is_plane(target_primitive_))
         {
             throw std::runtime_error("Please set the target plane with the method set_target_primitive()");
         }
         MatrixXd Jt = robot_->translation_jacobian(J_pose, x_pose);
         DQ t = translation(x_pose);
-        MatrixXd J = robot_->point_to_plane_distance_jacobian(Jt, t, target_primitive_);
+        return robot_->point_to_plane_distance_jacobian(Jt, t, target_primitive_);
     }
 
     case ControlObjective::Line:
@@ -138,12 +138,14 @@ VectorXd DQ_KinematicController::get_task_variable(const VectorXd &q) const
 
     case ControlObjective::DistanceToPlane:
     {
-        if(~is_plane(target_primitive_))
+        if(!is_plane(target_primitive_))
         {
             throw std::runtime_error("Set the target plane with the method set_target_primitive()");
         }
         DQ t = translation(x_pose);
-        return VectorXd(DQ_Geometry::point_to_plane_distance(t, target_primitive_));
+        VectorXd distance(1);
+        distance(1)=DQ_Geometry::point_to_plane_distance(t, target_primitive_);
+        return distance;
     }
 
     case ControlObjective::Line:
