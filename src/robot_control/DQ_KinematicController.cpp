@@ -47,11 +47,12 @@ void DQ_KinematicController::verify_stability(const VectorXd& task_error)
 {
     if((last_error_signal_-task_error).norm() < stability_threshold_)
     {
-        stability_counter_++;
+        if(stability_counter_<stability_counter_max_)
+            stability_counter_++;
     }
     else
     {
-        stability_counter_=0;
+        reset_stability_counter();
         is_stable_ = false;
     }
 
@@ -180,7 +181,7 @@ bool DQ_KinematicController::is_set() const
     }
 }
 
-bool DQ_KinematicController::is_stable() const
+bool DQ_KinematicController::reached_stable_region() const
 {
     return is_stable_;
 }
@@ -235,9 +236,14 @@ void DQ_KinematicController::set_damping(const double &damping)
     damping_ = damping;
 }
 
-void DQ_KinematicController::set_max_stability_counter(const int &max)
+void DQ_KinematicController::set_stability_counter_max(const int &max)
 {
     stability_counter_max_ = max;
+}
+
+void DQ_KinematicController::reset_stability_counter()
+{
+    stability_counter_ = 0;
 }
 
 }

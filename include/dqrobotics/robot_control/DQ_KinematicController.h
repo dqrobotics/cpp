@@ -78,7 +78,7 @@ public:
 
     bool is_set() const;
 
-    bool is_stable() const;
+    bool reached_stable_region() const;
 
     void set_control_objective(const ControlObjective& control_objective);
 
@@ -92,7 +92,9 @@ public:
 
     void set_target_primitive(const DQ& primitive);
 
-    void set_max_stability_counter(const int& max);
+    void set_stability_counter_max(const int& max);
+
+    void reset_stability_counter();
 
     //Virtual
     virtual ~DQ_KinematicController()=default;
