@@ -55,7 +55,7 @@ protected:
     double gain_;
     double damping_;
 
-    bool is_stable_;
+    bool system_reached_stable_region_;
     VectorXd last_control_signal_;
     VectorXd last_error_signal_;
 
@@ -78,7 +78,7 @@ public:
 
     bool is_set() const;
 
-    bool reached_stable_region() const;
+    bool system_reached_stable_region() const;
 
     void set_control_objective(const ControlObjective& control_objective);
 

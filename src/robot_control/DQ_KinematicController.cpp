@@ -32,7 +32,7 @@ DQ_KinematicController::DQ_KinematicController(DQ_Kinematics* robot):robot_(robo
     control_objective_ = ControlObjective::None;
     gain_              = 0.0;
 
-    is_stable_           = false;
+    system_reached_stable_region_           = false;
     last_error_signal_   = VectorXd::Zero(1);
     last_error_signal_   = VectorXd::Zero(1);
     stability_threshold_ = 0.0;
@@ -53,12 +53,12 @@ void DQ_KinematicController::verify_stability(const VectorXd& task_error)
     else
     {
         reset_stability_counter();
-        is_stable_ = false;
+        system_reached_stable_region_ = false;
     }
 
     if(stability_counter_ >= stability_counter_max_)
     {
-        is_stable_ = true;
+        system_reached_stable_region_ = true;
     }
 }
 
@@ -181,9 +181,9 @@ bool DQ_KinematicController::is_set() const
     }
 }
 
-bool DQ_KinematicController::reached_stable_region() const
+bool DQ_KinematicController::system_reached_stable_region() const
 {
-    return is_stable_;
+    return system_reached_stable_region_;
 }
 
 void DQ_KinematicController::set_control_objective(const ControlObjective &control_objective)
