@@ -1,8 +1,14 @@
-libdqrobotics (19.10.0) UNRELEASED; urgency=medium
+libdqrobotics (19.10.1) bionic; urgency=medium
+
+  * DQ_KinematicController: Added DistanceToPlane, stability_counter_ and related methods, and changed is_stable() to system_reached_stable_region() 
+
+ -- Murilo <murilo@nml.t.u-tokyo.ac.jp>  Thu, 13 Feb 2020 23:19:17 -0800
+
+libdqrobotics (19.10.0) bionic; urgency=medium
 
   * Initial 19.10.0 release 
 
- -- Murilo <murilo@nml.t.u-tokyo.ac.jp>  Tue, 01 Oct 2019 19:56:43 -0700
+ -- Murilo <murilo@nml.t.u-tokyo.ac.jp>  Thu, 13 Feb 2020 23:17:48 -0800
 
 libdqrobotics (0.1-0ppa0) oneiric; urgency=low
 
