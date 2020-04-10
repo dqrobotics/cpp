@@ -26,7 +26,7 @@ Contributors:
 namespace DQ_robotics
 {
 
-DQ_SerialManipulator BarrettWamArmRobot::kinematics()
+DQ_SerialManipulatorDH BarrettWamArmRobot::kinematics()
 {
     const double pi2 = pi/2.0;
 
@@ -37,7 +37,7 @@ DQ_SerialManipulator BarrettWamArmRobot::kinematics()
             -pi2, pi2, -pi2,    pi2,   -pi2, pi2, 0,
             0,    0,    0,      0,      0,   0,   0;
 
-    DQ_SerialManipulator wam(wam_dh,"standard");
+    DQ_SerialManipulatorDH wam(wam_dh,"standard");
 
     return wam;
 };

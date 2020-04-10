@@ -23,7 +23,7 @@ Contributors:
 #ifndef DQ_ROBOTS_KUKALW4ROBOT_H
 #define DQ_ROBOTS_KUKALW4ROBOT_H
 
-#include<dqrobotics/robot_modeling/DQ_SerialManipulator.h>
+#include<dqrobotics/robot_modeling/DQ_SerialManipulatorDH.h>
 
 namespace DQ_robotics
 {
@@ -31,7 +31,7 @@ namespace DQ_robotics
 class KukaLw4Robot
 {
 public:
-    static DQ_SerialManipulator kinematics();
+    static DQ_SerialManipulatorDH kinematics();
 };
 
 }

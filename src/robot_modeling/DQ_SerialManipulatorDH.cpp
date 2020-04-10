@@ -132,4 +132,32 @@ DQ DQ_SerialManipulatorDH::_dh2dq_dot(const double &q, const int &ith) const
     }
 }
 
+VectorXd  DQ_SerialManipulatorDH::type() const
+{
+    VectorXd aux_d(dh_matrix_.cols());
+    for (int i = 0; i < dh_matrix_.cols(); i++) {
+        aux_d(i) = dh_matrix_(4,i);
+    }
+    return aux_d;
+}
+
+MatrixXd DQ_SerialManipulatorDH::raw_pose_jacobian(const VectorXd &q_vec, const int &to_ith_link) const
+{
+    MatrixXd J = MatrixXd::Zero(8,to_ith_link);
+
+    // The optimized raw_jacobian calculation
+    DQ x_forward  = DQ(1);
+    DQ x_backward = raw_fkm(q_vec,to_ith_link);
+    for(int i = 0; i < to_ith_link; i++)
+    {
+        DQ x_i_to_i_plus_one = _dh2dq(q_vec(i),i);
+        x_backward = conj(x_i_to_i_plus_one)*x_backward;
+        DQ x_ith_dot  = x_forward*_dh2dq_dot(q_vec(i),i)*x_backward;
+        x_forward  = x_forward*x_i_to_i_plus_one;
+        J.col(i) = vec8(x_ith_dot);
+    }
+    return J;
+}
+
+
 }

@@ -23,14 +23,14 @@ Contributors:
 #ifndef DQ_ROBOTS_AX18MANIPULATORROBOT_H
 #define DQ_ROBOTS_AX18MANIPULATORROBOT_H
 
-#include<dqrobotics/robot_modeling/DQ_SerialManipulator.h>
+#include<dqrobotics/robot_modeling/DQ_SerialManipulatorDH.h>
 
 namespace DQ_robotics{
 
 class Ax18ManipulatorRobot
 {
 public:
-    static DQ_SerialManipulator kinematics();
+    static DQ_SerialManipulatorDH kinematics();
 };
 
 }

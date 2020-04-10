@@ -73,7 +73,7 @@ public:
     DQ fkm(const VectorXd& q_vec, const int& to_ith_link) const;
 
     MatrixXd raw_pose_jacobian(const VectorXd& q_vec) const;
-    MatrixXd raw_pose_jacobian(const VectorXd& q_vec, const int& to_ith_link) const;
+    virtual MatrixXd raw_pose_jacobian(const VectorXd& q_vec, const int& to_ith_link) const;
 
     MatrixXd pose_jacobian_derivative(const VectorXd& q_vec, const VectorXd& q_vec_dot) const;
     MatrixXd pose_jacobian_derivative(const VectorXd& q_vec, const VectorXd& q_vec_dot, const int& to_ith_link) const;
