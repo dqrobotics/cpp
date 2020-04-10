@@ -36,11 +36,12 @@ namespace DQ_robotics
 DQ_WholeBody KukaYoubotRobot::kinematics()
 {
     const double pi2 = pi/2.0;
-    MatrixXd arm_DH_matrix(4,5);
+    MatrixXd arm_DH_matrix(5,5);
     arm_DH_matrix <<    0,    pi2,       0,      pi2,        0,
                     0.147,      0,       0,        0,    0.218,
                         0,  0.155,   0.135,        0,        0,
-                      pi2,      0,       0,      pi2,        0;
+                      pi2,      0,       0,      pi2,        0,
+                        0,      0,       0,        0,        0;
 
     auto arm = std::make_shared<DQ_SerialManipulatorDH>(DQ_SerialManipulatorDH(arm_DH_matrix,"standard"));
     auto base = std::make_shared<DQ_HolonomicBase>(DQ_HolonomicBase());

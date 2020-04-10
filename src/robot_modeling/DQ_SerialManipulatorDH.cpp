@@ -40,6 +40,8 @@ DQ_SerialManipulatorDH::DQ_SerialManipulatorDH(const MatrixXd& dh_matrix, const 
     {
         throw(std::range_error("Bad DQ_SerialManipulatorDH(dh_matrix, convention) call: dh_matrix should be 5xn"));
     }
+    dh_matrix_ = dh_matrix;
+    dh_matrix_convention_ = convention;
 }
 
 DQ DQ_SerialManipulatorDH::_dh2dq(const double &q, const int &ith) const
@@ -143,12 +145,12 @@ VectorXd  DQ_SerialManipulatorDH::type() const
 
 MatrixXd DQ_SerialManipulatorDH::raw_pose_jacobian(const VectorXd &q_vec, const int &to_ith_link) const
 {
-    MatrixXd J = MatrixXd::Zero(8,to_ith_link);
+    MatrixXd J = MatrixXd::Zero(8,to_ith_link+1);
 
     // The optimized raw_jacobian calculation
     DQ x_forward  = DQ(1);
     DQ x_backward = raw_fkm(q_vec,to_ith_link);
-    for(int i = 0; i < to_ith_link; i++)
+    for(int i = 0; i < (to_ith_link+1); i++)
     {
         DQ x_i_to_i_plus_one = _dh2dq(q_vec(i),i);
         x_backward = conj(x_i_to_i_plus_one)*x_backward;
