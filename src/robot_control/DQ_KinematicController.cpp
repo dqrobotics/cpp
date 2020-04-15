@@ -145,7 +145,7 @@ VectorXd DQ_KinematicController::get_task_variable(const VectorXd &q) const
         }
         DQ t = translation(x_pose);
         VectorXd distance(1);
-        distance(1)=DQ_Geometry::point_to_plane_distance(t, target_primitive_);
+        distance(0)=DQ_Geometry::point_to_plane_distance(t, target_primitive_);
         return distance;
     }
 
