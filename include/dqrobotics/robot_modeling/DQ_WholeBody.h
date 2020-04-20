@@ -52,7 +52,7 @@ public:
 
     //Abstract methods' implementation
     DQ fkm(const VectorXd& q) const override;
-    DQ fkm(const VectorXd&, const int& to_chain) const;
+    DQ fkm(const VectorXd&, const int& to_chain) const override;
     MatrixXd pose_jacobian(const VectorXd& q, const int& to_ith_chain) const override;
     MatrixXd pose_jacobian(const VectorXd& q) const override;
 };
