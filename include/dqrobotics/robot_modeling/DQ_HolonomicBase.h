@@ -39,6 +39,7 @@ public:
     virtual DQ fkm(const VectorXd& q) const override;
     virtual DQ fkm(const VectorXd& q, const int& to_ith_link) const override;
     virtual MatrixXd pose_jacobian(const VectorXd& q, const int& to_link) const override;
+    virtual MatrixXd pose_jacobian(const VectorXd& q) const override;
 
     DQ raw_fkm(const VectorXd& q) const;
     MatrixXd raw_pose_jacobian(const VectorXd& q, const int& to_link=2) const;

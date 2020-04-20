@@ -102,4 +102,9 @@ MatrixXd DQ_HolonomicBase::pose_jacobian(const VectorXd &q, const int &to_link) 
     return haminus8(frame_displacement_)*raw_pose_jacobian(q,to_link);
 }
 
+MatrixXd DQ_HolonomicBase::pose_jacobian(const VectorXd &q) const
+{
+    return pose_jacobian(q,get_dim_configuration_space());
+}
+
 }
