@@ -32,7 +32,7 @@ namespace DQ_robotics
 class DQ_SerialManipulatorDH: public DQ_SerialManipulator
 {
 protected:
-    DQ _dh2dq_dot(const double& q, const int& ith) const;
+    DQ _get_w(const int& ith) const;
 
     //Override from DQ_SerialManipulator
     DQ _dh2dq(const double& q, const int& ith) const override;
