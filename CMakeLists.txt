@@ -10,6 +10,8 @@ INCLUDE_DIRECTORIES(${EIGEN3_INCLUDE_DIR}) #Writing this way is more OS agnostic
 
 INCLUDE_DIRECTORIES(include)
 
+INCLUDE_DIRECTORIES(/usr/local/include) #This is need for compiling on MacOS
+
 ################################################################
 # DEFINE AND INSTALL LIBRARY AND INCLUDE FOLDER
 ################################################################
