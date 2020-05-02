@@ -1,5 +1,5 @@
 /**
-(C) Copyright 2011-2018 DQ Robotics Developers
+(C) Copyright 2011-2020 DQ Robotics Developers
 
 This file is part of DQ Robotics.
 
@@ -17,6 +17,7 @@ This file is part of DQ Robotics.
     along with DQ Robotics.  If not, see <http://www.gnu.org/licenses/>.
 
 Contributors:
+- Bruno Vilhena Adorno     (adorno@ieee.org)
 - Murilo M. Marinho        (murilo@nml.t.u-tokyo.ac.jp)
 - Mateus Rodrigues Martins (martinsrmateus@gmail.com)
 */
@@ -58,7 +59,6 @@ public:
 
     //Static Methods
 public:
-
     static DQ unitDQ( const double& rot_angle, const int& x_axis, const int& y_axis, const int& z_axis, const double& x_trans, const double& y_trans, const double& z_trans);
     //To comply with MATLAB
     const static DQ i;
@@ -68,7 +68,6 @@ public:
 
     //Methods
 public:
-
     DQ(const VectorXd& v);
 
     DQ(const double& q0=0.0, const double& q1=0.0, const double& q2=0.0, const double& q3=0.0, const double& q4=0.0, const double& q5=0.0, const double& q6=0.0, const double& q7=0.0);
@@ -145,7 +144,6 @@ public:
     explicit operator int()    const;
 
     std::string to_string() const;
-
 };//DQ Class END
 
 /*************************************************************************
