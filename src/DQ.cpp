@@ -24,13 +24,9 @@ Contributors:
 
 #include <dqrobotics/DQ.h>
 #include <sstream>
-#include <math.h>
 #include <stdexcept> //for range_error
-#include <iostream>
 #include <vector>
 #include <cmath>
-
-using std::cout;
 
 namespace DQ_robotics{
 
