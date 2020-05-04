@@ -1027,14 +1027,89 @@ DQ DQ::unitDQ(const double& rot_angle, const int& x_axis,const int& y_axis,const
 std::string DQ::to_string() const
 {
     std::stringstream ss;
-    ss << q(0) << " "
-       << q(1) << "i "
-       << q(2) << "j "
-       << q(3) << "k +E( "
-       << q(4) << " "
-       << q(5) << "i "
-       << q(6) << "j "
-       << q(7) << "k )";
+
+    std::vector<std::string> s{"",""}; // intermediate strings containing the primary and dual parts
+    std::vector<std::string> aux{" ", "i", "j", "k"};
+    std::vector<bool> has_element{false,false};
+    int shift = 4;
+
+    //iterate over the primary part and dual part of the dual quaternion
+    for (int j = 0; j < 2; j++)
+    {
+        // when j = 0, shift = 0 and iterate over the primary part
+        // when j = 1, shift = 4 and iterate over the dual part
+        shift = 4*j;
+
+        //iterate over the quaternion coefficients
+        for (int i = 0; i < 4; i++)
+        {
+            if (abs(q(i+shift)) > DQ_threshold) // To avoid displaying values very close to zero
+            {
+                std::string quat_coefficient = std::to_string(abs(q(i+shift)));
+
+                // retrieves the index pointing to the last character that is not zero.
+                // it can be a nonzero numeral or a decimal point.
+                int index_of_nonzero = quat_coefficient.find_last_not_of('0');
+
+                // if it is a decimal dot, we want to remove it.
+                // if quat_coefficient[index_of_nonzero] == ".", then the compare method returns 0
+                if (quat_coefficient.compare(index_of_nonzero, 1, std::string{"."}) != 0)
+                {
+                    // the last nonzero element is a nonzero numeral, therefore we do not want to remove it.
+                    index_of_nonzero++;
+                }
+
+                // erase all unnecessary trailing zeros
+                // if the decimal point is not necessary either, also erase it
+                quat_coefficient.erase (index_of_nonzero, std::string::npos );
+
+                // if it is a negative number, display the negative sign
+                if (q(i+shift) < 0)
+                {
+                    s[j] = s[j] + std::string(" - ");
+                }
+                // if it is the first element AND a positive number, then has_element must be false
+                // and there is no need to print '+'
+                else if (has_element[j] == true)
+                {
+                    s[j] = s[j] + std::string(" + ");
+                }
+
+                //if it's the first element, regardless of its sign
+                if (i == 0)
+                {
+                    s[j] = s[j] + quat_coefficient;
+                }
+                //if it's not the first element, then we have to print one imaginary unit
+                else
+                {
+                    s[j] = s[j] + quat_coefficient + aux[i];
+                }
+                has_element[j] = true;
+            }
+        }
+    }
+
+    // the dual quaternion is not zero
+    if (has_element[0] == true or has_element[1] == true)
+    {
+        // if the dual part is not zero, then we have to show the multiplication by the dual unit
+        if (has_element[1] == true)
+        {
+            s[1] = "E*(" + s[1] + ")";
+
+            //also, if the primary part is not zero, then we have to show the addition sign before the dual part
+            if (has_element[0] == true)
+            {
+                s[1] = " + " + s[1];
+            }
+        }
+        ss << s[0] + s[1];
+    }
+    else
+    {
+        ss << "0";
+    }
 
     return ss.str();
 }
@@ -1630,90 +1705,7 @@ bool operator!=(const double& scalar, const DQ& dq) {
 
 std::ostream& operator<<(std::ostream& os, const DQ& dq)
 {
-    std::vector<std::string> s{"",""}; // intermediate strings containing the primary and dual parts
-    std::vector<std::string> aux{" ", "i", "j", "k"};
-    std::vector<bool> has_element{false,false};
-    int shift = 4;
-
-    //iterate over the primary part and dual part of the dual quaternion
-    for (int j = 0; j < 2; j++)
-    {
-        // when j = 0, shift = 0 and iterate over the primary part
-        // when j = 1, shift = 4 and iterate over the dual part
-        shift = 4*j;
-
-        //iterate over the quaternion coefficients
-        for (int i = 0; i < 4; i++)
-        {
-            if (abs(dq.q(i+shift)) > DQ_threshold) // To avoid displaying values very close to zero
-            {
-                std::string quat_coefficient = std::to_string(abs(dq.q(i+shift)));
-
-                // retrieves the index pointing to the last character that is not zero.
-                // it can be a nonzero numeral or a decimal point.
-                int index_of_nonzero = quat_coefficient.find_last_not_of('0');
-
-                // if it is a decimal dot, we want to remove it.
-                // if quat_coefficient[index_of_nonzero] == ".", then the compare method returns 0
-                if (quat_coefficient.compare(index_of_nonzero, 1, std::string{"."}) != 0)
-                {
-                    // the last nonzero element is a nonzero numeral, therefore we do not want to remove it.
-                    index_of_nonzero++;
-                }
-
-                // erase all unnecessary trailing zeros
-                // if the decimal point is not necessary either, also erase it
-                quat_coefficient.erase (index_of_nonzero, std::string::npos );
-
-                // if it is a negative number, display the negative sign
-                if (dq.q(i+shift) < 0)
-                {
-                    s[j] = s[j] + std::string(" - ");
-                }
-                // if it is the first element AND a positive number, then has_element must be false
-                // and there is no need to print '+'
-                else if (has_element[j] == true)
-                {
-                    s[j] = s[j] + std::string(" + ");
-                }
-
-                //if it's the first element, regardless of its sign
-                if (i == 0)
-                {
-                    s[j] = s[j] + quat_coefficient;
-                }
-                //if it's not the first element, then we have to print one imaginary unit
-                else
-                {
-                    s[j] = s[j] + quat_coefficient + aux[i];
-                }
-                has_element[j] = true;
-            }
-        }
-    }
-
-    // the dual quaternion is not zero
-    if (has_element[0] == true or has_element[1] == true)
-    {
-        // if the dual part is not zero, then we have to show the multiplication by the dual unit
-        if (has_element[1] == true)
-        {
-            s[1] = "E*(" + s[1] + ")";
-
-            //also, if the primary part is not zero, then we have to show the addition sign before the dual part
-            if (has_element[0] == true)
-            {
-                s[1] = " + " + s[1];
-            }
-        }
-        os << s[0] + s[1];
-    }
-    else
-    {
-        os << "0";
-    }
-
-    return os;
+    return os << dq.to_string();
 }
 
 /**
