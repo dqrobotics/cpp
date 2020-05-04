@@ -8,7 +8,15 @@ ADD_COMPILE_OPTIONS(-Werror=return-type -Wall -Wextra -Wmissing-declarations -Wr
 FIND_PACKAGE(Eigen3 REQUIRED) 
 INCLUDE_DIRECTORIES(${EIGEN3_INCLUDE_DIR}) #Writing this way is more OS agnostic
 
-INCLUDE_DIRECTORIES(include)
+if(UNIX AND NOT APPLE)
+    INCLUDE_DIRECTORIES(include)
+endif()
+
+if(APPLE)
+    INCLUDE_DIRECTORIES(/usr/local/include/)
+endif()
+
+
 
 ################################################################
 # DEFINE AND INSTALL LIBRARY AND INCLUDE FOLDER
