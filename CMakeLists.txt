@@ -31,10 +31,12 @@ ADD_LIBRARY(dqrobotics SHARED
     src/robot_modeling/DQ_CooperativeDualTaskSpace.cpp
     src/robot_modeling/DQ_Kinematics.cpp
     src/robot_modeling/DQ_SerialManipulator.cpp
+    src/robot_modeling/DQ_SerialManipulatorDH.cpp
     src/robot_modeling/DQ_MobileBase.cpp
     src/robot_modeling/DQ_HolonomicBase.cpp
     src/robot_modeling/DQ_DifferentialDriveRobot.cpp
     src/robot_modeling/DQ_WholeBody.cpp
+    src/robot_modeling/DQ_SerialWholeBody.cpp
 
     src/robot_control/DQ_KinematicController.cpp
     src/robot_control/DQ_PseudoinverseController.cpp
@@ -76,10 +78,12 @@ INSTALL(FILES
     include/dqrobotics/robot_modeling/DQ_CooperativeDualTaskSpace.h
     include/dqrobotics/robot_modeling/DQ_Kinematics.h
     include/dqrobotics/robot_modeling/DQ_SerialManipulator.h
+    include/dqrobotics/robot_modeling/DQ_SerialManipulatorDH.h
     include/dqrobotics/robot_modeling/DQ_MobileBase.h
     include/dqrobotics/robot_modeling/DQ_HolonomicBase.h
     include/dqrobotics/robot_modeling/DQ_DifferentialDriveRobot.h
     include/dqrobotics/robot_modeling/DQ_WholeBody.h
+    include/dqrobotics/robot_modeling/DQ_SerialWholeBody.h
     DESTINATION "include/dqrobotics/robot_modeling")
 
 # robot_control headers
@@ -132,11 +136,13 @@ INSTALL(FILES
 # robot_modeling folder
 INSTALL(FILES 
     src/robot_modeling/DQ_SerialManipulator.cpp
+    src/robot_modeling/DQ_SerialManipulatorDH.cpp
     src/robot_modeling/DQ_CooperativeDualTaskSpace.cpp
     src/robot_modeling/DQ_Kinematics.cpp
     src/robot_modeling/DQ_MobileBase.cpp
     src/robot_modeling/DQ_DifferentialDriveRobot.cpp
     src/robot_modeling/DQ_WholeBody.cpp
+    src/robot_modeling/DQ_SerialWholeBody.cpp
     DESTINATION "src/dqrobotics/robot_modeling")
 
 # robots folder

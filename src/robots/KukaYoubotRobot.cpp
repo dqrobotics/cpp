@@ -1,5 +1,5 @@
 /**
-(C) Copyright 2019 DQ Robotics Developers
+(C) Copyright 2019-2020 DQ Robotics Developers
 
 This file is part of DQ Robotics.
 
@@ -26,30 +26,30 @@ Contributors:
 #include<dqrobotics/robots/KukaYoubotRobot.h>
 #include<dqrobotics/utils/DQ_Constants.h>
 #include<dqrobotics/robot_modeling/DQ_HolonomicBase.h>
-#include<dqrobotics/robot_modeling/DQ_SerialManipulator.h>
-#include<dqrobotics/robot_modeling/DQ_WholeBody.h>
+#include<dqrobotics/robot_modeling/DQ_SerialManipulatorDH.h>
 #include<memory>
 
 namespace DQ_robotics
 {
 
-DQ_WholeBody KukaYoubotRobot::kinematics()
+DQ_SerialWholeBody KukaYoubotRobot::kinematics()
 {
     const double pi2 = pi/2.0;
-    MatrixXd arm_DH_matrix(4,5);
+    MatrixXd arm_DH_matrix(5,5);
     arm_DH_matrix <<    0,    pi2,       0,      pi2,        0,
                     0.147,      0,       0,        0,    0.218,
                         0,  0.155,   0.135,        0,        0,
-                      pi2,      0,       0,      pi2,        0;
+                      pi2,      0,       0,      pi2,        0,
+                        0,      0,       0,        0,        0;
 
-    auto arm = std::make_shared<DQ_SerialManipulator>(DQ_SerialManipulator(arm_DH_matrix,"standard"));
+    auto arm = std::make_shared<DQ_SerialManipulatorDH>(DQ_SerialManipulatorDH(arm_DH_matrix,"standard"));
     auto base = std::make_shared<DQ_HolonomicBase>(DQ_HolonomicBase());
 
     DQ x_bm= 1 + E_*0.5*(0.22575*i_ + 0.1441*k_);
 
     base->set_frame_displacement(x_bm);
 
-    DQ_WholeBody kin(std::static_pointer_cast<DQ_Kinematics>(base));
+    DQ_SerialWholeBody kin(std::static_pointer_cast<DQ_Kinematics>(base));
     kin.add(std::static_pointer_cast<DQ_Kinematics>(arm));
 
     return kin;

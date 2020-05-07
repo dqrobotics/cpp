@@ -57,7 +57,8 @@ public:
 
     //PURE virtual methods
     virtual DQ fkm                (const VectorXd& joint_configurations) const = 0;
-    virtual MatrixXd pose_jacobian(const VectorXd& joint_configurations, const int& to_link) const = 0;
+    virtual DQ fkm                (const VectorXd& joint_configurations, const int& to_ith_link) const = 0;
+    virtual MatrixXd pose_jacobian(const VectorXd& joint_configurations, const int& to_ith_link) const = 0;
     //Virtual methods
     virtual MatrixXd pose_jacobian (const VectorXd& joint_configurations) const;
     virtual int get_dim_configuration_space() const;

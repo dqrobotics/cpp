@@ -52,4 +52,9 @@ MatrixXd DQ_DifferentialDriveRobot::pose_jacobian(const VectorXd &q, const int &
     return J.block(0,0,3,to_link);
 }
 
+MatrixXd DQ_DifferentialDriveRobot::pose_jacobian(const VectorXd &q) const
+{
+    return pose_jacobian(q,get_dim_configuration_space());
+}
+
 }

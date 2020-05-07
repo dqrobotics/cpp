@@ -54,9 +54,9 @@ DQ_SerialManipulator::DQ_SerialManipulator(const MatrixXd& dh_matrix, const std:
     {
         throw(std::range_error("Bad DQ_SerialManipulator(dh_matrix, convention) call: convention must be 'standard' or 'modified' "));
     }
-    if (dh_matrix.rows() != 4 && dh_matrix.rows() != 5)
+    if (dh_matrix.rows() != 4)
     {
-        throw(std::range_error("Bad DQ_SerialManipulator(dh_matrix, convention) call: dh_matrix should be 5xn or 4xn"));
+        throw(std::range_error("Bad DQ_SerialManipulator(dh_matrix, convention) call: dh_matrix should be 4xn"));
     }
 
     //dh_matrix_.resize(dh_matrix);
@@ -189,72 +189,6 @@ VectorXd  DQ_SerialManipulator::alpha() const
 }
 
 /**
-* Returns a constant vector representing the existing 'dummy' axes of a robotic system DQ_SerialManipulator object.
-* It gets the fifth row of matrix 'A', passed to constructor and stored in the private attributte dh_matrix_ when it exists.
-* If not, dummy vector is a null with n elements. Being n equal to number of links. To use this member function, type:
-* 'dh_matrix__object.dummy();'.
-* \return A constant Eigen::VectorXd (number of links).
-*/
-VectorXd  DQ_SerialManipulator::dummy() const
-{
-    VectorXd aux_dummy(dh_matrix_.cols());
-    if (dh_matrix_.rows() > 4){
-        for (int i = 0; i < dh_matrix_.cols(); i++) {
-            aux_dummy(i) = dh_matrix_(4,i);
-        }
-        return aux_dummy;
-    }
-    else {
-        for (int i = 0; i < dh_matrix_.cols(); i++) {
-            aux_dummy(i) = 0;
-        }
-        return aux_dummy;
-    }
-}
-
-
-void DQ_SerialManipulator::set_dummy( const VectorXd& dummy_vector)
-{
-    if(dummy_vector.size() != dh_matrix_.cols())
-    {
-        std::cerr << std:: endl << "Cannot change dummy status: argument vector is of size = "
-                  << dummy_vector.size() << " when it should be of size = " << dh_matrix_.cols() << std::endl;
-        //Do nothing
-        return;
-    }
-
-    if (dh_matrix_.rows() > 4){
-        for (int i = 0; i < dh_matrix_.cols(); i++) {
-            dh_matrix_(4,i) = dummy_vector(i);
-        }
-    }
-    else{
-        std::cerr << std::endl << "Kinematics body has no dummy information to change." << std::endl;
-        //Do nothing
-    }
-}
-
-
-/**
-* Returns a constant int representing the number of 'dummy' axes of a robotic system DQ_SerialManipulator object.
-* If there are no dummy axes the result is 0. To use this member function, type: 'dh_matrix__object.n_dummy();'.
-* \return A constant int.
-*/
-int  DQ_SerialManipulator::n_dummy() const
-{
-    int aux_n_dummy = 0;
-    if (dh_matrix_.rows() > 4){
-        for (int i = 0; i < dh_matrix_.cols(); i++) {
-            if(dh_matrix_(4,i) == 1.0)
-                aux_n_dummy = aux_n_dummy + 1;
-        }
-        return aux_n_dummy;
-    }
-    else
-        return aux_n_dummy;
-}
-
-/**
 * Returns a constant std::string representing the Denavit Hartenberg convenction (standard or modified) used in a robotic system
 * DQ_SerialManipulator object. To use this member function, type: 'dh_matrix__object.convention();'.
 * \return A constant std::string.
@@ -318,12 +252,7 @@ DQ  DQ_SerialManipulator::raw_fkm(const VectorXd& q_vec, const int& to_ith_link)
     DQ q(1);
     int j = 0;
     for (int i = 0; i < (to_ith_link+1); i++) {
-        if(this->dummy()(i) == 1.0) {
-            q = q * _dh2dq(0, i);
-            j = j + 1;
-        }
-        else
-            q = q * _dh2dq(q_vec(i-j), i);
+        q = q * _dh2dq(q_vec(i-j), i);
     }
     return q;
 }
@@ -366,46 +295,46 @@ DQ  DQ_SerialManipulator::fkm(const VectorXd& q_vec, const int& to_ith_link) con
 * \param int link_i is the link number
 * \return A constant DQ object
 */
-DQ  DQ_SerialManipulator::_dh2dq(const double& theta, const int& to_ith_link) const {
-    _check_to_ith_link(to_ith_link);
+DQ  DQ_SerialManipulator::_dh2dq(const double& q, const int& ith) const {
+    _check_to_ith_link(ith);
 
-    Matrix<double,8,1> q(8);
+    Matrix<double,8,1> dq_q(8);
 
-    double d     = this->d()(to_ith_link);
-    double a     = this->a()(to_ith_link);
-    double alpha = this->alpha()(to_ith_link);
+    double d     = this->d()(ith);
+    double a     = this->a()(ith);
+    double alpha = this->alpha()(ith);
 
     if(this->convention() == "standard") {
 
-        q(0)=cos((theta + this->theta()(to_ith_link) )/2.0)*cos(alpha/2.0);
-        q(1)=cos((theta + this->theta()(to_ith_link) )/2.0)*sin(alpha/2.0);
-        q(2)=sin((theta + this->theta()(to_ith_link) )/2.0)*sin(alpha/2.0);
-        q(3)=sin((theta + this->theta()(to_ith_link) )/2.0)*cos(alpha/2.0);
+        dq_q(0)=cos((q + this->theta()(ith) )/2.0)*cos(alpha/2.0);
+        dq_q(1)=cos((q + this->theta()(ith) )/2.0)*sin(alpha/2.0);
+        dq_q(2)=sin((q + this->theta()(ith) )/2.0)*sin(alpha/2.0);
+        dq_q(3)=sin((q + this->theta()(ith) )/2.0)*cos(alpha/2.0);
         double d2=d/2.0;
         double a2=a/2.0;
-        q(4)= -d2*q(3) - a2*q(1);
-        q(5)= -d2*q(2) + a2*q(0);
-        q(6)=  d2*q(1) + a2*q(3);
-        q(7)=  d2*q(0) - a2*q(2);
+        dq_q(4)= -d2*dq_q(3) - a2*dq_q(1);
+        dq_q(5)= -d2*dq_q(2) + a2*dq_q(0);
+        dq_q(6)=  d2*dq_q(1) + a2*dq_q(3);
+        dq_q(7)=  d2*dq_q(0) - a2*dq_q(2);
     }
     else{
 
-        double h1 = cos((theta + this->theta()(to_ith_link) )/2.0)*cos(alpha/2.0);
-        double h2 = cos((theta + this->theta()(to_ith_link) )/2.0)*sin(alpha/2.0);
-        double h3 = sin((theta + this->theta()(to_ith_link) )/2.0)*sin(alpha/2.0);
-        double h4 = sin((theta + this->theta()(to_ith_link) )/2.0)*cos(alpha/2.0);
-        q(0)= h1;
-        q(1)= h2;
-        q(2)= -h3;
-        q(3)= h4;
+        double h1 = cos((q + this->theta()(ith) )/2.0)*cos(alpha/2.0);
+        double h2 = cos((q + this->theta()(ith) )/2.0)*sin(alpha/2.0);
+        double h3 = sin((q + this->theta()(ith) )/2.0)*sin(alpha/2.0);
+        double h4 = sin((q + this->theta()(ith) )/2.0)*cos(alpha/2.0);
+        dq_q(0)= h1;
+        dq_q(1)= h2;
+        dq_q(2)= -h3;
+        dq_q(3)= h4;
         double d2=d/2.0;
         double a2=a/2.0;
-        q(4)=-d2*h4 - a2*h2;
-        q(5)=-d2*h3 + a2*h1;
-        q(6)=-(d2*h2 + a2*h4);
-        q(7)=d2*h1 - a2*h3;
+        dq_q(4)=-d2*h4 - a2*h2;
+        dq_q(5)=-d2*h3 + a2*h1;
+        dq_q(6)=-(d2*h2 + a2*h4);
+        dq_q(7)=d2*h1 - a2*h3;
     }
-    return DQ(q);
+    return DQ(dq_q);
 }
 
 
@@ -442,7 +371,7 @@ MatrixXd DQ_SerialManipulator::raw_pose_jacobian(const VectorXd& q_vec, const in
     DQ z;
     DQ q(1);
 
-    MatrixXd J = MatrixXd::Zero(8,(to_ith_link+1 - this->n_dummy()) );
+    MatrixXd J = MatrixXd::Zero(8,(to_ith_link+1));
 
     int ith = -1;
     for(int i = 0; i < to_ith_link+1; i++) {
@@ -456,17 +385,12 @@ MatrixXd DQ_SerialManipulator::raw_pose_jacobian(const VectorXd& q_vec, const in
             DQ w(0, 0, -sin(this->alpha()(i)), cos(this->alpha()(i)), 0, 0, -this->a()(i)*cos(this->alpha()(i)), -this->a()(i)*sin(this->alpha()(i)));
             z =0.5 * q * w * q.conj();
         }
-        if(this->dummy()(i) == 0.0) {
-            q = q * this->_dh2dq(q_vec(ith+1), i);
-            DQ aux_j = z * q_effector;
-            for(int k = 0; k < J.rows(); k++) {
-                J(k,ith+1) = aux_j.q(k);
-            }
-            ith = ith+1;
+        q = q * this->_dh2dq(q_vec(ith+1), i);
+        DQ aux_j = z * q_effector;
+        for(int k = 0; k < J.rows(); k++) {
+            J(k,ith+1) = aux_j.q(k);
         }
-        else
-            // Dummy joints don't contribute to the Jacobian
-            q = q * this->_dh2dq(0.0, i);
+        ith = ith+1;
     }
 
     return J;
@@ -523,7 +447,7 @@ MatrixXd DQ_SerialManipulator::pose_jacobian_derivative(const VectorXd &q_vec, c
     VectorXd vec_x_effector_dot = J*q_vec_dot.head(to_ith_link);
 
     DQ x = DQ(1);
-    MatrixXd J_dot = MatrixXd::Zero(8,n-n_dummy());
+    MatrixXd J_dot = MatrixXd::Zero(8,n);
     int jth=0;
 
     for(int i=0;i<n;i++)
@@ -548,27 +472,21 @@ MatrixXd DQ_SerialManipulator::pose_jacobian_derivative(const VectorXd &q_vec, c
             z = 0.5*x*w*conj(x);
         }
 
-        if( dummy()(i)!=1.0 )
-        {
-            VectorXd vec_zdot;
-            if(i==0)
-            {
-                vec_zdot = VectorXd::Zero(8,1);
-            }
-            else
-            {
-                vec_zdot = 0.5*(haminus8(w*conj(x)) + hamiplus8(x*w)*C8())*raw_pose_jacobian(q_vec,i-1)*q_vec_dot.head(i);
-            }
 
-            J_dot.col(jth) = haminus8(x_effector)*vec_zdot + hamiplus8(z)*vec_x_effector_dot;
-            x = x*_dh2dq(q_vec(jth),i);
-            jth = jth+1;
+        VectorXd vec_zdot;
+        if(i==0)
+        {
+            vec_zdot = VectorXd::Zero(8,1);
         }
         else
         {
-            //Dummy joints don't contribute to the Jacobian
-            x = x*_dh2dq(0,i);
+            vec_zdot = 0.5*(haminus8(w*conj(x)) + hamiplus8(x*w)*C8())*raw_pose_jacobian(q_vec,i-1)*q_vec_dot.head(i);
         }
+
+        J_dot.col(jth) = haminus8(x_effector)*vec_zdot + hamiplus8(z)*vec_x_effector_dot;
+        x = x*_dh2dq(q_vec(jth),i);
+        jth = jth+1;
+
     }
 
     return J_dot;

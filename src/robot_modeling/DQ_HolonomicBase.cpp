@@ -50,6 +50,15 @@ DQ DQ_HolonomicBase::fkm(const VectorXd& q) const
     return raw_fkm(q)*frame_displacement_;
 }
 
+DQ DQ_HolonomicBase::fkm(const VectorXd &q, const int& to_ith_link) const
+{
+    if(to_ith_link != 2)
+    {
+        throw std::runtime_error(std::string("DQ_HolonomicBase(q,to_ith_link) only accepts to_ith_link=2"));
+    }
+    return fkm(q);
+}
+
 MatrixXd DQ_HolonomicBase::raw_pose_jacobian(const VectorXd& q, const int& to_link) const
 {
     if(to_link >= 3 || to_link < 0)
@@ -91,6 +100,11 @@ MatrixXd DQ_HolonomicBase::raw_pose_jacobian(const VectorXd& q, const int& to_li
 MatrixXd DQ_HolonomicBase::pose_jacobian(const VectorXd &q, const int &to_link) const
 {
     return haminus8(frame_displacement_)*raw_pose_jacobian(q,to_link);
+}
+
+MatrixXd DQ_HolonomicBase::pose_jacobian(const VectorXd &q) const
+{
+    return pose_jacobian(q,get_dim_configuration_space());
 }
 
 }

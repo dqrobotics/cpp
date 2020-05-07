@@ -34,7 +34,7 @@ namespace DQ_robotics
 
 class DQ_SerialManipulator: public DQ_Kinematics
 {
-private:
+protected:
     MatrixXd    dh_matrix_;
     std::string dh_matrix_convention_;
 
@@ -43,7 +43,7 @@ private:
 
     DQ curr_effector_;
 
-    DQ _dh2dq(const double& theta, const int& to_ith_link) const;
+    virtual DQ _dh2dq(const double& q, const int& ith) const;
     DQ _get_z(const DQ& h) const;
 
 public:
@@ -56,10 +56,6 @@ public:
     VectorXd a() const;
     VectorXd alpha() const;
     std::string convention() const;
-
-    VectorXd dummy() const;
-    void set_dummy( const VectorXd& dummy_vector);
-    int n_dummy() const;
 
     void set_lower_q_limit(const VectorXd& lower_q_limit);
     VectorXd lower_q_limit() const;
@@ -77,7 +73,7 @@ public:
     DQ fkm(const VectorXd& q_vec, const int& to_ith_link) const;
 
     MatrixXd raw_pose_jacobian(const VectorXd& q_vec) const;
-    MatrixXd raw_pose_jacobian(const VectorXd& q_vec, const int& to_ith_link) const;
+    virtual MatrixXd raw_pose_jacobian(const VectorXd& q_vec, const int& to_ith_link) const;
 
     MatrixXd pose_jacobian_derivative(const VectorXd& q_vec, const VectorXd& q_vec_dot) const;
     MatrixXd pose_jacobian_derivative(const VectorXd& q_vec, const VectorXd& q_vec_dot, const int& to_ith_link) const;

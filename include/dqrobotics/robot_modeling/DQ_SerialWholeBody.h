@@ -1,5 +1,5 @@
 /**
-(C) Copyright 2019 DQ Robotics Developers
+(C) Copyright 2020 DQ Robotics Developers
 
 This file is part of DQ Robotics.
 
@@ -20,8 +20,8 @@ Contributors:
 - Murilo M. Marinho (murilo@nml.t.u-tokyo.ac.jp)
 */
 
-#ifndef DQ_ROBOT_MODELLING_DQ_WHOLE_BODY_H
-#define DQ_ROBOT_MODELLING_DQ_WHOLE_BODY_H
+#ifndef DQ_ROBOT_MODELLING_DQ_SERIAL_WHOLE_BODY_H
+#define DQ_ROBOT_MODELLING_DQ_SERIAL_WHOLE_BODY_H
 
 #include<vector>
 #include<memory>
@@ -33,27 +33,36 @@ Contributors:
 namespace DQ_robotics
 {
 
-class DQ_WholeBody : public DQ_Kinematics
+class DQ_SerialWholeBody : public DQ_Kinematics
 {
 protected:
     std::vector<std::shared_ptr<DQ_Kinematics>> chain_;
     void _check_to_ith_chain(const int& to_ith_chain) const;
+    void _check_to_jth_link_of_ith_chain(const int& to_ith_chain, const int& to_jth_link) const;
 public:
-    DQ_WholeBody()=delete;
-    DQ_WholeBody(std::shared_ptr<DQ_Kinematics> robot);
+    DQ_SerialWholeBody()=delete;
+    DQ_SerialWholeBody(std::shared_ptr<DQ_Kinematics> robot, const std::string type=std::string("standard"));
 
     void add(std::shared_ptr<DQ_Kinematics> robot);
-    DQ raw_fkm(const VectorXd& q, const int& to_ith_chain) const;
+
+    DQ raw_fkm_by_chain(const VectorXd& q, const int& to_ith_chain, const int& to_jth_link) const;
+    DQ raw_fkm_by_chain(const VectorXd& q, const int& to_ith_chain) const;
+    std::tuple<int, int> get_chain_and_link_from_index(const int& to_ith_link) const;
+
     DQ raw_fkm(const VectorXd& q) const;
+    DQ raw_fkm(const VectorXd& q, const int& to_ith_link) const;
+
     void set_effector(const DQ& effector);
+
     DQ_Kinematics* get_chain(const int& to_ith_chain);
     DQ_SerialManipulator get_chain_as_serial_manipulator(const int& to_ith_chain) const;
     DQ_HolonomicBase get_chain_as_holonomic_base(const int& to_ith_chain) const;
+    MatrixXd raw_pose_jacobian_by_chain(const VectorXd& q, const int& to_ith_chain, const int& to_jth_link) const;
 
     //Abstract methods' implementation
     DQ fkm(const VectorXd& q) const override;
-    DQ fkm(const VectorXd&, const int& to_chain) const override;
-    MatrixXd pose_jacobian(const VectorXd& q, const int& to_ith_chain) const override;
+    DQ fkm(const VectorXd&, const int& to_ith_link) const override;
+    MatrixXd pose_jacobian(const VectorXd& q, const int& to_ith_link) const override;
     MatrixXd pose_jacobian(const VectorXd& q) const override;
 };
 

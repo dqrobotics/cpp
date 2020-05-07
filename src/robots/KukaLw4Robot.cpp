@@ -29,16 +29,17 @@ Contributors:
 namespace DQ_robotics
 {
 
-DQ_SerialManipulator KukaLw4Robot::kinematics()
+DQ_SerialManipulatorDH KukaLw4Robot::kinematics()
 {
     const double pi2 = pi/2.0;
 
-    Matrix<double,4,7> kukka_dh(4,7);
+    Matrix<double,5,7> kukka_dh(5,7);
     kukka_dh <<  0,     0,     0,   0,   0,    0,   0,
                  0.310, 0,     0.4, 0,   0.39, 0,   0,
                  0,     0,     0,   0,   0,    0,   0,
-                 pi2,   -pi2, -pi2, pi2, pi2, -pi2, 0;
-    DQ_SerialManipulator kukka(kukka_dh,"standard");
+                 pi2,   -pi2, -pi2, pi2, pi2, -pi2, 0,
+                 0,     0,     0,   0,   0,    0,   0;
+    DQ_SerialManipulatorDH kukka(kukka_dh,"standard");
 
     return kukka;
 }

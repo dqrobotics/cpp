@@ -25,7 +25,7 @@ Contributors:
 namespace DQ_robotics
 {
 
-DQ_SerialManipulator Ax18ManipulatorRobot::kinematics()
+DQ_SerialManipulatorDH Ax18ManipulatorRobot::kinematics()
 {
     const double pi2 = pi/2.0;
 
@@ -36,7 +36,7 @@ DQ_SerialManipulator Ax18ManipulatorRobot::kinematics()
     -pi2,  0,   -pi2,      -pi2,    0,
     0,    0,    0,    0,           0;
 
-    DQ_SerialManipulator ax18(ax18_dh,"standard");
+    DQ_SerialManipulatorDH ax18(ax18_dh,"standard");
 
     return ax18;
 }
