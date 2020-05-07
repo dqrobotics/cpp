@@ -19,7 +19,7 @@ Python [WindowsCompilers](https://wiki.python.org/moin/WindowsCompilers)
 
 ## Install Eigen3
 
-1) ./vcpkg.exe install eigen3
+1) ./vcpkg.exe install eigen3:x64-windows
 
 ## Configure VS solutions
 
