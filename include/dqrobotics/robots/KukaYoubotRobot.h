@@ -23,7 +23,7 @@ Contributors:
 #ifndef DQ_ROBOTS_KUKAYOUBOTROBOT_H
 #define DQ_ROBOTS_KUKAYOUBOTROBOT_H
 
-#include<dqrobotics/robot_modeling/DQ_WholeBody.h>
+#include<dqrobotics/robot_modeling/DQ_SerialWholeBody.h>
 
 namespace DQ_robotics
 {
@@ -31,7 +31,7 @@ namespace DQ_robotics
 class KukaYoubotRobot
 {
 public:
-    static DQ_WholeBody kinematics();
+    static DQ_SerialWholeBody kinematics();
 };
 
 }
