@@ -7,6 +7,9 @@ Get one of the released versions.
 
 # Developers
 
+## Useful info
+Python [WindowsCompilers](https://wiki.python.org/moin/WindowsCompilers)
+
 ## Install vcpkg (Using git bash)
 
 1) git clone https://github.com/Microsoft/vcpkg.git
