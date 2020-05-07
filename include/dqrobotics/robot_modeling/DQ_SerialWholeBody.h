@@ -38,6 +38,7 @@ class DQ_SerialWholeBody : public DQ_Kinematics
 protected:
     std::vector<std::shared_ptr<DQ_Kinematics>> chain_;
     void _check_to_ith_chain(const int& to_ith_chain) const;
+    void _check_to_jth_link_of_ith_chain(const int& to_ith_chain, const int& to_jth_link) const;
 public:
     DQ_SerialWholeBody()=delete;
     DQ_SerialWholeBody(std::shared_ptr<DQ_Kinematics> robot, const std::string type=std::string("standard"));

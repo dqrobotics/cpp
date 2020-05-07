@@ -52,9 +52,9 @@ DQ DQ_HolonomicBase::fkm(const VectorXd& q) const
 
 DQ DQ_HolonomicBase::fkm(const VectorXd &q, const int& to_ith_link) const
 {
-    if(to_ith_link != 0)
+    if(to_ith_link != 2)
     {
-        throw std::runtime_error(std::string("DQ_HolonomicBase(q,to_ith_link) only accepts to_ith_link=0"));
+        throw std::runtime_error(std::string("DQ_HolonomicBase(q,to_ith_link) only accepts to_ith_link=2"));
     }
     return fkm(q);
 }

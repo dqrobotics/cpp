@@ -35,6 +35,21 @@ void DQ_SerialWholeBody::_check_to_ith_chain(const int &to_ith_chain) const
     }
 }
 
+void DQ_SerialWholeBody::_check_to_jth_link_of_ith_chain(const int &to_ith_chain, const int &to_jth_link) const
+{
+    _check_to_ith_chain(to_ith_chain);
+    if( (to_jth_link >= static_cast<int>(chain_[to_ith_chain]->get_dim_configuration_space())) || to_jth_link < 0)
+    {
+        throw std::runtime_error(
+                    std::string("Tried to access link index ")
+                    + std::to_string(to_jth_link)
+                    + std::string(" of chain index ")
+                    + std::to_string(to_ith_chain)
+                    + std::string(" which is unnavailable.")
+                    );
+    }
+}
+
 DQ_SerialWholeBody::DQ_SerialWholeBody(std::shared_ptr<DQ_Kinematics> robot, const std::string type)
 {
     chain_.push_back(robot);
@@ -110,14 +125,14 @@ std::tuple<int,int> DQ_SerialWholeBody::get_chain_and_link_from_index(const int 
     int n = to_ith_link;
     for(int ith=0;ith<chain_.size();ith++)
     {
-        if(n - chain_[ith]->get_dim_configuration_space() > 0)
+        if( (n - chain_[ith]->get_dim_configuration_space()) > 0)
         {
             ith_chain++;
-            n-=chain_[ith]->get_dim_configuration_space();
+            n = n - chain_[ith]->get_dim_configuration_space();
         }
         else
         {
-            jth_link = (n-chain_[ith]->get_dim_configuration_space());
+            jth_link = n;
             return std::make_tuple(ith_chain, jth_link);
         }
     }
@@ -148,8 +163,8 @@ DQ DQ_SerialWholeBody::raw_fkm_by_chain(const VectorXd &q, const int &to_ith_cha
     int q_counter = 0;
     int current_robot_dim;
     VectorXd current_robot_q;
-    //Loop until the second-to-last element in the chain
-    for(int i=0;i<to_ith_chain+2;i++)
+    //Loop until the second-to-last element until to_ith_chain
+    for(int i=0;i<to_ith_chain;i++)
     {
         current_robot_dim = chain_[i]->get_dim_configuration_space();
         current_robot_q   = q.segment(q_counter,current_robot_dim);
@@ -157,9 +172,9 @@ DQ DQ_SerialWholeBody::raw_fkm_by_chain(const VectorXd &q, const int &to_ith_cha
         q_counter += current_robot_dim;
     }
     //The last element in the chain can be partial
-    current_robot_dim  = to_jth_link;
+    current_robot_dim  = chain_[to_ith_chain]->get_dim_configuration_space();
     current_robot_q    = q.segment(q_counter,current_robot_dim);
-    pose = pose * chain_[to_ith_chain-1]->fkm(current_robot_q,current_robot_dim);
+    pose = pose * chain_[to_ith_chain]->fkm(current_robot_q,to_jth_link);
 
     return pose;
 }
@@ -169,15 +184,15 @@ DQ DQ_SerialWholeBody::raw_fkm_by_chain(const VectorXd &q, const int &to_ith_cha
     _check_q_vec(q);
     _check_to_ith_chain(to_ith_chain);
 
-    return raw_fkm_by_chain(q,to_ith_chain,chain_[to_ith_chain]->get_dim_configuration_space());
+    return raw_fkm_by_chain(q,to_ith_chain,chain_[to_ith_chain]->get_dim_configuration_space()-1);
 }
 
 MatrixXd DQ_SerialWholeBody::raw_pose_jacobian_by_chain(const VectorXd &q, const int &to_ith_chain, const int &to_jth_link) const
 {
     _check_q_vec(q);
-    _check_to_ith_chain(to_ith_chain);
+    _check_to_jth_link_of_ith_chain(to_ith_chain, to_jth_link);
 
-    int n = chain_.size();
+    int n = to_ith_chain+1; //Size of the partial or total chain
     DQ x_0_to_n = raw_fkm_by_chain(q,to_ith_chain,to_jth_link);
     int q_counter = 0;
 
@@ -187,10 +202,6 @@ MatrixXd DQ_SerialWholeBody::raw_pose_jacobian_by_chain(const VectorXd &q, const
     {
         int dim = chain_[i]->get_dim_configuration_space();
         // Addressing the to_jth_link
-        if(i==n-1)
-        {
-            dim = to_jth_link;
-        }
 
         const DQ x_0_to_iplus1 = raw_fkm_by_chain(q,i);
         const DQ x_iplus1_to_n = conj(x_0_to_iplus1)*x_0_to_n;
@@ -199,9 +210,16 @@ MatrixXd DQ_SerialWholeBody::raw_pose_jacobian_by_chain(const VectorXd &q, const
         q_counter += dim;
 
         if(i==0)
+        {
             J_vector.push_back(haminus8(x_iplus1_to_n)*chain_[i]->pose_jacobian(q_iplus1,dim-1));
+        }
         else
-            J_vector.push_back(hamiplus8(fkm(q,i-1))*haminus8(x_iplus1_to_n)*chain_[i]->pose_jacobian(q_iplus1,dim-1));
+        {
+            if(i==n-1) //To address the last index in the chain, or partial chains
+                J_vector.push_back(hamiplus8(raw_fkm_by_chain(q,i-1))*haminus8(x_iplus1_to_n)*chain_[i]->pose_jacobian(q_iplus1,to_jth_link));
+            else
+                J_vector.push_back(hamiplus8(raw_fkm_by_chain(q,i-1))*haminus8(x_iplus1_to_n)*chain_[i]->pose_jacobian(q_iplus1,dim-1));
+        }
     }
 
     MatrixXd J_pose(8,q_counter);
