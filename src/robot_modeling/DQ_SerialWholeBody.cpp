@@ -141,7 +141,7 @@ std::tuple<int,int> DQ_SerialWholeBody::get_chain_and_link_from_index(const int 
 
 DQ DQ_SerialWholeBody::raw_fkm(const VectorXd &q) const
 {
-    return raw_fkm_by_chain(q, chain_.size()-1, chain_[chain_.size()-1]->get_dim_configuration_space());
+    return raw_fkm_by_chain(q, chain_.size()-1, chain_[chain_.size()-1]->get_dim_configuration_space()-1);
 }
 
 DQ DQ_SerialWholeBody::raw_fkm(const VectorXd &q, const int &to_ith_link) const
