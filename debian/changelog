@@ -1,3 +1,13 @@
+libdqrobotics (20.04.0) bionic; urgency=medium
+
+  * DQ: Improved to_string() to be more similar to MATLAB.
+  * DQ_SerialMainpulator: removed support for dummy joints.
+  * Added DQ_SerialWholeBody.  This class represents the serial connection of robots.
+  * Added DQ_SerialManipulatorDH. This class represents serial robots modeled using DH parameters and can consider prismatic joints.
+  * DQ_Robots: changed most serial manipulator robots to use DQ_SerialManipulatorDH instead of DQ_SerialManipulator. Changed KukaYoubotRobot to use DQ_SerialWholeBody instead of DQ_WholeBody. 
+
+ -- Murilo <murilo@nml.t.u-tokyo.ac.jp>  Wed, 06 May 2020 19:24:42 -0700
+
 libdqrobotics (19.10.1) bionic; urgency=medium
 
   * DQ_KinematicController: Added DistanceToPlane, stability_counter_ and related methods, and changed is_stable() to system_reached_stable_region() 
