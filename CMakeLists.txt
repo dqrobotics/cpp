@@ -2,8 +2,6 @@ CMAKE_MINIMUM_REQUIRED(VERSION 3.4)
 PROJECT(dqrobotics)
 set (CMAKE_CXX_STANDARD 11)
 
-ADD_DEFINITIONS(-D_USE_MATH_DEFINES) #For windows to find M_PI
-
 INCLUDE_DIRECTORIES(include)
 
 if(UNIX AND NOT APPLE)
@@ -14,9 +12,11 @@ endif()
 
 if(APPLE)
     INCLUDE_DIRECTORIES(/usr/local/include/)
+    ADD_COMPILE_OPTIONS(-Werror=return-type -Wall -Wextra -Wmissing-declarations -Wredundant-decls -Woverloaded-virtual)
 endif()
 
 if(WIN32)
+    ADD_DEFINITIONS(-D_USE_MATH_DEFINES) 
     FIND_PACKAGE(Eigen3 CONFIG REQUIRED) 
     INCLUDE_DIRECTORIES(${EIGEN3_INCLUDE_DIR}) 
 endif()
