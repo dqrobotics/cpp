@@ -92,11 +92,7 @@ DQ DQ_SerialManipulatorDH::_get_w(const int &ith) const
 
 VectorXd DQ_SerialManipulatorDH::type() const
 {
-    VectorXd aux_d(dh_matrix_.cols());
-    for (int i = 0; i < dh_matrix_.cols(); i++) {
-        aux_d(i) = dh_matrix_(4,i);
-    }
-    return aux_d;
+    return dh_matrix_.row(4);
 }
 
 MatrixXd DQ_SerialManipulatorDH::raw_pose_jacobian(const VectorXd &q_vec, const int &to_ith_link) const

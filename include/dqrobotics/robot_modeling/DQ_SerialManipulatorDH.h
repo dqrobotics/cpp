@@ -48,28 +48,6 @@ public:
 
     //Override from DQ_SerialManipulator
     MatrixXd raw_pose_jacobian(const VectorXd& q_vec, const int& to_ith_link) const override;
-    //MatrixXd pose_jacobian(const VectorXd& q_vec, const int& to_ith_link) const override;
-    //MatrixXd pose_jacobian(const VectorXd& q_vec) const override;
-    //DQ fkm(const VectorXd& q_vec) const override;
-    //int get_dim_configuration_space() const override;
-
-    //Use as in DQ_SerialManipulator
-    //MatrixXd getDHMatrix();
-    //VectorXd theta() const;
-    //VectorXd d() const;
-    //VectorXd a() const;
-    //VectorXd alpha() const;
-    //std::string convention() const;
-    //void set_lower_q_limit(const VectorXd& lower_q_limit);
-    //VectorXd lower_q_limit() const;
-    //void set_upper_q_limit(const VectorXd& upper_q_limit);
-    //VectorXd upper_q_limit() const;
-    //DQ effector() const;
-    //DQ set_effector(const DQ& new_effector);
-    //MatrixXd raw_pose_jacobian(const VectorXd& q_vec) const;
-    //DQ raw_fkm(const VectorXd& q_vec) const;
-    //DQ raw_fkm(const VectorXd& q_vec, const int& to_ith_link) const;
-    //DQ fkm(const VectorXd& q_vec, const int& to_ith_link) const;
 };
 
 }//Namespace DQRobotics

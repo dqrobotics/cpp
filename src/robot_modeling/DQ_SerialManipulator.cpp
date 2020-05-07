@@ -134,11 +134,7 @@ VectorXd DQ_SerialManipulator::upper_q_limit() const
 */
 VectorXd  DQ_SerialManipulator::theta() const
 {
-    VectorXd aux_theta(dh_matrix_.cols());
-    for (int i = 0; i < dh_matrix_.cols(); i++) {
-        aux_theta(i) = dh_matrix_(0,i);
-    }
-    return aux_theta;
+    return dh_matrix_.row(0);
 }
 
 
@@ -151,11 +147,7 @@ VectorXd  DQ_SerialManipulator::theta() const
 */
 VectorXd  DQ_SerialManipulator::d() const
 {
-    VectorXd aux_d(dh_matrix_.cols());
-    for (int i = 0; i < dh_matrix_.cols(); i++) {
-        aux_d(i) = dh_matrix_(1,i);
-    }
-    return aux_d;
+    return dh_matrix_.row(1);
 }
 
 /**
@@ -166,11 +158,7 @@ VectorXd  DQ_SerialManipulator::d() const
 */
 VectorXd  DQ_SerialManipulator::a() const
 {
-    VectorXd aux_a(dh_matrix_.cols());
-    for (int i = 0; i < dh_matrix_.cols(); i++) {
-        aux_a(i) = dh_matrix_(2,i);
-    }
-    return aux_a;
+    return dh_matrix_.row(2);
 }
 
 /**
@@ -181,11 +169,7 @@ VectorXd  DQ_SerialManipulator::a() const
 */
 VectorXd  DQ_SerialManipulator::alpha() const
 {
-    VectorXd aux_alpha(dh_matrix_.cols());
-    for (int i = 0; i < dh_matrix_.cols(); i++) {
-        aux_alpha(i) = dh_matrix_(3,i);
-    }
-    return aux_alpha;
+    return dh_matrix_.row(3);
 }
 
 /**
