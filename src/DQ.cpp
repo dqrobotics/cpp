@@ -1091,7 +1091,7 @@ std::string DQ::to_string() const
     }
 
     // the dual quaternion is not zero
-    if (has_element[0] == true or has_element[1] == true)
+    if (has_element[0] == true || has_element[1] == true)
     {
         // if the dual part is not zero, then we have to show the multiplication by the dual unit
         if (has_element[1] == true)
