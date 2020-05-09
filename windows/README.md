@@ -1,33 +1,36 @@
-# dqrobotics-cpp WINDOWS pre-alpha
+# dqrobotics-cpp WINDOWS 
 
 # Users
 
-Get one of the released versions.
-**USE AT YOUR OWN RISK, THERE IS NO SUPPORT**
+Use the Python version.
 
 # Developers
 
-## Useful info
-Python [WindowsCompilers](https://wiki.python.org/moin/WindowsCompilers)
+**USE AT YOUR OWN RISK, THERE IS NO SUPPORT**
 
-## Install vcpkg (Using git bash)
+## Compiler/IDE
+Install [Visual Studio Community 2019](https://visualstudio.microsoft.com/vs/).
 
-1) git clone https://github.com/Microsoft/vcpkg.git
-2) cd vcpkg
-3) ./bootstrap-vcpkg.sh
-4) ./vcpk.exe integrate install
+## Install vcpkg (Using Powershell)
+
+```powershell
+git clone https://github.com/Microsoft/vcpkg.git
+cd vcpkg
+.\bootstrap-vcpkg.bat
+.\vcpkg integrate install
+```
 
 ## Install Eigen3
 
-1) ./vcpkg.exe install eigen3:x64-windows
+```powershell
+.\vcpkg install eigen3:x64-windows
+```
 
-## Configure VS solutions
+## Compile 
+Open the project in Visual Studio Community 2019 and compile using the CMakeLists.txt.
 
-1) Update windows_cmake_config.sh with -DCMAKE_TOOLCHAIN_FILE=[your vcpkg path]\scripts
-2) ./windows_cmake_config.sh
+## Link
+Add the compiled library in your project.
 
-## Open solutions and build them in Debug and Release modes with the relevant VS versions
-
-## Pack!
-
-1) ./windows_pack.sh
+## Useful info
+Python [WindowsCompilers](https://wiki.python.org/moin/WindowsCompilers)
