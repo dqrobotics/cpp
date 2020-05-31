@@ -57,7 +57,6 @@ VectorXd DQ_QuadraticProgrammingController::compute_setpoint_control_signal(cons
         const MatrixXd H = compute_objective_function_symmetric_matrix(J,task_error);
         const MatrixXd f = compute_objective_function_linear_component(J,task_error);
 
-        std::cout << "Going to solve quadratic program!" << std::endl;
         VectorXd u = qp_solver_->solve_quadratic_program(H,f,A,b,Aeq,beq);
 
         verify_stability(task_error);
