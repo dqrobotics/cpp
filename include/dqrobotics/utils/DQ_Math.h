@@ -31,6 +31,9 @@ namespace DQ_robotics
 double deg2rad(const double& a);
 VectorXd deg2rad(const VectorXd& v);
 
+double rad2deg(const double& a);
+VectorXd rad2deg(const VectorXd& v);
+
 }
 
 #endif
