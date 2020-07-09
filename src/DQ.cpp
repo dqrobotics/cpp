@@ -1043,9 +1043,9 @@ std::string DQ::to_string() const
         //iterate over the quaternion coefficients
         for (int i = 0; i < 4; i++)
         {
-            if (abs(q(i+shift)) > DQ_threshold) // To avoid displaying values very close to zero
+            if (fabs(q(i+shift)) > DQ_threshold) // To avoid displaying values very close to zero
             {
-                std::string quat_coefficient = std::to_string(abs(q(i+shift)));
+                std::string quat_coefficient = std::to_string(fabs(q(i+shift)));
 
                 // retrieves the index pointing to the last character that is not zero.
                 // it can be a nonzero numeral or a decimal point.
