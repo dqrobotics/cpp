@@ -292,26 +292,6 @@ DQ  DQ_SerialManipulator::fkm(const VectorXd& q_vec, const int& to_ith_link) con
 * \param int link_i is the link number
 * \return A constant DQ object
 */
-VectorXd DQ_SerialManipulator::getLower_q_dot_limit() const
-{
-    return lower_q_dot_limit_;
-}
-
-void DQ_SerialManipulator::setLower_q_dot_limit(const VectorXd &lower_q_dot_limit)
-{
-    lower_q_dot_limit_ = lower_q_dot_limit;
-}
-
-VectorXd DQ_SerialManipulator::getUpper_q_dot_limit() const
-{
-    return upper_q_dot_limit_;
-}
-
-void DQ_SerialManipulator::setUpper_q_dot_limit(const VectorXd &upper_q_dot_limit)
-{
-    upper_q_dot_limit_ = upper_q_dot_limit;
-}
-
 DQ  DQ_SerialManipulator::_dh2dq(const double& q, const int& ith) const {
     _check_to_ith_link(ith);
 
