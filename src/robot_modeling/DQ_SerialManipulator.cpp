@@ -66,6 +66,8 @@ DQ_SerialManipulator::DQ_SerialManipulator(const MatrixXd& dh_matrix, const std:
 
     lower_q_limit_.resize(dh_matrix_.cols());
     upper_q_limit_.resize(dh_matrix_.cols());
+    lower_q_dot_limit_.resize(dh_matrix_.cols());
+    upper_q_dot_limit_.resize((dh_matrix_.cols()));
     dim_configuration_space_ = dh_matrix.cols();
 }
 
@@ -124,6 +126,17 @@ void DQ_SerialManipulator::set_upper_q_limit(const VectorXd &upper_q_limit)
 VectorXd DQ_SerialManipulator::upper_q_limit() const
 {
     return upper_q_limit_;
+}
+
+void DQ_robotics::DQ_SerialManipulator::set_upper_q_dot_limit(const VectorXd &upper_q_dot_limit)
+{
+    _check_q_vec(upper_q_dot_limit);
+    upper_q_dot_limit_ = upper_q_dot_limit;
+}
+
+VectorXd DQ_robotics::DQ_SerialManipulator::get_upper_q_dot_limit() const
+{
+    return upper_q_dot_limit_;
 }
 
 /**
@@ -279,6 +292,26 @@ DQ  DQ_SerialManipulator::fkm(const VectorXd& q_vec, const int& to_ith_link) con
 * \param int link_i is the link number
 * \return A constant DQ object
 */
+VectorXd DQ_SerialManipulator::getLower_q_dot_limit() const
+{
+    return lower_q_dot_limit_;
+}
+
+void DQ_SerialManipulator::setLower_q_dot_limit(const VectorXd &lower_q_dot_limit)
+{
+    lower_q_dot_limit_ = lower_q_dot_limit;
+}
+
+VectorXd DQ_SerialManipulator::getUpper_q_dot_limit() const
+{
+    return upper_q_dot_limit_;
+}
+
+void DQ_SerialManipulator::setUpper_q_dot_limit(const VectorXd &upper_q_dot_limit)
+{
+    upper_q_dot_limit_ = upper_q_dot_limit;
+}
+
 DQ  DQ_SerialManipulator::_dh2dq(const double& q, const int& ith) const {
     _check_to_ith_link(ith);
 
@@ -409,6 +442,18 @@ MatrixXd DQ_SerialManipulator::pose_jacobian(const VectorXd &q_vec) const
     _check_q_vec(q_vec);
 
     return this->DQ_Kinematics::pose_jacobian(q_vec);
+}
+
+void DQ_robotics::DQ_SerialManipulator::set_lower_q_dot_limit(const VectorXd &lower_q_dot_limit)
+{
+    _check_q_vec(lower_q_dot_limit);
+
+    lower_q_dot_limit_ = lower_q_dot_limit;
+}
+
+VectorXd DQ_robotics::DQ_SerialManipulator::get_lower_q_dot_limit() const
+{
+    return lower_q_dot_limit_;
 }
 
 MatrixXd DQ_SerialManipulator::pose_jacobian_derivative(const VectorXd &q_vec, const VectorXd &q_vec_dot) const

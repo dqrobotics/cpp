@@ -40,6 +40,8 @@ protected:
 
     VectorXd lower_q_limit_;
     VectorXd upper_q_limit_;
+    VectorXd lower_q_dot_limit_;
+    VectorXd upper_q_dot_limit_;
 
     DQ curr_effector_;
 
@@ -60,8 +62,14 @@ public:
     void set_lower_q_limit(const VectorXd& lower_q_limit);
     VectorXd lower_q_limit() const;
 
+    VectorXd get_lower_q_dot_limit() const;
+    void set_lower_q_dot_limit(const VectorXd &lower_q_dot_limit);
+
     void set_upper_q_limit(const VectorXd& upper_q_limit);
     VectorXd upper_q_limit() const;
+
+    VectorXd get_upper_q_dot_limit() const;
+    void set_upper_q_dot_limit(const VectorXd &upper_q_dot_limit);
 
     DQ effector() const;
     DQ set_effector(const DQ& new_effector);
@@ -82,7 +90,6 @@ public:
 
     MatrixXd pose_jacobian(const VectorXd& q_vec, const int& to_ith_link) const override; //Override from DQ_Kinematics
     MatrixXd pose_jacobian(const VectorXd& q_vec) const override; //Override from DQ_Kinematics
-
 };
 
 }//Namespace DQRobotics
