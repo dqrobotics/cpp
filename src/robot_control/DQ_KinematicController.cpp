@@ -27,7 +27,8 @@ Contributors:
 namespace DQ_robotics
 {
 
-DQ_KinematicController::DQ_KinematicController(DQ_Kinematics* robot):robot_(robot)
+DQ_KinematicController::DQ_KinematicController(DQ_Kinematics* robot):
+    robot_(robot)
 {
     control_objective_ = ControlObjective::None;
     gain_              = 0.0;
@@ -47,13 +48,12 @@ void DQ_KinematicController::verify_stability(const VectorXd& task_error)
 {
     if((last_error_signal_-task_error).norm() < stability_threshold_)
     {
-        if(stability_counter_<stability_counter_max_)
+        if(stability_counter_ < stability_counter_max_)
             stability_counter_++;
     }
     else
     {
         reset_stability_counter();
-        system_reached_stable_region_ = false;
     }
 
     if(stability_counter_ >= stability_counter_max_)
@@ -244,6 +244,7 @@ void DQ_KinematicController::set_stability_counter_max(const int &max)
 void DQ_KinematicController::reset_stability_counter()
 {
     stability_counter_ = 0;
+    system_reached_stable_region_ = false;
 }
 
 }
