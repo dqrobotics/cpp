@@ -41,7 +41,13 @@ VectorXd DQ_PseudoinverseController::compute_setpoint_control_signal(const Vecto
 
         const VectorXd task_error = task_variable-task_reference;
 
-        const VectorXd u = -pinv(J)*gain_*task_error;
+        VectorXd u;
+        if(damping_ == 0.0)
+            u = pinv(J)*(-gain_*task_error);
+        else
+            u = (J.transpose()*J + damping_*damping_*MatrixXd::Identity(q.size(), q.size())).inverse()*
+                    J.transpose()*
+                    (-gain_*task_error);
 
         verify_stability(task_error);
 
