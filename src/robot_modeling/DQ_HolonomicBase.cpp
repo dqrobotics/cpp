@@ -104,7 +104,7 @@ MatrixXd DQ_HolonomicBase::pose_jacobian(const VectorXd &q, const int &to_link) 
 
 MatrixXd DQ_HolonomicBase::pose_jacobian(const VectorXd &q) const
 {
-    return pose_jacobian(q,get_dim_configuration_space());
+    return pose_jacobian(q,get_dim_configuration_space()-1);
 }
 
 }
