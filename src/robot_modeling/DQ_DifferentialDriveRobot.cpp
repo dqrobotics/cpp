@@ -47,9 +47,9 @@ MatrixXd DQ_DifferentialDriveRobot::constraint_jacobian(const double &phi) const
 
 MatrixXd DQ_DifferentialDriveRobot::pose_jacobian(const VectorXd &q, const int &to_link) const
 {
-    MatrixXd J_holonomic = DQ_HolonomicBase::pose_jacobian(q,3);
+    MatrixXd J_holonomic = DQ_HolonomicBase::pose_jacobian(q);
     MatrixXd J = J_holonomic*constraint_jacobian(q(2));
-    return J.block(0,0,3,to_link);
+    return J.block(0,0,3,to_link+1);
 }
 
 MatrixXd DQ_DifferentialDriveRobot::pose_jacobian(const VectorXd &q) const
