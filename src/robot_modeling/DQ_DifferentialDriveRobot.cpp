@@ -47,6 +47,9 @@ MatrixXd DQ_DifferentialDriveRobot::constraint_jacobian(const double &phi) const
 
 MatrixXd DQ_DifferentialDriveRobot::pose_jacobian(const VectorXd &q, const int &to_link) const
 {
+    if(to_link!=0 && to_link!=1)
+        throw std::runtime_error("DQ_DifferentialDriveRobot::pose_jacobian(q,to_link) only accepts to_link in {0,1}.");
+
     MatrixXd J_holonomic = DQ_HolonomicBase::pose_jacobian(q);
     MatrixXd J = J_holonomic*constraint_jacobian(q(2));
     return J.block(0,0,3,to_link+1);
@@ -54,7 +57,10 @@ MatrixXd DQ_DifferentialDriveRobot::pose_jacobian(const VectorXd &q, const int &
 
 MatrixXd DQ_DifferentialDriveRobot::pose_jacobian(const VectorXd &q) const
 {
-    return pose_jacobian(q,get_dim_configuration_space()-1);
+    // The DQ_DifferentialDriveRobot works differently from most other subclasses of DQ_Kinematics
+    // The size of the configuration space is three but there is one constraint, so there are only
+    // to columns in the pose_jacobian
+    return pose_jacobian(q,1);
 }
 
 }
