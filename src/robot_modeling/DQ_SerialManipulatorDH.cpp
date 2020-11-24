@@ -21,27 +21,20 @@ Contributors:
 */
 
 #include <dqrobotics/robot_modeling/DQ_SerialManipulatorDH.h>
+#include <dqrobotics/robot_modeling/DQ_SerialManipulatorDH.h>
+#include <dqrobotics/robot_modeling/DQ_SerialManipulatorDH.h>
 
 namespace DQ_robotics
 {
 
-DQ_SerialManipulatorDH::DQ_SerialManipulatorDH(const MatrixXd& dh_matrix, const std::string& convention):
-    DQ_SerialManipulator(dh_matrix.block(0,0,dh_matrix.rows()-1,dh_matrix.cols()), convention)
+DQ_SerialManipulatorDH::DQ_SerialManipulatorDH(const MatrixXd& dh_matrix):
+    DQ_SerialManipulator(dh_matrix.cols())
 {
-    if (convention != "standard" && convention != "modified")
-    {
-        throw(std::range_error("Bad DQ_SerialManipulator(dh_matrix, convention) call: convention must be 'standard' or 'modified' "));
-    }
-    if (convention == "modified")
-    {
-        throw(std::runtime_error("Bad DQ_SerialManipulator(dh_matrix, convention) call: the 'modified' convention is not implemented yet"));
-    }
     if(dh_matrix.rows() != 5)
     {
         throw(std::range_error("Bad DQ_SerialManipulatorDH(dh_matrix, convention) call: dh_matrix should be 5xn"));
     }
     dh_matrix_ = dh_matrix;
-    dh_matrix_convention_ = convention;
 }
 
 DQ DQ_SerialManipulatorDH::_dh2dq(const double &q, const int &ith) const
@@ -90,9 +83,44 @@ DQ DQ_SerialManipulatorDH::_get_w(const int &ith) const
         return E_*k_;
 }
 
-VectorXd DQ_SerialManipulatorDH::type() const
+VectorXd  DQ_SerialManipulatorDH::get_thetas() const
+{
+    return dh_matrix_.row(0);
+}
+
+
+VectorXd  DQ_SerialManipulatorDH::get_ds() const
+{
+    return dh_matrix_.row(1);
+}
+
+VectorXd  DQ_SerialManipulatorDH::get_as() const
+{
+    return dh_matrix_.row(2);
+}
+
+VectorXd  DQ_SerialManipulatorDH::get_alphas() const
+{
+    return dh_matrix_.row(3);
+}
+
+VectorXd DQ_SerialManipulatorDH::get_types() const
 {
     return dh_matrix_.row(4);
+}
+
+
+DQ  DQ_SerialManipulatorDH::raw_fkm(const VectorXd& q_vec, const int& to_ith_link) const
+{
+    _check_q_vec(q_vec);
+    _check_to_ith_link(to_ith_link);
+
+    DQ q(1);
+    int j = 0;
+    for (int i = 0; i < (to_ith_link+1); i++) {
+        q = q * _dh2dq(q_vec(i-j), i);
+    }
+    return q;
 }
 
 MatrixXd DQ_SerialManipulatorDH::raw_pose_jacobian(const VectorXd &q_vec, const int &to_ith_link) const

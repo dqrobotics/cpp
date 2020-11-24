@@ -37,7 +37,7 @@ DQ_SerialManipulatorDH BarrettWamArmRobot::kinematics()
             -pi2, pi2, -pi2,    pi2,   -pi2, pi2, 0,
             0,    0,    0,      0,      0,   0,   0;
 
-    DQ_SerialManipulatorDH wam(wam_dh,"standard");
+    DQ_SerialManipulatorDH wam(wam_dh);
 
     return wam;
 };
