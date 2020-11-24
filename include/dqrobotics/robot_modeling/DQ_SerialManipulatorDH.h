@@ -49,6 +49,10 @@ public:
     VectorXd get_alphas() const;
     VectorXd get_types() const;
 
+    //Using
+    using DQ_SerialManipulator::raw_pose_jacobian;
+    using DQ_SerialManipulator::raw_fkm;
+
     //Override from DQ_SerialManipulator
     MatrixXd raw_pose_jacobian(const VectorXd& q_vec, const int& to_ith_link) const override;
     DQ raw_fkm(const VectorXd &q_vec, const int &to_ith_link) const override;
