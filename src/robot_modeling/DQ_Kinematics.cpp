@@ -87,6 +87,46 @@ std::string DQ_Kinematics::get_name() const
     return name_;
 }
 
+VectorXd DQ_Kinematics::get_lower_q_limit() const
+{
+    return lower_q_limit_;
+}
+
+void DQ_Kinematics::set_lower_q_limit(const VectorXd &lower_q_limit)
+{
+    lower_q_limit_ = lower_q_limit;
+}
+
+VectorXd DQ_Kinematics::get_lower_q_dot_limit() const
+{
+    return lower_q_dot_limit_;
+}
+
+void DQ_Kinematics::set_lower_q_dot_limit(const VectorXd &lower_q_dot_limit)
+{
+    lower_q_dot_limit_ = lower_q_dot_limit;
+}
+
+VectorXd DQ_Kinematics::get_upper_q_limit() const
+{
+    return upper_q_limit_;
+}
+
+void DQ_Kinematics::set_upper_q_limit(const VectorXd &upper_q_limit)
+{
+    upper_q_dot_limit_ = upper_q_limit;
+}
+
+VectorXd DQ_Kinematics::get_upper_q_dot_limit() const
+{
+    return upper_q_dot_limit_;
+}
+
+void DQ_Kinematics::set_upper_q_dot_limit(const VectorXd &upper_q_dot_limit)
+{
+    upper_q_dot_limit_ = upper_q_dot_limit;
+}
+
 MatrixXd DQ_Kinematics::pose_jacobian(const VectorXd &joint_configurations) const
 {
     return pose_jacobian(joint_configurations, get_dim_configuration_space()-1);

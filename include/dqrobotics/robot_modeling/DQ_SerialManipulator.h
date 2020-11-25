@@ -35,27 +35,10 @@ namespace DQ_robotics
 class DQ_SerialManipulator: public DQ_Kinematics
 {
 protected:
-    VectorXd lower_q_limit_;
-    VectorXd upper_q_limit_;
-    VectorXd lower_q_dot_limit_;
-    VectorXd upper_q_dot_limit_;
-
     DQ curr_effector_;
 
     DQ_SerialManipulator(const int& dofs);
 public:
-    VectorXd get_lower_q_limit() const;
-    void set_lower_q_limit(const VectorXd& lower_q_limit);
-
-    VectorXd get_lower_q_dot_limit() const;
-    void set_lower_q_dot_limit(const VectorXd &lower_q_dot_limit);
-
-    VectorXd get_upper_q_limit() const;
-    void set_upper_q_limit(const VectorXd& upper_q_limit);
-
-    VectorXd get_upper_q_dot_limit() const;
-    void set_upper_q_dot_limit(const VectorXd &upper_q_dot_limit);
-
     DQ get_effector() const;
     DQ set_effector(const DQ& new_effector);
 
