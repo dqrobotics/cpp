@@ -49,6 +49,9 @@ public:
     VectorXd get_alphas() const;
     VectorXd get_types() const;
 
+    MatrixXd pose_jacobian_derivative(const VectorXd& q_vec, const VectorXd& q_vec_dot, const int& to_ith_link) const;
+    MatrixXd pose_jacobian_derivative(const VectorXd& q_vec, const VectorXd& q_vec_dot) const;
+
     //Using
     using DQ_SerialManipulator::raw_pose_jacobian;
     using DQ_SerialManipulator::raw_fkm;

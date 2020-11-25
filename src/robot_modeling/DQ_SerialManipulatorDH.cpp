@@ -109,6 +109,49 @@ VectorXd DQ_SerialManipulatorDH::get_types() const
     return dh_matrix_.row(4);
 }
 
+MatrixXd DQ_SerialManipulatorDH::pose_jacobian_derivative(const VectorXd &q_vec, const VectorXd &q_vec_dot, const int &to_ith_link) const
+{
+    _check_q_vec(q_vec);
+    _check_q_vec(q_vec_dot);
+    _check_to_ith_link(to_ith_link);
+
+    int n = to_ith_link+1;
+    DQ x_effector = raw_fkm(q_vec,to_ith_link);
+    MatrixXd J    = raw_pose_jacobian(q_vec,to_ith_link);
+    VectorXd vec_x_effector_dot = J*q_vec_dot.head(to_ith_link);
+
+    DQ x = DQ(1);
+    MatrixXd J_dot = MatrixXd::Zero(8,n);
+    int jth=0;
+
+    for(int i=0;i<n;i++)
+    {
+        const DQ w = _get_w(i);
+        const DQ z = 0.5*x*w*conj(x);
+
+        VectorXd vec_zdot;
+        if(i==0)
+        {
+            vec_zdot = VectorXd::Zero(8,1);
+        }
+        else
+        {
+            vec_zdot = 0.5*(haminus8(w*conj(x)) + hamiplus8(x*w)*C8())*raw_pose_jacobian(q_vec,i-1)*q_vec_dot.head(i);
+        }
+
+        J_dot.col(jth) = haminus8(x_effector)*vec_zdot + hamiplus8(z)*vec_x_effector_dot;
+        x = x*_dh2dq(q_vec(jth),i);
+        jth = jth+1;
+    }
+
+    return J_dot;
+}
+
+MatrixXd DQ_SerialManipulatorDH::pose_jacobian_derivative(const VectorXd &q_vec, const VectorXd &q_vec_dot) const
+{
+    return pose_jacobian_derivative(q_vec, q_vec_dot, get_dim_configuration_space()-1);
+}
+
 
 DQ  DQ_SerialManipulatorDH::raw_fkm(const VectorXd& q_vec, const int& to_ith_link) const
 {
