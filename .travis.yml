@@ -8,16 +8,16 @@ jobs:
       compiler: g++
       addons:
        apt:
-         packages: 
-           - g++
-           - libeigen3-dev
-           - fakeroot
+        packages: 
+        - g++
+        - libeigen3-dev
+        - fakeroot
       script:
-      - chmod +x .build.sh
-      - ./.build.sh
+      - chmod +x debian/rules
+      - fakeroot debian/rules clean
+      - fakeroot debian/rules build
       after_success:
-      - chmod +x .deploy.sh
-      - ./.deploy.sh
+      - fakeroot debian/rules binary
     - name: "Doxygen"
       os: linux
       dist: focal
@@ -27,9 +27,16 @@ jobs:
        - master
       addons:
        apt:
-         packages: 
-           - doxygen
-           - graphviz
+        packages: 
+        - doxygen
+        - graphviz
       script:
       - doxygen Doxyfile
+      deploy:
+      provider: pages
+      skip_cleanup: true
+      local_dir: docs/html
+      github_token: $GH_REPO_TOKEN
+      on:
+       branch: master
 
