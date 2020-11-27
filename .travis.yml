@@ -1,13 +1,8 @@
 language: cpp
-
-env:
-  global:
-    - DEPS_DIR=${TRAVIS_BUILD_DIR}/deps
-    - CXX_FLAGS="-Wall -pedantic -Werror -Wno-variadic-macros -Wno-long-long -Wno-shadow"
-
-matrix:
+jobs:
   include:
-    - os: linux
+    - name: "Ubuntu 16.04"
+      os: linux
       dist: xenial
       sudo: true
       compiler: g++
@@ -17,10 +12,24 @@ matrix:
            - g++
            - libeigen3-dev
            - fakeroot
+      script:
+      - chmod +x .build.sh
+      - ./.build.sh
+      after_success:
+      - chmod +x .deploy.sh
+      - ./.deploy.sh
+    - name: "Doxygen"
+      os: linux
+      dist: focal
+      sudo: false
+      branches:
+       only:
+       - master
+      addons:
+       apt:
+         packages: 
+           - doxygen
+           - graphviz
+      script:
+      - doxygen Doxyfile
 
-script:
-     - chmod +x debian/rules
-     - fakeroot debian/rules clean
-     - fakeroot debian/rules build
-after_success:
-     - fakeroot debian/rules binary
