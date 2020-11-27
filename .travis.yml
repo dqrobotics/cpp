@@ -4,7 +4,6 @@ jobs:
     - name: "Ubuntu 16.04"
       os: linux
       dist: xenial
-      sudo: true
       compiler: g++
       addons:
        apt:
@@ -21,7 +20,6 @@ jobs:
     - name: "Doxygen"
       os: linux
       dist: focal
-      sudo: false
       branches:
        only:
        - master
@@ -34,8 +32,7 @@ jobs:
       - doxygen Doxyfile
       deploy:
        provider: pages
-       skip_cleanup: true
-       local_dir: docs/html
+       local_dir: html
        github_token: $GH_REPO_TOKEN
        on:
         branch: master
