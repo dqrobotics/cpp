@@ -1,0 +1,27 @@
+var searchData=
+[
+  ['d_12',['d',['../classDQ__robotics_1_1DQ__SerialManipulator.html#ac7eb4bac3079c446e7a83c24ef023125',1,'DQ_robotics::DQ_SerialManipulator::d()'],['../classDQ__robotics_1_1DQ.html#aabcf8542859e99d8c13e361816073ae1',1,'DQ_robotics::DQ::D()'],['../namespaceDQ__robotics.html#a90c8c80ec566f3260f726eece2cc4484',1,'DQ_robotics::D()']]],
+  ['dec_5fmult_13',['dec_mult',['../namespaceDQ__robotics.html#aef3757c3423b0a60545fb2171af20026',1,'DQ_robotics']]],
+  ['deg2rad_14',['deg2rad',['../namespaceDQ__robotics.html#a1c8c357fa6fd6bd7746a27c3614814fa',1,'DQ_robotics::deg2rad(const double &amp;a)'],['../namespaceDQ__robotics.html#ab1838b684ce16a26e254f92b1f3adf7a',1,'DQ_robotics::deg2rad(const VectorXd &amp;v)']]],
+  ['dot_15',['dot',['../namespaceDQ__robotics.html#a1b4480a0b69bef418044067da3895f87',1,'DQ_robotics']]],
+  ['dq_16',['DQ',['../classDQ__robotics_1_1DQ.html',1,'DQ_robotics::DQ'],['../classDQ__robotics_1_1DQ.html#a4e2b46e14b151a72e12cb140e73c6459',1,'DQ_robotics::DQ::DQ(const VectorXd &amp;v)'],['../classDQ__robotics_1_1DQ.html#aff036046fea1c9238e8bfd5d9041f9d3',1,'DQ_robotics::DQ::DQ(const double &amp;q0=0.0, const double &amp;q1=0.0, const double &amp;q2=0.0, const double &amp;q3=0.0, const double &amp;q4=0.0, const double &amp;q5=0.0, const double &amp;q6=0.0, const double &amp;q7=0.0)']]],
+  ['dq_5fclassicqpcontroller_17',['DQ_ClassicQPController',['../classDQ__robotics_1_1DQ__ClassicQPController.html',1,'DQ_robotics']]],
+  ['dq_5fcooperativedualtaskspace_18',['DQ_CooperativeDualTaskSpace',['../classDQ__robotics_1_1DQ__CooperativeDualTaskSpace.html',1,'DQ_robotics']]],
+  ['dq_5fdifferentialdriverobot_19',['DQ_DifferentialDriveRobot',['../classDQ__robotics_1_1DQ__DifferentialDriveRobot.html',1,'DQ_robotics']]],
+  ['dq_5fgeometry_20',['DQ_Geometry',['../classDQ__robotics_1_1DQ__Geometry.html',1,'DQ_robotics']]],
+  ['dq_5fholonomicbase_21',['DQ_HolonomicBase',['../classDQ__robotics_1_1DQ__HolonomicBase.html',1,'DQ_robotics']]],
+  ['dq_5fkinematicconstrainedcontroller_22',['DQ_KinematicConstrainedController',['../classDQ__robotics_1_1DQ__KinematicConstrainedController.html',1,'DQ_robotics']]],
+  ['dq_5fkinematiccontroller_23',['DQ_KinematicController',['../classDQ__robotics_1_1DQ__KinematicController.html',1,'DQ_robotics']]],
+  ['dq_5fkinematics_24',['DQ_kinematics',['../classDQ__robotics_1_1DQ__kinematics.html',1,'DQ_robotics::DQ_kinematics'],['../classDQ__robotics_1_1DQ__Kinematics.html',1,'DQ_robotics::DQ_Kinematics']]],
+  ['dq_5fmobilebase_25',['DQ_MobileBase',['../classDQ__robotics_1_1DQ__MobileBase.html',1,'DQ_robotics']]],
+  ['dq_5fpseudoinversecontroller_26',['DQ_PseudoinverseController',['../classDQ__robotics_1_1DQ__PseudoinverseController.html',1,'DQ_robotics']]],
+  ['dq_5fquadraticprogrammingcontroller_27',['DQ_QuadraticProgrammingController',['../classDQ__robotics_1_1DQ__QuadraticProgrammingController.html',1,'DQ_robotics']]],
+  ['dq_5fquadraticprogrammingsolver_28',['DQ_QuadraticProgrammingSolver',['../classDQ__robotics_1_1DQ__QuadraticProgrammingSolver.html',1,'DQ_robotics']]],
+  ['dq_5frobotics_29',['DQ_robotics',['../namespaceDQ__robotics.html',1,'']]],
+  ['dq_5fserialmanipulator_30',['DQ_SerialManipulator',['../classDQ__robotics_1_1DQ__SerialManipulator.html',1,'DQ_robotics::DQ_SerialManipulator'],['../classDQ__robotics_1_1DQ__SerialManipulator.html#a70b986efbfec1cfdb612cb509ba1746c',1,'DQ_robotics::DQ_SerialManipulator::DQ_SerialManipulator()']]],
+  ['dq_5fserialmanipulatordh_31',['DQ_SerialManipulatorDH',['../classDQ__robotics_1_1DQ__SerialManipulatorDH.html',1,'DQ_robotics']]],
+  ['dq_5fserialwholebody_32',['DQ_SerialWholeBody',['../classDQ__robotics_1_1DQ__SerialWholeBody.html',1,'DQ_robotics']]],
+  ['dq_5fwholebody_33',['DQ_WholeBody',['../classDQ__robotics_1_1DQ__WholeBody.html',1,'DQ_robotics']]],
+  ['dqrobotics_2dcpp_20_3ca_20href_3d_22https_3a_2f_2ftravis_2dci_2ecom_2fdqrobotics_2fcpp_22_3e_3cimg_20src_3d_22https_3a_2f_2ftravis_2dci_2ecom_2fdqrobotics_2fcpp_2esvg_3fbranch_3dmaster_22_20alt_3d_22build_20status_22_2f_3e_3c_2fa_3e_34',['dqrobotics-cpp &lt;a href=&quot;https://travis-ci.com/dqrobotics/cpp&quot;&gt;&lt;img src=&quot;https://travis-ci.com/dqrobotics/cpp.svg?branch=master&quot; alt=&quot;Build Status&quot;/&gt;&lt;/a&gt;',['../md_README.html',1,'']]],
+  ['dqrobotics_2dcpp_20windows_35',['dqrobotics-cpp WINDOWS',['../md_windows_README.html',1,'']]]
+];
