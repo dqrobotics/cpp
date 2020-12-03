@@ -21,7 +21,6 @@ Contributors:
 */
 
 #include<dqrobotics/robot_modeling/DQ_SerialWholeBody.h>
-#include<dqrobotics/robot_modeling/DQ_SerialManipulator.h>
 #include<vector>
 
 namespace DQ_robotics

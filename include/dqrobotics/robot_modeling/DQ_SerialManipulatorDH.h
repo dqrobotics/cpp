@@ -23,7 +23,6 @@ Contributors:
 #ifndef DQ_SerialManipulatorDH_H
 #define DQ_SerialManipulatorDH_H
 
-#include <dqrobotics/DQ.h>
 #include <dqrobotics/robot_modeling/DQ_SerialManipulator.h>
 
 namespace DQ_robotics
@@ -42,7 +41,7 @@ public:
 
     DQ_SerialManipulatorDH()=delete;
     DQ_SerialManipulatorDH(const MatrixXd& dh_matrix);
-    DEPRECATED DQ_SerialManipulatorDH(const MatrixXd& dh_matrix, const std::string&);
+    DQ_SerialManipulatorDH(const MatrixXd& dh_matrix, const std::string&);
 
     VectorXd get_thetas() const;
     VectorXd get_ds() const;

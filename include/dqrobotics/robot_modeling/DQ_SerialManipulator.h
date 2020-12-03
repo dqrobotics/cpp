@@ -24,10 +24,7 @@ Contributors:
 #ifndef DQ_SerialManipulator_H
 #define DQ_SerialManipulator_H
 
-#include <dqrobotics/DQ.h>
 #include <dqrobotics/robot_modeling/DQ_Kinematics.h>
-
-using namespace Eigen;
 
 namespace DQ_robotics
 {

@@ -21,8 +21,6 @@ Contributors:
 */
 
 #include <dqrobotics/robot_modeling/DQ_SerialManipulatorDH.h>
-#include <dqrobotics/robot_modeling/DQ_SerialManipulatorDH.h>
-#include <dqrobotics/robot_modeling/DQ_SerialManipulatorDH.h>
 
 namespace DQ_robotics
 {
@@ -32,7 +30,7 @@ DQ_SerialManipulatorDH::DQ_SerialManipulatorDH(const MatrixXd& dh_matrix):
 {
     if(dh_matrix.rows() != 5)
     {
-        throw(std::range_error("Bad DQ_SerialManipulatorDH(dh_matrix, convention) call: dh_matrix should be 5xn"));
+        throw(std::range_error("Bad DQ_SerialManipulatorDH(dh_matrix) call: dh_matrix should be 5xn"));
     }
     dh_matrix_ = dh_matrix;
 }
