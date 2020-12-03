@@ -37,6 +37,16 @@ DQ_SerialManipulatorDH::DQ_SerialManipulatorDH(const MatrixXd& dh_matrix):
     dh_matrix_ = dh_matrix;
 }
 
+DQ_SerialManipulatorDH::DQ_SerialManipulatorDH(const MatrixXd &dh_matrix, const std::string&):
+    DQ_SerialManipulator(dh_matrix.cols())
+{
+    if(dh_matrix.rows() != 5)
+    {
+        throw(std::range_error("Bad DQ_SerialManipulatorDH(dh_matrix, convention) call: dh_matrix should be 5xn"));
+    }
+    dh_matrix_ = dh_matrix;
+}
+
 DQ DQ_SerialManipulatorDH::_dh2dq(const double &q, const int &ith) const
 {
     double half_theta = dh_matrix_(0,ith)/2.0;

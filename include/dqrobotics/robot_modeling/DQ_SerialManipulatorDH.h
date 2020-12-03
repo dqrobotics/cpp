@@ -42,6 +42,7 @@ public:
 
     DQ_SerialManipulatorDH()=delete;
     DQ_SerialManipulatorDH(const MatrixXd& dh_matrix);
+    DEPRECATED DQ_SerialManipulatorDH(const MatrixXd& dh_matrix, const std::string&);
 
     VectorXd get_thetas() const;
     VectorXd get_ds() const;
