@@ -57,6 +57,46 @@ DQ  DQ_SerialManipulator::set_effector( const DQ& new_effector)
     return curr_effector_;
 }
 
+VectorXd DQ_SerialManipulator::get_lower_q_limit() const
+{
+    return lower_q_limit_;
+}
+
+void DQ_SerialManipulator::set_lower_q_limit(const VectorXd &lower_q_limit)
+{
+    lower_q_limit_ = lower_q_limit;
+}
+
+VectorXd DQ_SerialManipulator::get_lower_q_dot_limit() const
+{
+    return lower_q_dot_limit_;
+}
+
+void DQ_SerialManipulator::set_lower_q_dot_limit(const VectorXd &lower_q_dot_limit)
+{
+    lower_q_dot_limit_ = lower_q_dot_limit;
+}
+
+VectorXd DQ_SerialManipulator::get_upper_q_limit() const
+{
+    return upper_q_limit_;
+}
+
+void DQ_SerialManipulator::set_upper_q_limit(const VectorXd &upper_q_limit)
+{
+    upper_q_dot_limit_ = upper_q_limit;
+}
+
+VectorXd DQ_SerialManipulator::get_upper_q_dot_limit() const
+{
+    return upper_q_dot_limit_;
+}
+
+void DQ_SerialManipulator::set_upper_q_dot_limit(const VectorXd &upper_q_dot_limit)
+{
+    upper_q_dot_limit_ = upper_q_dot_limit;
+}
+
 DQ  DQ_SerialManipulator::raw_fkm(const VectorXd& q_vec) const
 {
     _check_q_vec(q_vec);

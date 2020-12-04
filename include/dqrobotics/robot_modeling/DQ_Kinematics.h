@@ -59,14 +59,6 @@ public:
     DQ   get_base_frame() const;
     void set_name(const std::string& get_name);
     std::string get_name() const;
-    VectorXd get_lower_q_limit() const;
-    void set_lower_q_limit(const VectorXd& lower_q_limit);
-    VectorXd get_lower_q_dot_limit() const;
-    void set_lower_q_dot_limit(const VectorXd &lower_q_dot_limit);
-    VectorXd get_upper_q_limit() const;
-    void set_upper_q_limit(const VectorXd& upper_q_limit);
-    VectorXd get_upper_q_dot_limit() const;
-    void set_upper_q_dot_limit(const VectorXd &upper_q_dot_limit);
 
     //PURE virtual methods
     virtual DQ fkm                (const VectorXd& joint_configurations) const = 0;

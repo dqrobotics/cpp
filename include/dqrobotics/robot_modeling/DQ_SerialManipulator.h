@@ -39,6 +39,16 @@ public:
     DQ get_effector() const;
     DQ set_effector(const DQ& new_effector);
 
+    VectorXd get_lower_q_limit() const;
+    void     set_lower_q_limit(const VectorXd& lower_q_limit);
+    VectorXd get_lower_q_dot_limit() const;
+    void     set_lower_q_dot_limit(const VectorXd &lower_q_dot_limit);
+    VectorXd get_upper_q_limit() const;
+    void     set_upper_q_limit(const VectorXd& upper_q_limit);
+    VectorXd get_upper_q_dot_limit() const;
+    void     set_upper_q_dot_limit(const VectorXd &upper_q_dot_limit);
+
+
     //Virtual
     virtual MatrixXd raw_pose_jacobian(const VectorXd& q_vec) const;
     virtual DQ raw_fkm(const VectorXd& q_vec) const;
