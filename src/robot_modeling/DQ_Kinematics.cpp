@@ -200,7 +200,7 @@ MatrixXd DQ_Kinematics::rotation_jacobian(const MatrixXd &pose_jacobian)
  * @param rotation_jacobian the current rotation Jacobian.
  * @param translation_jacobian the current translation Jacobian.
  * @param pose the current end-effector pose.
- * @param line_direction the line direction w.r.t. the  pose reference frame. For example using i_, j_, and k_.
+ * @param line_direction the line direction w.r.t. the  pose reference frame. For example using i_, j_, and k_
  * will return the line Jacobian collinear with, respectively, the x-axis, y-axis, and z-axis of  pose.
  */
 MatrixXd DQ_Kinematics::line_jacobian(const MatrixXd& pose_jacobian, const DQ& pose, const DQ& line_direction)
@@ -232,10 +232,9 @@ MatrixXd DQ_Kinematics::line_jacobian(const MatrixXd& pose_jacobian, const DQ& p
 }
 
 /**
- * @brief The plane Jacobian given the  rotation_jacobian, the translation_jacobian, the pose, and a plane_normal.
- * @param rotation_jacobian the current rotation Jacobian.
- * @param translation_jacobian the current translation Jacobian.
- * @param pose the current end-effector pose.
+ * @brief The plane Jacobian given the pose_jacobian, the pose, and a plane_normal.
+ * @param pose_jacobian The pose Jacobian as obtained from pose_jacobian().
+ * @param pose The pose obtained from fkm() corresponding to pose_jacobian().
  * @param plane_normal the plane normal w.r.t. the  pose reference frame. For example using i_, j_, and k_
  * will return the plane Jacobian whose normal is collinear with, respectively, the x-axis, y-axis, and z-axis of  pose.
  */
