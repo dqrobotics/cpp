@@ -36,7 +36,7 @@ protected:
 public:
     virtual ~DQ_QuadraticProgrammingSolver() = default;
 
-    virtual VectorXd solve_quadratic_program(const MatrixXd& H, const MatrixXd& f, const MatrixXd A, const MatrixXd& b, const MatrixXd& Aeq, const MatrixXd& beq)=0;
+    virtual VectorXd solve_quadratic_program(const MatrixXd& H, const VectorXd& f, const MatrixXd A, const VectorXd& b, const MatrixXd& Aeq, const VectorXd& beq)=0;
 };
 }
 
