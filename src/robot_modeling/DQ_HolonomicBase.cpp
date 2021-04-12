@@ -83,7 +83,7 @@ MatrixXd DQ_HolonomicBase::raw_pose_jacobian(const VectorXd& q, const int& to_li
 
     const double j63 = 0.25*(-x*s + y*c);
 
-    const double j73 = 0.25*(x*c - y*s);
+    const double j73 = 0.25*(-x*c - y*s);
 
     MatrixXd J(8,3);
     J <<    0.0, 0.0, j13,
