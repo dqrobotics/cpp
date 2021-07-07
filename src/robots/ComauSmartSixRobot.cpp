@@ -25,7 +25,7 @@ Contributors:
 namespace DQ_robotics
 {
 
-DQ_SerialManipulator ComauSmartSixRobot::kinematics()
+DQ_SerialManipulatorDH ComauSmartSixRobot::kinematics()
 {
     throw(std::runtime_error("ComauSmartSixRobot::kinematics() is not compatible with this version of DQRobotics"));
 
@@ -38,7 +38,7 @@ DQ_SerialManipulator ComauSmartSixRobot::kinematics()
             pi,   pi2,   pi,    -pi2,    -pi2,  pi2,   pi,
             0,    0,     0,      0,       0,    0,     1;
 
-    DQ_SerialManipulator comau(comau_dh,"standard");
+    DQ_SerialManipulatorDH comau(comau_dh);
 
     return comau;
 };

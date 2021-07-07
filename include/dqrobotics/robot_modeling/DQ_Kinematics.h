@@ -38,6 +38,11 @@ protected:
     VectorXd q_;
     int dim_configuration_space_;
 
+    VectorXd lower_q_limit_;
+    VectorXd upper_q_limit_;
+    VectorXd lower_q_dot_limit_;
+    VectorXd upper_q_dot_limit_;
+
     void _check_to_ith_link(const int& to_ith_link) const;
     void _check_q_vec(const VectorXd& q_vec) const;
 

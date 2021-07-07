@@ -27,7 +27,7 @@ Contributors:
 #include<memory>
 #include<dqrobotics/DQ.h>
 #include<dqrobotics/robot_modeling/DQ_Kinematics.h>
-#include<dqrobotics/robot_modeling/DQ_SerialManipulator.h>
+#include<dqrobotics/robot_modeling/DQ_SerialManipulatorDH.h>
 #include<dqrobotics/robot_modeling/DQ_HolonomicBase.h>
 
 namespace DQ_robotics
@@ -55,7 +55,7 @@ public:
     void set_effector(const DQ& effector);
 
     DQ_Kinematics* get_chain(const int& to_ith_chain);
-    DQ_SerialManipulator get_chain_as_serial_manipulator(const int& to_ith_chain) const;
+    DQ_SerialManipulatorDH get_chain_as_serial_manipulator_dh(const int& to_ith_chain) const;
     DQ_HolonomicBase get_chain_as_holonomic_base(const int& to_ith_chain) const;
     MatrixXd raw_pose_jacobian_by_chain(const VectorXd& q, const int& to_ith_chain, const int& to_jth_link) const;
 

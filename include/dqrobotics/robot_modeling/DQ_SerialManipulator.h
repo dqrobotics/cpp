@@ -24,10 +24,7 @@ Contributors:
 #ifndef DQ_SerialManipulator_H
 #define DQ_SerialManipulator_H
 
-#include <dqrobotics/DQ.h>
 #include <dqrobotics/robot_modeling/DQ_Kinematics.h>
-
-using namespace Eigen;
 
 namespace DQ_robotics
 {
@@ -35,61 +32,39 @@ namespace DQ_robotics
 class DQ_SerialManipulator: public DQ_Kinematics
 {
 protected:
-    MatrixXd    dh_matrix_;
-    std::string dh_matrix_convention_;
-
-    VectorXd lower_q_limit_;
-    VectorXd upper_q_limit_;
-    VectorXd lower_q_dot_limit_;
-    VectorXd upper_q_dot_limit_;
-
     DQ curr_effector_;
 
-    virtual DQ _dh2dq(const double& q, const int& ith) const;
-    DQ _get_z(const DQ& h) const;
-
+    DQ_SerialManipulator(const int& dofs);
 public:
-    DQ_SerialManipulator() = delete;
-    DQ_SerialManipulator(const MatrixXd& dh_matrix, const std::string& convention = "standard");
-
-    MatrixXd getDHMatrix();
-    VectorXd theta() const;
-    VectorXd d() const;
-    VectorXd a() const;
-    VectorXd alpha() const;
-    std::string convention() const;
-
-    void set_lower_q_limit(const VectorXd& lower_q_limit);
-    VectorXd lower_q_limit() const;
-
-    VectorXd get_lower_q_dot_limit() const;
-    void set_lower_q_dot_limit(const VectorXd &lower_q_dot_limit);
-
-    void set_upper_q_limit(const VectorXd& upper_q_limit);
-    VectorXd upper_q_limit() const;
-
-    VectorXd get_upper_q_dot_limit() const;
-    void set_upper_q_dot_limit(const VectorXd &upper_q_dot_limit);
-
-    DQ effector() const;
+    DQ get_effector() const;
     DQ set_effector(const DQ& new_effector);
 
-    DQ raw_fkm(const VectorXd& q_vec) const;
-    DQ raw_fkm(const VectorXd& q_vec, const int& to_ith_link) const;
+    VectorXd get_lower_q_limit() const;
+    void     set_lower_q_limit(const VectorXd& lower_q_limit);
+    VectorXd get_lower_q_dot_limit() const;
+    void     set_lower_q_dot_limit(const VectorXd &lower_q_dot_limit);
+    VectorXd get_upper_q_limit() const;
+    void     set_upper_q_limit(const VectorXd& upper_q_limit);
+    VectorXd get_upper_q_dot_limit() const;
+    void     set_upper_q_dot_limit(const VectorXd &upper_q_dot_limit);
 
-    DQ fkm(const VectorXd& q_vec) const override; //Override from DQ_Kinematics
-    DQ fkm(const VectorXd& q_vec, const int& to_ith_link) const;
 
-    MatrixXd raw_pose_jacobian(const VectorXd& q_vec) const;
-    virtual MatrixXd raw_pose_jacobian(const VectorXd& q_vec, const int& to_ith_link) const;
+    //Virtual
+    virtual MatrixXd raw_pose_jacobian(const VectorXd& q_vec) const;
+    virtual DQ raw_fkm(const VectorXd& q_vec) const;
 
-    MatrixXd pose_jacobian_derivative(const VectorXd& q_vec, const VectorXd& q_vec_dot) const;
-    MatrixXd pose_jacobian_derivative(const VectorXd& q_vec, const VectorXd& q_vec_dot, const int& to_ith_link) const;
+    //Pure virtual
+    virtual MatrixXd raw_pose_jacobian(const VectorXd& q_vec, const int& to_ith_link) const = 0;
+    virtual DQ raw_fkm(const VectorXd& q_vec, const int& to_ith_link) const = 0;
 
-    int get_dim_configuration_space() const override; //Override from DQ_Kinematics
+    //Overrides from DQ_Kinematics
+    virtual DQ fkm(const VectorXd& q_vec) const override; //Override from DQ_Kinematics
+    virtual DQ fkm(const VectorXd& q_vec, const int& to_ith_link) const override; //Override from DQ_Kinematics
 
-    MatrixXd pose_jacobian(const VectorXd& q_vec, const int& to_ith_link) const override; //Override from DQ_Kinematics
-    MatrixXd pose_jacobian(const VectorXd& q_vec) const override; //Override from DQ_Kinematics
+    virtual int get_dim_configuration_space() const override; //Override from DQ_Kinematics
+
+    virtual MatrixXd pose_jacobian(const VectorXd& q_vec, const int& to_ith_link) const override; //Override from DQ_Kinematics
+    virtual MatrixXd pose_jacobian(const VectorXd& q_vec) const override; //Override from DQ_Kinematics
 };
 
 }//Namespace DQRobotics

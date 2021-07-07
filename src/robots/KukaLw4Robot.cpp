@@ -39,7 +39,7 @@ DQ_SerialManipulatorDH KukaLw4Robot::kinematics()
                  0,     0,     0,   0,   0,    0,   0,
                  pi2,   -pi2, -pi2, pi2, pi2, -pi2, 0,
                  0,     0,     0,   0,   0,    0,   0;
-    DQ_SerialManipulatorDH kukka(kukka_dh,"standard");
+    DQ_SerialManipulatorDH kukka(kukka_dh);
 
     return kukka;
 }

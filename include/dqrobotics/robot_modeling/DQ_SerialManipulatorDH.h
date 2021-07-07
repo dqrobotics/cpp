@@ -23,7 +23,6 @@ Contributors:
 #ifndef DQ_SerialManipulatorDH_H
 #define DQ_SerialManipulatorDH_H
 
-#include <dqrobotics/DQ.h>
 #include <dqrobotics/robot_modeling/DQ_SerialManipulator.h>
 
 namespace DQ_robotics
@@ -32,22 +31,34 @@ namespace DQ_robotics
 class DQ_SerialManipulatorDH: public DQ_SerialManipulator
 {
 protected:
+    MatrixXd    dh_matrix_;
+
     DQ _get_w(const int& ith) const;
-
-    //Override from DQ_SerialManipulator
-    DQ _dh2dq(const double& q, const int& ith) const override;
-
+    DQ _dh2dq(const double& q, const int& ith) const;
 public:
     // Possible joint types
     enum JOINT_TYPES{ JOINT_ROTATIONAL=0, JOINT_PRISMATIC };
 
     DQ_SerialManipulatorDH()=delete;
-    DQ_SerialManipulatorDH(const MatrixXd& dh_matrix, const std::string& convention = "standard");
+    DQ_SerialManipulatorDH(const MatrixXd& dh_matrix);
+    DEPRECATED DQ_SerialManipulatorDH(const MatrixXd& dh_matrix, const std::string&);
 
-    VectorXd type() const;
+    VectorXd get_thetas() const;
+    VectorXd get_ds() const;
+    VectorXd get_as() const;
+    VectorXd get_alphas() const;
+    VectorXd get_types() const;
+
+    MatrixXd pose_jacobian_derivative(const VectorXd& q_vec, const VectorXd& q_vec_dot, const int& to_ith_link) const;
+    MatrixXd pose_jacobian_derivative(const VectorXd& q_vec, const VectorXd& q_vec_dot) const;
+
+    //Using
+    using DQ_SerialManipulator::raw_pose_jacobian;
+    using DQ_SerialManipulator::raw_fkm;
 
     //Override from DQ_SerialManipulator
     MatrixXd raw_pose_jacobian(const VectorXd& q_vec, const int& to_ith_link) const override;
+    DQ raw_fkm(const VectorXd &q_vec, const int &to_ith_link) const override;
 };
 
 }//Namespace DQRobotics

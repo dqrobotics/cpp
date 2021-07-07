@@ -48,16 +48,16 @@ DQ_Kinematics* DQ_WholeBody::get_chain(const int& to_ith_chain)
     return chain_[static_cast<std::vector<DQ_Kinematics*>::size_type>(to_ith_chain)].get();
 }
 
-DQ_SerialManipulator DQ_WholeBody::get_chain_as_serial_manipulator(const int &to_ith_chain) const
+DQ_SerialManipulatorDH DQ_WholeBody::get_chain_as_serial_manipulator_dh(const int &to_ith_chain) const
 {
     _check_to_ith_chain(to_ith_chain);
 
     try
     {
-        return DQ_SerialManipulator(*dynamic_cast<DQ_SerialManipulator*>(chain_[static_cast<std::vector<DQ_Kinematics*>::size_type>(to_ith_chain)].get()));
+        return DQ_SerialManipulatorDH(*dynamic_cast<DQ_SerialManipulatorDH*>(chain_[static_cast<std::vector<DQ_Kinematics*>::size_type>(to_ith_chain)].get()));
     } catch (const std::bad_cast& e)
     {
-        throw std::runtime_error("Index requested in get_chain_as_serial_manipulator is not a SerialManipulator" + std::string(e.what()));
+        throw std::runtime_error("Index requested in get_chain_as_serial_manipulator_dh is not a DQ_SerialManipulatorDH" + std::string(e.what()));
     }
 }
 

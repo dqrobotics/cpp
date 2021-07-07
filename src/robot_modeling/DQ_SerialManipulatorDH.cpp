@@ -25,23 +25,24 @@ Contributors:
 namespace DQ_robotics
 {
 
-DQ_SerialManipulatorDH::DQ_SerialManipulatorDH(const MatrixXd& dh_matrix, const std::string& convention):
-    DQ_SerialManipulator(dh_matrix.block(0,0,dh_matrix.rows()-1,dh_matrix.cols()), convention)
+DQ_SerialManipulatorDH::DQ_SerialManipulatorDH(const MatrixXd& dh_matrix):
+    DQ_SerialManipulator(dh_matrix.cols())
 {
-    if (convention != "standard" && convention != "modified")
+    if(dh_matrix.rows() != 5)
     {
-        throw(std::range_error("Bad DQ_SerialManipulator(dh_matrix, convention) call: convention must be 'standard' or 'modified' "));
+        throw(std::range_error("Bad DQ_SerialManipulatorDH(dh_matrix) call: dh_matrix should be 5xn"));
     }
-    if (convention == "modified")
-    {
-        throw(std::runtime_error("Bad DQ_SerialManipulator(dh_matrix, convention) call: the 'modified' convention is not implemented yet"));
-    }
+    dh_matrix_ = dh_matrix;
+}
+
+DQ_SerialManipulatorDH::DQ_SerialManipulatorDH(const MatrixXd &dh_matrix, const std::string&):
+    DQ_SerialManipulator(dh_matrix.cols())
+{
     if(dh_matrix.rows() != 5)
     {
         throw(std::range_error("Bad DQ_SerialManipulatorDH(dh_matrix, convention) call: dh_matrix should be 5xn"));
     }
     dh_matrix_ = dh_matrix;
-    dh_matrix_convention_ = convention;
 }
 
 DQ DQ_SerialManipulatorDH::_dh2dq(const double &q, const int &ith) const
@@ -90,9 +91,87 @@ DQ DQ_SerialManipulatorDH::_get_w(const int &ith) const
         return E_*k_;
 }
 
-VectorXd DQ_SerialManipulatorDH::type() const
+VectorXd  DQ_SerialManipulatorDH::get_thetas() const
+{
+    return dh_matrix_.row(0);
+}
+
+
+VectorXd  DQ_SerialManipulatorDH::get_ds() const
+{
+    return dh_matrix_.row(1);
+}
+
+VectorXd  DQ_SerialManipulatorDH::get_as() const
+{
+    return dh_matrix_.row(2);
+}
+
+VectorXd  DQ_SerialManipulatorDH::get_alphas() const
+{
+    return dh_matrix_.row(3);
+}
+
+VectorXd DQ_SerialManipulatorDH::get_types() const
 {
     return dh_matrix_.row(4);
+}
+
+MatrixXd DQ_SerialManipulatorDH::pose_jacobian_derivative(const VectorXd &q_vec, const VectorXd &q_vec_dot, const int &to_ith_link) const
+{
+    _check_q_vec(q_vec);
+    _check_q_vec(q_vec_dot);
+    _check_to_ith_link(to_ith_link);
+
+    int n = to_ith_link+1;
+    DQ x_effector = raw_fkm(q_vec,to_ith_link);
+    MatrixXd J    = raw_pose_jacobian(q_vec,to_ith_link);
+    VectorXd vec_x_effector_dot = J*q_vec_dot.head(to_ith_link);
+
+    DQ x = DQ(1);
+    MatrixXd J_dot = MatrixXd::Zero(8,n);
+    int jth=0;
+
+    for(int i=0;i<n;i++)
+    {
+        const DQ w = _get_w(i);
+        const DQ z = 0.5*x*w*conj(x);
+
+        VectorXd vec_zdot;
+        if(i==0)
+        {
+            vec_zdot = VectorXd::Zero(8,1);
+        }
+        else
+        {
+            vec_zdot = 0.5*(haminus8(w*conj(x)) + hamiplus8(x*w)*C8())*raw_pose_jacobian(q_vec,i-1)*q_vec_dot.head(i);
+        }
+
+        J_dot.col(jth) = haminus8(x_effector)*vec_zdot + hamiplus8(z)*vec_x_effector_dot;
+        x = x*_dh2dq(q_vec(jth),i);
+        jth = jth+1;
+    }
+
+    return J_dot;
+}
+
+MatrixXd DQ_SerialManipulatorDH::pose_jacobian_derivative(const VectorXd &q_vec, const VectorXd &q_vec_dot) const
+{
+    return pose_jacobian_derivative(q_vec, q_vec_dot, get_dim_configuration_space()-1);
+}
+
+
+DQ  DQ_SerialManipulatorDH::raw_fkm(const VectorXd& q_vec, const int& to_ith_link) const
+{
+    _check_q_vec(q_vec);
+    _check_to_ith_link(to_ith_link);
+
+    DQ q(1);
+    int j = 0;
+    for (int i = 0; i < (to_ith_link+1); i++) {
+        q = q * _dh2dq(q_vec(i-j), i);
+    }
+    return q;
 }
 
 MatrixXd DQ_SerialManipulatorDH::raw_pose_jacobian(const VectorXd &q_vec, const int &to_ith_link) const
