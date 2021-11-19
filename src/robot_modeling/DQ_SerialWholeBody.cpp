@@ -21,7 +21,6 @@ Contributors:
 */
 
 #include<dqrobotics/robot_modeling/DQ_SerialWholeBody.h>
-#include<dqrobotics/robot_modeling/DQ_SerialManipulator.h>
 #include<vector>
 
 namespace DQ_robotics
@@ -75,13 +74,13 @@ DQ_Kinematics* DQ_SerialWholeBody::get_chain(const int& to_ith_chain)
     return chain_[static_cast<std::vector<DQ_Kinematics*>::size_type>(to_ith_chain)].get();
 }
 
-DQ_SerialManipulator DQ_SerialWholeBody::get_chain_as_serial_manipulator(const int &to_ith_chain) const
+DQ_SerialManipulatorDH DQ_SerialWholeBody::get_chain_as_serial_manipulator_dh(const int &to_ith_chain) const
 {
     _check_to_ith_chain(to_ith_chain);
 
     try
     {
-        return DQ_SerialManipulator(*dynamic_cast<DQ_SerialManipulator*>(chain_[static_cast<std::vector<DQ_Kinematics*>::size_type>(to_ith_chain)].get()));
+        return DQ_SerialManipulatorDH(*dynamic_cast<DQ_SerialManipulatorDH*>(chain_[static_cast<std::vector<DQ_Kinematics*>::size_type>(to_ith_chain)].get()));
     } catch (const std::bad_cast& e)
     {
         throw std::runtime_error("Index requested in get_chain_as_serial_manipulator is not a SerialManipulator" + std::string(e.what()));

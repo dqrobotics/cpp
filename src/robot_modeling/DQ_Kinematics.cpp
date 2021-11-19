@@ -1,5 +1,5 @@
 /**
-(C) Copyright 2019 DQ Robotics Developers
+(C) Copyright 2019-2020 DQ Robotics Developers
 
 This file is part of DQ Robotics.
 
@@ -14,7 +14,7 @@ This file is part of DQ Robotics.
     GNU Lesser General Public License for more details.
 
     You should have received a copy of the GNU Lesser General Public License
-    along with DQ Robotics.  If !, see <http://www.gnu.org/licenses/>.
+    along with DQ Robotics.  If not, see <http://www.gnu.org/licenses/>.
 
 Contributors:
 - Murilo M. Marinho (murilo@nml.t.u-tokyo.ac.jp)
@@ -26,20 +26,18 @@ Contributors:
 namespace DQ_robotics
 {
 
-/* **********************************************************************
- *  CONSTRUCTOR
- * *********************************************************************/
-DQ_Kinematics::DQ_Kinematics()
+DQ_Kinematics::DQ_Kinematics():
+    reference_frame_(1),
+    base_frame_(1)
 {
-    reference_frame_ = DQ(1);
-    base_frame_      = DQ(1);
+
 }
 
-/* **********************************************************************
- *  CONCRETE METHODS
- * *********************************************************************/
-
-
+/**
+ * @brief Protected method to check if the index to a link is valid.
+ * @param to_ith_link The index to a link.
+ * @throws std::runtime_error when the value of  to_ith_link is invalid.
+ */
 void DQ_Kinematics::_check_to_ith_link(const int &to_ith_link) const
 {
     if(to_ith_link >= this->get_dim_configuration_space() || to_ith_link < 0)
@@ -48,6 +46,11 @@ void DQ_Kinematics::_check_to_ith_link(const int &to_ith_link) const
     }
 }
 
+/**
+ * @brief Protected method to check if the size of the vector of joint values is valid.
+ * @param q_vec Vector of joint values.
+ * @throws std::runtime_error when the size of  q_vec is invalid.
+ */
 void DQ_Kinematics::_check_q_vec(const VectorXd &q_vec) const
 {
     if(q_vec.size() != get_dim_configuration_space())
@@ -56,22 +59,48 @@ void DQ_Kinematics::_check_q_vec(const VectorXd &q_vec) const
     }
 }
 
-
+/**
+ * @brief Sets the reference frame used for the fkm() and pose_jacobian() methods.
+ * @param reference_frame A unit dual quaternion representing the reference frame.
+ * @throws std::runtime_error when reference_frame is not a unit dual quaternion.
+ */
 void DQ_Kinematics::set_reference_frame(const DQ &reference_frame)
 {
+    if(!is_unit(reference_frame))
+        throw std::runtime_error("The input to set_reference_frame() must be a unit dual quaternion.");
     reference_frame_ = reference_frame;
 }
 
+/**
+ * @brief Returns the reference frame set by set_reference_frame().
+ * @return A unit dual quaternion representing the reference frame.
+ */
 DQ   DQ_Kinematics::get_reference_frame() const
 {
     return reference_frame_;
 }
 
+/**
+ * @brief Sets the base frame with respect to the global reference frame (i.e., the identity).
+ *        The rigid motion from the global reference frame to the robot base is given by the
+ *        unit dual quaternion  base_frame. This function is used to define the 'physical'
+ *        place of the robot base and it does not necessarily coincides with the reference
+ *        frame.
+ *
+ * @param base_frame A unit dual quaternion representing the reference frame.
+ * @throws std::runtime_error when  base_frame is not a unit dual quaternion.
+ */
 void DQ_Kinematics::set_base_frame(const DQ &base_frame)
 {
+    if(!is_unit(base_frame))
+        throw std::runtime_error("The input to set_base_frame() must be a unit dual quaternion.");
     base_frame_ = base_frame;
 }
 
+/**
+ * @brief Returns the base frame set by set_base_frame().
+ * @return A unit dual quaternion representing the reference frame.
+ */
 DQ DQ_Kinematics::get_base_frame() const
 {
     return base_frame_;
@@ -87,20 +116,41 @@ std::string DQ_Kinematics::get_name() const
     return name_;
 }
 
+/**
+ * @brief returns the Jacobian that satisfies
+          vec8(pose_dot) = J * q_dot, where pose = fkm(), 'pose_dot' is the time
+          derivative of the pose and  joint_configurations is the configuration vector.
+ * @param joint_configurations The VectorXd representing the joint configurations.
+ * @return a MatrixXd representing the desired Jacobian.
+ */
 MatrixXd DQ_Kinematics::pose_jacobian(const VectorXd &joint_configurations) const
 {
     return pose_jacobian(joint_configurations, get_dim_configuration_space()-1);
 }
 
+/**
+ * @brief Returns the dimensions of the configuration space.
+ * @return An int presenting the dimension of the configuration space.
+ */
 int DQ_Kinematics::get_dim_configuration_space() const
 {
     return dim_configuration_space_;
 }
 
-/* **********************************************************************
- *  STATIC METHODS
- * *********************************************************************/
-
+/**
+ * @brief Given the  pose_jacobian and the corresponding unit dual
+ *        quaternion  pose that satisfy vec8(pose_dot) = pose_jacobian *
+ *        q_dot, distance_jacobian() returns the distance
+ *        Jacobian; that it, the Jacobian that satisfies the relation
+ *        dot(d^2) = Jd * q_dot, where dot(d^2) is the time derivative of
+ *        the square of the distance between the origin of the frame
+ *        represented by  pose and the origin of the reference frame.
+ * @param pose_jacobian The MatrixXd representing the pose Jacobian, as obtained from
+ *        pose_jacobian().
+ * @param pose The DQ representing the pose related to the pose Jacobian, as obtained from
+ *        fkm().
+ * @return The MatrixXd representing the desired Jacobian.
+ */
 MatrixXd DQ_Kinematics::distance_jacobian(const MatrixXd &pose_jacobian, const DQ &pose)
 {
     const DQ t        = translation(pose);
@@ -109,25 +159,49 @@ MatrixXd DQ_Kinematics::distance_jacobian(const MatrixXd &pose_jacobian, const D
     return Jd;
 }
 
+/**
+ * @brief Given the Jacobian  pose_jacobian and the corresponding unit dual
+ *        quaternion pose that satisfy vec8(pose_dot) = J *
+ *        q_dot, translation_jacobian() returns the Jacobian
+ *        that satisfies the relation vec4(p_dot) = Jp * q_dot, where p_dot
+ *        is the time derivative of the translation quaternion  pose and q_dot
+ *        is the time derivative of the configuration vector.
+ * @param pose_jacobian The MatrixXd representing the pose Jacobian, as obtained from
+ *        pose_jacobian().
+ * @param pose The DQ representing the pose related to the pose Jacobian, as obtained from
+ *        fkm().
+ * @return The MatrixXd representing the desired Jacobian.
+ */
 MatrixXd DQ_Kinematics::translation_jacobian(const MatrixXd &pose_jacobian, const DQ &pose)
 {
     return 2.0*haminus4(conj(P(pose)))*pose_jacobian.block(4,0,4,pose_jacobian.cols())+
             2.0*hamiplus4(D(pose))*C4()*DQ_Kinematics::rotation_jacobian(pose_jacobian);
 }
 
-
+/**
+ * @brief  Given the pose_jacobian and the corresponding unit dual
+ *         quaternion pose that satisfy vec8(pose_dot) = J *
+ *         q_dot, rotation_jacobian() returns the Jacobian Jr that
+ *         satisfies vec4(r_dot) = Jr * q_dot, where r_dot is the time
+ *         derivative of the rotation quaternion r in pose = r +
+ *         DQ.E*(1/2)*p*r and q_dot is the time derivative of the
+ *         configuration vector.
+ * @param pose_jacobian The MatrixXd representing the pose Jacobian, as obtained from
+ *        pose_jacobian().
+ * @return the MatrixXd representing the desired Jacobian.
+ */
 MatrixXd DQ_Kinematics::rotation_jacobian(const MatrixXd &pose_jacobian)
 {
     return pose_jacobian.block(0,0,4,pose_jacobian.cols());
 }
 
 /**
- * @brief The line Jacobian given the \p rotation_jacobian, the \p translation_jacobian, the \p pose, and a \p line_direction
- * @param rotation_jacobian the current rotation Jacobian \see rotation_jacobian()
- * @param translation_jacobian the current translation Jacobian \see translation_jacobian()
- * @param pose the current end-effector pose \see fkm()
- * @param line_direction the line direction w.r.t. the \p pose reference frame. For example using i_, j_, and k_
- * will return the line Jacobian collinear with, respectively, the x-axis, y-axis, and z-axis of \p pose,
+ * @brief The line Jacobian given the  rotation_jacobian, the  translation_jacobian, the  pose, and a  line_direction.
+ * @param rotation_jacobian the current rotation Jacobian.
+ * @param translation_jacobian the current translation Jacobian.
+ * @param pose the current end-effector pose.
+ * @param line_direction the line direction w.r.t. the  pose reference frame. For example using i_, j_, and k_
+ * will return the line Jacobian collinear with, respectively, the x-axis, y-axis, and z-axis of  pose.
  */
 MatrixXd DQ_Kinematics::line_jacobian(const MatrixXd& pose_jacobian, const DQ& pose, const DQ& line_direction)
 {
@@ -158,12 +232,11 @@ MatrixXd DQ_Kinematics::line_jacobian(const MatrixXd& pose_jacobian, const DQ& p
 }
 
 /**
- * @brief The plane Jacobian given the \p rotation_jacobian, the \p translation_jacobian, the \p pose, and a \p plane_normal
- * @param rotation_jacobian the current rotation Jacobian \see rotation_jacobian()
- * @param translation_jacobian the current translation Jacobian \see translation_jacobian()
- * @param pose the current end-effector pose \see fkm()
- * @param plane_normal the plane normal w.r.t. the \p pose reference frame. For example using i_, j_, and k_
- * will return the plane Jacobian whose normal is collinear with, respectively, the x-axis, y-axis, and z-axis of \p pose,
+ * @brief The plane Jacobian given the pose_jacobian, the pose, and a plane_normal.
+ * @param pose_jacobian The pose Jacobian as obtained from pose_jacobian().
+ * @param pose The pose obtained from fkm() corresponding to pose_jacobian().
+ * @param plane_normal the plane normal w.r.t. the  pose reference frame. For example using i_, j_, and k_
+ * will return the plane Jacobian whose normal is collinear with, respectively, the x-axis, y-axis, and z-axis of  pose.
  */
 MatrixXd DQ_Kinematics::plane_jacobian(const MatrixXd& pose_jacobian, const DQ& pose, const DQ& plane_normal)
 {

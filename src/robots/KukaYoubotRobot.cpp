@@ -42,7 +42,7 @@ DQ_SerialWholeBody KukaYoubotRobot::kinematics()
                       pi2,      0,       0,      pi2,        0,
                         0,      0,       0,        0,        0;
 
-    auto arm = std::make_shared<DQ_SerialManipulatorDH>(DQ_SerialManipulatorDH(arm_DH_matrix,"standard"));
+    auto arm = std::make_shared<DQ_SerialManipulatorDH>(DQ_SerialManipulatorDH(arm_DH_matrix));
     auto base = std::make_shared<DQ_HolonomicBase>(DQ_HolonomicBase());
 
     DQ x_bm= 1 + E_*0.5*(0.22575*i_ + 0.1441*k_);
