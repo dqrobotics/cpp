@@ -1363,20 +1363,24 @@ DQ operator-(const double& scalar, const DQ& dq){
 DQ operator*(const DQ& dq1, const DQ& dq2){
     DQ dq;
 
+    const DQ dq1_d = dq1.D();
+    const DQ dq2_p = dq2.P();
+    const DQ qd2_d = dq2.D();
+
     dq.q(0) = dq1.q(0)*dq2.q(0) - dq1.q(1)*dq2.q(1) - dq1.q(2)*dq2.q(2) - dq1.q(3)*dq2.q(3);
     dq.q(1) = dq1.q(0)*dq2.q(1) + dq1.q(1)*dq2.q(0) + dq1.q(2)*dq2.q(3) - dq1.q(3)*dq2.q(2);
     dq.q(2) = dq1.q(0)*dq2.q(2) - dq1.q(1)*dq2.q(3) + dq1.q(2)*dq2.q(0) + dq1.q(3)*dq2.q(1);
     dq.q(3) = dq1.q(0)*dq2.q(3) + dq1.q(1)*dq2.q(2) - dq1.q(2)*dq2.q(1) + dq1.q(3)*dq2.q(0);
 
-    dq.q(4) = dq1.q(0)*dq2.D().q(0) - dq1.q(1)*dq2.D().q(1) - dq1.q(2)*dq2.D().q(2) - dq1.q(3)*dq2.D().q(3);
-    dq.q(5) = dq1.q(0)*dq2.D().q(1) + dq1.q(1)*dq2.D().q(0) + dq1.q(2)*dq2.D().q(3) - dq1.q(3)*dq2.D().q(2);
-    dq.q(6) = dq1.q(0)*dq2.D().q(2) - dq1.q(1)*dq2.D().q(3) + dq1.q(2)*dq2.D().q(0) + dq1.q(3)*dq2.D().q(1);
-    dq.q(7) = dq1.q(0)*dq2.D().q(3) + dq1.q(1)*dq2.D().q(2) - dq1.q(2)*dq2.D().q(1) + dq1.q(3)*dq2.D().q(0);
+    dq.q(4) = dq1.q(0)*qd2_d.q(0) - dq1.q(1)*qd2_d.q(1) - dq1.q(2)*qd2_d.q(2) - dq1.q(3)*qd2_d.q(3);
+    dq.q(5) = dq1.q(0)*qd2_d.q(1) + dq1.q(1)*qd2_d.q(0) + dq1.q(2)*qd2_d.q(3) - dq1.q(3)*qd2_d.q(2);
+    dq.q(6) = dq1.q(0)*qd2_d.q(2) - dq1.q(1)*qd2_d.q(3) + dq1.q(2)*qd2_d.q(0) + dq1.q(3)*qd2_d.q(1);
+    dq.q(7) = dq1.q(0)*qd2_d.q(3) + dq1.q(1)*qd2_d.q(2) - dq1.q(2)*qd2_d.q(1) + dq1.q(3)*qd2_d.q(0);
 
-    dq.q(4) = dq.q(4) + dq1.D().q(0)*dq2.P().q(0) - dq1.D().q(1)*dq2.P().q(1) - dq1.D().q(2)*dq2.P().q(2) - dq1.D().q(3)*dq2.P().q(3);
-    dq.q(5) = dq.q(5) + dq1.D().q(0)*dq2.P().q(1) + dq1.D().q(1)*dq2.P().q(0) + dq1.D().q(2)*dq2.P().q(3) - dq1.D().q(3)*dq2.P().q(2);
-    dq.q(6) = dq.q(6) + dq1.D().q(0)*dq2.P().q(2) - dq1.D().q(1)*dq2.P().q(3) + dq1.D().q(2)*dq2.P().q(0) + dq1.D().q(3)*dq2.P().q(1);
-    dq.q(7) = dq.q(7) + dq1.D().q(0)*dq2.P().q(3) + dq1.D().q(1)*dq2.P().q(2) - dq1.D().q(2)*dq2.P().q(1) + dq1.D().q(3)*dq2.P().q(0);
+    dq.q(4) = dq.q(4) + dq1_d.q(0)*dq2_p.q(0) - dq1_d.q(1)*dq2_p.q(1) - dq1_d.q(2)*dq2_p.q(2) - dq1_d.q(3)*dq2_p.q(3);
+    dq.q(5) = dq.q(5) + dq1_d.q(0)*dq2_p.q(1) + dq1_d.q(1)*dq2_p.q(0) + dq1_d.q(2)*dq2_p.q(3) - dq1_d.q(3)*dq2_p.q(2);
+    dq.q(6) = dq.q(6) + dq1_d.q(0)*dq2_p.q(2) - dq1_d.q(1)*dq2_p.q(3) + dq1_d.q(2)*dq2_p.q(0) + dq1_d.q(3)*dq2_p.q(1);
+    dq.q(7) = dq.q(7) + dq1_d.q(0)*dq2_p.q(3) + dq1_d.q(1)*dq2_p.q(2) - dq1_d.q(2)*dq2_p.q(1) + dq1_d.q(3)*dq2_p.q(0);
 
     return dq;
 }
