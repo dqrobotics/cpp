@@ -84,7 +84,7 @@ VectorXd DQ_SerialManipulator::get_upper_q_limit() const
 
 void DQ_SerialManipulator::set_upper_q_limit(const VectorXd &upper_q_limit)
 {
-    upper_q_dot_limit_ = upper_q_limit;
+    upper_q_limit_ = upper_q_limit;
 }
 
 VectorXd DQ_SerialManipulator::get_upper_q_dot_limit() const
