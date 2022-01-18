@@ -27,3 +27,13 @@ jobs:
         run: |
           cd ..
           sudo apt install ./*.deb
+          
+      - name: Download examples
+        run: git checkout https://github.com/dqrobotics/cpp-examples.git
+        
+      - name: Build pure examples
+        run: |
+          cd cpp-examples
+          chmod +x .build_pure.sh
+          ./.build_pure.sh
+          
