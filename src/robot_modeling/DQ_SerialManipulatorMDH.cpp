@@ -1,5 +1,5 @@
 /**
-(C) Copyright 2020 DQ Robotics Developers
+(C) Copyright 2022 DQ Robotics Developers
 
 This file is part of DQ Robotics.
 
@@ -17,7 +17,7 @@ This file is part of DQ Robotics.
     along with DQ Robotics.  If not, see <http://www.gnu.org/licenses/>.
 
 Contributors:
-- Murilo M. Marinho (murilo@nml.t.u-tokyo.ac.jp)
+- Juan Jose Quiroz Omana -  juanjqo@g.ecc.u-tokyo.ac.jp
 */
 
 #include <dqrobotics/robot_modeling/DQ_SerialManipulatorMDH.h>
@@ -31,16 +31,6 @@ DQ_SerialManipulatorMDH::DQ_SerialManipulatorMDH(const MatrixXd& dh_matrix):
     if(dh_matrix.rows() != 5)
     {
         throw(std::range_error("Bad DQ_SerialManipulatorDH(dh_matrix) call: dh_matrix should be 5xn"));
-    }
-    dh_matrix_ = dh_matrix;
-}
-
-DQ_SerialManipulatorMDH::DQ_SerialManipulatorMDH(const MatrixXd &dh_matrix, const std::string&):
-    DQ_SerialManipulator(dh_matrix.cols())
-{
-    if(dh_matrix.rows() != 5)
-    {
-        throw(std::range_error("Bad DQ_SerialManipulatorMDH(dh_matrix, convention) call: dh_matrix should be 5xn"));
     }
     dh_matrix_ = dh_matrix;
 }
