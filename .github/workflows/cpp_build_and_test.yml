@@ -1,0 +1,39 @@
+name: CPP Build and Test
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Apt update and upgrade
+        run: sudo apt update && sudo apt upgrade -y
+        
+      - name: Install prerequisites
+        run: |
+          sudo apt install cmake g++ libeigen3-dev fakeroot
+          
+      - name: Make debian package
+        run: |
+          chmod +x debian/rules
+          fakeroot debian/rules clean
+          fakeroot debian/rules build
+          fakeroot debian/rules binary
+          
+      - name: Install debian package
+        run: |
+          cd ..
+          sudo apt install ./*.deb
+          
+      - name: Download examples
+        run: git clone https://github.com/dqrobotics/cpp-examples.git
+        
+      - name: Build pure examples
+        run: |
+          cd cpp-examples
+          chmod +x .build_pure.sh
+          ./.build_pure.sh
+          
