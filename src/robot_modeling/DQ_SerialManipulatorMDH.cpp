@@ -75,10 +75,18 @@ DQ DQ_SerialManipulatorMDH::_dh2dq(const double &q, const int &ith) const
                 sine_of_half_alpha*cosine_of_half_theta,
                 -sine_of_half_alpha*sine_of_half_theta, //MDH
                 cosine_of_half_alpha*sine_of_half_theta,
-                -(a*sine_of_half_alpha*cosine_of_half_theta) /2.0 - (d*cosine_of_half_alpha*sine_of_half_theta)/2.0,
-                (a*cosine_of_half_alpha*cosine_of_half_theta)/2.0 - (d*sine_of_half_alpha*sine_of_half_theta  )/2.0,
-                -(a*cosine_of_half_alpha*sine_of_half_theta)  /2.0 - (d*sine_of_half_alpha*cosine_of_half_theta)/2.0, //MDH
-                (d*cosine_of_half_alpha*cosine_of_half_theta)/2.0 - (a*sine_of_half_alpha*sine_of_half_theta  )/2.0
+
+                -(a*sine_of_half_alpha*cosine_of_half_theta) /2.0 
+                - (d*cosine_of_half_alpha*sine_of_half_theta)/2.0,
+
+                (a*cosine_of_half_alpha*cosine_of_half_theta)/2.0
+                 - (d*sine_of_half_alpha*sine_of_half_theta  )/2.0,
+
+                -(a*cosine_of_half_alpha*sine_of_half_theta)  /2.0
+                 - (d*sine_of_half_alpha*cosine_of_half_theta)/2.0, //MDH
+
+                (d*cosine_of_half_alpha*cosine_of_half_theta)/2.0
+                 - (a*sine_of_half_alpha*sine_of_half_theta  )/2.0
                 );
 }
 
