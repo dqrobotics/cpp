@@ -22,3 +22,8 @@ jobs:
           fakeroot debian/rules clean
           fakeroot debian/rules build
           fakeroot debian/rules binary
+          
+      - name: Install debian package
+        run: |
+          cd ..
+          sudo apt install ./*.deb
