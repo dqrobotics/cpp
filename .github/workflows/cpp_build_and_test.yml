@@ -1,0 +1,24 @@
+name: CPP Build and Test
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Apt update and upgrade
+        run: sudo apt update && sudo apt upgrade -y
+        
+      - name: Install prerequisites
+        run: |
+          sudo apt install cmake g++ libeigen3-dev fakeroot
+          
+      - name: Make debian package
+        run: |
+          chmod +x debian/rules
+          fakeroot debian/rules clean
+          fakeroot debian/rules build
+          fakeroot debian/rules binary
