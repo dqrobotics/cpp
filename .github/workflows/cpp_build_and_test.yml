@@ -31,9 +31,9 @@ jobs:
       - name: Download examples
         run: git clone https://github.com/dqrobotics/cpp-examples.git
         
-      - name: Build pure examples
+      - name: Build and run pure examples
         run: |
           cd cpp-examples
-          chmod +x .build_pure.sh
-          ./.build_pure.sh
+          chmod +x .build_and_run_pure.sh
+          ./.build_and_run_pure.sh
           
