@@ -57,7 +57,7 @@ DQ_SerialManipulatorMDH::DQ_SerialManipulatorMDH(const MatrixXd& dh_matrix):
 }
 
 /**
- * @brief This method computes the unit dual quaternion for a given link's Extended MDH parameters.
+ * @brief This protected method computes the unit dual quaternion for a given link's Extended MDH parameters.
  * @param q The joint value.
  * @param ith The link number.
  * @returns The unit dual quaternion that correspond for a given link's Extended MDH parameters. 
@@ -111,10 +111,10 @@ DQ DQ_SerialManipulatorMDH::_dh2dq(const double &q, const int &ith) const
 }
 
 /**
- * @brief This method computes the dual quaternion related with the time derivative of the
+ * @brief This protected method computes the dual quaternion related with the time derivative of the
  *        unit dual quaternion pose using the MDH convention. 
- *        (See. eq (2.27) of 'Two-arm Manipulation: From Manipulators to Enhanced Human-Robot Collaboration', Bruno Vilhena Adorno.)
-*
+ *        (See. eq (2.27) of 'Two-arm Manipulation: From Manipulators to Enhanced Human-Robot Collaboration', Bruno Vilhena Adorno).
+ *
  * @param ith The link number.
  * @returns The dual quaternion related with the time derivative of the unit dual quaternion pose using the MDH convention. 
  * 
@@ -132,32 +132,85 @@ DQ DQ_SerialManipulatorMDH::_get_w(const int &ith) const
         return E_*(cos(alpha)*k_ - sin(alpha)*j_);
 }
 
+/**
+ * @brief This protected method returns the first row of the Matrix dh_matrix_, which
+ *        correspond to the parameter 'theta' in the DH convention.
+ * 
+ * @param None.
+ * @returns The first row of the Matrix dh_matrix_, which  correspond 
+ *          to the parameter 'theta' in the DH convention.   
+ * 
+ */
 VectorXd  DQ_SerialManipulatorMDH::get_thetas() const
 {
     return dh_matrix_.row(0);
 }
 
-
+/**
+ * @brief This method returns the second row of the Matrix dh_matrix_, which
+ *        correspond to the parameter 'd' in the DH convention.
+ * 
+ * @param None.
+ * @returns The second row of the Matrix dh_matrix_, which correspond 
+ *          to the parameter 'd' in the DH convention.   
+ * 
+ */
 VectorXd  DQ_SerialManipulatorMDH::get_ds() const
 {
     return dh_matrix_.row(1);
 }
 
+/**
+ * @brief This method returns the third row of the Matrix dh_matrix_, which
+ *        correspond to the parameter 'a' in the DH convention.
+ * 
+ * @param None.
+ * @returns The third row of the Matrix dh_matrix_, which correspond to
+ *          the parameter 'a' in the DH convention.  
+ * 
+ */
 VectorXd  DQ_SerialManipulatorMDH::get_as() const
 {
     return dh_matrix_.row(2);
 }
 
+/**
+ * @brief This method returns the fourth row of the Matrix dh_matrix_, which
+ *        correspond to the parameter 'alpha' in the DH convention.
+ * 
+ * @param None.
+ * @returns The fourth row of the Matrix dh_matrix_, which correspond to
+ *          the parameter 'alpha' in the DH convention.  
+ * 
+ */
 VectorXd  DQ_SerialManipulatorMDH::get_alphas() const
 {
     return dh_matrix_.row(3);
 }
 
+/**
+ * @brief This method returns the fifth row of the Matrix dh_matrix_, which
+ *        correspond to the type of joints of the robot.
+ * 
+ * @param None.
+ * @returns The fifth row of the Matrix dh_matrix_, which correspond to
+ *          the type of joints of the robot.  
+ * 
+ */
 VectorXd DQ_SerialManipulatorMDH::get_types() const
 {
     return dh_matrix_.row(4);
 }
 
+/**
+ * @brief This method returns the first to_ith_link columns of the pose Jacobian time derivative
+ * @param q_vec. Vector of joint values.
+ * @param q_vec_dot. Vector of joint velocity values.
+ * @param to_ith_link. The index to a link. This defines until which link the pose_jacobian_derivative
+ *                     will be calculated.
+ * @returns The first to_ith_link columns of the pose_jacobian_derivative.
+ * 
+ */
 MatrixXd DQ_SerialManipulatorMDH::pose_jacobian_derivative(const VectorXd &q_vec, const VectorXd &q_vec_dot, const int &to_ith_link) const
 {
     _check_q_vec(q_vec);
@@ -196,12 +249,29 @@ MatrixXd DQ_SerialManipulatorMDH::pose_jacobian_derivative(const VectorXd &q_vec
     return J_dot;
 }
 
+
+/**
+ * @brief This method returns the pose Jacobian time derivative
+ * @param q_vec. Vector of joint values.
+ * @param q_vec_dot. Vector of joint velocity values. 
+ * @returns The pose jacobian derivative.
+ * 
+ */
 MatrixXd DQ_SerialManipulatorMDH::pose_jacobian_derivative(const VectorXd &q_vec, const VectorXd &q_vec_dot) const
 {
     return pose_jacobian_derivative(q_vec, q_vec_dot, get_dim_configuration_space()-1);
 }
 
 
+/**
+ * @brief This method calculates the forward kinematic model and returns the dual quaternion
+ *        corresponding to the last joint (the displacements due to the base and the effector
+ *        are not taken into account).
+ * @param q_vec. Vector of joint values.
+ * @param to_ith_link. The index to a link. This defines until which link the raw_fkm will be calculated.
+ * @returns The unit dual quaternion that represent the forward kinematic model until the link to_ith_link.
+ * 
+ */
 DQ  DQ_SerialManipulatorMDH::raw_fkm(const VectorXd& q_vec, const int& to_ith_link) const
 {
     _check_q_vec(q_vec);
@@ -215,6 +285,18 @@ DQ  DQ_SerialManipulatorMDH::raw_fkm(const VectorXd& q_vec, const int& to_ith_li
     return q;
 }
 
+
+/**
+ * @brief This method returns the pose Jacobian that satisfies vec(x_dot) = J * q_vec_dot, 
+ *        where x = fkm(q_vec) and q_vec is the vector of joint variables. 
+ *        This function does not take into account any base or end-effector displacements 
+ *        and should be used mostly internally in the class.
+ * @param q_vec. Vector of joint values.
+ * @param to_ith_link. The index to a link. This defines until which link the raw_pose_jacobian 
+ *                     will be calculated.
+ * @returns The pose jacobian.
+ * 
+ */
 MatrixXd DQ_SerialManipulatorMDH::raw_pose_jacobian(const VectorXd &q_vec, const int &to_ith_link) const
 {
     _check_q_vec(q_vec);
