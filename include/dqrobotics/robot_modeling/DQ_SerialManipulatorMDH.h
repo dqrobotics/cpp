@@ -40,8 +40,7 @@ public:
     enum JOINT_TYPES{ JOINT_ROTATIONAL=0, JOINT_PRISMATIC };
 
     DQ_SerialManipulatorMDH()=delete;
-    DQ_SerialManipulatorMDH(const MatrixXd& dh_matrix);
-    DEPRECATED DQ_SerialManipulatorMDH(const MatrixXd& dh_matrix, const std::string&);
+    DQ_SerialManipulatorMDH(const MatrixXd& dh_matrix);    
 
     VectorXd get_thetas() const;
     VectorXd get_ds() const;
