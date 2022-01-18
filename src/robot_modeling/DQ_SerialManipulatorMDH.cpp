@@ -25,6 +25,22 @@ Contributors:
 namespace DQ_robotics
 {
 
+/**
+ * @brief Constructor of the DQ_SerialManipulatorMDH class.
+ * @param dh_matrix The matrix 5 x number_of_joints that represent the MDH parameters of the robot.
+ * Example: Consider the Stanford manipulator. Using the MDH parameters, we have: 
+ * (See Table 2.1 from Foundations of Robotics, Tsuneo Yoshikawa)
+ *  Matrix<double, 5, 6> robot_dh;
+    robot_dh << 0, 0, 0, 0, 0, 0,                        // theta
+                0,d2,d3,0,0,0,                           // d
+                0, 0, 0, 0, 0, 0,                        // a
+                0, -M_PI_2, M_PI_2,  0, -M_PI_2, M_PI_2, // alpha
+                0,0,1,0,0,0;  // Type of joints. The joints are rotational, except the third joint, which is prismatic.
+    DQ_SerialManipulatorMDH StandfordManipulator(robot_dh);    
+    StandfordManipulator.set_effector(1+E_*0.5*k_*d6); % The MDH parameters of this robot does not take 
+    % into account the constant translation of the end effector. 
+ * @returns None.;
+ */
 DQ_SerialManipulatorMDH::DQ_SerialManipulatorMDH(const MatrixXd& dh_matrix):
     DQ_SerialManipulator(dh_matrix.cols())
 {
@@ -35,6 +51,13 @@ DQ_SerialManipulatorMDH::DQ_SerialManipulatorMDH(const MatrixXd& dh_matrix):
     dh_matrix_ = dh_matrix;
 }
 
+/**
+ * @brief This method computes the unit dual quaternion for a given link's Extended MDH parameters.
+ * @param q The joint value.
+ * @param ith The link number.
+ * @returns The unit dual quaternion that correspond for a given link's Extended MDH parameters. 
+ * Example: DQ x = _dh2dq(joint_value, link_number);
+ */
 DQ DQ_SerialManipulatorMDH::_dh2dq(const double &q, const int &ith) const
 {
     double half_theta = dh_matrix_(0,ith)/2.0;
