@@ -27,32 +27,32 @@ namespace DQ_robotics
 
 /**
  * @brief Constructor of the DQ_SerialManipulatorMDH class.
- * @param dh_matrix The matrix 5 x number_of_joints that represent the MDH parameters of the robot.
+ * @param mdh_matrix The matrix 5 x number_of_joints that represent the MDH parameters of the robot.
  * 
  *                  Example: Consider the Stanford manipulator. Using the MDH parameters, we have: 
  *                  (See Table 2.1 from Foundations of Robotics, Tsuneo Yoshikawa)
  * 
- *                  Matrix<double, 5, 6> robot_dh;
- *                  robot_dh << 0, 0, 0, 0, 0, 0,                        // theta
+ *                  Matrix<double, 5, 6> robot_mdh;
+ *                  robot_mdh << 0, 0, 0, 0, 0, 0,                        // theta
  *                               0,d2,d3,0,0,0,                           // d
  *                               0, 0, 0, 0, 0, 0,                        // a
  *                               0, -M_PI_2, M_PI_2,  0, -M_PI_2, M_PI_2, // alpha
  *                               0,0,1,0,0,0;  // Type of joints. The joints are rotational, except the third joint, which is prismatic.
- *                  DQ_SerialManipulatorMDH StandfordManipulator(robot_dh); 
+ *                  DQ_SerialManipulatorMDH StandfordManipulator(robot_mdh); 
  * 
  *                  // The MDH parameters of this robot does not take
  *                  // into account the constant translation of the end effector.    
  *                  StandfordManipulator.set_effector(1+E_*0.5*k_*d6); 
  *
  */
-DQ_SerialManipulatorMDH::DQ_SerialManipulatorMDH(const MatrixXd& dh_matrix):
-    DQ_SerialManipulator(dh_matrix.cols())
+DQ_SerialManipulatorMDH::DQ_SerialManipulatorMDH(const MatrixXd& mdh_matrix):
+    DQ_SerialManipulator(mdh_matrix.cols())
 {
-    if(dh_matrix.rows() != 5)
+    if(mdh_matrix.rows() != 5)
     {
         throw(std::range_error("Bad DQ_SerialManipulatorDH(dh_matrix) call: dh_matrix should be 5xn"));
     }
-    dh_matrix_ = dh_matrix;
+    mdh_matrix_ = mdh_matrix;
 }
 
 /**
@@ -66,11 +66,11 @@ DQ_SerialManipulatorMDH::DQ_SerialManipulatorMDH(const MatrixXd& dh_matrix):
  */
 DQ DQ_SerialManipulatorMDH::_mdh2dq(const double &q, const int &ith) const
 {
-    double half_theta = dh_matrix_(0,ith)/2.0;
-    double d = dh_matrix_(1,ith);
-    const double &a = dh_matrix_(2,ith);
-    const double half_alpha = dh_matrix_(3,ith)/2.0;
-    const int joint_type = int(dh_matrix_(4,ith));
+    double half_theta = mdh_matrix_(0,ith)/2.0;
+    double d = mdh_matrix_(1,ith);
+    const double &a = mdh_matrix_(2,ith);
+    const double half_alpha = mdh_matrix_(3,ith)/2.0;
+    const int joint_type = int(mdh_matrix_(4,ith));
 
     // Add the effect of the joint value
     if(joint_type == JOINT_ROTATIONAL)
@@ -122,9 +122,9 @@ DQ DQ_SerialManipulatorMDH::_mdh2dq(const double &q, const int &ith) const
  */
 DQ DQ_SerialManipulatorMDH::_get_w(const int &ith) const
 {
-    const int joint_type = int(dh_matrix_(4,ith));
-    const double alpha = dh_matrix_(3,ith);
-    const double &a = dh_matrix_(2,ith);
+    const int joint_type = int(mdh_matrix_(4,ith));
+    const double alpha = mdh_matrix_(3,ith);
+    const double &a = mdh_matrix_(2,ith);
     if(joint_type == JOINT_ROTATIONAL)
         return -j_*sin(alpha)+ k_*cos(alpha)- E_*a*(j_*cos(alpha) + k_*sin(alpha));
     else
@@ -141,7 +141,7 @@ DQ DQ_SerialManipulatorMDH::_get_w(const int &ith) const
  */
 VectorXd  DQ_SerialManipulatorMDH::get_thetas() const
 {
-    return dh_matrix_.row(0);
+    return mdh_matrix_.row(0);
 }
 
 /**
@@ -154,7 +154,7 @@ VectorXd  DQ_SerialManipulatorMDH::get_thetas() const
  */
 VectorXd  DQ_SerialManipulatorMDH::get_ds() const
 {
-    return dh_matrix_.row(1);
+    return mdh_matrix_.row(1);
 }
 
 /**
@@ -167,7 +167,7 @@ VectorXd  DQ_SerialManipulatorMDH::get_ds() const
  */
 VectorXd  DQ_SerialManipulatorMDH::get_as() const
 {
-    return dh_matrix_.row(2);
+    return mdh_matrix_.row(2);
 }
 
 /**
@@ -180,7 +180,7 @@ VectorXd  DQ_SerialManipulatorMDH::get_as() const
  */
 VectorXd  DQ_SerialManipulatorMDH::get_alphas() const
 {
-    return dh_matrix_.row(3);
+    return mdh_matrix_.row(3);
 }
 
 /**
@@ -193,7 +193,7 @@ VectorXd  DQ_SerialManipulatorMDH::get_alphas() const
  */
 VectorXd DQ_SerialManipulatorMDH::get_types() const
 {
-    return dh_matrix_.row(4);
+    return mdh_matrix_.row(4);
 }
 
 /**
