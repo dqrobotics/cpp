@@ -43,8 +43,7 @@ namespace DQ_robotics
  *                  // The MDH parameters of this robot does not take
  *                  // into account the constant translation of the end effector.    
  *                  StandfordManipulator.set_effector(1+E_*0.5*k_*d6); 
- *                   
- * @returns None
+ *
  */
 DQ_SerialManipulatorMDH::DQ_SerialManipulatorMDH(const MatrixXd& dh_matrix):
     DQ_SerialManipulator(dh_matrix.cols())
@@ -135,8 +134,7 @@ DQ DQ_SerialManipulatorMDH::_get_w(const int &ith) const
 /**
  * @brief This protected method returns the first row of the Matrix dh_matrix_, which
  *        correspond to the parameter 'theta' in the DH convention.
- * 
- * @param None.
+ *  
  * @returns The first row of the Matrix dh_matrix_, which  correspond 
  *          to the parameter 'theta' in the DH convention.   
  * 
@@ -149,8 +147,7 @@ VectorXd  DQ_SerialManipulatorMDH::get_thetas() const
 /**
  * @brief This method returns the second row of the Matrix dh_matrix_, which
  *        correspond to the parameter 'd' in the DH convention.
- * 
- * @param None.
+ *  
  * @returns The second row of the Matrix dh_matrix_, which correspond 
  *          to the parameter 'd' in the DH convention.   
  * 
@@ -163,8 +160,7 @@ VectorXd  DQ_SerialManipulatorMDH::get_ds() const
 /**
  * @brief This method returns the third row of the Matrix dh_matrix_, which
  *        correspond to the parameter 'a' in the DH convention.
- * 
- * @param None.
+ *  
  * @returns The third row of the Matrix dh_matrix_, which correspond to
  *          the parameter 'a' in the DH convention.  
  * 
@@ -178,7 +174,6 @@ VectorXd  DQ_SerialManipulatorMDH::get_as() const
  * @brief This method returns the fourth row of the Matrix dh_matrix_, which
  *        correspond to the parameter 'alpha' in the DH convention.
  * 
- * @param None.
  * @returns The fourth row of the Matrix dh_matrix_, which correspond to
  *          the parameter 'alpha' in the DH convention.  
  * 
@@ -192,7 +187,6 @@ VectorXd  DQ_SerialManipulatorMDH::get_alphas() const
  * @brief This method returns the fifth row of the Matrix dh_matrix_, which
  *        correspond to the type of joints of the robot.
  * 
- * @param None.
  * @returns The fifth row of the Matrix dh_matrix_, which correspond to
  *          the type of joints of the robot.  
  * 
