@@ -62,10 +62,10 @@ DQ_SerialManipulatorMDH::DQ_SerialManipulatorMDH(const MatrixXd& dh_matrix):
  * @param ith The link number.
  * @returns The unit dual quaternion that correspond for a given link's Extended MDH parameters. 
  * 
- *              Example: DQ x = _dh2dq(q, ith);
+ *              Example: DQ x = _mdh2dq(q, ith);
  * 
  */
-DQ DQ_SerialManipulatorMDH::_dh2dq(const double &q, const int &ith) const
+DQ DQ_SerialManipulatorMDH::_mdh2dq(const double &q, const int &ith) const
 {
     double half_theta = dh_matrix_(0,ith)/2.0;
     double d = dh_matrix_(1,ith);
@@ -89,7 +89,7 @@ DQ DQ_SerialManipulatorMDH::_dh2dq(const double &q, const int &ith) const
     const double sine_of_half_alpha = sin(half_alpha);
     const double cosine_of_half_alpha = cos(half_alpha);
 
-    // Return the optimized standard dh2dq calculation
+    // Return the optimized standard mdh2dq calculation
     return DQ(
                 cosine_of_half_alpha*cosine_of_half_theta,
                 sine_of_half_alpha*cosine_of_half_theta,
@@ -242,7 +242,7 @@ MatrixXd DQ_SerialManipulatorMDH::pose_jacobian_derivative(const VectorXd &q_vec
         }
 
         J_dot.col(jth) = haminus8(x_effector)*vec_zdot + hamiplus8(z)*vec_x_effector_dot;
-        x = x*_dh2dq(q_vec(jth),i);
+        x = x*_mdh2dq(q_vec(jth),i);
         jth = jth+1;
     }
 
@@ -280,7 +280,7 @@ DQ  DQ_SerialManipulatorMDH::raw_fkm(const VectorXd& q_vec, const int& to_ith_li
     DQ q(1);
     int j = 0;
     for (int i = 0; i < (to_ith_link+1); i++) {
-        q = q * _dh2dq(q_vec(i-j), i);
+        q = q * _mdh2dq(q_vec(i-j), i);
     }
     return q;
 }
@@ -311,7 +311,7 @@ MatrixXd DQ_SerialManipulatorMDH::raw_pose_jacobian(const VectorXd &q_vec, const
     {
         DQ w = _get_w(i);
         DQ z = 0.5*Ad(x,w);
-        x = x*_dh2dq(q_vec(i),i);
+        x = x*_mdh2dq(q_vec(i),i);
         DQ j = z * x_effector;
         J.col(i)= vec8(j);
     }
