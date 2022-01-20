@@ -132,7 +132,7 @@ DQ DQ_SerialManipulatorMDH::_get_w(const int &ith) const
 }
 
 /**
- * @brief This protected method returns the first row of the Matrix mdh_matrix_, which
+ * @brief This method returns the first row of the Matrix mdh_matrix_, which
  *        correspond to the parameter 'theta' in the MDH convention.
  *  
  * @returns The first row of the Matrix dh_matrix_, which  correspond 
