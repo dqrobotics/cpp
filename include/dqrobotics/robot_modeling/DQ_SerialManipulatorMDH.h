@@ -34,7 +34,7 @@ protected:
     MatrixXd    dh_matrix_;
 
     DQ _get_w(const int& ith) const;
-    DQ _dh2dq(const double& q, const int& ith) const;
+    DQ _mdh2dq(const double& q, const int& ith) const;
 public:
     // Possible joint types
     enum JOINT_TYPES{ JOINT_ROTATIONAL=0, JOINT_PRISMATIC };
