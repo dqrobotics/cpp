@@ -50,7 +50,7 @@ DQ_SerialManipulatorMDH::DQ_SerialManipulatorMDH(const MatrixXd& mdh_matrix):
 {
     if(mdh_matrix.rows() != 5)
     {
-        throw(std::range_error("Bad DQ_SerialManipulatorDH(dh_matrix) call: dh_matrix should be 5xn"));
+        throw(std::range_error("Bad DQ_SerialManipulatorDH(mdh_matrix) call: mdh_matrix should be 5xn"));
     }
     mdh_matrix_ = mdh_matrix;
 }
@@ -135,7 +135,7 @@ DQ DQ_SerialManipulatorMDH::_get_w(const int &ith) const
  * @brief This method returns the first row of the Matrix mdh_matrix_, which
  *        correspond to the parameter 'theta' in the MDH convention.
  *  
- * @returns The first row of the Matrix dh_matrix_, which  correspond 
+ * @returns The first row of the Matrix mdh_matrix_, which  correspond 
  *          to the parameter 'theta' in the MDH convention.   
  * 
  */
@@ -148,7 +148,7 @@ VectorXd  DQ_SerialManipulatorMDH::get_thetas() const
  * @brief This method returns the second row of the Matrix mdh_matrix_, which
  *        correspond to the parameter 'd' in the MDH convention.
  *  
- * @returns The second row of the Matrix dh_matrix_, which correspond 
+ * @returns The second row of the Matrix mdh_matrix_, which correspond 
  *          to the parameter 'd' in the MDH convention.   
  * 
  */
@@ -161,7 +161,7 @@ VectorXd  DQ_SerialManipulatorMDH::get_ds() const
  * @brief This method returns the third row of the Matrix mdh_matrix_, which
  *        correspond to the parameter 'a' in the MDH convention.
  *  
- * @returns The third row of the Matrix dh_matrix_, which correspond to
+ * @returns The third row of the Matrix mdh_matrix_, which correspond to
  *          the parameter 'a' in the MDH convention.  
  * 
  */
