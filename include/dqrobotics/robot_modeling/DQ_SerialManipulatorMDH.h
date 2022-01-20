@@ -31,7 +31,7 @@ namespace DQ_robotics
 class DQ_SerialManipulatorMDH: public DQ_SerialManipulator
 {
 protected:
-    MatrixXd    dh_matrix_;
+    MatrixXd    mdh_matrix_;
 
     DQ _get_w(const int& ith) const;
     DQ _mdh2dq(const double& q, const int& ith) const;
@@ -40,7 +40,7 @@ public:
     enum JOINT_TYPES{ JOINT_ROTATIONAL=0, JOINT_PRISMATIC };
 
     DQ_SerialManipulatorMDH()=delete;
-    DQ_SerialManipulatorMDH(const MatrixXd& dh_matrix);    
+    DQ_SerialManipulatorMDH(const MatrixXd& mdh_matrix);    
 
     VectorXd get_thetas() const;
     VectorXd get_ds() const;
