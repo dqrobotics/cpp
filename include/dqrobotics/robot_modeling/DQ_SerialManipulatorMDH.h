@@ -48,6 +48,12 @@ public:
     VectorXd get_alphas() const;
     VectorXd get_types() const;
 
+    double get_thetas(const int& ith) const;
+    double get_ds(const int& ith) const;
+    double get_as(const int& ith) const;
+    double get_alphas(const int& ith) const;
+    int get_types(const int& ith) const;
+
     MatrixXd pose_jacobian_derivative(const VectorXd& q_vec, const VectorXd& q_vec_dot, const int& to_ith_link) const;
     MatrixXd pose_jacobian_derivative(const VectorXd& q_vec, const VectorXd& q_vec_dot) const;
 
