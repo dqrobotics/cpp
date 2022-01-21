@@ -66,11 +66,11 @@ DQ_SerialManipulatorMDH::DQ_SerialManipulatorMDH(const MatrixXd& mdh_matrix):
  */
 DQ DQ_SerialManipulatorMDH::_mdh2dq(const double &q, const int &ith) const
 {
-    double half_theta = get_thetas(ith)/2.0;        //double half_theta = mdh_matrix_(0,ith)/2.0;
-    double d = get_ds(ith);                         //mdh_matrix_(1,ith);
-    const double &a = get_as(ith);                  //mdh_matrix_(2,ith);
-    const double half_alpha = get_alphas(ith)/2.0;  //mdh_matrix_(3,ith)/2.0;
-    const int joint_type = get_types(ith);          //int(mdh_matrix_(4,ith));
+    double half_theta = mdh_matrix_(0,ith)/2.0;
+    double d = mdh_matrix_(1,ith);
+    const double &a = mdh_matrix_(2,ith);
+    const double half_alpha = mdh_matrix_(3,ith)/2.0;
+    const int joint_type = int(mdh_matrix_(4,ith));
 
     // Add the effect of the joint value
     if(joint_type == JOINT_ROTATIONAL)
@@ -122,9 +122,9 @@ DQ DQ_SerialManipulatorMDH::_mdh2dq(const double &q, const int &ith) const
  */
 DQ DQ_SerialManipulatorMDH::_get_w(const int &ith) const
 {
-    const int joint_type = get_types(ith); //int(mdh_matrix_(4,ith));
-    const double alpha = get_alphas(ith);  //mdh_matrix_(3,ith);
-    const double &a = get_as(ith);  //mdh_matrix_(2,ith);
+    const int joint_type = int(mdh_matrix_(4,ith));
+    const double alpha = mdh_matrix_(3,ith);
+    const double &a = mdh_matrix_(2,ith);
     if(joint_type == JOINT_ROTATIONAL)
         return -j_*sin(alpha)+ k_*cos(alpha)- E_*a*(j_*cos(alpha) + k_*sin(alpha));
     else
@@ -145,20 +145,6 @@ VectorXd  DQ_SerialManipulatorMDH::get_thetas() const
 }
 
 /**
- * @brief This method returns the ith element of the first row of the Matrix mdh_matrix_, which
- *        correspond to the parameter 'theta' in the MDH convention.
- *  
- * @returns The ith element of the first row of the Matrix mdh_matrix_, which  correspond 
- *          to the parameter 'theta' in the MDH convention.   
- * 
- */
-double  DQ_SerialManipulatorMDH::get_thetas(const int &ith) const{
-    _check_to_ith_link(ith);
-    double theta = mdh_matrix_(0,ith);
-    return theta;
-}
-
-/**
  * @brief This method returns the second row of the Matrix mdh_matrix_, which
  *        correspond to the parameter 'd' in the MDH convention.
  *  
@@ -169,20 +155,6 @@ double  DQ_SerialManipulatorMDH::get_thetas(const int &ith) const{
 VectorXd  DQ_SerialManipulatorMDH::get_ds() const
 {
     return mdh_matrix_.row(1);
-}
-
-/**
- * @brief This method returns the ith element of the second row of the Matrix mdh_matrix_, which
- *        correspond to the parameter 'd' in the MDH convention.
- *  
- * @returns The ith element of the second row of the Matrix mdh_matrix_, which correspond 
- *          to the parameter 'd' in the MDH convention.    
- * 
- */
-double  DQ_SerialManipulatorMDH::get_ds(const int &ith) const{
-    _check_to_ith_link(ith);
-    double d = mdh_matrix_(1,ith);
-    return d;
 }
 
 /**
@@ -199,20 +171,6 @@ VectorXd  DQ_SerialManipulatorMDH::get_as() const
 }
 
 /**
- * @brief This method returns the ith element of the third row of the Matrix mdh_matrix_, which
- *        correspond to the parameter 'a' in the MDH convention.
- *  
- * @returns The ith element of the third row of the Matrix mdh_matrix_, which  correspond 
- *          to the parameter 'a' in the MDH convention.   
- * 
- */
-double  DQ_SerialManipulatorMDH::get_as(const int &ith) const{
-    _check_to_ith_link(ith);
-    double a = mdh_matrix_(2,ith);
-    return a;
-}
-
-/**
  * @brief This method returns the fourth row of the Matrix mdh_matrix_, which
  *        correspond to the parameter 'alpha' in the MDH convention.
  * 
@@ -226,21 +184,6 @@ VectorXd  DQ_SerialManipulatorMDH::get_alphas() const
 }
 
 /**
- * @brief This method returns the ith element of the fourth row of the Matrix mdh_matrix_, which
- *        correspondto the parameter 'alpha' in the MDH convention.
- *  
- * @returns The ith element of the fourth row of the Matrix mdh_matrix_, which  correspond 
- *          to the parameter 'alpha' in the MDH convention.   
- * 
- */
-double  DQ_SerialManipulatorMDH::get_alphas(const int &ith) const{
-    _check_to_ith_link(ith);
-    double alphas = mdh_matrix_(3,ith);
-    return alphas;
-}
-
-
-/**
  * @brief This method returns the fifth row of the Matrix mdh_matrix_, which
  *        correspond to the type of joints of the robot.
  * 
@@ -252,22 +195,6 @@ VectorXd DQ_SerialManipulatorMDH::get_types() const
 {
     return mdh_matrix_.row(4);
 }
-
-/**
- * @brief This method returns the ith element of the fifth row of the Matrix mdh_matrix_, which
- *        correspond to the type of joints of the robot.
- * 
- * @returns The ith element of the fifth row of the Matrix mdh_matrix_, which correspond to
- *          the type of joints of the robot.  
- * 
- */
-int DQ_SerialManipulatorMDH::get_types(const int &ith) const
-{
-    _check_to_ith_link(ith);
-    int type = mdh_matrix_(4,ith);
-    return type;
-}
-
 
 /**
  * @brief This method returns the first to_ith_link columns of the pose Jacobian time derivative
