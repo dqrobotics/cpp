@@ -10,7 +10,7 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Apt update and upgrade
-        run: sudo apt update && sudo apt upgrade -y
+        run: sudo apt update
         
       - name: Install prerequisites
         run: |
