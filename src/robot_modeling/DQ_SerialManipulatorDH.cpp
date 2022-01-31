@@ -1,5 +1,5 @@
 /**
-(C) Copyright 2022 DQ Robotics Developers
+(C) Copyright 2020-2022 DQ Robotics Developers
 
 This file is part of DQ Robotics.
 
@@ -138,9 +138,9 @@ DQ DQ_SerialManipulatorDH::_get_w(const int &ith) const
 
 /**
  * @brief This method returns the first row of the Matrix dh_matrix_, which
- *        correspond to the parameter 'theta' in the DH convention.
+ *        corresponds to the parameter 'theta' in the DH convention.
  *
- * @returns The first row of the Matrix dh_matrix_, which  correspond
+ * @returns The first row of the Matrix dh_matrix_, which  corresponds
  *          to the parameter 'theta' in the DH convention.
  *
  */
@@ -152,9 +152,9 @@ VectorXd  DQ_SerialManipulatorDH::get_thetas() const
 
 /**
  * @brief This method returns the second row of the Matrix dh_matrix_, which
- *        correspond to the parameter 'd' in the DH convention.
+ *        corresponds to the parameter 'd' in the DH convention.
  *
- * @returns The second row of the Matrix dh_matrix_, which correspond
+ * @returns The second row of the Matrix dh_matrix_, which corresponds
  *          to the parameter 'd' in the DH convention.
  *
  */
@@ -166,9 +166,9 @@ VectorXd  DQ_SerialManipulatorDH::get_ds() const
 
 /**
  * @brief This method returns the third row of the Matrix dh_matrix_, which
- *        correspond to the parameter 'a' in the DH convention.
+ *        corresponds to the parameter 'a' in the DH convention.
  *
- * @returns The third row of the Matrix dh_matrix_, which correspond to
+ * @returns The third row of the Matrix dh_matrix_, which corresponds to
  *          the parameter 'a' in the DH convention.
  *
  */
@@ -180,9 +180,9 @@ VectorXd  DQ_SerialManipulatorDH::get_as() const
 
 /**
  * @brief This method returns the fourth row of the Matrix dh_matrix_, which
- *        correspond to the parameter 'alpha' in the DH convention.
+ *        corresponds to the parameter 'alpha' in the DH convention.
  *
- * @returns The fourth row of the Matrix dh_matrix_, which correspond to
+ * @returns The fourth row of the Matrix dh_matrix_, which corresponds to
  *          the parameter 'alpha' in the DH convention.
  *
  */
@@ -194,9 +194,9 @@ VectorXd  DQ_SerialManipulatorDH::get_alphas() const
 
 /**
  * @brief This method returns the fifth row of the Matrix dh_matrix_, which
- *        correspond to the type of joints of the robot.
+ *        corresponds to the type of joints of the robot.
  *
- * @returns The fifth row of the Matrix dh_matrix_, which correspond to
+ * @returns The fifth row of the Matrix dh_matrix_, which corresponds to
  *          the type of joints of the robot.
  *
  */
