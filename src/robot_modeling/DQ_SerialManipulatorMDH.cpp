@@ -133,9 +133,9 @@ DQ DQ_SerialManipulatorMDH::_get_w(const int &ith) const
 
 /**
  * @brief This method returns the first row of the Matrix mdh_matrix_, which
- *        correspond to the parameter 'theta' in the MDH convention.
+ *        corresponds to the parameter 'theta' in the MDH convention.
  *  
- * @returns The first row of the Matrix mdh_matrix_, which  correspond 
+ * @returns The first row of the Matrix mdh_matrix_, which  corresponds
  *          to the parameter 'theta' in the MDH convention.   
  * 
  */
@@ -146,9 +146,9 @@ VectorXd  DQ_SerialManipulatorMDH::get_thetas() const
 
 /**
  * @brief This method returns the second row of the Matrix mdh_matrix_, which
- *        correspond to the parameter 'd' in the MDH convention.
+ *        corresponds to the parameter 'd' in the MDH convention.
  *  
- * @returns The second row of the Matrix mdh_matrix_, which correspond 
+ * @returns The second row of the Matrix mdh_matrix_, which corresponds
  *          to the parameter 'd' in the MDH convention.   
  * 
  */
@@ -159,9 +159,9 @@ VectorXd  DQ_SerialManipulatorMDH::get_ds() const
 
 /**
  * @brief This method returns the third row of the Matrix mdh_matrix_, which
- *        correspond to the parameter 'a' in the MDH convention.
+ *        corresponds to the parameter 'a' in the MDH convention.
  *  
- * @returns The third row of the Matrix mdh_matrix_, which correspond to
+ * @returns The third row of the Matrix mdh_matrix_, which corresponds to
  *          the parameter 'a' in the MDH convention.  
  * 
  */
@@ -172,9 +172,9 @@ VectorXd  DQ_SerialManipulatorMDH::get_as() const
 
 /**
  * @brief This method returns the fourth row of the Matrix mdh_matrix_, which
- *        correspond to the parameter 'alpha' in the MDH convention.
+ *        corresponds to the parameter 'alpha' in the MDH convention.
  * 
- * @returns The fourth row of the Matrix mdh_matrix_, which correspond to
+ * @returns The fourth row of the Matrix mdh_matrix_, which corresponds to
  *          the parameter 'alpha' in the MDH convention.  
  * 
  */
@@ -185,9 +185,9 @@ VectorXd  DQ_SerialManipulatorMDH::get_alphas() const
 
 /**
  * @brief This method returns the fifth row of the Matrix mdh_matrix_, which
- *        correspond to the type of joints of the robot.
+ *        corresponds to the type of joints of the robot.
  * 
- * @returns The fifth row of the Matrix mdh_matrix_, which correspond to
+ * @returns The fifth row of the Matrix mdh_matrix_, which corresponds to
  *          the type of joints of the robot.  
  * 
  */
