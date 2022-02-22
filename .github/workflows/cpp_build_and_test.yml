@@ -1,10 +1,14 @@
-name: CPP Build and Test
+name: CPP Build
 
 on: [push, pull_request]
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        testbranches: ['release','master']
 
     steps:
       - uses: actions/checkout@v2
@@ -28,8 +32,8 @@ jobs:
           cd ..
           sudo apt install ./*.deb
           
-      - name: Download examples
-        run: git clone https://github.com/dqrobotics/cpp-examples.git
+      - name: Download examples ((${{ matrix.testbranches }}))
+        run: git clone -b ${{ matrix.testbranches }} https://github.com/dqrobotics/cpp-examples.git
         
       - name: Build pure examples
         run: |
