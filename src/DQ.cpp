@@ -1502,7 +1502,7 @@ bool DQ::operator==(const DQ& dq2) const{
 */
 bool operator==(const DQ& dq, const int& scalar) {
     // Check scalar value
-    if(fabs(dq.q_(0) - scalar) > DQ_threshold
+    if(fabs(dq.q_(0) - scalar) > DQ_threshold)
        return false;
        
     // Other values should be close to zero
@@ -1527,7 +1527,7 @@ bool operator==(const DQ& dq, const int& scalar) {
 */
 bool operator==(const int& scalar, const DQ& dq) {
     // Check scalar value
-    if(fabs(dq.q_(0) - scalar) > DQ_threshold
+    if(fabs(dq.q_(0) - scalar) > DQ_threshold)
        return false;
        
     // Other values should be close to zero
@@ -1552,7 +1552,7 @@ bool operator==(const int& scalar, const DQ& dq) {
 */
 bool operator==(const DQ& dq, const float& scalar) {
     // Check scalar value
-    if(fabs(dq.q_(0) - scalar) > DQ_threshold
+    if(fabs(dq.q_(0) - scalar) > DQ_threshold)
        return false;
        
     // Other values should be close to zero
@@ -1577,7 +1577,7 @@ bool operator==(const DQ& dq, const float& scalar) {
 */
 bool operator==(const float& scalar, const DQ& dq) {
     // Check scalar value
-    if(fabs(dq.q_(0) - scalar) > DQ_threshold
+    if(fabs(dq.q_(0) - scalar) > DQ_threshold)
        return false;
        
     // Other values should be close to zero
@@ -1602,7 +1602,7 @@ bool operator==(const float& scalar, const DQ& dq) {
 */
 bool operator==(const DQ& dq, const double& scalar) {
     // Check scalar value
-    if(fabs(dq.q_(0) - scalar) > DQ_threshold
+    if(fabs(dq.q_(0) - scalar) > DQ_threshold)
        return false;
        
     // Other values should be close to zero
@@ -1627,7 +1627,7 @@ bool operator==(const DQ& dq, const double& scalar) {
 */
 bool operator==(const double& scalar, const DQ& dq) {
     // Check scalar value
-    if(fabs(dq.q_(0) - scalar) > DQ_threshold
+    if(fabs(dq.q_(0) - scalar) > DQ_threshold)
        return false;
        
     // Other values should be close to zero
@@ -1672,7 +1672,7 @@ bool DQ::operator!=(const DQ& dq2) const{
 */
 bool operator!=(const DQ& dq, const int& scalar) {
     // Check scalar value
-    if(fabs(dq.q_(0) - scalar) > DQ_threshold
+    if(fabs(dq.q_(0) - scalar) > DQ_threshold)
        return true;
        
     // Other values should be close to zero
@@ -1697,7 +1697,7 @@ bool operator!=(const DQ& dq, const int& scalar) {
 */
 bool operator!=(const int& scalar, const DQ& dq) {
     // Check scalar value
-    if(fabs(dq.q_(0) - scalar) > DQ_threshold
+    if(fabs(dq.q_(0) - scalar) > DQ_threshold)
        return true;
        
     // Other values should be close to zero
@@ -1722,7 +1722,7 @@ bool operator!=(const int& scalar, const DQ& dq) {
 */
 bool operator!=(const DQ& dq, const float& scalar) {
     // Check scalar value
-    if(fabs(dq.q_(0) - scalar) > DQ_threshold
+    if(fabs(dq.q_(0) - scalar) > DQ_threshold)
        return true;
        
     // Other values should be close to zero
@@ -1747,7 +1747,7 @@ bool operator!=(const DQ& dq, const float& scalar) {
 */
 bool operator!=(const float& scalar,const DQ& dq) {
     // Check scalar value
-    if(fabs(dq.q_(0) - scalar) > DQ_threshold
+    if(fabs(dq.q_(0) - scalar) > DQ_threshold)
        return true;
        
     // Other values should be close to zero
@@ -1772,7 +1772,7 @@ bool operator!=(const float& scalar,const DQ& dq) {
 */
 bool operator!=(const DQ& dq,const double& scalar) {
     // Check scalar value
-    if(fabs(dq.q_(0) - scalar) > DQ_threshold
+    if(fabs(dq.q_(0) - scalar) > DQ_threshold)
        return true;
        
     // Other values should be close to zero
@@ -1797,7 +1797,7 @@ bool operator!=(const DQ& dq,const double& scalar) {
 */
 bool operator!=(const double& scalar, const DQ& dq) {
     // Check scalar value
-    if(fabs(dq.q_(0) - scalar) > DQ_threshold
+    if(fabs(dq.q_(0) - scalar) > DQ_threshold)
        return true;
        
     // Other values should be close to zero
