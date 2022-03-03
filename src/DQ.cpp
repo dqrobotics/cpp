@@ -1396,8 +1396,7 @@ DQ operator*(const DQ& dq1, const DQ& dq2){
 * \sa DQ(double scalar), operator*(DQ dq1, DQ dq2).
 */
 DQ operator*(const DQ& dq, const int& scalar) {
-    DQ dq_scalar(scalar);
-    return (dq * dq_scalar);
+    return DQ(scalar*vec8(dq));
 }
 
 /**
@@ -1411,8 +1410,7 @@ DQ operator*(const DQ& dq, const int& scalar) {
 * \sa DQ(double scalar), operator*(DQ dq1, DQ dq2).
 */
 DQ operator*(const int& scalar, const DQ& dq) {
-    DQ dq_scalar(scalar);
-    return (dq_scalar * dq);
+    return DQ(scalar*vec8(dq));
 }
 
 /**
@@ -1426,8 +1424,7 @@ DQ operator*(const int& scalar, const DQ& dq) {
 * \sa DQ(double scalar), operator*(DQ dq1, DQ dq2).
 */
 DQ operator*(const DQ& dq, const float& scalar) {
-    DQ dq_scalar(scalar);
-    return (dq * dq_scalar);
+    return DQ(scalar*vec8(dq));
 }
 
 /**
@@ -1441,8 +1438,7 @@ DQ operator*(const DQ& dq, const float& scalar) {
 * \sa DQ(double scalar), operator*(DQ dq1, DQ dq2).
 */
 DQ operator*(const float& scalar, const DQ& dq){
-    DQ dq_scalar(scalar);
-    return (dq_scalar * dq);
+    return DQ(scalar*vec8(dq));
 }
 
 /**
@@ -1456,8 +1452,7 @@ DQ operator*(const float& scalar, const DQ& dq){
 * \sa DQ(double scalar), operator*(DQ dq1, DQ dq2).
 */
 DQ operator*(const DQ& dq, const double& scalar){
-    DQ dq_scalar(scalar);
-    return (dq * dq_scalar);
+    return DQ(scalar*vec8(dq));
 }
 
 /**
@@ -1471,8 +1466,7 @@ DQ operator*(const DQ& dq, const double& scalar){
 * \sa DQ(double scalar), operator*(DQ dq1, DQ dq2).
 */
 DQ operator*(const double& scalar, const DQ& dq) {
-    DQ dq_scalar(scalar);
-    return (dq_scalar * dq);
+    return DQ(scalar*vec8(dq));
 }
 
 // Operator (==) overload
@@ -1507,8 +1501,17 @@ bool DQ::operator==(const DQ& dq2) const{
 * \sa DQ(double scalar), operator==(DQ dq2).
 */
 bool operator==(const DQ& dq, const int& scalar) {
-    DQ dq_scalar(scalar);
-    return (dq == dq_scalar);
+    // Check scalar value
+    if(fabs(dq.q_(0) - scalar) > DQ_threshold
+       return false;
+       
+    // Other values should be close to zero
+    for(int n = 1; n<8; n++)
+    {
+        if(fabs(dq.q_(n))) > DQ_threshold )
+            return false; 
+    }
+    return true;
 }
 
 /**
@@ -1523,8 +1526,17 @@ bool operator==(const DQ& dq, const int& scalar) {
 * \sa DQ(double scalar), operator==(DQ dq2).
 */
 bool operator==(const int& scalar, const DQ& dq) {
-    DQ dq_scalar(scalar);
-    return (dq_scalar == dq);
+    // Check scalar value
+    if(fabs(dq.q_(0) - scalar) > DQ_threshold
+       return false;
+       
+    // Other values should be close to zero
+    for(int n = 1; n<8; n++)
+    {
+        if(fabs(dq.q_(n))) > DQ_threshold )
+            return false; 
+    }
+    return true;
 }
 
 /**
@@ -1539,8 +1551,17 @@ bool operator==(const int& scalar, const DQ& dq) {
 * \sa DQ(double scalar), operator==(DQ dq2).
 */
 bool operator==(const DQ& dq, const float& scalar) {
-    DQ dq_scalar(scalar);
-    return (dq == dq_scalar);
+    // Check scalar value
+    if(fabs(dq.q_(0) - scalar) > DQ_threshold
+       return false;
+       
+    // Other values should be close to zero
+    for(int n = 1; n<8; n++)
+    {
+        if(fabs(dq.q_(n))) > DQ_threshold )
+            return false; 
+    }
+    return true;
 }
 
 /**
@@ -1555,8 +1576,17 @@ bool operator==(const DQ& dq, const float& scalar) {
 * \sa DQ(double scalar), operator==(DQ dq2).
 */
 bool operator==(const float& scalar, const DQ& dq) {
-    DQ dq_scalar(scalar);
-    return (dq_scalar == dq);
+    // Check scalar value
+    if(fabs(dq.q_(0) - scalar) > DQ_threshold
+       return false;
+       
+    // Other values should be close to zero
+    for(int n = 1; n<8; n++)
+    {
+        if(fabs(dq.q_(n))) > DQ_threshold )
+            return false; 
+    }
+    return true;
 }
 
 /**
@@ -1571,8 +1601,17 @@ bool operator==(const float& scalar, const DQ& dq) {
 * \sa DQ(double scalar), operator==(DQ dq2).
 */
 bool operator==(const DQ& dq, const double& scalar) {
-    DQ dq_scalar(scalar);
-    return (dq == dq_scalar);
+    // Check scalar value
+    if(fabs(dq.q_(0) - scalar) > DQ_threshold
+       return false;
+       
+    // Other values should be close to zero
+    for(int n = 1; n<8; n++)
+    {
+        if(fabs(dq.q_(n))) > DQ_threshold )
+            return false; 
+    }
+    return true;
 }
 
 /**
@@ -1587,8 +1626,17 @@ bool operator==(const DQ& dq, const double& scalar) {
 * \sa DQ(double scalar), operator==(DQ dq2).
 */
 bool operator==(const double& scalar, const DQ& dq) {
-    DQ dq_scalar(scalar);
-    return (dq_scalar == dq);
+    // Check scalar value
+    if(fabs(dq.q_(0) - scalar) > DQ_threshold
+       return false;
+       
+    // Other values should be close to zero
+    for(int n = 1; n<8; n++)
+    {
+        if(fabs(dq.q_(n))) > DQ_threshold )
+            return false; 
+    }
+    return true;
 }
 
 // Operator (!=) overload
@@ -1623,8 +1671,17 @@ bool DQ::operator!=(const DQ& dq2) const{
 * \sa DQ(double scalar), operator!=(DQ dq2).
 */
 bool operator!=(const DQ& dq, const int& scalar) {
-    DQ dq_scalar(scalar);
-    return (dq != dq_scalar);
+    // Check scalar value
+    if(fabs(dq.q_(0) - scalar) > DQ_threshold
+       return true;
+       
+    // Other values should be close to zero
+    for(int n = 1; n<8; n++)
+    {
+        if(fabs(dq.q_(n))) > DQ_threshold )
+            return true; 
+    }
+    return false;
 }
 
 /**
@@ -1639,8 +1696,17 @@ bool operator!=(const DQ& dq, const int& scalar) {
 * \sa DQ(double scalar), operator!=(DQ dq2).
 */
 bool operator!=(const int& scalar, const DQ& dq) {
-    DQ dq_scalar(scalar);
-    return (dq_scalar != dq);
+    // Check scalar value
+    if(fabs(dq.q_(0) - scalar) > DQ_threshold
+       return true;
+       
+    // Other values should be close to zero
+    for(int n = 1; n<8; n++)
+    {
+        if(fabs(dq.q_(n))) > DQ_threshold )
+            return true; 
+    }
+    return false;
 }
 
 /**
@@ -1655,8 +1721,17 @@ bool operator!=(const int& scalar, const DQ& dq) {
 * \sa DQ(double scalar), operator!=(DQ dq2).
 */
 bool operator!=(const DQ& dq, const float& scalar) {
-    DQ dq_scalar(scalar);
-    return (dq != dq_scalar);
+    // Check scalar value
+    if(fabs(dq.q_(0) - scalar) > DQ_threshold
+       return true;
+       
+    // Other values should be close to zero
+    for(int n = 1; n<8; n++)
+    {
+        if(fabs(dq.q_(n))) > DQ_threshold )
+            return true; 
+    }
+    return false;
 }
 
 /**
@@ -1671,8 +1746,17 @@ bool operator!=(const DQ& dq, const float& scalar) {
 * \sa DQ(double scalar), operator!=(DQ dq2).
 */
 bool operator!=(const float& scalar,const DQ& dq) {
-    DQ dq_scalar(scalar);
-    return (dq_scalar != dq);
+    // Check scalar value
+    if(fabs(dq.q_(0) - scalar) > DQ_threshold
+       return true;
+       
+    // Other values should be close to zero
+    for(int n = 1; n<8; n++)
+    {
+        if(fabs(dq.q_(n))) > DQ_threshold )
+            return true; 
+    }
+    return false;
 }
 
 /**
@@ -1687,8 +1771,17 @@ bool operator!=(const float& scalar,const DQ& dq) {
 * \sa DQ(double scalar), operator!=(DQ dq2).
 */
 bool operator!=(const DQ& dq,const double& scalar) {
-    DQ dq_scalar(scalar);
-    return (dq != dq_scalar);
+    // Check scalar value
+    if(fabs(dq.q_(0) - scalar) > DQ_threshold
+       return true;
+       
+    // Other values should be close to zero
+    for(int n = 1; n<8; n++)
+    {
+        if(fabs(dq.q_(n))) > DQ_threshold )
+            return true; 
+    }
+    return false;
 }
 
 /**
@@ -1703,8 +1796,17 @@ bool operator!=(const DQ& dq,const double& scalar) {
 * \sa DQ(double scalar), operator!=(DQ dq2).
 */
 bool operator!=(const double& scalar, const DQ& dq) {
-    DQ dq_scalar(scalar);
-    return (dq_scalar != dq);
+    // Check scalar value
+    if(fabs(dq.q_(0) - scalar) > DQ_threshold
+       return true;
+       
+    // Other values should be close to zero
+    for(int n = 1; n<8; n++)
+    {
+        if(fabs(dq.q_(n))) > DQ_threshold )
+            return true; 
+    }
+    return false;
 }
 
 std::ostream& operator<<(std::ostream& os, const DQ& dq)
