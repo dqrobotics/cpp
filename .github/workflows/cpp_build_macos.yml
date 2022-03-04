@@ -1,0 +1,43 @@
+name: CPP Build MacOS
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: macos-latest
+    continue-on-error: true
+    strategy:
+      fail-fast: false
+      matrix:
+        testbranches: ['release','master']
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install prerequisites
+        run: |
+          brew install eigen
+          
+      - name: Make 
+        run: |
+          mkdir build
+          cd build
+          cmake ..
+          make -j2
+          cd ..
+          
+      - name: Install
+        run: |
+          cd build
+          sudo make install
+          cd ..
+          
+      - name: Download examples ((${{ matrix.testbranches }}))
+        run: git clone -b ${{ matrix.testbranches }} https://github.com/dqrobotics/cpp-examples.git
+        
+      - name: Build pure examples
+        run: |
+          cd cpp-examples
+          chmod +x .build_pure.sh
+          ./.build_pure.sh
+          
