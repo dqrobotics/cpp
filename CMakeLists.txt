@@ -1,4 +1,10 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 3.4)
+
+if(WIN32)
+    set(CMAKE_TOOLCHAIN_FILE C:/vcpkg/scripts/buildsystems/vcpkg.cmake)
+    set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
+endif()
+
 PROJECT(dqrobotics)
 set (CMAKE_CXX_STANDARD 11)
 
@@ -21,9 +27,9 @@ if(APPLE)
 endif()
 
 if(WIN32)
-    ADD_DEFINITIONS(-D_USE_MATH_DEFINES)
-    FIND_PACKAGE(Eigen3 CONFIG REQUIRED)
-    INCLUDE_DIRECTORIES(${EIGEN3_INCLUDE_DIR})
+    ADD_DEFINITIONS(-D_USE_MATH_DEFINES) 
+    FIND_PACKAGE(Eigen3 CONFIG REQUIRED) 
+    INCLUDE_DIRECTORIES(${EIGEN3_INCLUDE_DIR}) 
 endif()
 
 
@@ -69,7 +75,10 @@ SET_TARGET_PROPERTIES(dqrobotics
     )
 
 INSTALL(TARGETS dqrobotics 
+# https://stackoverflow.com/questions/21592361/cmake-install-is-not-installing-libraries-on-windows    
+	RUNTIME DESTINATION "bin"
     LIBRARY DESTINATION "lib"
+	ARCHIVE DESTINATION "lib"
     PUBLIC_HEADER DESTINATION "include/dqrobotics"
     PERMISSIONS OWNER_READ OWNER_WRITE GROUP_READ WORLD_READ)
 
