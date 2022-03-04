@@ -14,9 +14,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Update brew
-        run: brew update
-        
       - name: Install prerequisites
         run: |
           brew install eigen
@@ -27,9 +24,11 @@ jobs:
           cd build
           cmake ..
           make -j2
+          cd ..
           
       - name: Install
         run: |
+          cd build
           sudo make install
           cd ..
           
