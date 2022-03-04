@@ -41,3 +41,7 @@ jobs:
           cmake --install .
           cd ..
           
+      - name: Build pure examples
+        run: |
+          cd cpp-examples
+          .\build_pure.ps1
