@@ -5,9 +5,9 @@ on: [push, pull_request]
 jobs:
   build:
     runs-on: macos-latest
+    continue-on-error: true
     strategy:
       fail-fast: false
-      experimental: true
       matrix:
         testbranches: ['release','master']
 
