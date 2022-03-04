@@ -1,4 +1,4 @@
-name: CPP Build
+name: CPP Build Ubuntu
 
 on: [push, pull_request]
 
