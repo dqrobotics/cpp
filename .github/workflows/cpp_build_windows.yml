@@ -1,0 +1,43 @@
+name: CPP Build Windows
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: windows-latest
+    continue-on-error: true
+    strategy:
+      fail-fast: false
+      matrix:
+        testbranches: ['release','master']
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install prerequisites
+        run: |
+          echo "Setting up vcpkg..."
+          cd C:\vcpkg
+          .\bootstrap-vcpkg.bat
+          vcpkg integrate install
+          echo "Installing eigen3..."
+          .\vcpkg install eigen3:x64-windows
+          echo "Adding symlink to vcpkg..."
+          cmd /c mklink /d c:\Tools\vcpkg c:\vcpkg
+          cd ~
+          
+      - name: Make 
+        run: |
+          mkdir build
+          cd build
+          cmake -DCMAKE_TOOLCHAIN_FILE=C:/vcpkg/scripts/buildsystems/vcpkg.cmake ..
+          #Not used, but good to keep in mind -DCMAKE_INSTALL_PREFIX="$ENV:UserProfile\dqrobotics" ..
+          cmake --build . --config Release
+          cd ..
+          
+      - name: Install
+        run: |
+          cd build
+          cmake --install .
+          cd ..
+          
