@@ -15,31 +15,13 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Install prerequisites
-        run: |
-          echo "Setting up vcpkg..."
-          cd C:\vcpkg
-          .\bootstrap-vcpkg.bat
-          vcpkg integrate install
-          echo "Installing eigen3..."
-          .\vcpkg install eigen3:x64-windows
-          echo "Adding symlink to vcpkg..."
-          cmd /c mklink /d c:\Tools\vcpkg c:\vcpkg
-          cd ~
+        run: .github\scripts\windows\install_prerequisites.ps1
           
-      - name: Make 
-        run: |
-          mkdir build
-          cd build
-          cmake -DCMAKE_TOOLCHAIN_FILE=C:/vcpkg/scripts/buildsystems/vcpkg.cmake ..
-          #Not used, but good to keep in mind -DCMAKE_INSTALL_PREFIX="$ENV:UserProfile\dqrobotics" ..
-          cmake --build . --config Release
-          cd ..
+      - name: Build
+        run: .github\scripts\windows\build.ps1
           
       - name: Install
-        run: |
-          cd build
-          cmake --install .
-          cd ..
+        run: .github\scripts\windows\install.ps1
           
       - name: Download examples ((${{ matrix.testbranches }}))
         run: git clone -b ${{ matrix.testbranches }} https://github.com/dqrobotics/cpp-examples.git
