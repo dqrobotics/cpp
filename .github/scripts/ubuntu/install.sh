@@ -1,1 +1,1 @@
-sudo apt install ./libdqrobotics*.deb
+sudo apt install ../libdqrobotics*.deb
