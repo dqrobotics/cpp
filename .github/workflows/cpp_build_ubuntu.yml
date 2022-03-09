@@ -13,24 +13,17 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Apt update and upgrade
+      - name: apt update
         run: sudo apt update
         
-      - name: Install prerequisites
-        run: |
-          sudo apt install cmake g++ libeigen3-dev fakeroot
+      - name: Install pre-requisites
+        run: sh .github/scripts/ubuntu/install_prerequisites.sh
           
-      - name: Make debian package
-        run: |
-          chmod +x debian/rules
-          fakeroot debian/rules clean
-          fakeroot debian/rules build
-          fakeroot debian/rules binary
-          
-      - name: Install debian package
-        run: |
-          cd ..
-          sudo apt install ./*.deb
+      - name: Build
+        run: sh .github/scripts/ubuntu/build.sh
+        
+      - name: Install
+        run: sh .github/scripts/ubuntu/install.sh
           
       - name: Download examples ((${{ matrix.testbranches }}))
         run: git clone -b ${{ matrix.testbranches }} https://github.com/dqrobotics/cpp-examples.git
