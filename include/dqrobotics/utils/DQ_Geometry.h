@@ -45,12 +45,12 @@ public:
 
     static std::tuple<DQ,DQ> closest_points_between_lines(const DQ& line1, const DQ& line2);
 
-    double line_segment_to_line_segment_squared_distance(const DQ& line_1,
-                                                         const DQ& line_1_point_1,
-                                                         const DQ& line_1_point_2,
-                                                         const DQ& line_2,
-                                                         const DQ& line_2_point_1,
-                                                         const DQ& line_2_point_2);
+    static double line_segment_to_line_segment_squared_distance(const DQ& line_1,
+                                                                const DQ& line_1_point_1,
+                                                                const DQ& line_1_point_2,
+                                                                const DQ& line_2,
+                                                                const DQ& line_2_point_1,
+                                                                const DQ& line_2_point_2);
 
 };
 

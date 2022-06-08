@@ -583,15 +583,15 @@ MatrixXd DQ_Kinematics::line_to_line_angle_jacobian(const MatrixXd &line_jacobia
  * @param workspace_point_2 the second point delimiting the workspace line segment. Must be on workspace_line.
  * @return The suitable distance Jacobian for robot_line and workspace_line.
  */
-MatrixXd DQ_Kinematics::line_segment_to_line_segment_jacobian(const MatrixXd& line_jacobian,
-                                                              const MatrixXd& robot_point_1_translation_jacobian,
-                                                              const MatrixXd& robot_point_2_translation_jacobian,
-                                                              const DQ& robot_line,
-                                                              const DQ& robot_point_1,
-                                                              const DQ& robot_point_2,
-                                                              const DQ& workspace_line,
-                                                              const DQ& workspace_point_1,
-                                                              const DQ& workspace_point_2)
+MatrixXd DQ_Kinematics::line_segment_to_line_segment_distance_jacobian(const MatrixXd& line_jacobian,
+                                                                       const MatrixXd& robot_point_1_translation_jacobian,
+                                                                       const MatrixXd& robot_point_2_translation_jacobian,
+                                                                       const DQ& robot_line,
+                                                                       const DQ& robot_point_1,
+                                                                       const DQ& robot_point_2,
+                                                                       const DQ& workspace_line,
+                                                                       const DQ& workspace_point_1,
+                                                                       const DQ& workspace_point_2)
 {
     if(!is_line(robot_line))
         throw std::runtime_error("DQ_Kinematics::line_segment_to_line_segment_jacobian::Input robot_line must be a line.");

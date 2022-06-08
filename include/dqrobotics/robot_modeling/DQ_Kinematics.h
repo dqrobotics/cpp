@@ -89,15 +89,15 @@ public:
     static double   plane_to_point_residual         (const DQ& robot_plane, const DQ& workspace_point_derivative);
     static MatrixXd line_to_line_angle_jacobian     (const MatrixXd& line_jacobian, const DQ& robot_line, const DQ& workspace_line);
 
-    static MatrixXd line_segment_to_line_segment_jacobian(const MatrixXd& line_jacobian,
-                                                          const MatrixXd& robot_point_1_translation_jacobian,
-                                                          const MatrixXd& robot_point_2_translation_jacobian,
-                                                          const DQ& robot_line,
-                                                          const DQ& robot_point_1,
-                                                          const DQ& robot_point_2,
-                                                          const DQ& workspace_line,
-                                                          const DQ& workspace_point_1,
-                                                          const DQ& workspace_point_2);
+    static MatrixXd line_segment_to_line_segment_distance_jacobian(const MatrixXd& line_jacobian,
+                                                                   const MatrixXd& robot_point_1_translation_jacobian,
+                                                                   const MatrixXd& robot_point_2_translation_jacobian,
+                                                                   const DQ& robot_line,
+                                                                   const DQ& robot_point_1,
+                                                                   const DQ& robot_point_2,
+                                                                   const DQ& workspace_line,
+                                                                   const DQ& workspace_point_1,
+                                                                   const DQ& workspace_point_2);
 
 };
 }
