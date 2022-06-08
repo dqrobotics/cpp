@@ -1,3 +1,4 @@
+#pragma once
 /**
 (C) Copyright 2019 DQ Robotics Developers
 
@@ -20,10 +21,9 @@ Contributors:
 - Murilo M. Marinho (murilo@nml.t.u-tokyo.ac.jp)
 */
 
-#ifndef DQ_UTILS_DQ_GEOMETRY_H
-#define DQ_UTILS_DQ_GEOMETRY_H
 
 #include<dqrobotics/DQ.h>
+#include<tuple>
 
 namespace DQ_robotics
 {
@@ -40,8 +40,20 @@ public:
     static double line_to_line_squared_distance(const DQ& line1, const DQ& line2);
 
     static double line_to_line_angle(const DQ& line1, const DQ& line2);
+
+    static DQ point_projected_in_line(const DQ& point, const DQ& line);
+
+    static std::tuple<DQ,DQ> closest_points_between_lines(const DQ& line1, const DQ& line2);
+
+    double line_segment_to_line_segment_squared_distance(const DQ& line_1,
+                                                         const DQ& line_1_point_1,
+                                                         const DQ& line_1_point_2,
+                                                         const DQ& line_2,
+                                                         const DQ& line_2_point_1,
+                                                         const DQ& line_2_point_2);
+
 };
 
 }
 
-#endif
+

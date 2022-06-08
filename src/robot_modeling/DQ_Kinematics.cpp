@@ -22,6 +22,7 @@ Contributors:
 
 #include<dqrobotics/robot_modeling/DQ_Kinematics.h>
 #include<dqrobotics/utils/DQ_Constants.h>
+#include<dqrobotics/utils/DQ_Geometry.h>
 
 namespace DQ_robotics
 {
@@ -560,6 +561,156 @@ MatrixXd DQ_Kinematics::line_to_line_angle_jacobian(const MatrixXd &line_jacobia
 
     MatrixXd Jl = line_jacobian.block(0,0,4,line_jacobian.cols());
     return 2.0*vec4(robot_line - workspace_line).transpose()*Jl;
+}
+
+/**
+ * @brief DQ_Kinematics::line_segment_to_line_segment_jacobian
+ * Obtains the squared distance Jacobian between two line segments.
+ * This method will check the validity of all dual quaternion inputs, but has no way to check
+ * the validity of the Jacobians.
+ * As mentioned in Section VI of
+ * M. M. Marinho, B. V. Adorno, K. Harada and M. Mitsuishi, "Dynamic Active Constraints for
+ * Surgical Robots Using Vector-Field Inequalities," in IEEE Transactions on Robotics, vol. 35, no. 5,
+ * pp. 1166-1185, Oct. 2019, doi: 10.1109/TRO.2019.2920078.
+ * @param line_jacobian The line Jacobian of the robot_line.
+ * @param robot_point_1_translation_jacobian the translation jacobian of robot_point_1.
+ * @param robot_point_2_translation_jacobian the translation jacobian of robot_point_2.
+ * @param robot_line the robot line.
+ * @param robot_point_1 the first point delimiting the robot line segment. Must be on robot_line.
+ * @param robot_point_2 the second point delimiting the robot line segment. Must be on robot_line.
+ * @param workspace_line the workspace line.
+ * @param workspace_point_1 the first point deliming the workspace line segment. Must be on workspace_line.
+ * @param workspace_point_2 the second point delimiting the workspace line segment. Must be on workspace_line.
+ * @return The suitable distance Jacobian for robot_line and workspace_line.
+ */
+MatrixXd DQ_Kinematics::line_segment_to_line_segment_jacobian(const MatrixXd& line_jacobian,
+                                                              const MatrixXd& robot_point_1_translation_jacobian,
+                                                              const MatrixXd& robot_point_2_translation_jacobian,
+                                                              const DQ& robot_line,
+                                                              const DQ& robot_point_1,
+                                                              const DQ& robot_point_2,
+                                                              const DQ& workspace_line,
+                                                              const DQ& workspace_point_1,
+                                                              const DQ& workspace_point_2)
+{
+    if(!is_line(robot_line))
+        throw std::runtime_error("DQ_Kinematics::line_segment_to_line_segment_jacobian::Input robot_line must be a line.");
+    if(!is_line(workspace_line))
+        throw std::runtime_error("DQ_Kinematics::line_segment_to_line_segment_jacobian::Input workspace_line must be a line.");
+    if(!is_pure_quaternion(robot_point_1))
+        throw std::runtime_error("DQ_Kinematics::line_segment_to_line_segment_jacobian::Input robot_point_1 must be a point.");
+    if(!is_pure_quaternion(robot_point_2))
+        throw std::runtime_error("DQ_Kinematics::line_segment_to_line_segment_jacobian::Input robot_point_2 must be a point.");
+    if(!is_pure_quaternion(workspace_point_1))
+        throw std::runtime_error("DQ_Kinematics::line_segment_to_line_segment_jacobian::Input workspace_point_1 must be a point.");
+    if(!is_pure_quaternion(workspace_point_2))
+        throw std::runtime_error("DQ_Kinematics::line_segment_to_line_segment_jacobian::Input workspace_point_2 must be a point.");
+
+    const DQ& m1 = D(robot_line);
+    const DQ& l1 = P(robot_line);
+
+    if(cross(robot_point_1,l1) != m1)
+        throw std::runtime_error("DQ_Kinematics::line_segment_to_line_segment_jacobian::Input robot_point_1 must be on robot_line.");
+    if(cross(robot_point_2,l1) != m1)
+        throw std::runtime_error("DQ_Kinematics::line_segment_to_line_segment_jacobian::Input robot_point_2 must be on robot_line.");
+
+    const DQ& m2 = D(workspace_line);
+    const DQ& l2 = P(workspace_line);
+
+    if(cross(workspace_point_1,l2) != m2)
+        throw std::runtime_error("DQ_Kinematics::line_segment_to_line_segment_jacobian::Input workspace_point_1 must be on workspace_line.");
+    if(cross(workspace_point_2,l2) != m2)
+        throw std::runtime_error("DQ_Kinematics::line_segment_to_line_segment_jacobian::Input workspace_point_2 must be on workspace_line.");
+
+
+    if( l1 == l2 || l1 == -l2) //TODO, add a tolerance interval
+    {
+        //In this case, it is impossible to find a single closest point because all points
+        //have equal distance between lines
+        return DQ_Kinematics::line_to_line_distance_jacobian(line_jacobian, robot_line, workspace_line);
+    }
+    else
+    {
+        //In this case, the closest points (cps) can be found
+        DQ cp1;
+        DQ cp2;
+        std::tie(cp1,cp2) = DQ_Geometry::closest_points_between_lines(robot_line,workspace_line);
+
+        ///Find out the closest pairs
+        //Get the distance between all relevant points
+        const double& segment_1_size = DQ_Geometry::point_to_point_squared_distance(robot_point_1,robot_point_2);
+        const double& D_cp1_l1p1 = DQ_Geometry::point_to_point_squared_distance(cp1,robot_point_1);
+        const double& D_cp1_l1p2 = DQ_Geometry::point_to_point_squared_distance(cp1,robot_point_2);
+        const double& segment_2_size = DQ_Geometry::point_to_point_squared_distance(robot_point_1,robot_point_2);
+        const double& D_cp2_l2p1 = DQ_Geometry::point_to_point_squared_distance(cp2,workspace_point_1);
+        const double& D_cp2_l2p2 = DQ_Geometry::point_to_point_squared_distance(cp2,workspace_point_2);
+
+        //Closest element (ce) local enum class
+        enum class ClosestElement{
+            LINE,P1,P2
+        };
+        ClosestElement ce1;
+        ClosestElement ce2;
+
+        if(D_cp1_l1p1 < segment_1_size && D_cp1_l1p2 < segment_1_size)
+            ce1 = ClosestElement::LINE;
+        else if( D_cp1_l1p1 < D_cp1_l1p2)
+            ce1 = ClosestElement::P1;
+        else
+            ce1 = ClosestElement::P2;
+
+        if(D_cp2_l2p1 < segment_2_size && D_cp2_l2p2 < segment_2_size)
+            ce2 = ClosestElement::LINE;
+        else if( D_cp2_l2p1 < D_cp2_l2p2)
+            ce2 = ClosestElement::P1;
+        else
+            ce2 = ClosestElement::P2;
+
+
+        switch(ce1)
+        {
+        case ClosestElement::LINE:
+        {
+            switch(ce2)
+            {
+            case ClosestElement::LINE:
+                return DQ_Kinematics::line_to_line_distance_jacobian(line_jacobian,robot_line,workspace_line);
+            case ClosestElement::P1:
+                return DQ_Kinematics::line_to_point_distance_jacobian(line_jacobian,robot_line,workspace_point_1);
+            case ClosestElement::P2:
+                return DQ_Kinematics::line_to_point_distance_jacobian(line_jacobian,robot_line,workspace_point_2);
+            }
+        }
+        case ClosestElement::P1:
+        {
+            switch(ce2)
+            {
+            case ClosestElement::LINE:
+                return DQ_Kinematics::point_to_line_distance_jacobian(robot_point_1_translation_jacobian,robot_point_1,workspace_line);
+            case ClosestElement::P1:
+                return DQ_Kinematics::point_to_point_distance_jacobian(robot_point_1_translation_jacobian,robot_point_1,workspace_point_1);
+            case ClosestElement::P2:
+                return DQ_Kinematics::point_to_point_distance_jacobian(robot_point_1_translation_jacobian,robot_point_1,workspace_point_2);
+            }
+        }
+        case ClosestElement::P2:
+        {
+            switch(ce2)
+            {
+            case ClosestElement::LINE:
+                return DQ_Kinematics::point_to_line_distance_jacobian(robot_point_2_translation_jacobian,robot_point_2,workspace_line);
+            case ClosestElement::P1:
+                return DQ_Kinematics::point_to_point_distance_jacobian(robot_point_2_translation_jacobian,robot_point_2,workspace_point_1);
+            case ClosestElement::P2:
+                return DQ_Kinematics::point_to_point_distance_jacobian(robot_point_2_translation_jacobian,robot_point_2,workspace_point_2);
+            }
+        }
+        default:
+            throw std::runtime_error("Unexpected type in DQ_Kinematics::line_segment_to_line_segment_jacobian()");
+        }
+
+    }
+    throw std::runtime_error("Unexpected end of method in DQ_Kinematics::line_segment_to_line_segment_jacobian()");
 }
 
 }
