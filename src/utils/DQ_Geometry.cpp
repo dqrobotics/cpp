@@ -224,7 +224,7 @@ std::tuple<DQ, DQ> DQ_Geometry::closest_points_between_lines(const DQ &line1, co
  * the validity of the Jacobians.
  *
  * TODO: This initial implementation replicates a lot of what is done in
- * DQ_Kinematics::line_segment_to_line_segment_jacobian
+ * DQ_Kinematics::line_segment_to_line_segment_distance_jacobian
  * and most likely a better approach is possible.
  *
  * As mentioned in Section VI of

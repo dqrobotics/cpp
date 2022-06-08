@@ -564,7 +564,7 @@ MatrixXd DQ_Kinematics::line_to_line_angle_jacobian(const MatrixXd &line_jacobia
 }
 
 /**
- * @brief DQ_Kinematics::line_segment_to_line_segment_jacobian
+ * @brief DQ_Kinematics::line_segment_to_line_segment_distance_jacobian
  * Obtains the squared distance Jacobian between two line segments.
  * This method will check the validity of all dual quaternion inputs, but has no way to check
  * the validity of the Jacobians.
