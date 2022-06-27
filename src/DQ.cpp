@@ -395,15 +395,13 @@ double DQ::q_(const int a) const
 }
 
 /**
-* DQ constructor using boost vector
-*
-* Returns a DQ object with the values of elements equal to the values of elements from a vector 'v' passed to constructor.
-* \param vector <double> v contain the values to copied to the attribute q.
-*/
-DQ::DQ(const VectorXd& v) {
-
-    //q.resize(8);
-
+ * @brief DQ::DQ Constructor using a VectorXd.
+ * @param v a VectorXd with size 1, 3, 4, 6, or 8. It will be read treated as a real number,
+ * a pure quaternion, a general quaternion, a pure dual quaternion, or a general dual quaternion, respectively.
+ * @exception std::range_error if the size is different from the ones specified above.
+ */
+DQ::DQ(const VectorXd& v)
+{
     switch (v.size())
     {
     //An eight-dimensional v contains the coefficients of general dual quaternions
@@ -437,13 +435,19 @@ DQ::DQ(const VectorXd& v) {
 }
 
 /**
-* DQ constructor using 8 scalar elements
-*
-* Returns a DQ object with the values of vector q equal to the values of the 8 parameters 'q0' to 'q8' passed to constructor.
-* To create a DQ object using this, type: 'DQ dq_object(q0,q1,q2,q3,q4,q5,q6,q7);' where 'qn' is a double type scalar.
-* \param double q0,q1,q2,q3,q4,q5,q6 and q7 are the values to be copied to the member 'q'.
-*/
-DQ::DQ(const double& q0,const double& q1,const double& q2,const double& q3,const double& q4,const double& q5,const double& q6,const double& q7) {
+ * @brief DQ::DQ Constructor using up to 8 double values. The constructor will return a DQ q equivalent to
+ * q = q0 + q1*i_ + q2*j_ + q3*k_ + E_*(q4 + q5*i_ + q6*j_ + q7*k_).
+ * @param q0 a double (default = 0.0)
+ * @param q1 a double (default = 0.0)
+ * @param q2 a double (default = 0.0)
+ * @param q3 a double (default = 0.0)
+ * @param q4 a double (default = 0.0)
+ * @param q5 a double (default = 0.0)
+ * @param q6 a double (default = 0.0)
+ * @param q7 a double (default = 0.0)
+ */
+DQ::DQ(const double& q0,const double& q1,const double& q2,const double& q3,const double& q4,const double& q5,const double& q6,const double& q7) noexcept
+{
     //q.resize(8);
     q(0) = q0;
     q(1) = q1;
