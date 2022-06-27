@@ -68,9 +68,9 @@ public:
 
     //Methods
 public:
-    DQ(const VectorXd& v);
+    explicit DQ(const VectorXd& v);
 
-    DQ(const double& q0=0.0, const double& q1=0.0, const double& q2=0.0, const double& q3=0.0, const double& q4=0.0, const double& q5=0.0, const double& q6=0.0, const double& q7=0.0);
+    explicit DQ(const double& q0=0.0, const double& q1=0.0, const double& q2=0.0, const double& q3=0.0, const double& q4=0.0, const double& q5=0.0, const double& q6=0.0, const double& q7=0.0);
 
     //Methods
     DQ P() const;
@@ -132,6 +132,14 @@ public:
 
     DQ Adsharp(const DQ& dq2) const;
 
+    //Operator (= Overload)
+    template <typename Scalar, typename scalar = std::enable_if<std::is_arithmetic<Scalar>::value>>
+    DQ& operator=(const Scalar& t)
+    {
+        q = VectorXd::Zero(8);
+        q(0)=t;
+        return *this;
+    };
     //Operator (-) Overload
     DQ operator-() const;
     //Operator (==) Overload
@@ -145,70 +153,6 @@ public:
 
     std::string to_string() const;
 };//DQ Class END
-
-/*************************************************************************
- ************** DUAL QUATERNION CONSTANTS AND OPERATORS ******************
- ************************************************************************/
-
-//Operator (+) Overload
-DQ operator+(const DQ& dq1, const DQ& dq2);
-DQ operator+(const DQ& dq, const int& scalar);
-DQ operator+(const int& scalar, const DQ& dq);
-DQ operator+(const DQ& dq, const float &scalar);
-DQ operator+(const float &scalar, const DQ& dq);
-DQ operator+(const DQ& dq, const double& scalar);
-DQ operator+(const double& scalar, const DQ& dq);
-
-//Operator (-) Overload
-//Unary
-// DQ operator-(const DQ& dq); -> We already have this as a method
-//Binary
-DQ operator-(const DQ& dq1, const DQ& dq2);
-DQ operator-(const DQ& dq, const int& scalar);
-DQ operator-(const int& scalar, const DQ& dq);
-DQ operator-(const DQ& dq, const float &scalar);
-DQ operator-(const float &scalar, const DQ& dq);
-DQ operator-(const DQ& dq, const double& scalar);
-DQ operator-(const double& scalar, const DQ& dq);
-
-//Operator (*) Overload
-DQ operator*(const DQ& dq1, const DQ& dq2);
-DQ operator*(const DQ& dq, const int& scalar);
-DQ operator*(const int& scalar, const DQ& dq);
-DQ operator*(const DQ& dq, const float &scalar);
-DQ operator*(const float &scalar, const DQ& dq);
-DQ operator*(const DQ& dq, const double& scalar);
-DQ operator*(const double& scalar, const DQ& dq);
-
-//Operator (==) Overload
-bool operator==(const DQ& dq, const int& scalar);
-bool operator==(const int& scalar, const DQ& dq);
-bool operator==(const DQ& dq, const float &scalar);
-bool operator==(const float &scalar, const DQ& dq);
-bool operator==(const DQ& dq, const double& scalar);
-bool operator==(const double& scalar, const DQ& dq);
-
-//Operator (!=) Overload
-bool operator!=(const DQ& dq, const int& scalar);
-bool operator!=(const int& scalar, const DQ& dq);
-bool operator!=(const DQ& dq, const float &scalar);
-bool operator!=(const float &scalar, const DQ& dq);
-bool operator!=(const DQ& dq, const double& scalar);
-bool operator!=(const double& scalar, const DQ& dq);
-
-//Operator (<<) Overload
-std::ostream& operator<<(std::ostream &os, const DQ& dq);
-
-//Constants
-Matrix<double,8,8> C8();
-Matrix<double,4,4> C4();
-
-const DQ E_ = DQ(0,0,0,0,1,0,0,0);
-const DQ i_ = DQ(0,1,0,0,0,0,0,0);
-const DQ j_ = DQ(0,0,1,0,0,0,0,0);
-const DQ k_ = DQ(0,0,0,1,0,0,0,0);
-
-const double DQ_threshold = 1e-12;
 
 //Operators
 DQ P(const DQ& dq);
@@ -293,6 +237,100 @@ bool is_pure_quaternion(const DQ& dq);
 bool is_line(const DQ& dq);
 
 bool is_plane(const DQ& dq);
+
+const double DQ_threshold = 1e-12;
+
+/*************************************************************************
+ ************** DUAL QUATERNION CONSTANTS AND OPERATORS ******************
+ ************************************************************************/
+
+//Operator (+) Overload
+DQ operator+(const DQ& dq1, const DQ& dq2);
+
+template <typename Scalar, typename = typename std::enable_if<std::is_arithmetic<Scalar>::value>::type>
+inline DQ operator+(const DQ& dq, const Scalar& s) noexcept
+{
+    DQ ret(dq);
+    ret.q(0)+=s;
+    return ret;
+}
+
+template <typename Scalar, typename = typename std::enable_if<std::is_arithmetic<Scalar>::value>::type>
+inline DQ operator+(const Scalar& s, const DQ& dq) noexcept
+{
+    return operator+(dq,s);
+}
+
+//Operator (-) Overload
+//Binary
+DQ operator-(const DQ& dq1, const DQ& dq2);
+
+template <typename Scalar, typename = typename std::enable_if<std::is_arithmetic<Scalar>::value>::type>
+inline DQ operator-(const Scalar& s, const DQ& dq) noexcept
+{
+    return operator+(dq,-s);
+}
+
+template <typename Scalar, typename = typename std::enable_if<std::is_arithmetic<Scalar>::value>::type>
+inline DQ operator-(const DQ& dq, const Scalar& s) noexcept
+{
+    return operator+(dq,-s);
+}
+
+//Operator (*) Overload
+DQ operator*(const DQ& dq1, const DQ& dq2);
+
+template <typename Scalar, typename = typename std::enable_if<std::is_arithmetic<Scalar>::value>::type>
+inline DQ operator*(const DQ& dq, const Scalar& s) noexcept
+{
+    return DQ(s*dq.q);
+}
+
+template <typename Scalar, typename = typename std::enable_if<std::is_arithmetic<Scalar>::value>::type>
+inline DQ operator*(const Scalar& s, const DQ& dq) noexcept
+{
+    return operator*(dq,s);
+}
+
+
+//Operator (==) Overload
+template <typename Scalar, typename = typename std::enable_if<std::is_arithmetic<Scalar>::value>::type>
+inline bool operator==(const DQ& dq, const Scalar& s)
+{
+    return dq==DQ(s);
+}
+
+template <typename Scalar, typename = typename std::enable_if<std::is_arithmetic<Scalar>::value>::type>
+inline bool operator==(const Scalar& s, const DQ& dq) noexcept
+{
+    return operator==(dq,s);
+}
+
+
+//Operator (!=) Overload
+template <typename Scalar, typename = typename std::enable_if<std::is_arithmetic<Scalar>::value>::type>
+inline bool operator!=(const DQ& dq, const Scalar& s)
+{
+    return !operator==(dq,s);
+}
+
+template <typename Scalar, typename = typename std::enable_if<std::is_arithmetic<Scalar>::value>::type>
+inline bool operator!=(const Scalar& s, const DQ& dq) noexcept
+{
+    return !operator==(dq,s);
+}
+
+//Operator (<<) Overload
+std::ostream& operator<<(std::ostream &os, const DQ& dq);
+
+//Constants
+Matrix<double,8,8> C8();
+Matrix<double,4,4> C4();
+
+const DQ E_ = DQ(0,0,0,0,1,0,0,0);
+const DQ i_ = DQ(0,1,0,0,0,0,0,0);
+const DQ j_ = DQ(0,0,1,0,0,0,0,0);
+const DQ k_ = DQ(0,0,0,1,0,0,0,0);
 
 }//Namespace DQRobotics
 
