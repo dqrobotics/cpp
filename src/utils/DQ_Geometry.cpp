@@ -282,10 +282,10 @@ std::tuple<DQ, DQ> DQ_Geometry::closest_points_between_line_segments(const DQ &l
                                                                      const DQ &line_2_point_2)
 {
     if(!is_line_segment(line_1,line_1_point_1,line_1_point_2))
-        throw std::runtime_error("DQ_Geometry::line_segment_to_line_squared_distance::Input line_1, line_1_point_1, "
+        throw std::runtime_error("DQ_Geometry::closest_points_between_line_segments::Input line_1, line_1_point_1, "
                                  "and line_1_point_2 must contitute a valid line segment.");
     if(!is_line_segment(line_2,line_2_point_1,line_2_point_2))
-        throw std::runtime_error("DQ_Geometry::line_segment_to_line_squared_distance::Input line_2, line_2_point_1, "
+        throw std::runtime_error("DQ_Geometry::closest_points_between_line_segments::Input line_2, line_2_point_1, "
                                  "and line_2_point_2 must contitute a valid line segment");
     const DQ& l1 = P(line_1);
     const DQ& l2 = P(line_2);
@@ -348,6 +348,7 @@ std::tuple<DQ, DQ> DQ_Geometry::closest_points_between_line_segments(const DQ &l
                 return {DQ_Geometry::point_projected_in_line(line_2_point_2,line_1),
                             line_2_point_2};
             }
+            throw std::runtime_error("Unexpected type in DQ_Geometry::closest_points_between_line_segments()");
         }
         case ClosestElement::P1:
         {
@@ -361,6 +362,7 @@ std::tuple<DQ, DQ> DQ_Geometry::closest_points_between_line_segments(const DQ &l
             case ClosestElement::P2:
                 return {line_1_point_1, line_2_point_2};
             }
+            throw std::runtime_error("Unexpected type in DQ_Geometry::closest_points_between_line_segments()");
         }
         case ClosestElement::P2:
         {
@@ -374,13 +376,14 @@ std::tuple<DQ, DQ> DQ_Geometry::closest_points_between_line_segments(const DQ &l
             case ClosestElement::P2:
                 return {line_1_point_2, line_2_point_2};
             }
+            throw std::runtime_error("Unexpected type in DQ_Geometry::closest_points_between_line_segments()");
         }
         default:
-            throw std::runtime_error("Unexpected type in DQ_Geometry::line_segment_to_line_squared_distance()");
+            throw std::runtime_error("Unexpected type in DQ_Geometry::closest_points_between_line_segments()");
         }
 
     }
-    throw std::runtime_error("Unexpected end of method in DQ_Geometry::line_segment_to_line_squared_distance()");
+    throw std::runtime_error("Unexpected end of method in DQ_Geometry::closest_points_between_line_segments()");
 }
 
 /**
@@ -479,6 +482,7 @@ double DQ_Geometry::line_segment_to_line_segment_squared_distance(const DQ& line
             case ClosestElement::P2:
                 return DQ_Geometry::point_to_line_squared_distance(line_2_point_2,line_1);
             }
+            throw std::runtime_error("Unexpected type in DQ_Geometry::line_segment_to_line_squared_distance()");
         }
         case ClosestElement::P1:
         {
@@ -491,6 +495,7 @@ double DQ_Geometry::line_segment_to_line_segment_squared_distance(const DQ& line
             case ClosestElement::P2:
                 return DQ_Geometry::point_to_point_squared_distance(line_1_point_1,line_2_point_2);
             }
+            throw std::runtime_error("Unexpected type in DQ_Geometry::line_segment_to_line_squared_distance()");
         }
         case ClosestElement::P2:
         {
@@ -503,6 +508,7 @@ double DQ_Geometry::line_segment_to_line_segment_squared_distance(const DQ& line
             case ClosestElement::P2:
                 return DQ_Geometry::point_to_point_squared_distance(line_1_point_2,line_2_point_2);
             }
+            throw std::runtime_error("Unexpected type in DQ_Geometry::line_segment_to_line_squared_distance()");
         }
         default:
             throw std::runtime_error("Unexpected type in DQ_Geometry::line_segment_to_line_squared_distance()");
