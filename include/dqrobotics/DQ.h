@@ -243,15 +243,15 @@ bool is_line(const DQ& dq);
 
 bool is_plane(const DQ& dq);
 
-constexpr double DQ_threshold = 1e-12;
-
 /*************************************************************************
  ************** DUAL QUATERNION CONSTANTS AND OPERATORS ******************
  ************************************************************************/
 
-DQ operator+(const DQ& dq1, const DQ& dq2);
-DQ operator-(const DQ& dq1, const DQ& dq2);
-DQ operator*(const DQ& dq1, const DQ& dq2);
+constexpr double DQ_threshold = 1e-12;
+
+const DQ operator+(const DQ& dq1, const DQ& dq2) noexcept;
+const DQ operator-(const DQ& dq1, const DQ& dq2) noexcept;
+const DQ operator*(const DQ& dq1, const DQ& dq2) noexcept;
 
 //Operator (<<) Overload
 std::ostream& operator<<(std::ostream &os, const DQ& dq);
@@ -273,11 +273,13 @@ template <typename Scalar, typename = typename std::enable_if<std::is_arithmetic
 /**
  * @brief operator + between a DQ and a Scalar.
  * @param dq a DQ.
- * @param s any Scalar (as defined by std::is_arithmetic)
+ * @param s any Scalar (as defined by std::is_arithmetic, bools are purposedly removed using static_assert.)
  * @return the sum between the DQ and the Scalar.
  */
-inline DQ operator+(const DQ& dq, const Scalar& s) noexcept
+inline const DQ operator+(const DQ& dq, const Scalar& s) noexcept
 {
+    static_assert(!std::is_same<bool,Scalar>(),"Operations between DQs and bools are not supported.");
+
     DQ ret(dq);
     ret.q(0)+=s;
     return ret;
@@ -286,12 +288,14 @@ inline DQ operator+(const DQ& dq, const Scalar& s) noexcept
 template <typename Scalar, typename = typename std::enable_if<std::is_arithmetic<Scalar>::value>::type>
 /**
  * @brief operator + between a DQ and a Scalar.
- * @param s any Scalar (as defined by std::is_arithmetic)
+ * @param s any Scalar (as defined by std::is_arithmetic, bools are purposedly removed using static_assert.)
  * @param dq a DQ.
  * @return the sum between the DQ and the Scalar.
  */
-inline DQ operator+(const Scalar& s, const DQ& dq) noexcept
+inline const DQ operator+(const Scalar& s, const DQ& dq) noexcept
 {
+    static_assert(!std::is_same<bool,Scalar>(),"Operations between DQs and bools are not supported.");
+
     return operator+(dq,s);
 }
 
@@ -299,10 +303,10 @@ template <typename Scalar, typename = typename std::enable_if<std::is_arithmetic
 /**
  * @brief operator - between a DQ and a Scalar.
  * @param dq a DQ.
- * @param s any Scalar (as defined by std::is_arithmetic)
+ * @param s any Scalar (as defined by std::is_arithmetic, bools are purposedly removed using static_assert.)
  * @return the difference between the DQ and the Scalar.
  */
-inline DQ operator-(const DQ& dq, const Scalar& s) noexcept
+inline const DQ operator-(const DQ& dq, const Scalar& s) noexcept
 {
     return operator+(dq,-s);
 }
@@ -310,11 +314,11 @@ inline DQ operator-(const DQ& dq, const Scalar& s) noexcept
 template <typename Scalar, typename = typename std::enable_if<std::is_arithmetic<Scalar>::value>::type>
 /**
  * @brief operator - between a DQ and a Scalar.
- * @param s any Scalar (as defined by std::is_arithmetic)
+ * @param s any Scalar (as defined by std::is_arithmetic, bools are purposedly removed using static_assert.)
  * @param dq a DQ.
  * @return the difference between the DQ and the Scalar.
  */
-inline DQ operator-(const Scalar& s, const DQ& dq) noexcept
+inline const DQ operator-(const Scalar& s, const DQ& dq) noexcept
 {
     return operator+(dq,-s);
 }
@@ -323,22 +327,24 @@ template <typename Scalar, typename = typename std::enable_if<std::is_arithmetic
 /**
  * @brief operator * between a DQ and a Scalar.
  * @param dq a DQ.
- * @param s any Scalar (as defined by std::is_arithmetic)
+ * @param s any Scalar (as defined by std::is_arithmetic, bools are purposedly removed using static_assert.)
  * @return the product between the DQ and the Scalar.
  */
-inline DQ operator*(const DQ& dq, const Scalar& s) noexcept
+inline const DQ operator*(const DQ& dq, const Scalar& s) noexcept
 {
+    static_assert(!std::is_same<bool,Scalar>(),"Operations between DQs and bools are not supported.");
+
     return DQ(s*dq.q);
 }
 
 template <typename Scalar, typename = typename std::enable_if<std::is_arithmetic<Scalar>::value>::type>
 /**
  * @brief operator * between a DQ and a Scalar.
- * @param s any Scalar (as defined by std::is_arithmetic)
+ * @param s any Scalar (as defined by std::is_arithmetic, bools are purposedly removed using static_assert.)
  * @param dq a DQ.
  * @return the product between the DQ and the Scalar.
  */
-inline DQ operator*(const Scalar& s, const DQ& dq) noexcept
+inline const DQ operator*(const Scalar& s, const DQ& dq) noexcept
 {
     return operator*(dq,s);
 }
@@ -347,23 +353,27 @@ template <typename Scalar, typename = typename std::enable_if<std::is_arithmetic
 /**
  * @brief operator == between a DQ and a Scalar.
  * @param dq a DQ.
- * @param s any Scalar (as defined by std::is_arithmetic)
+ * @param s any Scalar (as defined by std::is_arithmetic, bools are purposedly removed using static_assert.)
  * @return true if the DQ and Scalar are equal (up to the DQ_treshold), false otherwise.
  */
 inline bool operator==(const DQ& dq, const Scalar& s)
 {
+    static_assert(!std::is_same<bool,Scalar>(),"Operations between DQs and bools are not supported.");
+
     return dq==DQ(s);
 }
 
 template <typename Scalar, typename = typename std::enable_if<std::is_arithmetic<Scalar>::value>::type>
 /**
  * @brief operator == between a DQ and a Scalar.
- * @param s any Scalar (as defined by std::is_arithmetic)
+ * @param s any Scalar (as defined by std::is_arithmetic, bools are purposedly removed using static_assert.)
  * @param dq a DQ.
  * @return true if the DQ and Scalar are equal (up to the DQ_treshold), false otherwise.
  */
 inline bool operator==(const Scalar& s, const DQ& dq) noexcept
 {
+    static_assert(!std::is_same<bool,Scalar>(),"Operations between DQs and bools are not supported.");
+
     if(fabs(dq.q(0)-s)>DQ_threshold)
         return false;
     for(auto i=1;i<8;i++)
@@ -378,7 +388,7 @@ template <typename Scalar, typename = typename std::enable_if<std::is_arithmetic
 /**
  * @brief operator != between a DQ and a Scalar.
  * @param dq a DQ.
- * @param s any Scalar (as defined by std::is_arithmetic)
+ * @param s any Scalar (as defined by std::is_arithmetic, bools are purposedly removed using static_assert.)
  * @return true if the DQ and Scalar are different (up to the DQ_treshold), false otherwise.
  */
 inline bool operator!=(const DQ& dq, const Scalar& s)
@@ -389,7 +399,7 @@ inline bool operator!=(const DQ& dq, const Scalar& s)
 template <typename Scalar, typename = typename std::enable_if<std::is_arithmetic<Scalar>::value>::type>
 /**
  * @brief operator != between a DQ and a Scalar.
- * @param s any Scalar (as defined by std::is_arithmetic)
+ * @param s any Scalar (as defined by std::is_arithmetic, bools are purposedly removed using static_assert.)
  * @param dq a DQ.
  * @return true if the DQ and Scalar are different (up to the DQ_treshold), false otherwise.
  */

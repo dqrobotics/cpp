@@ -446,20 +446,12 @@ DQ::DQ(const VectorXd& v)
  * @param q6 a double (default = 0.0)
  * @param q7 a double (default = 0.0)
  */
-DQ::DQ(const double& q0,const double& q1,const double& q2,const double& q3,const double& q4,const double& q5,const double& q6,const double& q7) noexcept
+DQ::DQ(const double& q0,const double& q1,const double& q2,const double& q3,const double& q4,const double& q5,const double& q6,const double& q7) noexcept:
+    q((Matrix<double,8,1>() << q0,q1,q2,q3,q4,q5,q6,q7).finished())
 {
-    //q.resize(8);
-    q(0) = q0;
-    q(1) = q1;
-    q(2) = q2;
-    q(3) = q3;
-    q(4) = q4;
-    q(5) = q5;
-    q(6) = q6;
-    q(7) = q7;
+
 }
 
-// Public constant methods
 
 
 /**
@@ -1132,44 +1124,39 @@ DQ::operator int() const
 //Overloaded operators definitions
 
 /**
-* Operator (+) overload for the sum of two DQ objects.
-*
-* This friend function realizes the sum of two DQ objects and returns the result on another DQ object which is created with default
-* constructor and have the vector 'q' modified acording to the operation.
-* \param dq1 is the first DQ object in the operation.
-* \param dq2 is the second DQ object in the operation.
-* \return A DQ object.
-* \sa DQ(), threshold().
-*/
-DQ operator+(const DQ& dq1, const DQ& dq2)
+ * @brief operator + between two DQs.
+ * @param dq1 the first DQ.
+ * @param dq2 the second DQ.
+ * @return the (dual quaternion) sum between two DQs, that is ret = dq1 + dq2.
+ */
+const DQ operator +(const DQ& dq1, const DQ& dq2) noexcept
 {
     return DQ(dq1.q + dq2.q);
 }
 
-DQ operator-(const DQ& dq1, const DQ& dq2)
+/**
+ * @brief operator - between two DQs.
+ * @param dq1 the first DQ.
+ * @param dq2 the second DQ.
+ * @return the (dual quaternion) difference between two DQs, that is ret = dq1 - dq2.
+ */
+const DQ operator -(const DQ& dq1, const DQ& dq2) noexcept
 {
     return DQ(dq1.q - dq2.q);
 }
-
-// Operator (-) overload
 
 DQ DQ::operator-() const
 {
     return DQ(-1.0*this->q);
 }
-// Operator (*) overload
 
 /**
-* Operator (*) overload for the standard multiplication of two DQ objects.
-*
-* This friend function do the standard multiplication of two DQ objects and returns the result on another DQ object which
-* is created with default constructor and have the vector 'q' modified acording to the operation.
-* \param dq1 is the first DQ object in the operation.
-* \param dq2 is the second DQ object in the operation.
-* \return A DQ object.
-* \sa DQ(), D(), P(), threshold().
-*/
-DQ operator*(const DQ& dq1, const DQ& dq2){
+ * @brief operator * between two DQs.
+ * @param dq1 the first DQ.
+ * @param dq2 the second DQ.
+ * @return the (dual quaternion) product between two DQs, that is ret = dq1*dq2.
+ */
+const DQ operator *(const DQ& dq1, const DQ& dq2) noexcept{
     DQ dq;
 
     const DQ dq1_d = dq1.D();
