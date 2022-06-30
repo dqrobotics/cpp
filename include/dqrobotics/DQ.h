@@ -1,5 +1,5 @@
 /**
-(C) Copyright 2011-2020 DQ Robotics Developers
+(C) Copyright 2011-2022 DQ Robotics Developers
 
 This file is part of DQ Robotics.
 
@@ -18,12 +18,10 @@ This file is part of DQ Robotics.
 
 Contributors:
 - Bruno Vilhena Adorno     (adorno@ieee.org)
-- Murilo M. Marinho        (murilo@nml.t.u-tokyo.ac.jp)
+- Murilo M. Marinho        (murilo@g.ecc.t.u-tokyo.ac.jp)
 - Mateus Rodrigues Martins (martinsrmateus@gmail.com)
 */
-
-#ifndef DQ_H
-#define DQ_H
+#pragma once
 
 #if defined(__GNUC__) || defined(__clang__)
 #define DEPRECATED __attribute__((deprecated))
@@ -48,31 +46,41 @@ namespace DQ_robotics{
 
 class DQ{
 
-    //Private methods
 private:
     VectorXd q_() const;
     double q_(const int a) const;
 
-    //Attributes
 public:
+    //Member
     Matrix<double,8,1> q;
 
-    //Static Methods
-public:
-    static DQ unitDQ( const double& rot_angle, const int& x_axis, const int& y_axis, const int& z_axis, const double& x_trans, const double& y_trans, const double& z_trans);
+    //Static
+    static DQ unitDQ( const double& rot_angle,
+                      const int& x_axis,
+                      const int& y_axis,
+                      const int& z_axis,
+                      const double& x_trans,
+                      const double& y_trans,
+                      const double& z_trans);
     //To comply with MATLAB
     const static DQ i;
     const static DQ j;
     const static DQ k;
     const static DQ E;
 
-    //Methods
-public:
-    DQ(const VectorXd& v);
+    //Constructors
+    explicit DQ(const VectorXd& v);
 
-    DQ(const double& q0=0.0, const double& q1=0.0, const double& q2=0.0, const double& q3=0.0, const double& q4=0.0, const double& q5=0.0, const double& q6=0.0, const double& q7=0.0);
+    explicit DQ(const double& q0=0.0,
+                const double& q1=0.0,
+                const double& q2=0.0,
+                const double& q3=0.0,
+                const double& q4=0.0,
+                const double& q5=0.0,
+                const double& q6=0.0,
+                const double& q7=0.0) noexcept;
 
-    //Methods
+    //Member functions
     DQ P() const;
 
     DQ D() const;
@@ -132,83 +140,24 @@ public:
 
     DQ Adsharp(const DQ& dq2) const;
 
-    //Operator (-) Overload
-    DQ operator-() const;
-    //Operator (==) Overload
-    bool operator==(const DQ& dq2) const;
-    //Operator (!=) Overload
-    bool operator!=(const DQ& dq2) const;
+    std::string to_string() const;
 
-    //Conversion of DQ to other types
+    //Operators
+    DQ operator-() const;
+    bool operator==(const DQ& dq2) const;
+    bool operator!=(const DQ& dq2) const;
     explicit operator double() const;
     explicit operator int()    const;
 
-    std::string to_string() const;
+    //Assigment operator template for scalars
+    template <typename Scalar, typename scalar = std::enable_if<std::is_arithmetic<Scalar>::value>>
+    DQ& operator=(const Scalar& s)
+    {
+        q = VectorXd::Zero(8);
+        q(0)=s;
+        return *this;
+    };
 };//DQ Class END
-
-/*************************************************************************
- ************** DUAL QUATERNION CONSTANTS AND OPERATORS ******************
- ************************************************************************/
-
-//Operator (+) Overload
-DQ operator+(const DQ& dq1, const DQ& dq2);
-DQ operator+(const DQ& dq, const int& scalar);
-DQ operator+(const int& scalar, const DQ& dq);
-DQ operator+(const DQ& dq, const float &scalar);
-DQ operator+(const float &scalar, const DQ& dq);
-DQ operator+(const DQ& dq, const double& scalar);
-DQ operator+(const double& scalar, const DQ& dq);
-
-//Operator (-) Overload
-//Unary
-// DQ operator-(const DQ& dq); -> We already have this as a method
-//Binary
-DQ operator-(const DQ& dq1, const DQ& dq2);
-DQ operator-(const DQ& dq, const int& scalar);
-DQ operator-(const int& scalar, const DQ& dq);
-DQ operator-(const DQ& dq, const float &scalar);
-DQ operator-(const float &scalar, const DQ& dq);
-DQ operator-(const DQ& dq, const double& scalar);
-DQ operator-(const double& scalar, const DQ& dq);
-
-//Operator (*) Overload
-DQ operator*(const DQ& dq1, const DQ& dq2);
-DQ operator*(const DQ& dq, const int& scalar);
-DQ operator*(const int& scalar, const DQ& dq);
-DQ operator*(const DQ& dq, const float &scalar);
-DQ operator*(const float &scalar, const DQ& dq);
-DQ operator*(const DQ& dq, const double& scalar);
-DQ operator*(const double& scalar, const DQ& dq);
-
-//Operator (==) Overload
-bool operator==(const DQ& dq, const int& scalar);
-bool operator==(const int& scalar, const DQ& dq);
-bool operator==(const DQ& dq, const float &scalar);
-bool operator==(const float &scalar, const DQ& dq);
-bool operator==(const DQ& dq, const double& scalar);
-bool operator==(const double& scalar, const DQ& dq);
-
-//Operator (!=) Overload
-bool operator!=(const DQ& dq, const int& scalar);
-bool operator!=(const int& scalar, const DQ& dq);
-bool operator!=(const DQ& dq, const float &scalar);
-bool operator!=(const float &scalar, const DQ& dq);
-bool operator!=(const DQ& dq, const double& scalar);
-bool operator!=(const double& scalar, const DQ& dq);
-
-//Operator (<<) Overload
-std::ostream& operator<<(std::ostream &os, const DQ& dq);
-
-//Constants
-Matrix<double,8,8> C8();
-Matrix<double,4,4> C4();
-
-const DQ E_ = DQ(0,0,0,0,1,0,0,0);
-const DQ i_ = DQ(0,1,0,0,0,0,0,0);
-const DQ j_ = DQ(0,0,1,0,0,0,0,0);
-const DQ k_ = DQ(0,0,0,1,0,0,0,0);
-
-const double DQ_threshold = 1e-12;
 
 //Operators
 DQ P(const DQ& dq);
@@ -294,6 +243,170 @@ bool is_line(const DQ& dq);
 
 bool is_plane(const DQ& dq);
 
-}//Namespace DQRobotics
+/*************************************************************************
+ ************** DUAL QUATERNION CONSTANTS AND OPERATORS ******************
+ ************************************************************************/
 
-#endif // DQ_H
+constexpr double DQ_threshold = 1e-12;
+
+const DQ operator+(const DQ& dq1, const DQ& dq2) noexcept;
+const DQ operator-(const DQ& dq1, const DQ& dq2) noexcept;
+const DQ operator*(const DQ& dq1, const DQ& dq2) noexcept;
+
+//Operator (<<) Overload
+std::ostream& operator<<(std::ostream &os, const DQ& dq);
+
+//Constants
+Matrix<double,8,8> C8();
+Matrix<double,4,4> C4();
+
+const DQ E_ = DQ(0,0,0,0,1,0,0,0);
+const DQ i_ = DQ(0,1,0,0,0,0,0,0);
+const DQ j_ = DQ(0,0,1,0,0,0,0,0);
+const DQ k_ = DQ(0,0,0,1,0,0,0,0);
+
+/*************************************************************************
+ ************** DUAL QUATERNIONS AND SCALAR OPERATOR TEMPLATES ***********
+ ************************************************************************/
+
+template <typename Scalar, typename = typename std::enable_if<std::is_arithmetic<Scalar>::value>::type>
+/**
+ * @brief operator + between a DQ and a Scalar.
+ * @param dq a DQ.
+ * @param s any Scalar (as defined by std::is_arithmetic, bools are purposedly removed using static_assert.)
+ * @return the sum between the DQ and the Scalar.
+ */
+inline const DQ operator+(const DQ& dq, const Scalar& s) noexcept
+{
+    static_assert(!std::is_same<bool,Scalar>(),"Operations between DQs and bools are not supported.");
+
+    DQ ret(dq);
+    ret.q(0)+=s;
+    return ret;
+}
+
+template <typename Scalar, typename = typename std::enable_if<std::is_arithmetic<Scalar>::value>::type>
+/**
+ * @brief operator + between a DQ and a Scalar.
+ * @param s any Scalar (as defined by std::is_arithmetic, bools are purposedly removed using static_assert.)
+ * @param dq a DQ.
+ * @return the sum between the DQ and the Scalar.
+ */
+inline const DQ operator+(const Scalar& s, const DQ& dq) noexcept
+{
+    static_assert(!std::is_same<bool,Scalar>(),"Operations between DQs and bools are not supported.");
+
+    return operator+(dq,s);
+}
+
+template <typename Scalar, typename = typename std::enable_if<std::is_arithmetic<Scalar>::value>::type>
+/**
+ * @brief operator - between a DQ and a Scalar.
+ * @param dq a DQ.
+ * @param s any Scalar (as defined by std::is_arithmetic, bools are purposedly removed using static_assert.)
+ * @return the difference between the DQ and the Scalar.
+ */
+inline const DQ operator-(const DQ& dq, const Scalar& s) noexcept
+{
+    return operator+(dq,-s);
+}
+
+template <typename Scalar, typename = typename std::enable_if<std::is_arithmetic<Scalar>::value>::type>
+/**
+ * @brief operator - between a DQ and a Scalar.
+ * @param s any Scalar (as defined by std::is_arithmetic, bools are purposedly removed using static_assert.)
+ * @param dq a DQ.
+ * @return the difference between the DQ and the Scalar.
+ */
+inline const DQ operator-(const Scalar& s, const DQ& dq) noexcept
+{
+    return operator+(dq,-s);
+}
+
+template <typename Scalar, typename = typename std::enable_if<std::is_arithmetic<Scalar>::value>::type>
+/**
+ * @brief operator * between a DQ and a Scalar.
+ * @param dq a DQ.
+ * @param s any Scalar (as defined by std::is_arithmetic, bools are purposedly removed using static_assert.)
+ * @return the product between the DQ and the Scalar.
+ */
+inline const DQ operator*(const DQ& dq, const Scalar& s) noexcept
+{
+    static_assert(!std::is_same<bool,Scalar>(),"Operations between DQs and bools are not supported.");
+
+    return DQ(s*dq.q);
+}
+
+template <typename Scalar, typename = typename std::enable_if<std::is_arithmetic<Scalar>::value>::type>
+/**
+ * @brief operator * between a DQ and a Scalar.
+ * @param s any Scalar (as defined by std::is_arithmetic, bools are purposedly removed using static_assert.)
+ * @param dq a DQ.
+ * @return the product between the DQ and the Scalar.
+ */
+inline const DQ operator*(const Scalar& s, const DQ& dq) noexcept
+{
+    return operator*(dq,s);
+}
+
+template <typename Scalar, typename = typename std::enable_if<std::is_arithmetic<Scalar>::value>::type>
+/**
+ * @brief operator == between a DQ and a Scalar.
+ * @param dq a DQ.
+ * @param s any Scalar (as defined by std::is_arithmetic, bools are purposedly removed using static_assert.)
+ * @return true if the DQ and Scalar are equal (up to the DQ_treshold), false otherwise.
+ */
+inline bool operator==(const DQ& dq, const Scalar& s)
+{
+    static_assert(!std::is_same<bool,Scalar>(),"Operations between DQs and bools are not supported.");
+
+    return dq==DQ(s);
+}
+
+template <typename Scalar, typename = typename std::enable_if<std::is_arithmetic<Scalar>::value>::type>
+/**
+ * @brief operator == between a DQ and a Scalar.
+ * @param s any Scalar (as defined by std::is_arithmetic, bools are purposedly removed using static_assert.)
+ * @param dq a DQ.
+ * @return true if the DQ and Scalar are equal (up to the DQ_treshold), false otherwise.
+ */
+inline bool operator==(const Scalar& s, const DQ& dq) noexcept
+{
+    static_assert(!std::is_same<bool,Scalar>(),"Operations between DQs and bools are not supported.");
+
+    if(fabs(dq.q(0)-s)>DQ_threshold)
+        return false;
+    for(auto i=1;i<8;i++)
+    {
+        if(fabs(dq.q(i)-0.0)>DQ_threshold)
+            return false;
+    }
+    return true;
+}
+
+template <typename Scalar, typename = typename std::enable_if<std::is_arithmetic<Scalar>::value>::type>
+/**
+ * @brief operator != between a DQ and a Scalar.
+ * @param dq a DQ.
+ * @param s any Scalar (as defined by std::is_arithmetic, bools are purposedly removed using static_assert.)
+ * @return true if the DQ and Scalar are different (up to the DQ_treshold), false otherwise.
+ */
+inline bool operator!=(const DQ& dq, const Scalar& s)
+{
+    return !operator==(dq,s);
+}
+
+template <typename Scalar, typename = typename std::enable_if<std::is_arithmetic<Scalar>::value>::type>
+/**
+ * @brief operator != between a DQ and a Scalar.
+ * @param s any Scalar (as defined by std::is_arithmetic, bools are purposedly removed using static_assert.)
+ * @param dq a DQ.
+ * @return true if the DQ and Scalar are different (up to the DQ_treshold), false otherwise.
+ */
+inline bool operator!=(const Scalar& s, const DQ& dq) noexcept
+{
+    return !operator==(dq,s);
+}
+
+
+}//Namespace DQRobotics

@@ -395,15 +395,13 @@ double DQ::q_(const int a) const
 }
 
 /**
-* DQ constructor using boost vector
-*
-* Returns a DQ object with the values of elements equal to the values of elements from a vector 'v' passed to constructor.
-* \param vector <double> v contain the values to copied to the attribute q.
-*/
-DQ::DQ(const VectorXd& v) {
-
-    //q.resize(8);
-
+ * @brief DQ::DQ Constructor using a VectorXd.
+ * @param v a VectorXd with size 1, 3, 4, 6, or 8. It will be read treated as a real number,
+ * a pure quaternion, a general quaternion, a pure dual quaternion, or a general dual quaternion, respectively.
+ * @exception std::range_error if the size is different from the ones specified above.
+ */
+DQ::DQ(const VectorXd& v)
+{
     switch (v.size())
     {
     //An eight-dimensional v contains the coefficients of general dual quaternions
@@ -437,25 +435,23 @@ DQ::DQ(const VectorXd& v) {
 }
 
 /**
-* DQ constructor using 8 scalar elements
-*
-* Returns a DQ object with the values of vector q equal to the values of the 8 parameters 'q0' to 'q8' passed to constructor.
-* To create a DQ object using this, type: 'DQ dq_object(q0,q1,q2,q3,q4,q5,q6,q7);' where 'qn' is a double type scalar.
-* \param double q0,q1,q2,q3,q4,q5,q6 and q7 are the values to be copied to the member 'q'.
-*/
-DQ::DQ(const double& q0,const double& q1,const double& q2,const double& q3,const double& q4,const double& q5,const double& q6,const double& q7) {
-    //q.resize(8);
-    q(0) = q0;
-    q(1) = q1;
-    q(2) = q2;
-    q(3) = q3;
-    q(4) = q4;
-    q(5) = q5;
-    q(6) = q6;
-    q(7) = q7;
+ * @brief DQ::DQ Constructor using up to 8 double values. The constructor will return a DQ q equivalent to
+ * q = q0 + q1*i_ + q2*j_ + q3*k_ + E_*(q4 + q5*i_ + q6*j_ + q7*k_).
+ * @param q0 a double (default = 0.0)
+ * @param q1 a double (default = 0.0)
+ * @param q2 a double (default = 0.0)
+ * @param q3 a double (default = 0.0)
+ * @param q4 a double (default = 0.0)
+ * @param q5 a double (default = 0.0)
+ * @param q6 a double (default = 0.0)
+ * @param q7 a double (default = 0.0)
+ */
+DQ::DQ(const double& q0,const double& q1,const double& q2,const double& q3,const double& q4,const double& q5,const double& q6,const double& q7) noexcept:
+    q((Matrix<double,8,1>() << q0,q1,q2,q3,q4,q5,q6,q7).finished())
+{
+
 }
 
-// Public constant methods
 
 
 /**
@@ -1128,239 +1124,39 @@ DQ::operator int() const
 //Overloaded operators definitions
 
 /**
-* Operator (+) overload for the sum of two DQ objects.
-*
-* This friend function realizes the sum of two DQ objects and returns the result on another DQ object which is created with default
-* constructor and have the vector 'q' modified acording to the operation.
-* \param dq1 is the first DQ object in the operation.
-* \param dq2 is the second DQ object in the operation.
-* \return A DQ object.
-* \sa DQ(), threshold().
-*/
-DQ operator+(const DQ& dq1, const DQ& dq2) {
+ * @brief operator + between two DQs.
+ * @param dq1 the first DQ.
+ * @param dq2 the second DQ.
+ * @return the (dual quaternion) sum between two DQs, that is ret = dq1 + dq2.
+ */
+const DQ operator +(const DQ& dq1, const DQ& dq2) noexcept
+{
     return DQ(dq1.q + dq2.q);
 }
 
-
 /**
-* Operator (+) overload for the sum of a DQ object and an integer scalar
-*
-* This friend function realizes the sum of a DQ object and an integer scalar and returns the result on another DQ object.
-* A DQ object is created by the DQ constructor using a scalar element and then the operation is made between two DQ objects.
-* \param dq is the DQ object in the operation.
-* \param scalar is an integer scalar involved in operation.
-* \return A DQ object.
-* \sa DQ(double scalar), operator+(DQ dq1, DQ dq2).
-*/
-DQ operator+(const DQ& dq, const int& scalar) {
-    DQ dq_scalar(scalar);
-    return (dq + dq_scalar);
-}
-
-/**
-* Operator (+) overload for the sum of an integer scalar and DQ object
-*
-* This friend function realizes the sum of an integer scalar and a DQ object and returns the result on another DQ object.
-* A DQ object is created by the DQ constructor using a scalar element and then the operation is made between two DQ objects.
-* \param scalar is an integer scalar involved in operation.
-* \param dq is the DQ object in the operation.
-* \return A DQ object.
-* \sa DQ(double scalar), operator+(DQ dq1, DQ dq2).
-*/
-DQ operator+(const int& scalar, const DQ& dq) {
-    DQ dq_scalar(scalar);
-    return (dq_scalar + dq);
-}
-
-/**
-* Operator (+) overload for the sum of a DQ object and a float scalar
-*
-* This friend function realizes the sum of a DQ object and a float scalar and returns the result on another DQ object.
-* A DQ object is created by the DQ constructor using a scalar element and then the operation is made between two DQ objects.
-* \param dq is the DQ object in the operation.
-* \param scalar is a float scalar involved in operation.
-* \return A DQ object.
-* \sa DQ(double scalar), operator+(DQ dq1, DQ dq2).
-*/
-DQ operator+(const DQ& dq, const float& scalar) {
-    DQ dq_scalar(scalar);
-    return (dq + dq_scalar);
-}
-
-/**
-* Operator (+) overload for the sum of a float scalar and DQ object
-*
-* This friend function realizes the sum of a float scalar and a DQ object and returns the result on another DQ object.
-* A DQ object is created by the DQ constructor using a scalar element and then the operation is made between two DQ objects.
-* \param scalar is a float scalar involved in operation.
-* \param dq is the DQ object in the operation.
-* \return A DQ object.
-* \sa DQ(double scalar), operator+(DQ dq1, DQ dq2).
-*/
-DQ operator+(const float& scalar, const DQ& dq) {
-    DQ dq_scalar(scalar);
-    return (dq_scalar + dq);
-}
-
-/**
-* Operator (+) overload for the sum of a DQ object and a double scalar
-*
-* This friend function realizes the sum of a DQ object and a double scalar and returns the result on another DQ object.
-* A DQ object is created by the DQ constructor using a scalar element and then the operation is made between two DQ objects.
-* \param dq is the DQ object in the operation.
-* \param scalar is a double scalar involved in operation.
-* \return A DQ object.
-* \sa DQ(double scalar), operator+(DQ dq1, DQ dq2).
-*/
-DQ operator+(const DQ& dq, const double& scalar) {
-    DQ dq_scalar(scalar);
-    return (dq + dq_scalar);
-}
-
-/**
-* Operator (+) overload for the sum of a double scalar and DQ object
-*
-* This friend function realizes the sum of a double scalar and a DQ object and returns the result on another DQ object.
-* A DQ object is created by the DQ constructor using a scalar element and then the operation is made between two DQ objects.
-* \param scalar is a double scalar involved in operation.
-* \param dq is the DQ object in the operation.
-* \return A DQ object.
-* \sa DQ(double scalar), operator+(DQ dq1, DQ dq2).
-*/
-DQ operator+(const double& scalar, const DQ& dq) {
-    DQ dq_scalar(scalar);
-    return (dq_scalar + dq);
-}
-
-// Operator (-) overload
-
-DQ DQ::operator-() const
+ * @brief operator - between two DQs.
+ * @param dq1 the first DQ.
+ * @param dq2 the second DQ.
+ * @return the (dual quaternion) difference between two DQs, that is ret = dq1 - dq2.
+ */
+const DQ operator -(const DQ& dq1, const DQ& dq2) noexcept
 {
-    DQ dq;
-    for(int n = 0; n<8; n++)
-    {
-        dq.q(n) = -this->q(n);
-    }
-    return dq;
-}
-
-/**
-* Operator (-) overload to subtract one DQ object of other.
-*
-* This friend function do the subtraction of a DQ object in other and returns the result on another DQ object which
-* is created with default constructor and have the vector 'q' modified acording to the operation.
-* \param dq1 is the first DQ object in the operation.
-* \param dq2 is the second DQ object in the operation.
-* \return A DQ object.
-* \sa DQ(), threshold().
-*/
-DQ operator-(const DQ& dq1, const DQ& dq2){
     return DQ(dq1.q - dq2.q);
 }
 
-/**
-* Operator (-) overload to subtract an integer scalar of one DQ object.
-*
-* This friend function realizes the subtraction of a integer scalar in one DQ object. and returns the result on another DQ object.
-* A DQ object is created by the DQ constructor using a scalar element and then the operation is made between two DQ objects.
-* \param dq is the DQ object in the operation.
-* \param scalar is the integer scalar involved in operation.
-* \return A DQ object.
-* \sa DQ(double scalar), operator-(DQ dq1, DQ dq2).
-*/
-DQ operator-(const DQ& dq, const int& scalar) {
-    DQ dq_scalar(scalar);
-    return (dq - dq_scalar);
+DQ DQ::operator-() const
+{
+    return DQ(-1.0*this->q);
 }
 
 /**
-* Operator (-) overload to subtract a DQ object of one integer scalar.
-*
-* This friend function realizes the subtraction of a DQ object in one integer scalar. and returns the result on another DQ object.
-* A DQ object is created by the DQ constructor using a scalar element and then the operation is made between two DQ objects.
-* \param scalar is the integer scalar involved in operation.
-* \param dq is the DQ object in the operation.
-* \return A DQ object.
-* \sa DQ(double scalar), operator-(DQ dq1, DQ dq2).
-*/
-DQ operator-(const int& scalar, const DQ& dq){
-    DQ dq_scalar(scalar);
-    return (dq_scalar - dq);
-}
-
-/**
-* Operator (-) overload to subtract an float scalar of one DQ object.
-*
-* This friend function realizes the subtraction of a float scalar in one DQ object. and returns the result on another DQ object.
-* A DQ object is created by the DQ constructor using a scalar element and then the operation is made between two DQ objects.
-* \param dq is the DQ object in the operation.
-* \param scalar is the float scalar involved in operation.
-* \return A DQ object.
-* \sa DQ(double scalar), operator-(DQ dq1, DQ dq2).
-*/
-DQ operator-(const DQ& dq, const float& scalar){
-    DQ dq_scalar(scalar);
-    return (dq - dq_scalar);
-}
-
-/**
-* Operator (-) overload to subtract a DQ object of one float scalar.
-*
-* This friend function realizes the subtraction of a DQ object in one float scalar. and returns the result on another DQ object.
-* A DQ object is created by the DQ constructor using a scalar element and then the operation is made between two DQ objects.
-* \param scalar is the float scalar involved in operation.
-* \param dq is the DQ object in the operation.
-* \return A DQ object.
-* \sa DQ(double scalar), operator-(DQ dq1, DQ dq2).
-*/
-DQ operator-(const float& scalar, const DQ& dq){
-    DQ dq_scalar(scalar);
-    return (dq_scalar - dq);
-}
-
-/**
-* Operator (-) overload to subtract an double scalar of one DQ object.
-*
-* This friend function realizes the subtraction of a double scalar in one DQ object. and returns the result on another DQ object.
-* A DQ object is created by the DQ constructor using a scalar element and then the operation is made between two DQ objects.
-* \param dq is the DQ object in the operation.
-* \param scalar is the double scalar involved in operation.
-* \return A DQ object.
-* \sa DQ(double scalar), operator-(DQ dq1, DQ dq2).
-*/
-DQ operator-(const DQ& dq, const double& scalar){
-    DQ dq_scalar(scalar);
-    return (dq - dq_scalar);
-}
-
-/**
-* Operator (-) overload to subtract a DQ object of one double scalar.
-*
-* This friend function realizes the subtraction of a DQ object in one double scalar. and returns the result on another DQ object.
-* A DQ object is created by the DQ constructor using a scalar element and then the operation is made between two DQ objects.
-* \param scalar is the double scalar involved in operation.
-* \param dq is the DQ object in the operation.
-* \return A DQ object.
-* \sa DQ(double scalar), operator-(DQ dq1, DQ dq2).
-*/
-DQ operator-(const double& scalar, const DQ& dq){
-    DQ dq_scalar(scalar);
-    return (dq_scalar - dq);
-}
-
-// Operator (*) overload
-
-/**
-* Operator (*) overload for the standard multiplication of two DQ objects.
-*
-* This friend function do the standard multiplication of two DQ objects and returns the result on another DQ object which
-* is created with default constructor and have the vector 'q' modified acording to the operation.
-* \param dq1 is the first DQ object in the operation.
-* \param dq2 is the second DQ object in the operation.
-* \return A DQ object.
-* \sa DQ(), D(), P(), threshold().
-*/
-DQ operator*(const DQ& dq1, const DQ& dq2){
+ * @brief operator * between two DQs.
+ * @param dq1 the first DQ.
+ * @param dq2 the second DQ.
+ * @return the (dual quaternion) product between two DQs, that is ret = dq1*dq2.
+ */
+const DQ operator *(const DQ& dq1, const DQ& dq2) noexcept{
     DQ dq;
 
     const DQ dq1_d = dq1.D();
@@ -1385,96 +1181,6 @@ DQ operator*(const DQ& dq1, const DQ& dq2){
     return dq;
 }
 
-/**
-* Operator (*) overload for the multiplication of a DQ object and an integer scalar
-*
-* This friend function realizes the multiplication of a DQ object and an integer scalar and returns the result on another DQ object.
-* A DQ object is created by the DQ constructor using a scalar element and then the operation is made between two DQ objects.
-* \param dq is the DQ object in the operation.
-* \param scalar is an integer scalar involved in operation.
-* \return A DQ object.
-* \sa DQ(double scalar), operator*(DQ dq1, DQ dq2).
-*/
-DQ operator*(const DQ& dq, const int& scalar) {
-    DQ dq_scalar(scalar);
-    return (dq * dq_scalar);
-}
-
-/**
-* Operator (*) overload for the multiplication of an integer scalar and DQ object
-*
-* This friend function realizes the multiplication of an integer scalar and a DQ object and returns the result on another DQ object.
-* A DQ object is created by the DQ constructor using a scalar element and then the operation is made between two DQ objects.
-* \param scalar is an integer scalar involved in operation.
-* \param dq is the DQ object in the operation.
-* \return A DQ object.
-* \sa DQ(double scalar), operator*(DQ dq1, DQ dq2).
-*/
-DQ operator*(const int& scalar, const DQ& dq) {
-    DQ dq_scalar(scalar);
-    return (dq_scalar * dq);
-}
-
-/**
-* Operator (*) overload for the multiplication of a DQ object and a float scalar
-*
-* This friend function realizes the multiplication of a DQ object and a float scalar and returns the result on another DQ object.
-* A DQ object is created by the DQ constructor using a scalar element and then the operation is made between two DQ objects.
-* \param dq is the DQ object in the operation.
-* \param scalar is a float scalar involved in operation.
-* \return A DQ object.
-* \sa DQ(double scalar), operator*(DQ dq1, DQ dq2).
-*/
-DQ operator*(const DQ& dq, const float& scalar) {
-    DQ dq_scalar(scalar);
-    return (dq * dq_scalar);
-}
-
-/**
-* Operator (*) overload for the multiplication of a float scalar and DQ object
-*
-* This friend function realizes the multiplication of a float scalar and a DQ object and returns the result on another DQ object.
-* A DQ object is created by the DQ constructor using a scalar element and then the operation is made between two DQ objects.
-* \param scalar is a float scalar involved in operation.
-* \param dq is the DQ object in the operation.
-* \return A DQ object.
-* \sa DQ(double scalar), operator*(DQ dq1, DQ dq2).
-*/
-DQ operator*(const float& scalar, const DQ& dq){
-    DQ dq_scalar(scalar);
-    return (dq_scalar * dq);
-}
-
-/**
-* Operator (*) overload for the multiplication of a DQ object and an double scalar
-*
-* This friend function realizes the multiplication of a DQ object and an double scalar and returns the result on another DQ object.
-* A DQ object is created by the DQ constructor using a scalar element and then the operation is made between two DQ objects.
-* \param dq is the DQ object in the operation.
-* \param scalar is an double scalar involved in operation.
-* \return A DQ object.
-* \sa DQ(double scalar), operator*(DQ dq1, DQ dq2).
-*/
-DQ operator*(const DQ& dq, const double& scalar){
-    DQ dq_scalar(scalar);
-    return (dq * dq_scalar);
-}
-
-/**
-* Operator (*) overload for the multiplication of an double scalar and DQ object
-*
-* This friend function realizes the multiplication of an double scalar and a DQ object and returns the result on another DQ object.
-* A DQ object is created by the DQ constructor using a scalar element and then the operation is made between two DQ objects.
-* \param scalar is an double scalar involved in operation.
-* \param dq is the DQ object in the operation.
-* \return A DQ object.
-* \sa DQ(double scalar), operator*(DQ dq1, DQ dq2).
-*/
-DQ operator*(const double& scalar, const DQ& dq) {
-    DQ dq_scalar(scalar);
-    return (dq_scalar * dq);
-}
-
 // Operator (==) overload
 
 /**
@@ -1495,102 +1201,6 @@ bool DQ::operator==(const DQ& dq2) const{
     return true; //elements of Dual Quaternion equal to scalar
 }
 
-/**
-* Operator (==) overload for the comparison between a DQ object and an integer scalar.
-*
-* This function do the comparison between a DQ object and an integer scalar. The scalar is transformed in a DQ object and then
-* the comparison between two DQ objects is executed. The result is returned as a boolean variable. True, means that both
-* DQ objects are equal and thus the DQ object is equal to the scalar.
-* \param dq is the DQ object in the operation.
-* \param scalar is an integer scalar involved in operation
-* \return A boolean variable.
-* \sa DQ(double scalar), operator==(DQ dq2).
-*/
-bool operator==(const DQ& dq, const int& scalar) {
-    DQ dq_scalar(scalar);
-    return (dq == dq_scalar);
-}
-
-/**
-* Operator (==) overload for the comparison between an integer scalar and a DQ object
-*
-* This function do the comparison between a DQ object and an integer scalar. The scalar is transformed in a DQ object and then
-* the comparison between two DQ objects is executed. The result is returned as a boolean variable. True, means that both
-* DQ objects are equal and thus the DQ object is equal to the scalar.
-* \param scalar is an integer scalar involved in operation
-* \param dq is the DQ object in the operation.
-* \return A boolean variable.
-* \sa DQ(double scalar), operator==(DQ dq2).
-*/
-bool operator==(const int& scalar, const DQ& dq) {
-    DQ dq_scalar(scalar);
-    return (dq_scalar == dq);
-}
-
-/**
-* Operator (==) overload for the comparison between a DQ object and a float scalar.
-*
-* This function do the comparison between a DQ object and a float scalar. The scalar is transformed in a DQ object and then
-* the comparison between two DQ objects is executed. The result is returned as a boolean variable. True, means that both
-* DQ objects are equal and thus the DQ object is equal to the scalar.
-* \param dq is the DQ object in the operation.
-* \param scalar is a float scalar involved in operation
-* \return A boolean variable.
-* \sa DQ(double scalar), operator==(DQ dq2).
-*/
-bool operator==(const DQ& dq, const float& scalar) {
-    DQ dq_scalar(scalar);
-    return (dq == dq_scalar);
-}
-
-/**
-* Operator (==) overload for the comparison between a float scalar and a DQ object
-*
-* This function do the comparison between a DQ object and a float scalar. The scalar is transformed in a DQ object and then
-* the comparison between two DQ objects is executed. The result is returned as a boolean variable. True, means that both
-* DQ objects are equal and thus the DQ object is equal to the scalar.
-* \param scalar is a float scalar involved in operation
-* \param dq is the DQ object in the operation.
-* \return A boolean variable.
-* \sa DQ(double scalar), operator==(DQ dq2).
-*/
-bool operator==(const float& scalar, const DQ& dq) {
-    DQ dq_scalar(scalar);
-    return (dq_scalar == dq);
-}
-
-/**
-* Operator (==) overload for the comparison between a DQ object and a double scalar.
-*
-* This function do the comparison between a DQ object and a double scalar. The scalar is transformed in a DQ object and then
-* the comparison between two DQ objects is executed. The result is returned as a boolean variable. True, means that both
-* DQ objects are equal and thus the DQ object is equal to the scalar.
-* \param dq is the DQ object in the operation.
-* \param scalar is an double scalar involved in operation
-* \return A boolean variable.
-* \sa DQ(double scalar), operator==(DQ dq2).
-*/
-bool operator==(const DQ& dq, const double& scalar) {
-    DQ dq_scalar(scalar);
-    return (dq == dq_scalar);
-}
-
-/**
-* Operator (==) overload for the comparison between a double scalar and a DQ object
-*
-* This function do the comparison between a DQ object and a double scalar. The scalar is transformed in a DQ object and then
-* the comparison between two DQ objects is executed. The result is returned as a boolean variable. True, means that both
-* DQ objects are equal and thus the DQ object is equal to the scalar.
-* \param scalar is a double scalar involved in operation
-* \param dq is the DQ object in the operation.
-* \return A boolean variable.
-* \sa DQ(double scalar), operator==(DQ dq2).
-*/
-bool operator==(const double& scalar, const DQ& dq) {
-    DQ dq_scalar(scalar);
-    return (dq_scalar == dq);
-}
-
 // Operator (!=) overload
 
 /**
@@ -1609,102 +1219,6 @@ bool DQ::operator!=(const DQ& dq2) const{
             return true; //elements of Dual Quaternion different of scalar
     }
     return false; //elements of Dual Quaternion equal to scalar
-}
-
-/**
-* Operator (!=) overload for the comparison between a DQ object and an integer scalar.
-*
-* This friend function do the comparison between a DQ object and an integer scalar. The scalar is transformed in a DQ object and then
-* the comparison between two DQ objects is executed. The result is returned as a boolean variable. True, means that DQ objects
-* are not equal and thus the DQ object isn't equal to the scalar.
-* \param dq is the DQ object in the operation.
-* \param scalar is an integer scalar involved in operation
-* \return A boolean variable.
-* \sa DQ(double scalar), operator!=(DQ dq2).
-*/
-bool operator!=(const DQ& dq, const int& scalar) {
-    DQ dq_scalar(scalar);
-    return (dq != dq_scalar);
-}
-
-/**
-* Operator (!=) overload for the comparison between an integer scalar and a DQ object
-*
-* This function do the comparison between a DQ object and an integer scalar. The scalar is transformed in a DQ object and then
-* the comparison between two DQ objects is executed. The result is returned as a boolean variable. True, means that DQ objects
-* are not equal and thus the DQ object isn't equal to the scalar.
-* \param scalar is an integer scalar involved in operation
-* \param dq is the DQ object in the operation.
-* \return A boolean variable.
-* \sa DQ(double scalar), operator!=(DQ dq2).
-*/
-bool operator!=(const int& scalar, const DQ& dq) {
-    DQ dq_scalar(scalar);
-    return (dq_scalar != dq);
-}
-
-/**
-* Operator (!=) overload for the comparison between a DQ object and a float scalar.
-*
-* This friend function do the comparison between a DQ object and a float scalar. The scalar is transformed in a DQ object and then
-* the comparison between two DQ objects is executed. The result is returned as a boolean variable. True, means that DQ objects
-* are not equal and thus the DQ object isn't equal to the scalar.
-* \param dq is the DQ object in the operation.
-* \param scalar is a float scalar involved in operation
-* \return A boolean variable.
-* \sa DQ(double scalar), operator!=(DQ dq2).
-*/
-bool operator!=(const DQ& dq, const float& scalar) {
-    DQ dq_scalar(scalar);
-    return (dq != dq_scalar);
-}
-
-/**
-* Operator (!=) overload for the comparison between a float scalar and a DQ object
-*
-* This function do the comparison between a DQ object and a float scalar. The scalar is transformed in a DQ object and then
-* the comparison between two DQ objects is executed. The result is returned as a boolean variable. True, means that DQ objects
-* are not equal and thus the DQ object isn't equal to the scalar.
-* \param scalar is a float scalar involved in operation
-* \param dq is the DQ object in the operation.
-* \return A boolean variable.
-* \sa DQ(double scalar), operator!=(DQ dq2).
-*/
-bool operator!=(const float& scalar,const DQ& dq) {
-    DQ dq_scalar(scalar);
-    return (dq_scalar != dq);
-}
-
-/**
-* Operator (!=) overload for the comparison between a DQ object and a double scalar.
-*
-* This friend function do the comparison between a DQ object and a double scalar. The scalar is transformed in a DQ object and then
-* the comparison between two DQ objects is executed. The result is returned as a boolean variable. True, means that DQ objects
-* are not equal and thus the DQ object isn't equal to the scalar.
-* \param dq is the DQ object in the operation.
-* \param scalar is a double scalar involved in operation
-* \return A boolean variable.
-* \sa DQ(double scalar), operator!=(DQ dq2).
-*/
-bool operator!=(const DQ& dq,const double& scalar) {
-    DQ dq_scalar(scalar);
-    return (dq != dq_scalar);
-}
-
-/**
-* Operator (!=) overload for the comparison between a double scalar and a DQ object
-*
-* This function do the comparison between a DQ object and a double scalar. The scalar is transformed in a DQ object and then
-* the comparison between two DQ objects is executed. The result is returned as a boolean variable. True, means that DQ objects
-* are not equal and thus the DQ object isn't equal to the scalar.
-* \param scalar is a double scalar involved in operation
-* \param dq is the DQ object in the operation.
-* \return A boolean variable.
-* \sa DQ(double scalar), operator!=(DQ dq2).
-*/
-bool operator!=(const double& scalar, const DQ& dq) {
-    DQ dq_scalar(scalar);
-    return (dq_scalar != dq);
 }
 
 std::ostream& operator<<(std::ostream& os, const DQ& dq)
