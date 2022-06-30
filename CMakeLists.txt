@@ -7,13 +7,13 @@ endif()
 
 PROJECT(dqrobotics)
 set (CMAKE_CXX_STANDARD 11)
-ADD_COMPILE_OPTIONS(-Werror=return-type -Wall -Wextra -Wmissing-declarations -Wredundant-decls -Woverloaded-virtual)
 
 INCLUDE_DIRECTORIES(include)
 
 if(UNIX AND NOT APPLE)
     FIND_PACKAGE(Eigen3 REQUIRED)
     INCLUDE_DIRECTORIES(${EIGEN3_INCLUDE_DIR})
+    ADD_COMPILE_OPTIONS(-Werror=return-type -Wall -Wextra -Wmissing-declarations -Wredundant-decls -Woverloaded-virtual)
 endif()
 
 if(APPLE)
@@ -23,6 +23,7 @@ if(APPLE)
         # Most recent versions of brew install here
         /opt/homebrew/include
         /opt/homebrew/include/eigen3)
+    ADD_COMPILE_OPTIONS(-Werror=return-type -Wall -Wextra -Wmissing-declarations -Wredundant-decls -Woverloaded-virtual)
 endif()
 
 if(WIN32)
