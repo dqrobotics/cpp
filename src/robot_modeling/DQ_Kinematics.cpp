@@ -680,6 +680,7 @@ MatrixXd DQ_Kinematics::line_segment_to_line_segment_distance_jacobian(const Mat
             case ClosestElement::P2:
                 return DQ_Kinematics::line_to_point_distance_jacobian(line_jacobian,robot_line,workspace_point_2);
             }
+            throw std::runtime_error("Unexpected type in DQ_Kinematics::line_segment_to_line_segment_distance_jacobian()");
         }
         case ClosestElement::P1:
         {
@@ -692,6 +693,7 @@ MatrixXd DQ_Kinematics::line_segment_to_line_segment_distance_jacobian(const Mat
             case ClosestElement::P2:
                 return DQ_Kinematics::point_to_point_distance_jacobian(robot_point_1_translation_jacobian,robot_point_1,workspace_point_2);
             }
+            throw std::runtime_error("Unexpected type in DQ_Kinematics::line_segment_to_line_segment_distance_jacobian()");
         }
         case ClosestElement::P2:
         {
@@ -704,6 +706,7 @@ MatrixXd DQ_Kinematics::line_segment_to_line_segment_distance_jacobian(const Mat
             case ClosestElement::P2:
                 return DQ_Kinematics::point_to_point_distance_jacobian(robot_point_2_translation_jacobian,robot_point_2,workspace_point_2);
             }
+            throw std::runtime_error("Unexpected type in DQ_Kinematics::line_segment_to_line_segment_distance_jacobian()");
         }
         default:
             throw std::runtime_error("Unexpected type in DQ_Kinematics::line_segment_to_line_segment_jacobian()");
