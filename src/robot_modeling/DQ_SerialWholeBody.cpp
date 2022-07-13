@@ -124,7 +124,7 @@ std::tuple<int,int> DQ_SerialWholeBody::get_chain_and_link_from_index(const int 
     int n = to_ith_link;
     for(size_t ith=0;ith<chain_.size();ith++)
     {
-        if( (n - chain_[ith]->get_dim_configuration_space()) > 0)
+        if( (n - chain_[ith]->get_dim_configuration_space()) >= 0)
         {
             ith_chain++;
             n = n - chain_[ith]->get_dim_configuration_space();
