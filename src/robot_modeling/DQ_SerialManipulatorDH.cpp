@@ -53,22 +53,6 @@ DQ_SerialManipulatorDH::DQ_SerialManipulatorDH(const MatrixXd& dh_matrix):
 }
 
 /**
- * @brief Deprecated constructor of the DQ_SerialManipulatorDH class.
- * @param dh_matrix The matrix 5 x number_of_joints that represent the DH parameters of the robot.
- * @param convention The DH convention.
- */
-DQ_SerialManipulatorDH::DQ_SerialManipulatorDH(const MatrixXd &dh_matrix, const std::string&):
-    DQ_SerialManipulator(dh_matrix.cols())
-{
-    if(dh_matrix.rows() != 5)
-    {
-        throw(std::range_error("Bad DQ_SerialManipulatorDH(dh_matrix, convention) call: dh_matrix should be 5xn"));
-    }
-    dh_matrix_ = dh_matrix;
-}
-
-
-/**
  * @brief This protected method computes the unit dual quaternion for a given link's Extended DH parameters.
  * @param q The joint value.
  * @param ith The link number.

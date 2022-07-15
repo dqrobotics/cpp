@@ -1,3 +1,4 @@
+#pragma once
 /**
 (C) Copyright 2022 DQ Robotics Developers
 
@@ -21,9 +22,6 @@ Contributors:
 - Juan Jose Quiroz Omana -  juanjqo@g.ecc.u-tokyo.ac.jp
 */
 
-#ifndef DQ_SerialManipulatorMDH_H
-#define DQ_SerialManipulatorMDH_H
-
 #include <dqrobotics/robot_modeling/DQ_SerialManipulator.h>
 
 namespace DQ_robotics
@@ -37,30 +35,28 @@ protected:
     DQ _get_w(const int& ith) const;
     DQ _mdh2dq(const double& q, const int& ith) const;
 public:
-    // Possible joint types
-    enum JOINT_TYPES{ JOINT_ROTATIONAL=0, JOINT_PRISMATIC };
+
+    // Deprecated on 22.04, will be removed on the next release.
+    enum [[deprecated("Use ? instead.")]] JOINT_TYPES{ JOINT_ROTATIONAL=0, JOINT_PRISMATIC };
+    [[deprecated("Use ? instead.")]] VectorXd get_thetas() const;
+    [[deprecated("Use ? instead.")]] VectorXd get_ds() const;
+    [[deprecated("Use ? instead.")]] VectorXd get_as() const;
+    [[deprecated("Use ? instead.")]] VectorXd get_alphas() const;
+    [[deprecated("Use ? instead.")]] VectorXd get_types() const;
 
     DQ_SerialManipulatorMDH()=delete;
     DQ_SerialManipulatorMDH(const MatrixXd& mdh_matrix);    
 
-    VectorXd get_thetas() const;
-    VectorXd get_ds() const;
-    VectorXd get_as() const;
-    VectorXd get_alphas() const;
-    VectorXd get_types() const;
-
     MatrixXd pose_jacobian_derivative(const VectorXd& q_vec, const VectorXd& q_vec_dot, const int& to_ith_link) const;
     MatrixXd pose_jacobian_derivative(const VectorXd& q_vec, const VectorXd& q_vec_dot) const;
 
-    //Using
     using DQ_SerialManipulator::raw_pose_jacobian;
     using DQ_SerialManipulator::raw_fkm;
 
-    //Override from DQ_SerialManipulator
     MatrixXd raw_pose_jacobian(const VectorXd& q_vec, const int& to_ith_link) const override;
     DQ raw_fkm(const VectorXd &q_vec, const int &to_ith_link) const override;
 };
 
-}//Namespace DQRobotics
+}
 
-#endif 
+

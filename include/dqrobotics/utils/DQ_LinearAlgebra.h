@@ -1,5 +1,6 @@
+#pragma once
 /**
-(C) Copyright 2019 DQ Robotics Developers
+(C) Copyright 2019-2022 DQ Robotics Developers
 
 This file is part of DQ Robotics.
 
@@ -20,9 +21,6 @@ Contributors:
 - Murilo M. Marinho (murilo@nml.t.u-tokyo.ac.jp)
 */
 
-#ifndef DQ_UTILS_DQ_LINEARALGEBRA_H
-#define DQ_UTILS_DQ_LINEARALGEBRA_H
-
 #ifdef _WIN32
 #include <Eigen/Dense>
 #else
@@ -38,4 +36,3 @@ MatrixXd pinv(const MatrixXd& matrix);
 
 }
 
-#endif

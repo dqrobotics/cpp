@@ -1,5 +1,6 @@
+#pragma once
 /**
-(C) Copyright 2011-2018 DQ Robotics Developers
+(C) Copyright 2011-2022 DQ Robotics Developers
 
 This file is part of DQ Robotics.
 
@@ -20,9 +21,6 @@ Contributors:
 - Murilo M. Marinho        (murilo@nml.t.u-tokyo.ac.jp)
 - Mateus Rodrigues Martins (martinsrmateus@gmail.com)
 */
-
-#ifndef DQ_SerialManipulator_H
-#define DQ_SerialManipulator_H
 
 #include <dqrobotics/robot_modeling/DQ_Kinematics.h>
 
@@ -67,6 +65,4 @@ public:
     virtual MatrixXd pose_jacobian(const VectorXd& q_vec) const override; //Override from DQ_Kinematics
 };
 
-}//Namespace DQRobotics
-
-#endif // DQ_SerialManipulator_H_INCLUDED
+}

@@ -1,5 +1,6 @@
+#pragma once
 /**
-(C) Copyright 2021 DQ Robotics Developers
+(C) Copyright 2021-2022 DQ Robotics Developers
 
 This file is part of DQ Robotics.
 
@@ -19,7 +20,6 @@ This file is part of DQ Robotics.
 Contributors:
 - Murilo M. Marinho (murilo@g.ecc.u-tokyo.ac.jp)
 */
-#pragma once
 
 #include <dqrobotics/robot_modeling/DQ_SerialManipulator.h>
 
@@ -34,23 +34,22 @@ protected:
     DQ _denso2dh(const double& q, const int& ith) const;
 public:
 
+    // Deprecated on 22.04, will be removed on the next release.
+    [[deprecated("Use ? instead.")]] VectorXd get_as() const;
+    [[deprecated("Use ? instead.")]] VectorXd get_bs() const;
+    [[deprecated("Use ? instead.")]] VectorXd get_ds() const;
+    [[deprecated("Use ? instead.")]] VectorXd get_alphas() const;
+    [[deprecated("Use ? instead.")]] VectorXd get_betas() const;
+    [[deprecated("Use ? instead.")]] VectorXd get_gammas() const;
+
     DQ_SerialManipulatorDenso()=delete;
     DQ_SerialManipulatorDenso(const MatrixXd& denso_matrix);
 
-    VectorXd get_as() const;
-    VectorXd get_bs() const;
-    VectorXd get_ds() const;
-    VectorXd get_alphas() const;
-    VectorXd get_betas() const;
-    VectorXd get_gammas() const;
-
-    //Using
     using DQ_SerialManipulator::raw_pose_jacobian;
     using DQ_SerialManipulator::raw_fkm;
 
-    //Override from DQ_SerialManipulator
     MatrixXd raw_pose_jacobian(const VectorXd& q_vec, const int& to_ith_link) const override;
     DQ raw_fkm(const VectorXd &q_vec, const int &to_ith_link) const override;
 };
 
-}//Namespace DQRobotics
+}

@@ -1,5 +1,6 @@
+#pragma once
 /**
-(C) Copyright 2020 DQ Robotics Developers
+(C) Copyright 2020-2022 DQ Robotics Developers
 
 This file is part of DQ Robotics.
 
@@ -20,9 +21,6 @@ Contributors:
 - Murilo M. Marinho (murilo@nml.t.u-tokyo.ac.jp)
 */
 
-#ifndef DQ_UTILS_DQ_MATH_H
-#define DQ_UTILS_DQ_MATH_H
-
 #include<dqrobotics/DQ.h>
 
 namespace DQ_robotics
@@ -35,5 +33,3 @@ double rad2deg(const double& a);
 VectorXd rad2deg(const VectorXd& v);
 
 }
-
-#endif
