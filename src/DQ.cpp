@@ -1135,6 +1135,45 @@ const DQ operator +(const DQ& dq1, const DQ& dq2) noexcept
 }
 
 /**
+ * @brief operator + between two DQs when the first argument
+ * is an rvalue.
+ * @param rdq1 an rvalue DQ.
+ * @param dq2 an lvalue DQ.
+ * @return the (dual quaternion) sum  between two DQs.
+ */
+const DQ operator +(DQ&& rdq1, const DQ& dq2) noexcept
+{
+    rdq1.q+=dq2.q;
+    return std::move(rdq1);
+}
+
+/**
+ * @brief operator + between two DQs when the first argument
+ * is an rvalue.
+ * @param dq1 an lvalue DQ.
+ * @param rdq2 an rvalue DQ.
+ * @return the (dual quaternion) sum  between two DQs.
+ */
+const DQ operator +(const DQ& dq1, DQ&& rdq2) noexcept
+{
+    rdq2.q+=dq1.q;
+    return std::move(rdq2);
+}
+
+/**
+ * @brief operator + between two DQs when both arguments
+ * are rvalues
+ * @param rdq1 an rvalue DQ.
+ * @param rdq2 an rvalue DQ.
+ * @return the (dual quaternion) sum between two DQs.
+ */
+const DQ operator +(DQ&& rdq1, DQ&& rdq2) noexcept
+{
+    rdq1.q+=rdq2.q;
+    return std::move(rdq1);
+}
+
+/**
  * @brief operator - between two DQs.
  * @param dq1 the first DQ.
  * @param dq2 the second DQ.

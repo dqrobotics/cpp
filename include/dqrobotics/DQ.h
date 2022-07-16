@@ -241,6 +241,10 @@ bool is_plane(const DQ& dq);
 constexpr double DQ_threshold = 1e-12;
 
 const DQ operator+(const DQ& dq1, const DQ& dq2) noexcept;
+const DQ operator+(DQ&& rdq1, const DQ& dq2) noexcept;
+const DQ operator+(const DQ& dq1, DQ&& rdq2) noexcept;
+const DQ operator+(DQ&& rdq1, DQ&& rdq2) noexcept;
+
 const DQ operator-(const DQ& dq1, const DQ& dq2) noexcept;
 const DQ operator*(const DQ& dq1, const DQ& dq2) noexcept;
 
