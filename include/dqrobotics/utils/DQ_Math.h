@@ -22,14 +22,23 @@ Contributors:
 */
 
 #include<dqrobotics/DQ.h>
+#include<dqrobotics/utils/DQ_Constants.h>
 
 namespace DQ_robotics
 {
 
-double deg2rad(const double& a);
+constexpr double deg2rad(const double& a) noexcept
+{
+    return (a)*pi/(180.0);
+}
+
 VectorXd deg2rad(const VectorXd& v);
 
-double rad2deg(const double& a);
+constexpr double rad2deg(const double& a) noexcept
+{
+    return (a)*180.0/(pi);
+}
+
 VectorXd rad2deg(const VectorXd& v);
 
 }
