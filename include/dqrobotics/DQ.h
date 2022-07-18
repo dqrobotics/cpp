@@ -60,6 +60,7 @@ public:
     const static DQ E;
 
     //Constructors
+    explicit DQ(VectorXd&& v);
     explicit DQ(const VectorXd& v);
 
     explicit DQ(const double& q0=0.0,

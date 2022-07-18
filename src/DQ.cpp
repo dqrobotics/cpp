@@ -394,6 +394,40 @@ double DQ::q_(const int a) const
     return q(a);
 }
 
+DQ::DQ(VectorXd &&v)
+{
+    switch (v.size())
+    {
+    //An eight-dimensional v contains the coefficients of general dual quaternions
+    case 8:
+        q = std::move(v);
+        break;
+        //A six-dimensional v contains the coefficientes of a pure dual quaternion
+    case 6:
+        q << 0.0 , v(0), v(1), v(2),
+                0.0 , v(3), v(4), v(5);
+        break;
+        //A four-dimensional v contains the coefficients of a general quaternion
+    case 4:
+        q << v(0), v(1), v(2), v(3),
+                0.0 , 0.0 , 0.0 , 0.0 ;
+        break;
+        //A three-dimensional v contains the coefficients of a pure quaternion
+    case 3:
+        q << 0.0 , v(0), v(1), v(2),
+                0.0 , 0.0 , 0.0 , 0.0 ;
+        break;
+        //An one-dimensional v contains the coefficient of a real number.
+    case 1:
+        q << v(0), 0.0 , 0.0 , 0.0,
+                0.0 , 0.0 , 0.0 , 0.0 ;
+        break;
+    default:
+        throw std::range_error(std::string("Trying to initialize a DQ with a size of ") + std::to_string(v.size()) + std::string(" which is not allowed."));
+    }
+}
+
+
 /**
  * @brief DQ::DQ Constructor using a VectorXd.
  * @param v a VectorXd with size 1, 3, 4, 6, or 8. It will be read treated as a real number,
@@ -1019,7 +1053,6 @@ DQ DQ::unitDQ(const double& rot_angle, const int& x_axis,const int& y_axis,const
     return h;
 }
 
-
 std::string DQ::to_string() const
 {
     std::stringstream ss;
@@ -1166,7 +1199,7 @@ const DQ operator +(const DQ& dq1, DQ&& rdq2) noexcept
  * @param rdq1 an rvalue DQ.
  * @param rdq2 an rvalue DQ.
  * @return the (dual quaternion) sum between two DQs.
- */
+*/
 const DQ operator +(DQ&& rdq1, DQ&& rdq2) noexcept
 {
     rdq1.q+=rdq2.q;
