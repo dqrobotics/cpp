@@ -170,8 +170,6 @@ double DQ_Geometry::line_to_line_angle(const DQ &line1, const DQ &line2)
 
 /**
  * @brief DQ_Geometry::point_projected_in_line
- * Obtains the point resulting from the projection of a point into a line.
- * Ref: https://faculty.sites.iastate.edu/jia/files/inline-files/plucker-coordinates.pdf
  * First used in:
  * M. M. Marinho, B. V. Adorno, K. Harada and M. Mitsuishi, "Dynamic Active Constraints for
  * Surgical Robots Using Vector-Field Inequalities," in IEEE Transactions on Robotics, vol. 35, no. 5,
@@ -185,8 +183,7 @@ DQ DQ_Geometry::point_projected_in_line(const DQ &point, const DQ &line)
     const DQ& l = P(line);
     const DQ& m = D(line);
 
-
-    return (l*dot(l,point)+cross(l,m));
+    return point + cross(l, m) - cross(l, cross(point, l));
 }
 
 /**
