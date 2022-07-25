@@ -1217,6 +1217,34 @@ const DQ operator -(const DQ& dq1, const DQ& dq2) noexcept
     return DQ(dq1.q - dq2.q);
 }
 
+/**
+ * @brief operator - between two DQs when the first argument
+ * is an rvalue.
+ * @param rdq1 an rvalue DQ.
+ * @param dq2 an lvalue DQ.
+ * @return the (dual quaternion) difference between two DQs.
+ */
+const DQ operator -(DQ&& rdq1, const DQ& dq2) noexcept
+{
+    rdq1.q-=dq2.q;
+    return std::move(rdq1);
+}
+
+
+/**
+ * @brief operator - between two DQs when both arguments
+ * are rvalues
+ * @param rdq1 an rvalue DQ.
+ * @param rdq2 an rvalue DQ.
+ * @return the (dual quaternion) difference between two DQs.
+*/
+const DQ operator -(DQ&& rdq1, DQ&& rdq2) noexcept
+{
+    rdq1.q-=rdq2.q;
+    return std::move(rdq1);
+}
+
+
 DQ DQ::operator-() const
 {
     return DQ(-1.0*this->q);
@@ -1228,29 +1256,36 @@ DQ DQ::operator-() const
  * @param dq2 the second DQ.
  * @return the (dual quaternion) product between two DQs, that is ret = dq1*dq2.
  */
-const DQ operator *(const DQ& dq1, const DQ& dq2) noexcept{
-    DQ dq;
+const DQ operator *(const DQ& dq1, const DQ& dq2) noexcept
+{
+    //2022/07/20
+    //Murilo:
+    //- Removed one extra unnecessary call to DQ()
+    //- Optimized this way (with the constructor call on the return) to use copy elision
+    //https://en.cppreference.com/w/cpp/language/copy_elision
+    //- These temporaries dq1_d, dq2_p, dq2_d currently cause three DQ constructors
+    //to be called, even though they are not strictly necessary in a programming
+    //point-of-view.
 
-    const DQ dq1_d = dq1.D();
-    const DQ dq2_p = dq2.P();
-    const DQ qd2_d = dq2.D();
+    const DQ& dq1_d = dq1.D();
+    const DQ& dq2_p = dq2.P();
+    const DQ& qd2_d = dq2.D();
 
-    dq.q(0) = dq1.q(0)*dq2.q(0) - dq1.q(1)*dq2.q(1) - dq1.q(2)*dq2.q(2) - dq1.q(3)*dq2.q(3);
-    dq.q(1) = dq1.q(0)*dq2.q(1) + dq1.q(1)*dq2.q(0) + dq1.q(2)*dq2.q(3) - dq1.q(3)*dq2.q(2);
-    dq.q(2) = dq1.q(0)*dq2.q(2) - dq1.q(1)*dq2.q(3) + dq1.q(2)*dq2.q(0) + dq1.q(3)*dq2.q(1);
-    dq.q(3) = dq1.q(0)*dq2.q(3) + dq1.q(1)*dq2.q(2) - dq1.q(2)*dq2.q(1) + dq1.q(3)*dq2.q(0);
+    const double& q4 = dq1.q(0)*qd2_d.q(0) - dq1.q(1)*qd2_d.q(1) - dq1.q(2)*qd2_d.q(2) - dq1.q(3)*qd2_d.q(3);
+    const double& q5 = dq1.q(0)*qd2_d.q(1) + dq1.q(1)*qd2_d.q(0) + dq1.q(2)*qd2_d.q(3) - dq1.q(3)*qd2_d.q(2);
+    const double& q6 = dq1.q(0)*qd2_d.q(2) - dq1.q(1)*qd2_d.q(3) + dq1.q(2)*qd2_d.q(0) + dq1.q(3)*qd2_d.q(1);
+    const double& q7 = dq1.q(0)*qd2_d.q(3) + dq1.q(1)*qd2_d.q(2) - dq1.q(2)*qd2_d.q(1) + dq1.q(3)*qd2_d.q(0);
 
-    dq.q(4) = dq1.q(0)*qd2_d.q(0) - dq1.q(1)*qd2_d.q(1) - dq1.q(2)*qd2_d.q(2) - dq1.q(3)*qd2_d.q(3);
-    dq.q(5) = dq1.q(0)*qd2_d.q(1) + dq1.q(1)*qd2_d.q(0) + dq1.q(2)*qd2_d.q(3) - dq1.q(3)*qd2_d.q(2);
-    dq.q(6) = dq1.q(0)*qd2_d.q(2) - dq1.q(1)*qd2_d.q(3) + dq1.q(2)*qd2_d.q(0) + dq1.q(3)*qd2_d.q(1);
-    dq.q(7) = dq1.q(0)*qd2_d.q(3) + dq1.q(1)*qd2_d.q(2) - dq1.q(2)*qd2_d.q(1) + dq1.q(3)*qd2_d.q(0);
-
-    dq.q(4) = dq.q(4) + dq1_d.q(0)*dq2_p.q(0) - dq1_d.q(1)*dq2_p.q(1) - dq1_d.q(2)*dq2_p.q(2) - dq1_d.q(3)*dq2_p.q(3);
-    dq.q(5) = dq.q(5) + dq1_d.q(0)*dq2_p.q(1) + dq1_d.q(1)*dq2_p.q(0) + dq1_d.q(2)*dq2_p.q(3) - dq1_d.q(3)*dq2_p.q(2);
-    dq.q(6) = dq.q(6) + dq1_d.q(0)*dq2_p.q(2) - dq1_d.q(1)*dq2_p.q(3) + dq1_d.q(2)*dq2_p.q(0) + dq1_d.q(3)*dq2_p.q(1);
-    dq.q(7) = dq.q(7) + dq1_d.q(0)*dq2_p.q(3) + dq1_d.q(1)*dq2_p.q(2) - dq1_d.q(2)*dq2_p.q(1) + dq1_d.q(3)*dq2_p.q(0);
-
-    return dq;
+    return DQ(
+        dq1.q(0)*dq2.q(0) - dq1.q(1)*dq2.q(1) - dq1.q(2)*dq2.q(2) - dq1.q(3)*dq2.q(3),
+        dq1.q(0)*dq2.q(1) + dq1.q(1)*dq2.q(0) + dq1.q(2)*dq2.q(3) - dq1.q(3)*dq2.q(2),
+        dq1.q(0)*dq2.q(2) - dq1.q(1)*dq2.q(3) + dq1.q(2)*dq2.q(0) + dq1.q(3)*dq2.q(1),
+        dq1.q(0)*dq2.q(3) + dq1.q(1)*dq2.q(2) - dq1.q(2)*dq2.q(1) + dq1.q(3)*dq2.q(0),
+        q4 + dq1_d.q(0)*dq2_p.q(0) - dq1_d.q(1)*dq2_p.q(1) - dq1_d.q(2)*dq2_p.q(2) - dq1_d.q(3)*dq2_p.q(3),
+        q5 + dq1_d.q(0)*dq2_p.q(1) + dq1_d.q(1)*dq2_p.q(0) + dq1_d.q(2)*dq2_p.q(3) - dq1_d.q(3)*dq2_p.q(2),
+        q6 + dq1_d.q(0)*dq2_p.q(2) - dq1_d.q(1)*dq2_p.q(3) + dq1_d.q(2)*dq2_p.q(0) + dq1_d.q(3)*dq2_p.q(1),
+        q7 + dq1_d.q(0)*dq2_p.q(3) + dq1_d.q(1)*dq2_p.q(2) - dq1_d.q(2)*dq2_p.q(1) + dq1_d.q(3)*dq2_p.q(0)
+    );
 }
 
 // Operator (==) overload
