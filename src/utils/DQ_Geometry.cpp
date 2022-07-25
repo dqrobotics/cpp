@@ -307,7 +307,7 @@ std::tuple<DQ, DQ> DQ_Geometry::closest_points_between_line_segments(const DQ &l
         const double& segment_1_size = DQ_Geometry::point_to_point_squared_distance(line_1_point_1,line_1_point_2);
         const double& D_cp1_l1p1 = DQ_Geometry::point_to_point_squared_distance(cp1,line_1_point_1);
         const double& D_cp1_l1p2 = DQ_Geometry::point_to_point_squared_distance(cp1,line_1_point_2);
-        const double& segment_2_size = DQ_Geometry::point_to_point_squared_distance(line_1_point_1,line_1_point_2);
+        const double& segment_2_size = DQ_Geometry::point_to_point_squared_distance(line_2_point_1,line_2_point_2);
         const double& D_cp2_l2p1 = DQ_Geometry::point_to_point_squared_distance(cp2,line_2_point_1);
         const double& D_cp2_l2p2 = DQ_Geometry::point_to_point_squared_distance(cp2,line_2_point_2);
 
@@ -443,7 +443,7 @@ double DQ_Geometry::line_segment_to_line_segment_squared_distance(const DQ& line
         const double& segment_1_size = DQ_Geometry::point_to_point_squared_distance(line_1_point_1,line_1_point_2);
         const double& D_cp1_l1p1 = DQ_Geometry::point_to_point_squared_distance(cp1,line_1_point_1);
         const double& D_cp1_l1p2 = DQ_Geometry::point_to_point_squared_distance(cp1,line_1_point_2);
-        const double& segment_2_size = DQ_Geometry::point_to_point_squared_distance(line_1_point_1,line_1_point_2);
+        const double& segment_2_size = DQ_Geometry::point_to_point_squared_distance(line_2_point_1,line_2_point_2);
         const double& D_cp2_l2p1 = DQ_Geometry::point_to_point_squared_distance(cp2,line_2_point_1);
         const double& D_cp2_l2p2 = DQ_Geometry::point_to_point_squared_distance(cp2,line_2_point_2);
 
