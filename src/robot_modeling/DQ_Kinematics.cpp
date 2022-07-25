@@ -641,7 +641,7 @@ MatrixXd DQ_Kinematics::line_segment_to_line_segment_distance_jacobian(const Mat
         const double& segment_1_size = DQ_Geometry::point_to_point_squared_distance(robot_point_1,robot_point_2);
         const double& D_cp1_l1p1 = DQ_Geometry::point_to_point_squared_distance(cp1,robot_point_1);
         const double& D_cp1_l1p2 = DQ_Geometry::point_to_point_squared_distance(cp1,robot_point_2);
-        const double& segment_2_size = DQ_Geometry::point_to_point_squared_distance(robot_point_1,robot_point_2);
+        const double& segment_2_size = DQ_Geometry::point_to_point_squared_distance(workspace_point_1,workspace_point_2);
         const double& D_cp2_l2p1 = DQ_Geometry::point_to_point_squared_distance(cp2,workspace_point_1);
         const double& D_cp2_l2p2 = DQ_Geometry::point_to_point_squared_distance(cp2,workspace_point_2);
 
