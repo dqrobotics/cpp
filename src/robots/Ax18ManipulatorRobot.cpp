@@ -1,5 +1,5 @@
 /**
-(C) Copyright 2019 DQ Robotics Developers
+(C) Copyright 2019-2022 DQ Robotics Developers
 
 This file is part of DQ Robotics.
 
@@ -32,7 +32,7 @@ DQ_SerialManipulatorDH Ax18ManipulatorRobot::kinematics()
     Matrix<double,5,5> ax18_dh(5,5);
     ax18_dh <<   0,    0,   -pi2,  -pi2,   -pi2,
     0.167,  0,    0,    0.1225,    0,
-    0,    0.159,   0.02225,  0 ,   0,
+    0,    0.159,   0.02225,  0 ,   0.170,
     -pi2,  0,   -pi2,      -pi2,    0,
     0,    0,    0,    0,           0;
 
