@@ -40,6 +40,8 @@ endif()
 ADD_LIBRARY(dqrobotics SHARED 
     src/DQ.cpp
 
+    src/internal/_dq_linesegment.cpp
+
     src/utils/DQ_Geometry.cpp
     src/utils/DQ_LinearAlgebra.cpp
     src/utils/DQ_Math.cpp
@@ -140,6 +142,11 @@ INSTALL(FILES
 INSTALL(FILES 
     src/DQ.cpp
     DESTINATION "src/dqrobotics")
+
+# internal folder
+INSTALL(FILES
+    src/internal/_dq_linesegment.cpp
+    DESTINATION "src/dqrobotics/internal")
 
 # utils folder
 INSTALL(FILES

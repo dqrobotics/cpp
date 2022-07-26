@@ -22,6 +22,7 @@ Contributors:
 
 #include<dqrobotics/utils/DQ_Geometry.h>
 #include<dqrobotics/utils/DQ_Constants.h>
+#include<dqrobotics/internal/_dq_linesegment.h>
 
 namespace DQ_robotics
 {
@@ -297,83 +298,52 @@ std::tuple<DQ, DQ> DQ_Geometry::closest_points_between_line_segments(const DQ &l
     }
     else
     {
-        //In this case, the closest points (cps) can be found
-        DQ cp1;
-        DQ cp2;
-        std::tie(cp1,cp2) = DQ_Geometry::closest_points_between_lines(line_1,line_2);
-
-        ///Find out the closest pairs
-        //Get the distance between all relevant points
-        const double& segment_1_size = DQ_Geometry::point_to_point_squared_distance(line_1_point_1,line_1_point_2);
-        const double& D_cp1_l1p1 = DQ_Geometry::point_to_point_squared_distance(cp1,line_1_point_1);
-        const double& D_cp1_l1p2 = DQ_Geometry::point_to_point_squared_distance(cp1,line_1_point_2);
-        const double& segment_2_size = DQ_Geometry::point_to_point_squared_distance(line_1_point_1,line_1_point_2);
-        const double& D_cp2_l2p1 = DQ_Geometry::point_to_point_squared_distance(cp2,line_2_point_1);
-        const double& D_cp2_l2p2 = DQ_Geometry::point_to_point_squared_distance(cp2,line_2_point_2);
-
-        //Closest element (ce) local enum class
-        enum class ClosestElement{
-            LINE,P1,P2
-        };
-        ClosestElement ce1;
-        ClosestElement ce2;
-
-        if(D_cp1_l1p1 < segment_1_size && D_cp1_l1p2 < segment_1_size)
-            ce1 = ClosestElement::LINE;
-        else if( D_cp1_l1p1 < D_cp1_l1p2)
-            ce1 = ClosestElement::P1;
-        else
-            ce1 = ClosestElement::P2;
-
-        if(D_cp2_l2p1 < segment_2_size && D_cp2_l2p2 < segment_2_size)
-            ce2 = ClosestElement::LINE;
-        else if( D_cp2_l2p1 < D_cp2_l2p2)
-            ce2 = ClosestElement::P1;
-        else
-            ce2 = ClosestElement::P2;
+        auto ce = internal::LineSegment::closest_elements_between_line_segments(
+                    {line_1,line_1_point_1,line_1_point_2},
+                    {line_2,line_2_point_1,line_1_point_2});
 
 
-        switch(ce1)
+        switch(std::get<0>(std::get<0>(ce)))
         {
-        case ClosestElement::LINE:
+        case internal::LineSegment::Element::Line:
         {
-            switch(ce2)
+            switch(std::get<1>(std::get<0>(ce)))
             {
-            case ClosestElement::LINE:
+            case internal::LineSegment::Element::Line:
                 return DQ_Geometry::closest_points_between_lines(line_1,line_2);
-            case ClosestElement::P1:
+            case internal::LineSegment::Element::P1:
                 return {DQ_Geometry::point_projected_in_line(line_2_point_1,line_1),
                             line_2_point_1};
-            case ClosestElement::P2:
+            case internal::LineSegment::Element::P2:
                 return {DQ_Geometry::point_projected_in_line(line_2_point_2,line_1),
                             line_2_point_2};
             }
             throw std::runtime_error("Unexpected type in DQ_Geometry::closest_points_between_line_segments()");
         }
-        case ClosestElement::P1:
+        case internal::LineSegment::Element::P1:
         {
-            switch(ce2)
+            switch(std::get<1>(std::get<0>(ce)))
             {
-            case ClosestElement::LINE:
+            case internal::LineSegment::Element::Line:
                 return {line_1_point_1,
                         DQ_Geometry::point_projected_in_line(line_1_point_1,line_2)};
-            case ClosestElement::P1:
+            case internal::LineSegment::Element::P1:
                 return {line_1_point_1,line_2_point_1};
-            case ClosestElement::P2:
+            case internal::LineSegment::Element::P2:
                 return {line_1_point_1, line_2_point_2};
             }
             throw std::runtime_error("Unexpected type in DQ_Geometry::closest_points_between_line_segments()");
         }
-        case ClosestElement::P2:
+        case internal::LineSegment::Element::P2:
         {
-            switch(ce2)
+            switch(std::get<1>(std::get<0>(ce)))
             {
-            case ClosestElement::LINE:
+            case internal::LineSegment::Element::Line:
                 return {line_1_point_2,
                             DQ_Geometry::point_projected_in_line(line_1_point_2,line_2)};
-            case ClosestElement::P1:
+            case internal::LineSegment::Element::P1:
                 return {line_1_point_2,line_2_point_1};
-            case ClosestElement::P2:
+            case internal::LineSegment::Element::P2:
                 return {line_1_point_2, line_2_point_2};
             }
             throw std::runtime_error("Unexpected type in DQ_Geometry::closest_points_between_line_segments()");
