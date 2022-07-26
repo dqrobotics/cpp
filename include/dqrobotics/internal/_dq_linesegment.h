@@ -1,4 +1,5 @@
 #pragma once
+#pragma message("_dq_linesegment.h is an internal DQRobotics header and its ABI/API is not stable.")
 /**
 (C) Copyright 2022 DQ Robotics Developers
 
@@ -47,11 +48,8 @@ public:
 
     static bool is_inside_line_segment(const DQ &point, const Primitives &line_1_primitives);
 
-    static double get_squared_distance_for_primitive_pair(const Element& element_1_type,
-                                                          const DQ& element_1,
-                                                          const Element& element_2_type,
-                                                          const DQ& element_2
-                                                          );
+    static std::string to_string(const Element& e);
+
 
 private:
 
