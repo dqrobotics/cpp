@@ -27,12 +27,18 @@ Contributors:
 #include <eigen3/Eigen/Dense>
 #endif
 
+#include <tuple>
+
 using namespace Eigen;
 
 namespace DQ_robotics
 {
 
+int rank(const MatrixXd& matrix);
+
 MatrixXd pinv(const MatrixXd& matrix);
+
+std::tuple<MatrixXd,MatrixXd,MatrixXd> svd(const MatrixXd& matrix);
 
 }
 

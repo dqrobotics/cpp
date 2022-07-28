@@ -1,5 +1,6 @@
+#pragma once
 /**
-(C) Copyright 2019 DQ Robotics Developers
+(C) Copyright 2019-2022 DQ Robotics Developers
 
 This file is part of DQ Robotics.
 
@@ -19,10 +20,6 @@ This file is part of DQ Robotics.
 Contributors:
 - Murilo M. Marinho (murilo@nml.t.u-tokyo.ac.jp)
 */
-
-#ifndef DQ_ROBOT_CONTROL_DQ_PSEUDOINVERSECONTROLLER_H
-#define DQ_ROBOT_CONTROL_DQ_PSEUDOINVERSECONTROLLER_H
-
 #include <dqrobotics/DQ.h>
 #include <dqrobotics/robot_control/DQ_KinematicController.h>
 
@@ -32,15 +29,12 @@ namespace DQ_robotics
 class DQ_PseudoinverseController: public DQ_KinematicController
 {
 public:
-    //Remove default constructor
     DQ_PseudoinverseController() = delete;
 
     DQ_PseudoinverseController(DQ_Kinematics* robot);
 
-    VectorXd compute_setpoint_control_signal(const VectorXd& q, const VectorXd& task_reference);
-    VectorXd compute_tracking_control_signal(const VectorXd& q, const VectorXd& task_reference, const VectorXd& feed_forward);
+    VectorXd compute_setpoint_control_signal(const VectorXd& q, const VectorXd& task_reference) override;
+    VectorXd compute_tracking_control_signal(const VectorXd& q, const VectorXd& task_reference, const VectorXd& feed_forward) override;
 };
 
 }
-
-#endif

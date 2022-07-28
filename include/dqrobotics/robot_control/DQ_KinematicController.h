@@ -1,5 +1,6 @@
+#pragma once
 /**
-(C) Copyright 2019 DQ Robotics Developers
+(C) Copyright 2019-2022 DQ Robotics Developers
 
 This file is part of DQ Robotics.
 
@@ -19,9 +20,6 @@ This file is part of DQ Robotics.
 Contributors:
 - Murilo M. Marinho (murilo@nml.t.u-tokyo.ac.jp)
 */
-
-#ifndef DQ_ROBOT_CONTROL_DQ_KINEMATICCONTROLLER_H
-#define DQ_ROBOT_CONTROL_DQ_KINEMATICCONTROLLER_H
 
 #include <memory>
 
@@ -46,7 +44,6 @@ enum ControlObjective
 class DQ_KinematicController
 {
 protected:
-    //Only observer, no ownership
     DQ_Kinematics* robot_;
     ControlObjective control_objective_;
     DQ attached_primitive_;
@@ -65,7 +62,6 @@ protected:
 
     DQ_KinematicController(DQ_Kinematics* robot);
 public:
-    //Remove default constructor
     DQ_KinematicController()=delete;
 
     ControlObjective get_control_objective() const;
@@ -106,6 +102,3 @@ public:
 
 }
 
-
-
-#endif
