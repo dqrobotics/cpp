@@ -37,54 +37,53 @@ DQ_NumericalFilteredPseudoinverseController::DQ_NumericalFilteredPseudoinverseCo
 
 VectorXd DQ_NumericalFilteredPseudoinverseController::compute_setpoint_control_signal(const VectorXd& q, const VectorXd& task_reference)
 {
-    //The setpoint control reduces itself to the feedforward control when the feedforward is zero
     return DQ_NumericalFilteredPseudoinverseController::compute_tracking_control_signal(q, task_reference, VectorXd::Zero(task_reference.size()));
 }
 
 VectorXd DQ_NumericalFilteredPseudoinverseController::compute_tracking_control_signal(const VectorXd &q, const VectorXd &task_reference, const VectorXd &feed_forward)
 {
-    //This cases reduces itself to the pseudoinverse controller
+    //Trivial lambda_max_ and epsilon_ mean it can be calculated using the DQ_PseudoinverseController
     if(lambda_max_==0 || epsilon_==0)
         return DQ_PseudoinverseController::compute_tracking_control_signal(q,task_reference,feed_forward);
 
     if(is_set())
     {
-        const VectorXd task_variable = get_task_variable(q);
-        const VectorXd task_error = task_variable-task_reference;
+        const VectorXd& task_variable = get_task_variable(q);
+        const VectorXd& task_error = task_variable-task_reference;
 
-        const MatrixXd J = get_jacobian(q);
-        const int effective_rank = rank(J);
-        last_jacobian_rank_ = effective_rank;
-        const int max_rank = std::min(J.rows(),J.cols());//Without considering Jacobians with constraints
-        if(effective_rank==max_rank)
+        const MatrixXd& J = get_jacobian(q);
+        const int& jacobian_rank = rank(J);
+        last_jacobian_rank_ = jacobian_rank;
+        const int max_rank = std::min(J.rows(),J.cols());
+        if(jacobian_rank==max_rank)
         {
-            //This cases reduces itself to the pseudoinverse controller
+            //When the matrix is full rank, it can be calculated using DQ_PseudoinverseController
             return DQ_PseudoinverseController::compute_tracking_control_signal(q,task_reference,feed_forward);
         }
 
         MatrixXd U, S, V;
         std::tie(U,S,V) = svd(J);
         last_jacobian_svd_ = {U,S,V};
-        MatrixXd filtered_damping;
-        for(auto i=0;i<effective_rank;i++)
+        MatrixXd total_filtered_damping;
+        for(auto i=0;i<jacobian_rank;i++)
         {
             if(S(i,i)<epsilon_)
             {
-                //My interpretation of that paper is that the level of damping will also vary
+                //My interpretation of the paper is that the level of damping will must vary
                 //between singular values
-                double numerical_damping = (1.0 - std::pow(S(i,i)/epsilon_,2))*std::pow(lambda_max_,2);//Eq. (15)
-                MatrixXd s_filtered_damping = numerical_damping*(U.col(i)*U.col(i).transpose());
-                if(filtered_damping.size()==0)
-                    filtered_damping = s_filtered_damping;
+                double lambda_squared_i = (1.0 - std::pow(S(i,i)/epsilon_,2))*std::pow(lambda_max_,2);//Eq. (15)
+                MatrixXd filtered_damping_i = lambda_squared_i*(U.col(i)*U.col(i).transpose());
+                if(total_filtered_damping.size()==0)
+                    total_filtered_damping = filtered_damping_i;
                 else
-                    filtered_damping += s_filtered_damping;
+                    total_filtered_damping += filtered_damping_i;
 
             }
         }
-        last_filtered_damping_ = filtered_damping;
-        if(filtered_damping.size()==0)
+        last_filtered_damping_ = total_filtered_damping;
+        if(total_filtered_damping.size()==0)
         {
-            //No need to filter anything
+            //When the filter is zero, the controller reduces itself to the pseudoinverse controller
             return DQ_PseudoinverseController::compute_tracking_control_signal(q,task_reference,feed_forward);
         }
 
@@ -92,7 +91,7 @@ VectorXd DQ_NumericalFilteredPseudoinverseController::compute_tracking_control_s
         VectorXd u = J.transpose()*
                      (J*J.transpose()
                       + damping_*damping_*MatrixXd::Identity(q.size(), q.size())
-                      + filtered_damping
+                      + total_filtered_damping
                       ).inverse()*(-gain_*task_error + feed_forward);
 
         verify_stability(task_error);
