@@ -26,7 +26,11 @@ Contributors:
 namespace DQ_robotics
 {
 
-DQ_NumericalFilteredPseudoinverseController::DQ_NumericalFilteredPseudoinverseController(DQ_Kinematics *robot):DQ_PseudoinverseController (robot)
+DQ_NumericalFilteredPseudoinverseController::DQ_NumericalFilteredPseudoinverseController(DQ_Kinematics *robot):
+    DQ_PseudoinverseController (robot),
+    epsilon_(0),
+    lambda_max_(0),
+    last_jacobian_rank_(-1)
 {
     //Do nothing
 }
@@ -50,8 +54,9 @@ VectorXd DQ_NumericalFilteredPseudoinverseController::compute_tracking_control_s
 
         const MatrixXd J = get_jacobian(q);
         const int effective_rank = rank(J);
+        last_jacobian_rank_ = effective_rank;
         const int max_rank = std::min(J.rows(),J.cols());//Without considering Jacobians with constraints
-        if(effective_rank<max_rank)
+        if(effective_rank==max_rank)
         {
             //This cases reduces itself to the pseudoinverse controller
             return DQ_PseudoinverseController::compute_tracking_control_signal(q,task_reference,feed_forward);
@@ -59,15 +64,16 @@ VectorXd DQ_NumericalFilteredPseudoinverseController::compute_tracking_control_s
 
         MatrixXd U, S, V;
         std::tie(U,S,V) = svd(J);
+        last_jacobian_svd_ = {U,S,V};
         MatrixXd filtered_damping;
-        for(auto i=effective_rank;i<max_rank;i++)
+        for(auto i=0;i<effective_rank;i++)
         {
             if(S(i,i)<epsilon_)
             {
                 //My interpretation of that paper is that the level of damping will also vary
                 //between singular values
-                auto numerical_damping = (1.0 - std::pow(S(i,i)/epsilon_,2))*std::pow(lambda_max_,2);//Eq. (15)
-                auto s_filtered_damping = numerical_damping*U.row(i)*U.row(i).transpose();
+                double numerical_damping = (1.0 - std::pow(S(i,i)/epsilon_,2))*std::pow(lambda_max_,2);//Eq. (15)
+                MatrixXd s_filtered_damping = numerical_damping*(U.col(i)*U.col(i).transpose());
                 if(filtered_damping.size()==0)
                     filtered_damping = s_filtered_damping;
                 else
@@ -75,11 +81,13 @@ VectorXd DQ_NumericalFilteredPseudoinverseController::compute_tracking_control_s
 
             }
         }
+        last_filtered_damping_ = filtered_damping;
         if(filtered_damping.size()==0)
         {
             //No need to filter anything
             return DQ_PseudoinverseController::compute_tracking_control_signal(q,task_reference,feed_forward);
         }
+
 
         VectorXd u = J.transpose()*
                      (J*J.transpose()
@@ -112,6 +120,31 @@ void DQ_NumericalFilteredPseudoinverseController::set_singular_region_size(const
                                +std::to_string(singular_region_size)
                                +".");
     epsilon_ = singular_region_size;
+}
+
+double DQ_NumericalFilteredPseudoinverseController::get_maximum_numerical_filtered_damping() const
+{
+    return lambda_max_;
+}
+
+double DQ_NumericalFilteredPseudoinverseController::get_singular_region_size() const
+{
+    return epsilon_;
+}
+
+MatrixXd DQ_NumericalFilteredPseudoinverseController::get_last_filtered_damping() const
+{
+    return last_filtered_damping_;
+}
+
+int DQ_NumericalFilteredPseudoinverseController::get_last_jacobian_rank() const
+{
+    return last_jacobian_rank_;
+}
+
+std::tuple<MatrixXd, MatrixXd, MatrixXd> DQ_NumericalFilteredPseudoinverseController::get_last_jacobian_svd() const
+{
+    return last_jacobian_svd_;
 }
 
 }

@@ -38,6 +38,11 @@ protected:
     double epsilon_; //Size of the singular region, described on the text after Eq. (15)
     double lambda_max_; //Maximum value for the numerical filtered damping, described on the text after Eq. (15)
     //double damping_; //(Member variable of DQ_KinematicController: Isotropic damping described on the text above Eq. (20)
+
+    //log
+    MatrixXd last_filtered_damping_;
+    double last_jacobian_rank_;
+    std::tuple<MatrixXd,MatrixXd,MatrixXd> last_jacobian_svd_;
 public:
     DQ_NumericalFilteredPseudoinverseController() = delete;
     DQ_NumericalFilteredPseudoinverseController(DQ_Kinematics* robot);
@@ -47,6 +52,12 @@ public:
 
     void set_maximum_numerical_filtered_damping(const double& numerical_filtered_damping);
     void set_singular_region_size(const double& singular_region_size);
+
+    double get_maximum_numerical_filtered_damping() const;
+    double get_singular_region_size() const;
+    MatrixXd get_last_filtered_damping() const;
+    int get_last_jacobian_rank() const;
+    std::tuple<MatrixXd,MatrixXd,MatrixXd> get_last_jacobian_svd() const;
 };
 
 }
