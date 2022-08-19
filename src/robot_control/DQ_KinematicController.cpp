@@ -27,6 +27,11 @@ Contributors:
 namespace DQ_robotics
 {
 
+DQ_Kinematics *DQ_KinematicController::_get_robot_ptr() const
+{
+    return robot_sptr_ ? robot_sptr_.get() : robot_;
+}
+
 DQ_KinematicController::DQ_KinematicController(DQ_Kinematics* robot):
     robot_(robot)
 {
@@ -74,11 +79,13 @@ VectorXd DQ_KinematicController::get_last_error_signal() const
 
 MatrixXd DQ_KinematicController::get_jacobian(const VectorXd &q) const
 {
-    if(q.size() != robot_->get_dim_configuration_space())
+    DQ_Kinematics* robot_local =_get_robot_ptr();
+
+    if(q.size() != robot_local->get_dim_configuration_space())
         throw std::runtime_error("Calling get_jacobian with an incorrect number of joints " + std::to_string(q.size()));
 
-    const MatrixXd J_pose = robot_->pose_jacobian(q);
-    const DQ       x_pose = robot_->fkm(q);
+    const MatrixXd J_pose = robot_local->pose_jacobian(q);
+    const DQ       x_pose = robot_local->fkm(q);
 
     switch(control_objective_)
     {
@@ -94,9 +101,9 @@ MatrixXd DQ_KinematicController::get_jacobian(const VectorXd &q) const
         {
             throw std::runtime_error("Please set the target plane with the method set_target_primitive()");
         }
-        MatrixXd Jt = robot_->translation_jacobian(J_pose, x_pose);
+        MatrixXd Jt = robot_local->translation_jacobian(J_pose, x_pose);
         DQ t = translation(x_pose);
-        return robot_->point_to_plane_distance_jacobian(Jt, t, target_primitive_);
+        return robot_local->point_to_plane_distance_jacobian(Jt, t, target_primitive_);
     }
 
     case ControlObjective::Line:
@@ -121,10 +128,12 @@ MatrixXd DQ_KinematicController::get_jacobian(const VectorXd &q) const
 
 VectorXd DQ_KinematicController::get_task_variable(const VectorXd &q) const
 {
-    if(q.size() != robot_->get_dim_configuration_space())
+    DQ_Kinematics* robot_local =_get_robot_ptr();
+
+    if(q.size() != robot_local->get_dim_configuration_space())
         throw std::runtime_error("Calling get_task_variable with an incorrect number of joints " + std::to_string(q.size()));
 
-    const DQ x_pose = robot_->fkm(q);
+    const DQ x_pose = robot_local->fkm(q);
 
     switch(control_objective_)
     {

@@ -44,7 +44,9 @@ enum ControlObjective
 class DQ_KinematicController
 {
 protected:
+    [[deprecated]]
     DQ_Kinematics* robot_;
+    std::shared_ptr<DQ_Kinematics> robot_sptr_;
     ControlObjective control_objective_;
     DQ attached_primitive_;
     DQ target_primitive_;
@@ -60,7 +62,12 @@ protected:
     int stability_counter_;
     int stability_counter_max_;
 
+    //For backwards compatibility reasons, to be removed
+    DQ_Kinematics* _get_robot_ptr() const;
+
+    [[deprecated]]
     DQ_KinematicController(DQ_Kinematics* robot);
+    DQ_KinematicController(std::shared_ptr<DQ_Kinematics> robot_sptr);
 public:
     DQ_KinematicController()=delete;
 

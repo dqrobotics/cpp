@@ -1,3 +1,4 @@
+#pragma once
 /**
 (C) Copyright 2019 DQ Robotics Developers
 
@@ -19,9 +20,6 @@ This file is part of DQ Robotics.
 Contributors:
 - Murilo M. Marinho (murilo@nml.t.u-tokyo.ac.jp)
 */
-
-#ifndef DQ_ROBOT_CONTROL_DQ_TASKSPACEQUADRATICPROGRAMMINGCONTROLLER_H
-#define DQ_ROBOT_CONTROL_DQ_TASKSPACEQUADRATICPROGRAMMINGCONTROLLER_H
 
 #include<dqrobotics/robot_control/DQ_KinematicConstrainedController.h>
 #include<dqrobotics/solvers/DQ_QuadraticProgrammingSolver.h>
@@ -49,5 +47,3 @@ public:
 
 };
 }
-
-#endif
