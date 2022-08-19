@@ -65,6 +65,8 @@ protected:
     //For backwards compatibility reasons, to be removed
     DQ_Kinematics* _get_robot_ptr() const;
 
+    std::shared_ptr<DQ_Kinematics> _get_robot() const;
+
     //Deprecated
     [[deprecated("Use the smart pointer version instead.")]]
     DQ_KinematicController(DQ_Kinematics* robot);
@@ -87,8 +89,10 @@ public:
     void set_control_objective(const ControlObjective& control_objective);
 
     void set_gain(const double& gain);
+    double get_gain() const;
 
     void set_damping(const double& damping);
+    double get_damping() const;
 
     void set_stability_threshold(const double& threshold);
 

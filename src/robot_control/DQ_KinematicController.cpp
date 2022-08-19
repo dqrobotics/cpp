@@ -32,6 +32,13 @@ DQ_Kinematics *DQ_KinematicController::_get_robot_ptr() const
     return robot_sptr_ ? robot_sptr_.get() : robot_;
 }
 
+std::shared_ptr<DQ_Kinematics> DQ_KinematicController::_get_robot() const
+{
+    if(!robot_sptr_)
+        throw std::runtime_error("DQ_KinematicController::_get_robot invalid robot pointer");
+    return robot_sptr_;
+}
+
 DQ_KinematicController::DQ_KinematicController(DQ_Kinematics* robot):
     DQ_KinematicController()
 {
@@ -236,6 +243,11 @@ void DQ_KinematicController::set_gain(const double& gain)
     gain_ = gain;
 }
 
+double DQ_KinematicController::get_gain() const
+{
+    return gain_;
+}
+
 void DQ_KinematicController::set_stability_threshold(const double &threshold)
 {
     stability_threshold_ = threshold;
@@ -254,6 +266,11 @@ void DQ_KinematicController::set_target_primitive(const DQ &primitive)
 void DQ_KinematicController::set_damping(const double &damping)
 {
     damping_ = damping;
+}
+
+double DQ_KinematicController::get_damping() const
+{
+    return damping_;
 }
 
 void DQ_KinematicController::set_stability_counter_max(const int &max)
