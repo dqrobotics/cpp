@@ -25,19 +25,27 @@ Contributors:
 namespace DQ_robotics
 {
 
-    DQ_ClassicQPController::DQ_ClassicQPController(DQ_Kinematics* robot, DQ_QuadraticProgrammingSolver* solver):DQ_QuadraticProgrammingController (robot,solver)
-    {
-        //Nothing to do
-    }
+DQ_ClassicQPController::DQ_ClassicQPController(DQ_Kinematics* robot, DQ_QuadraticProgrammingSolver* solver):
+    DQ_QuadraticProgrammingController (robot,solver)
+{
 
-    MatrixXd DQ_ClassicQPController::compute_objective_function_symmetric_matrix(const MatrixXd &J, const VectorXd&)
-    {
-        return (J.transpose()*J + damping_*MatrixXd::Identity(robot_->get_dim_configuration_space(),robot_->get_dim_configuration_space()));
-    }
+}
 
-    VectorXd DQ_ClassicQPController::compute_objective_function_linear_component(const MatrixXd &J, const VectorXd &task_error)
-    {
-        return gain_*J.transpose()*task_error;
-    }
+DQ_ClassicQPController::DQ_ClassicQPController(const std::shared_ptr<DQ_Kinematics> &robot,
+                                               const std::shared_ptr<DQ_QuadraticProgrammingSolver> &solver):
+    DQ_QuadraticProgrammingController(robot,solver)
+{
+
+}
+
+MatrixXd DQ_ClassicQPController::compute_objective_function_symmetric_matrix(const MatrixXd &J, const VectorXd&)
+{
+    return (J.transpose()*J + damping_*MatrixXd::Identity(_get_robot_ptr()->get_dim_configuration_space(),_get_robot_ptr()->get_dim_configuration_space()));
+}
+
+VectorXd DQ_ClassicQPController::compute_objective_function_linear_component(const MatrixXd &J, const VectorXd &task_error)
+{
+    return gain_*J.transpose()*task_error;
+}
 }
 

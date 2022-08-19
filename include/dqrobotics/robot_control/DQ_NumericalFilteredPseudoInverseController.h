@@ -45,7 +45,9 @@ protected:
     std::tuple<MatrixXd,MatrixXd,MatrixXd> last_jacobian_svd_;
 public:
     DQ_NumericalFilteredPseudoinverseController() = delete;
+    [[deprecated("Use the smart pointer version instead")]]
     DQ_NumericalFilteredPseudoinverseController(DQ_Kinematics* robot);
+    DQ_NumericalFilteredPseudoinverseController(const std::shared_ptr<DQ_Kinematics>& robot);
 
     VectorXd compute_setpoint_control_signal(const VectorXd& q, const VectorXd& task_reference) override;
     VectorXd compute_tracking_control_signal(const VectorXd& q, const VectorXd& task_reference, const VectorXd& feed_forward) override;

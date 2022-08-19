@@ -26,13 +26,23 @@ Contributors:
 namespace DQ_robotics
 {
 
+
 DQ_NumericalFilteredPseudoinverseController::DQ_NumericalFilteredPseudoinverseController(DQ_Kinematics *robot):
     DQ_PseudoinverseController (robot),
     epsilon_(0),
     lambda_max_(0),
     last_jacobian_rank_(-1)
 {
-    //Do nothing
+
+}
+
+DQ_NumericalFilteredPseudoinverseController::DQ_NumericalFilteredPseudoinverseController(const std::shared_ptr<DQ_Kinematics> &robot):
+    DQ_PseudoinverseController (robot),
+    epsilon_(0),
+    lambda_max_(0),
+    last_jacobian_rank_(-1)
+{
+
 }
 
 VectorXd DQ_NumericalFilteredPseudoinverseController::compute_setpoint_control_signal(const VectorXd& q, const VectorXd& task_reference)
@@ -89,10 +99,10 @@ VectorXd DQ_NumericalFilteredPseudoinverseController::compute_tracking_control_s
 
 
         VectorXd u = J.transpose()*
-                     (J*J.transpose()
-                      + damping_*damping_*MatrixXd::Identity(q.size(), q.size())
-                      + total_filtered_damping
-                      ).inverse()*(-gain_*task_error + feed_forward);
+                (J*J.transpose()
+                 + damping_*damping_*MatrixXd::Identity(q.size(), q.size())
+                 + total_filtered_damping
+                 ).inverse()*(-gain_*task_error + feed_forward);
 
         verify_stability(task_error);
 

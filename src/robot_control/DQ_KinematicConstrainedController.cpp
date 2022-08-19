@@ -29,6 +29,12 @@ DQ_KinematicConstrainedController::DQ_KinematicConstrainedController(DQ_Kinemati
 {
 }
 
+DQ_KinematicConstrainedController::DQ_KinematicConstrainedController(const std::shared_ptr<DQ_Kinematics> &robot):
+    DQ_KinematicController(robot)
+{
+
+}
+
 void DQ_KinematicConstrainedController::set_equality_constraint(const MatrixXd &B, const VectorXd &b)
 {
     equality_constraint_matrix_ = B;

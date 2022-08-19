@@ -44,7 +44,7 @@ enum ControlObjective
 class DQ_KinematicController
 {
 protected:
-    [[deprecated]]
+    //Deprecated together with the raw pointer constructors but without the C++14 attribute as it is too noisy.
     DQ_Kinematics* robot_;
     std::shared_ptr<DQ_Kinematics> robot_sptr_;
     ControlObjective control_objective_;
@@ -65,11 +65,12 @@ protected:
     //For backwards compatibility reasons, to be removed
     DQ_Kinematics* _get_robot_ptr() const;
 
-    [[deprecated]]
+    //Deprecated
+    [[deprecated("Use the smart pointer version instead.")]]
     DQ_KinematicController(DQ_Kinematics* robot);
-    DQ_KinematicController(std::shared_ptr<DQ_Kinematics> robot_sptr);
-public:
-    DQ_KinematicController()=delete;
+    DQ_KinematicController(const std::shared_ptr<DQ_Kinematics>& robot);
+    DQ_KinematicController();
+public:    
 
     ControlObjective get_control_objective() const;
 

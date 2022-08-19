@@ -1,3 +1,4 @@
+#pragma once
 /**
 (C) Copyright 2019-2022 DQ Robotics Developers
 
@@ -20,9 +21,6 @@ Contributors:
 - Murilo M. Marinho (murilo@nml.t.u-tokyo.ac.jp)
 */
 
-#ifndef DQ_SOLVERS_DQ_QUADRATICPROGRAMMINGSOLVER_H
-#define DQ_SOLVERS_DQ_QUADRATICPROGRAMMINGSOLVER_H
-
 #include <dqrobotics/DQ.h>
 
 using namespace Eigen;
@@ -40,4 +38,3 @@ public:
 };
 }
 
-#endif

@@ -1,3 +1,4 @@
+#pragma once
 /**
 (C) Copyright 2019 DQ Robotics Developers
 
@@ -20,8 +21,7 @@ Contributors:
 - Murilo M. Marinho (murilo@nml.t.u-tokyo.ac.jp)
 */
 
-#ifndef DQ_ROBOT_CONTROL_DQ_CLASSICQPCONTROLLER_H
-#define DQ_ROBOT_CONTROL_DQ_CLASSICQPCONTROLLER_H
+
 
 #include<dqrobotics/robot_control/DQ_QuadraticProgrammingController.h>
 
@@ -31,17 +31,15 @@ namespace DQ_robotics
 class DQ_ClassicQPController:public DQ_QuadraticProgrammingController
 {
 public:
-    //Remove the default constructor
     DQ_ClassicQPController() = delete;
 
-    //Only observers, no ownership
+    //Deprecated
     DQ_ClassicQPController(DQ_Kinematics* robot, DQ_QuadraticProgrammingSolver* solver);
+    DQ_ClassicQPController(const std::shared_ptr<DQ_Kinematics>& robot,
+                           const std::shared_ptr<DQ_QuadraticProgrammingSolver>& solver);
 
     MatrixXd compute_objective_function_symmetric_matrix(const MatrixXd& J, const VectorXd&) override;
     VectorXd compute_objective_function_linear_component(const MatrixXd& J, const VectorXd& task_error) override;
 };
 
 }
-
-
-#endif

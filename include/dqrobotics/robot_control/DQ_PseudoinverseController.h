@@ -31,7 +31,9 @@ class DQ_PseudoinverseController: public DQ_KinematicController
 public:
     DQ_PseudoinverseController() = delete;
 
+    [[deprecated("Use the smart pointer version instead")]]
     DQ_PseudoinverseController(DQ_Kinematics* robot);
+    DQ_PseudoinverseController(const std::shared_ptr<DQ_Kinematics>& robot);
 
     VectorXd compute_setpoint_control_signal(const VectorXd& q, const VectorXd& task_reference) override;
     VectorXd compute_tracking_control_signal(const VectorXd& q, const VectorXd& task_reference, const VectorXd& feed_forward) override;

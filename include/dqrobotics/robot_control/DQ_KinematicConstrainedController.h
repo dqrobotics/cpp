@@ -40,7 +40,9 @@ protected:
     MatrixXd inequality_constraint_matrix_;
     VectorXd inequality_constraint_vector_;
 
+    [[deprecated("Use the smart pointer version instead")]]
     DQ_KinematicConstrainedController(DQ_Kinematics* robot);
+    DQ_KinematicConstrainedController(const std::shared_ptr<DQ_Kinematics>& robot);
 public:
     //Remove default constructor
     DQ_KinematicConstrainedController()=delete;

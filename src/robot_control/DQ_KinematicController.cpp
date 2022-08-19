@@ -33,20 +33,31 @@ DQ_Kinematics *DQ_KinematicController::_get_robot_ptr() const
 }
 
 DQ_KinematicController::DQ_KinematicController(DQ_Kinematics* robot):
-    robot_(robot)
+    DQ_KinematicController()
 {
-    control_objective_ = ControlObjective::None;
-    gain_              = 0.0;
+    robot_ = robot;
+}
 
-    system_reached_stable_region_           = false;
-    last_error_signal_   = VectorXd::Zero(1);
-    last_error_signal_   = VectorXd::Zero(1);
-    stability_threshold_ = 0.0;
-    stability_counter_ = 0.0;
-    stability_counter_max_ = 10.0;
+DQ_KinematicController::DQ_KinematicController(const std::shared_ptr<DQ_Kinematics> &robot):
+    DQ_KinematicController()
+{
+    robot_sptr_ = robot;
+}
 
-    attached_primitive_ = 0.0;
-    target_primitive_ = 0.0;
+DQ_KinematicController::DQ_KinematicController():
+    robot_(nullptr),
+    control_objective_(ControlObjective::None),
+    gain_(0.0),
+    system_reached_stable_region_(false),
+    last_error_signal_(VectorXd::Zero(1)),//Todo: change this inialization to use empty vector
+    last_control_signal_(VectorXd::Zero(1)),//Todo: change this inialization to use empty vector
+    stability_threshold_(0.0),
+    stability_counter_(0.0),
+    stability_counter_max_(10.0),
+    attached_primitive_(0.0),
+    target_primitive_(0.0)
+{
+
 }
 
 void DQ_KinematicController::verify_stability(const VectorXd& task_error)

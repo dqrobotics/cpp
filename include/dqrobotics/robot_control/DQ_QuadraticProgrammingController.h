@@ -1,6 +1,6 @@
 #pragma once
 /**
-(C) Copyright 2019 DQ Robotics Developers
+(C) Copyright 2019-2022 DQ Robotics Developers
 
 This file is part of DQ Robotics.
 
@@ -31,10 +31,16 @@ namespace DQ_robotics
 class DQ_QuadraticProgrammingController:public DQ_KinematicConstrainedController
 {
 protected:
-    //Only observer no shared ownership
+    //Deprecated together with the raw pointer constructors but without the C++14 attribute as it is too noisy.
     DQ_QuadraticProgrammingSolver* qp_solver_;
+    std::shared_ptr<DQ_QuadraticProgrammingSolver> qp_solver_sptr_;
 
+    DQ_QuadraticProgrammingSolver* _get_solver_ptr();
+
+    [[deprecated("Use the smart pointer version instead")]]
     DQ_QuadraticProgrammingController(DQ_Kinematics *robot, DQ_QuadraticProgrammingSolver *solver);
+    DQ_QuadraticProgrammingController(const std::shared_ptr<DQ_Kinematics>& robot,
+                                      const std::shared_ptr<DQ_QuadraticProgrammingSolver>& solver);
 public:
     //Remove default constructor
     DQ_QuadraticProgrammingController()=delete;
