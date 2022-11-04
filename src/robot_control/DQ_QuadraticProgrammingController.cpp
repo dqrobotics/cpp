@@ -1,5 +1,5 @@
 /**
-(C) Copyright 2019 DQ Robotics Developers
+(C) Copyright 2019-2022 DQ Robotics Developers
 
 This file is part of DQ Robotics.
 
@@ -67,7 +67,7 @@ VectorXd DQ_QuadraticProgrammingController::compute_tracking_control_signal(cons
         if(J.rows() != task_error.size())
             throw std::runtime_error("Incompatible sizes between the Jacobian and the task error in compute_tracking_control_signal");
         if(task_error.size() != feed_forward.size())
-            throw std::runtime_error("Incompatible sizes between task error and feedoforward in compute_tracking_control_signal");
+            throw std::runtime_error("Incompatible sizes between task error and feedforward in compute_tracking_control_signal");
 
         const MatrixXd& A = inequality_constraint_matrix_;
         const VectorXd& b = inequality_constraint_vector_;
