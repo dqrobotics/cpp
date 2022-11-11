@@ -107,4 +107,81 @@ MatrixXd DQ_HolonomicBase::pose_jacobian(const VectorXd &q) const
     return pose_jacobian(q,get_dim_configuration_space()-1);
 }
 
+/**
+ * @brief returns the Jacobian derivative (J_dot) that satisfies
+          vec8(pose_dot_dot) = J_dot * q_dot + J*q_dot_dot, where pose = fkm(), 'pose_dot' is the time
+          derivative of the pose and  joint_configurations is the configuration vector.
+          This method does not take into account the base displacement.
+ * @param joint_configurations The VectorXd representing the joint configurations.
+ * @param joint_velocity_configurations The VectorXd representing the joint velocity configurations.
+ * @param to_link The ith link which we want to compute the Jacobian derivative.
+ * @return a MatrixXd representing the desired Jacobian derivative.
+ */
+MatrixXd DQ_HolonomicBase::raw_pose_jacobian_derivative(const VectorXd &q, const VectorXd &q_dot, const int &to_link) const
+{
+    if(to_link >= 3 || to_link < 0)
+    {
+        throw std::runtime_error(std::string("Tried to access link index ") + std::to_string(to_link) + std::string(" which is unnavailable."));
+    }
+    const double& x   = q(0);
+    const double& y   = q(1);
+    const double& phi = q(2);
+
+    const double& x_dot   = q_dot(0);
+    const double& y_dot   = q_dot(1);
+    const double& phi_dot = q_dot(2);
+
+    const double c = cos(phi/2.0);
+    const double s = sin(phi/2.0);
+
+    const double j71 = -0.25*c*phi_dot;
+    const double j62 = -j71;
+    const double j13 = -j62;
+
+    const double j72 = -0.25*s*phi_dot;
+    const double j61 = j72;
+    const double j43 = j61;
+
+    const double j63 = 0.25 * (-x_dot*s - 0.5*x*c*phi_dot + y_dot*c - 0.5*y*s*phi_dot);
+    const double j73 = 0.25 * (-x_dot*c + 0.5*x*s*phi_dot - y_dot*s - 0.5*y*c*phi_dot);
+
+    MatrixXd J_dot(8,3);
+    J_dot <<    0.0, 0.0, j13,
+            0.0, 0.0, 0.0,
+            0.0, 0.0, 0.0,
+            0.0, 0.0, j43,
+            0.0, 0.0, 0.0,
+            j61, j62, j63,
+            j71, j72, j73,
+            0.0, 0.0, 0.0;
+    return J_dot.block(0,0,8,to_link+1);
+}
+
+/**
+ * @brief returns the Jacobian derivative (J_dot) that satisfies
+          vec8(pose_dot_dot) = J_dot * q_dot + J*q_dot_dot, where pose = fkm(), 'pose_dot' is the time
+          derivative of the pose and  joint_configurations is the configuration vector.
+ * @param joint_configurations The VectorXd representing the joint configurations.
+ * @param joint_velocity_configurations The VectorXd representing the joint velocity configurations.
+ * @param to_link The ith link which we want to compute the Jacobian derivative.
+ * @return a MatrixXd representing the desired Jacobian derivative.
+ */
+MatrixXd DQ_HolonomicBase::pose_jacobian_derivative(const VectorXd &q, const VectorXd &q_dot, const int &to_link) const
+{
+    return haminus8(frame_displacement_)*raw_pose_jacobian_derivative(q, q_dot, to_link);
+}
+
+/**
+ * @brief returns the Jacobian derivative (J_dot) that satisfies
+          vec8(pose_dot_dot) = J_dot * q_dot + J*q_dot_dot, where pose = fkm(), 'pose_dot' is the time
+          derivative of the pose and  joint_configurations is the configuration vector.
+ * @param joint_configurations The VectorXd representing the joint configurations.
+ * @param joint_velocity_configurations The VectorXd representing the joint velocity configurations.
+ * @return a MatrixXd representing the desired Jacobian derivative.
+ */
+MatrixXd DQ_HolonomicBase::pose_jacobian_derivative(const VectorXd &q, const VectorXd &q_dot) const
+{
+    return pose_jacobian_derivative(q, q_dot, get_dim_configuration_space()-1);
+}
+
 }
