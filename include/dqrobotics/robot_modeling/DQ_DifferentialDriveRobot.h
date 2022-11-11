@@ -1,5 +1,5 @@
 /**
-(C) Copyright 2019 DQ Robotics Developers
+(C) Copyright 2019-2022 DQ Robotics Developers
 
 This file is part of DQ Robotics.
 
@@ -38,9 +38,14 @@ public:
     DQ_DifferentialDriveRobot(const double& wheel_radius, const double& distance_between_wheels);
 
     MatrixXd constraint_jacobian(const double& phi) const;
-
+    MatrixXd constraint_jacobian_derivative(const double& phi, const double& phi_dot) const;
     MatrixXd pose_jacobian(const VectorXd& q, const int& to_link) const override;
     MatrixXd pose_jacobian(const VectorXd &q) const override;
+    MatrixXd pose_jacobian_derivative(const VectorXd& q,
+                                      const VectorXd& q_dot,
+                                      const int& to_link) const override;
+    MatrixXd pose_jacobian_derivative (const VectorXd& q,
+                                       const VectorXd& q_dot) const override;
 };
 
 }
