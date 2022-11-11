@@ -550,6 +550,16 @@ double   DQ_Kinematics::plane_to_point_residual(const DQ& robot_plane, const DQ&
     return static_cast<double>(result);
 }
 
+
+/**
+ * @brief Given a line "lz" rigidly attached to the robot, and a workspace line "l", the distance function f(phi)=dot(lz-l, lz-l)
+ *        is useful to control the angle "phi" between both lines. line_to_line_angle_jacobian() returns the distance Jacobian Jd that
+ *        satisfy vec(f(phi)_dot) = Jd*q_dot + residual.
+ * @param line_jacobian The line Jacobian.
+ * @param robot_line The line rigidly attached to the robot.
+ * @param workspace_line The workspace line. For example: i_, j_, k_.
+ * @return The desired distance Jacobian.
+ */
 MatrixXd DQ_Kinematics::line_to_line_angle_jacobian(const MatrixXd &line_jacobian, const DQ &robot_line, const DQ &workspace_line)
 {
     if(! is_line(robot_line))
@@ -563,6 +573,29 @@ MatrixXd DQ_Kinematics::line_to_line_angle_jacobian(const MatrixXd &line_jacobia
 
     MatrixXd Jl = line_jacobian.block(0,0,4,line_jacobian.cols());
     return 2.0*vec4(robot_line - workspace_line).transpose()*Jl;
+}
+
+
+/**
+ * @brief line_to_line_angle_residual() returns the residual term that satisfy vec(f(phi)_dot) = Jd*q_dot + residual, where
+ *        f(phi)=dot(lz-l, lz-l) and Jd is the line-to-line-angle-jacobian.
+ * @param robot_line The line rigidly attached to the robot.
+ * @param workspace_line The workspace line. For example: i_, j_, k_.
+ * @param workspace_line_derivative The time derivative of the workspace line.
+ * @return The desired residual
+ */
+double DQ_Kinematics::line_to_line_angle_residual(const DQ& robot_line, const DQ& workspace_line, const DQ& workspace_line_derivative)
+{
+    if(! is_line(robot_line))
+    {
+        throw std::range_error("The argument robot_line has to be a line.");
+    }
+    if(! is_line(workspace_line))
+    {
+        throw std::range_error("The argument workspace_line has to be a line.");
+    }
+    DQ result = 2*dot(robot_line-workspace_line, -1.0*workspace_line_derivative);
+    return static_cast<double>(result);
 }
 
 /**
