@@ -47,13 +47,12 @@ public:
     DQ_SerialManipulatorMDH()=delete;
     DQ_SerialManipulatorMDH(const MatrixXd& mdh_matrix);    
 
-    MatrixXd pose_jacobian_derivative(const VectorXd& q_vec, const VectorXd& q_vec_dot, const int& to_ith_link) const;
-    MatrixXd pose_jacobian_derivative(const VectorXd& q_vec, const VectorXd& q_vec_dot) const;
-
     using DQ_SerialManipulator::raw_pose_jacobian;
+    using DQ_SerialManipulator::raw_pose_jacobian_derivative;
     using DQ_SerialManipulator::raw_fkm;
 
     MatrixXd raw_pose_jacobian(const VectorXd& q_vec, const int& to_ith_link) const override;
+    MatrixXd raw_pose_jacobian_derivative(const VectorXd& q_vec, const VectorXd& q_vec_dot, const int& to_ith_link) const override;
     DQ raw_fkm(const VectorXd &q_vec, const int &to_ith_link) const override;
 };
 
