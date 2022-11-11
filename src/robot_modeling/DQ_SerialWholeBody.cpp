@@ -1,5 +1,5 @@
 /**
-(C) Copyright 2020 DQ Robotics Developers
+(C) Copyright 2020-2022 DQ Robotics Developers
 
 This file is part of DQ Robotics.
 
@@ -248,6 +248,44 @@ MatrixXd DQ_SerialWholeBody::pose_jacobian(const VectorXd &q, const int &to_ith_
 MatrixXd DQ_SerialWholeBody::pose_jacobian(const VectorXd &q) const
 {
     return pose_jacobian(q, get_dim_configuration_space()-1);
+}
+
+//To be implemented.
+MatrixXd DQ_SerialWholeBody::raw_pose_jacobian_derivative_by_chain(const VectorXd &q, const VectorXd &q_dot, const int &to_ith_chain, const int &to_jth_link) const
+{
+    throw std::runtime_error(std::string("pose_jacobian_derivative_by_chain is not implemented yet."));
+    return MatrixXd::Zero(1,1);
+}
+
+/**
+ * @brief returns the Jacobian derivative 'J_dot' that satisfies
+          vec8(pose_dot_dot) = J_dot * q_dot + J*q_dot_dot, where pose = fkm(), 'pose_dot' is the time
+          derivative of the pose and joint_configurations is the configuration vector.
+ * @param q The VectorXd representing the joint configurations.
+ * @param q_dot The VectorXd representing the joint velocity configurations.
+ * @param to_ith_link The 'to_ith_link' link which we want to compute the Jacobian derivative.
+ * @return a MatrixXd representing the desired Jacobian derivative.
+ */
+MatrixXd DQ_SerialWholeBody::pose_jacobian_derivative(const VectorXd &q, const VectorXd &q_dot, const int &to_ith_link) const
+{
+    int to_ith_chain;
+    int to_jth_link;
+    std::tie(to_ith_chain,to_jth_link) = get_chain_and_link_from_index(to_ith_link);
+    return raw_pose_jacobian_derivative_by_chain(q, q_dot, to_ith_chain,to_ith_link);
+}
+
+
+/**
+ * @brief returns the Jacobian derivative 'J_dot' that satisfies
+          vec8(pose_dot_dot) = J_dot * q_dot + J*q_dot_dot, where pose = fkm(), 'pose_dot' is the time
+          derivative of the pose and joint_configurations is the configuration vector.
+ * @param q The VectorXd representing the joint configurations.
+ * @param q_dot The VectorXd representing the joint velocity configurations.
+ * @return a MatrixXd representing the desired Jacobian derivative.
+ */
+MatrixXd DQ_SerialWholeBody::pose_jacobian_derivative(const VectorXd &q, const VectorXd &q_dot) const
+{
+    return pose_jacobian_derivative(q,q_dot,  get_dim_configuration_space()-1);
 }
 
 void DQ_SerialWholeBody::set_effector(const DQ &effector)
