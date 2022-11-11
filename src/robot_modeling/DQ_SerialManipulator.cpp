@@ -1,5 +1,5 @@
 /**
-(C) Copyright 2011-2018 DQ Robotics Developers
+(C) Copyright 2011-2020 DQ Robotics Developers
 
 This file is part of DQ Robotics.
 
@@ -19,6 +19,7 @@ This file is part of DQ Robotics.
 Contributors:
 - Murilo M. Marinho (murilo@nml.t.u-tokyo.ac.jp)
 - Mateus Rodrigues Martins (martinsrmateus@gmail.com)
+- Juan Jose Quiroz Omana   (juanjqo@g.ecc.u-tokyo.ac.jp)
 */
 
 #include <dqrobotics/robot_modeling/DQ_SerialManipulator.h>
@@ -154,6 +155,65 @@ MatrixXd DQ_SerialManipulator::pose_jacobian(const VectorXd &q_vec) const
     _check_q_vec(q_vec);
 
     return this->DQ_Kinematics::pose_jacobian(q_vec);
+}
+
+
+/**
+ * @brief This method returns the time derivative of the pose Jacobian.
+ *        The base displacement and the effector are not taken into account.
+ * @param q_vec. Vector of joint values.
+ * @param q_vec_dot. Vector of joint velocity values.
+                  will be calculated.
+ * @returns The first to_ith_link columns of the pose_jacobian_derivative.
+ *
+ */
+MatrixXd DQ_SerialManipulator::raw_pose_jacobian_derivative(const VectorXd &q_vec, const VectorXd &q_vec_dot) const
+{
+    _check_q_vec(q_vec);
+    _check_q_vec(q_vec_dot);
+    return raw_pose_jacobian_derivative(q_vec, q_vec_dot, get_dim_configuration_space()-1);
+}
+
+
+/**
+ * @brief This method returns the first to_ith_link columns of the time derivative of the pose Jacobian.
+ * @param q_vec. Vector of joint values.
+ * @param q_vec_dot. Vector of joint velocity values.
+ * @param to_ith_link. The index to a link. This defines until which link the pose_jacobian_derivative
+ *                     will be calculated.
+ * @returns The first to_ith_link columns of the pose_jacobian_derivative.
+ *
+ */
+MatrixXd  DQ_SerialManipulator::pose_jacobian_derivative(const VectorXd &q_vec, const VectorXd &q_vec_dot, const int &to_ith_link) const
+{
+    _check_q_vec(q_vec);
+    _check_q_vec(q_vec_dot);
+    _check_to_ith_link(to_ith_link);
+    MatrixXd J_dot = raw_pose_jacobian_derivative(q_vec, q_vec_dot, to_ith_link);
+
+    if(to_ith_link==this->get_dim_configuration_space()-1)
+    {
+        J_dot = hamiplus8(reference_frame_)*haminus8(curr_effector_)*J_dot;
+    }
+    else
+    {
+        J_dot = hamiplus8(reference_frame_)*J_dot;
+    }
+    return J_dot;
+}
+
+/**
+ * @brief This method returns time derivative of the pose Jacobian.
+ * @param q_vec. Vector of joint values.
+ * @param q_vec_dot. Vector of joint velocity values.
+ * @returns The desired pose Jacobian derivative.
+ *
+ */
+MatrixXd DQ_SerialManipulator::pose_jacobian_derivative(const VectorXd &q_vec, const VectorXd &q_vec_dot) const
+{
+    _check_q_vec(q_vec);
+    _check_q_vec(q_vec_dot);
+    return this->DQ_Kinematics::pose_jacobian_derivative(q_vec, q_vec_dot);
 }
 
 }//namespace DQ_robotics
