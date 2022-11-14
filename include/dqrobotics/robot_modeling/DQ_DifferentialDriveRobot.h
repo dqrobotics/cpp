@@ -41,8 +41,8 @@ public:
     MatrixXd constraint_jacobian_derivative(const double& phi, const double& phi_dot) const;
     MatrixXd pose_jacobian(const VectorXd& q, const int& to_link) const override;
     MatrixXd pose_jacobian(const VectorXd &q) const override;
-    MatrixXd pose_jacobian_derivative(const VectorXd& q,
-                                      const VectorXd& q_dot,
+    MatrixXd pose_jacobian_derivative(const VectorXd& configurations,
+                                      const VectorXd& velocity_configurations,
                                       const int& to_link) const override;
     MatrixXd pose_jacobian_derivative (const VectorXd& q,
                                        const VectorXd& q_dot) const override;
