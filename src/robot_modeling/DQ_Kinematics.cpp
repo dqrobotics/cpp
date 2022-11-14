@@ -139,9 +139,9 @@ MatrixXd DQ_Kinematics::pose_jacobian(const VectorXd &joint_configurations) cons
  * @param joint_velocity_configurations The VectorXd representing the joint velocity configurations.
  * @return a MatrixXd representing the desired Jacobian derivative.
  */
-MatrixXd DQ_Kinematics::pose_jacobian_derivative(const VectorXd &joint_configurations, const VectorXd &joint_velocity_configurations) const
+MatrixXd DQ_Kinematics::pose_jacobian_derivative(const VectorXd &configurations, const VectorXd &velocity_configurations) const
 {
-    return pose_jacobian_derivative(joint_configurations, joint_velocity_configurations, get_dim_configuration_space()-1);
+    return pose_jacobian_derivative(configurations, velocity_configurations, get_dim_configuration_space()-1);
 }
 
 /**
