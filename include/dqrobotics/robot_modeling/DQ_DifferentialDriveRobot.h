@@ -44,8 +44,8 @@ public:
     MatrixXd pose_jacobian_derivative(const VectorXd& configurations,
                                       const VectorXd& velocity_configurations,
                                       const int& to_link) const override;
-    MatrixXd pose_jacobian_derivative (const VectorXd& q,
-                                       const VectorXd& q_dot) const override;
+    MatrixXd pose_jacobian_derivative (const VectorXd& configurations,
+                                       const VectorXd& velocity_configurations) const override;
 };
 
 }
