@@ -175,13 +175,13 @@ void DQ_WholeBody::set_effector(const DQ &effector)
 /**
  * @brief returns the Jacobian derivative 'J_dot' that satisfies
           vec8(pose_dot_dot) = J_dot * q_dot + J*q_dot_dot, where pose = fkm(), 'pose_dot' is the time
-          derivative of the pose and joint_configurations is the configuration vector.
- * @param q The VectorXd representing the joint configurations.
- * @param q_dot The VectorXd representing the joint velocity configurations.
+          derivative of the pose and 'q_dot' represents the robot velocity configurations.
+ * @param configurations The VectorXd representing the robot configurations.
+ * @param velocity_configurations The VectorXd representing the robot velocity configurations.
  * @param to_ith_link The 'to_ith_link' link which we want to compute the Jacobian derivative.
  * @return a MatrixXd representing the desired Jacobian derivative.
  */
-MatrixXd DQ_WholeBody::pose_jacobian_derivative(const VectorXd &q, const VectorXd &q_dot, const int &to_ith_link) const
+MatrixXd DQ_WholeBody::pose_jacobian_derivative(const VectorXd &configurations, const VectorXd &velocity_configurations, const int &to_ith_link) const
 {
     throw std::runtime_error(std::string("pose_jacobian_derivative is not implemented yet."));
     return MatrixXd::Zero(1,1);
@@ -191,13 +191,17 @@ MatrixXd DQ_WholeBody::pose_jacobian_derivative(const VectorXd &q, const VectorX
 /**
  * @brief returns the Jacobian derivative 'J_dot' that satisfies
           vec8(pose_dot_dot) = J_dot * q_dot + J*q_dot_dot, where pose = fkm(), 'pose_dot' is the time
-          derivative of the pose and joint_configurations is the configuration vector.
- * @param q The VectorXd representing the joint configurations.
- * @param q_dot The VectorXd representing the joint velocity configurations.
+          derivative of the pose and 'q_dot' represents the robot velocity configurations.
+ * @param configurations The VectorXd representing the robot configurations.
+ * @param velocity_configurations The VectorXd representing the robot velocity configurations.
  * @return a MatrixXd representing the desired Jacobian derivative.
  */
-MatrixXd DQ_WholeBody::pose_jacobian_derivative(const VectorXd &q, const VectorXd &q_dot) const
+MatrixXd DQ_WholeBody::pose_jacobian_derivative(const VectorXd &configurations, const VectorXd &velocity_configurations) const
 {
+    /// Aliases
+    const VectorXd& q = configurations;
+    const VectorXd& q_dot = velocity_configurations;
+
     return pose_jacobian_derivative(q,q_dot,  get_dim_configuration_space()-1);
 }
 
