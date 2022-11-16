@@ -85,19 +85,15 @@ MatrixXd DQ_DifferentialDriveRobot::pose_jacobian(const VectorXd &q) const
 
 /**
  * @brief returns the pose Jacobian derivative
- * @param configurations The VectorXd representing the robot configuration.
- * @param velocity_configurations The VectorXd representing the robot configuration velocity.
+ * @param q The VectorXd representing the robot configuration.
+ * @param q_dot The VectorXd representing the robot configuration velocities.
  * @param to_link The ith link which we want to compute the Jacobian derivative.
  * @return a MatrixXd representing the desired Jacobian
  */
-MatrixXd DQ_DifferentialDriveRobot::pose_jacobian_derivative(const VectorXd &configurations, const VectorXd &velocity_configurations, const int &to_link) const
+MatrixXd DQ_DifferentialDriveRobot::pose_jacobian_derivative(const VectorXd &q, const VectorXd &q_dot, const int &to_link) const
 {
     if(to_link!=0 && to_link!=1)
         throw std::runtime_error("DQ_DifferentialDriveRobot::pose_jacobian_derivative(q,q_dot, to_link) only accepts to_link in {0,1}.");
-
-    /// Aliases
-    const VectorXd& q = configurations;
-    const VectorXd& q_dot = velocity_configurations;
 
     /// Requirements
     MatrixXd J_holonomic = DQ_HolonomicBase::pose_jacobian(q,2);
@@ -110,19 +106,15 @@ MatrixXd DQ_DifferentialDriveRobot::pose_jacobian_derivative(const VectorXd &con
 
 /**
  * @brief returns the pose Jacobian derivative
- * @param configurations The VectorXd representing the robot configuration.
- * @param velocity_configurations The VectorXd representing the robot configuration velocity.
+ * @param q The VectorXd representing the robot configuration.
+ * @param q_dot The VectorXd representing the robot configuration velocities.
  * @return a MatrixXd representing the desired Jacobian
  */
-MatrixXd DQ_DifferentialDriveRobot::pose_jacobian_derivative(const VectorXd &configurations, const VectorXd &velocity_configurations) const
+MatrixXd DQ_DifferentialDriveRobot::pose_jacobian_derivative(const VectorXd &q, const VectorXd &q_dot) const
 {
     // The DQ_DifferentialDriveRobot works differently from most other subclasses of DQ_Kinematics
     // The size of the configuration space is three but there is one constraint, so there are only
     // to columns in the pose_jacobian
-
-    /// Aliases
-    const VectorXd& q = configurations;
-    const VectorXd& q_dot = velocity_configurations;
     return pose_jacobian_derivative(q, q_dot, 1);
 }
 
