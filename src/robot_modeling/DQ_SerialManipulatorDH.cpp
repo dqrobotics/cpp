@@ -18,6 +18,7 @@ This file is part of DQ Robotics.
 
 Contributors:
 - Murilo M. Marinho (murilo@nml.t.u-tokyo.ac.jp)
+- Juan Jose Quiroz Omana   (juanjqo@g.ecc.u-tokyo.ac.jp)
 */
 
 #include <dqrobotics/robot_modeling/DQ_SerialManipulatorDH.h>
@@ -189,68 +190,6 @@ VectorXd DQ_SerialManipulatorDH::get_types() const
     return dh_matrix_.row(4);
 }
 
-
-/**
- * @brief This method returns the first to_ith_link columns of the pose Jacobian time derivative
- * @param q_vec. Vector of joint values.
- * @param q_vec_dot. Vector of joint velocity values.
- * @param to_ith_link. The index to a link. This defines until which link the pose_jacobian_derivative
- *                     will be calculated.
- * @returns The first to_ith_link columns of the pose_jacobian_derivative.
- *
- */
-MatrixXd DQ_SerialManipulatorDH::pose_jacobian_derivative(const VectorXd &q_vec, const VectorXd &q_vec_dot, const int &to_ith_link) const
-{
-    _check_q_vec(q_vec);
-    _check_q_vec(q_vec_dot);
-    _check_to_ith_link(to_ith_link);
-
-    int n = to_ith_link+1;
-    DQ x_effector = raw_fkm(q_vec,to_ith_link);
-    MatrixXd J    = raw_pose_jacobian(q_vec,to_ith_link);
-    VectorXd vec_x_effector_dot = J*q_vec_dot.head(to_ith_link);
-
-    DQ x = DQ(1);
-    MatrixXd J_dot = MatrixXd::Zero(8,n);
-    int jth=0;
-
-    for(int i=0;i<n;i++)
-    {
-        const DQ w = _get_w(i);
-        const DQ z = 0.5*x*w*conj(x);
-
-        VectorXd vec_zdot;
-        if(i==0)
-        {
-            vec_zdot = VectorXd::Zero(8,1);
-        }
-        else
-        {
-            vec_zdot = 0.5*(haminus8(w*conj(x)) + hamiplus8(x*w)*C8())*raw_pose_jacobian(q_vec,i-1)*q_vec_dot.head(i);
-        }
-
-        J_dot.col(jth) = haminus8(x_effector)*vec_zdot + hamiplus8(z)*vec_x_effector_dot;
-        x = x*_dh2dq(q_vec(jth),i);
-        jth = jth+1;
-    }
-
-    return J_dot;
-}
-
-
-/**
- * @brief This method returns the pose Jacobian time derivative
- * @param q_vec. Vector of joint values.
- * @param q_vec_dot. Vector of joint velocity values.
- * @returns The pose jacobian derivative.
- *
- */
-MatrixXd DQ_SerialManipulatorDH::pose_jacobian_derivative(const VectorXd &q_vec, const VectorXd &q_vec_dot) const
-{
-    return pose_jacobian_derivative(q_vec, q_vec_dot, get_dim_configuration_space()-1);
-}
-
-
 /**
  * @brief This method calculates the forward kinematic model and returns the dual quaternion
  *        corresponding to the last joint (the displacements due to the base and the effector
@@ -306,5 +245,50 @@ MatrixXd DQ_SerialManipulatorDH::raw_pose_jacobian(const VectorXd &q_vec, const 
     return J;
 }
 
+/**
+ * @brief This method returns the first to_ith_link columns of the time derivative of the pose Jacobian.
+ *        The base displacement and the effector are not taken into account.
+ * @param q. VectorXd representing the robot joint configuration.
+ * @param q_dot. VectorXd representing the robot joint velocities.
+ * @param to_ith_link. The index to a link. This defines until which link the pose_jacobian_derivative
+ *                     will be calculated.
+ * @returns a MatrixXd representing the first to_ith_link columns of the desired Jacobian derivative.
+ *
+ */
+MatrixXd DQ_SerialManipulatorDH::raw_pose_jacobian_derivative(const VectorXd &q, const VectorXd &q_dot, const int &to_ith_link) const
+{
+    _check_q_vec(q);
+    _check_q_vec(q_dot);
+    _check_to_ith_link(to_ith_link);
 
+    int n = to_ith_link+1;
+    DQ x_effector = raw_fkm(q,to_ith_link);
+    MatrixXd J    = raw_pose_jacobian(q,to_ith_link);
+    VectorXd vec_x_effector_dot = J*q_dot.head(n);
+    DQ x = DQ(1);
+    MatrixXd J_dot = MatrixXd::Zero(8,n);
+    int jth=0;
+
+    for(int i=0;i<n;i++)
+    {
+        const DQ w = _get_w(i);
+        const DQ z = 0.5*x*w*conj(x);
+
+        VectorXd vec_zdot;
+        if(i==0)
+        {
+            vec_zdot = VectorXd::Zero(8,1);
+        }
+        else
+        {
+            vec_zdot = 0.5*(haminus8(w*conj(x)) + hamiplus8(x*w)*C8())*raw_pose_jacobian(q,i-1)*q_dot.head(i);
+        }
+
+        J_dot.col(jth) = haminus8(x_effector)*vec_zdot + hamiplus8(z)*vec_x_effector_dot;
+        x = x*_dh2dq(q(jth),i);
+        jth = jth+1;
+    }
+
+    return J_dot;
+}
 }

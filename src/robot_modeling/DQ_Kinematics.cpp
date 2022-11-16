@@ -132,6 +132,19 @@ MatrixXd DQ_Kinematics::pose_jacobian(const VectorXd &joint_configurations) cons
 }
 
 /**
+ * @brief returns the Jacobian derivative 'J_dot' that satisfies
+          vec8(pose_dot_dot) = J_dot * q_dot + J*q_dot_dot, where pose = fkm(), 'pose_dot' is the time
+          derivative of the pose and 'q_dot' represents the robot configuration velocities.
+ * @param q The VectorXd representing the robot configurations.
+ * @param q_dot The VectorXd representing the robot configuration velocities.
+ * @return a MatrixXd representing the desired Jacobian derivative.
+ */
+MatrixXd DQ_Kinematics::pose_jacobian_derivative(const VectorXd &q, const VectorXd &q_dot) const
+{
+    return pose_jacobian_derivative(q, q_dot, get_dim_configuration_space()-1);
+}
+
+/**
  * @brief Returns the dimensions of the configuration space.
  * @return An int presenting the dimension of the configuration space.
  */
