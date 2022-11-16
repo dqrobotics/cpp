@@ -251,7 +251,7 @@ MatrixXd DQ_SerialWholeBody::pose_jacobian(const VectorXd &q) const
 }
 
 //To be implemented.
-MatrixXd DQ_SerialWholeBody::raw_pose_jacobian_derivative_by_chain(const VectorXd &configurations, const VectorXd &velocity_configurations, const int &to_ith_chain, const int &to_jth_link) const
+MatrixXd DQ_SerialWholeBody::raw_pose_jacobian_derivative_by_chain(const VectorXd &q, const VectorXd &q_dot, const int &to_ith_chain, const int &to_jth_link) const
 {
     throw std::runtime_error(std::string("pose_jacobian_derivative_by_chain is not implemented yet."));
     return MatrixXd::Zero(1,1);
@@ -260,20 +260,16 @@ MatrixXd DQ_SerialWholeBody::raw_pose_jacobian_derivative_by_chain(const VectorX
 /**
  * @brief returns the Jacobian derivative 'J_dot' that satisfies
           vec8(pose_dot_dot) = J_dot * q_dot + J*q_dot_dot, where pose = fkm(), 'pose_dot' is the time
-          derivative of the pose and 'q_dot' represents the robot velocity configurations.
- * @param configurations The VectorXd representing the robot configurations.
- * @param velocity_configurations The VectorXd representing the robot velocity configurations.
+          derivative of the pose and 'q_dot' represents the robot configuration velocities.
+ * @param q The VectorXd representing the robot configurations.
+ * @param q_dot The VectorXd representing the robot configuration velocities.
  * @param to_ith_link The 'to_ith_link' link which we want to compute the Jacobian derivative.
  * @return a MatrixXd representing the desired Jacobian derivative.
  */
-MatrixXd DQ_SerialWholeBody::pose_jacobian_derivative(const VectorXd &configurations, const VectorXd &velocity_configurations, const int &to_ith_link) const
+MatrixXd DQ_SerialWholeBody::pose_jacobian_derivative(const VectorXd &q, const VectorXd &q_dot, const int &to_ith_link) const
 {
     int to_ith_chain;
     int to_jth_link;
-
-    /// Aliases
-    const VectorXd& q = configurations;
-    const VectorXd& q_dot = velocity_configurations;
 
     std::tie(to_ith_chain,to_jth_link) = get_chain_and_link_from_index(to_ith_link);
     return raw_pose_jacobian_derivative_by_chain(q, q_dot, to_ith_chain,to_ith_link);
@@ -283,16 +279,13 @@ MatrixXd DQ_SerialWholeBody::pose_jacobian_derivative(const VectorXd &configurat
 /**
  * @brief returns the Jacobian derivative 'J_dot' that satisfies
           vec8(pose_dot_dot) = J_dot * q_dot + J*q_dot_dot, where pose = fkm(), 'pose_dot' is the time
-          derivative of the pose and 'q_dot' represents the robot velocity configurations.
- * @param configurations The VectorXd representing the robot configurations.
- * @param velocity_configurations The VectorXd representing the robot velocity configurations.
+          derivative of the pose and 'q_dot' represents the robot configuration velocities.
+ * @param q The VectorXd representing the robot configurations.
+ * @param q_dot The VectorXd representing the robot configuration velocities.
  * @return a MatrixXd representing the desired Jacobian derivative.
  */
-MatrixXd DQ_SerialWholeBody::pose_jacobian_derivative(const VectorXd &configurations, const VectorXd &velocity_configurations) const
+MatrixXd DQ_SerialWholeBody::pose_jacobian_derivative(const VectorXd &q, const VectorXd &q_dot) const
 {
-    /// Aliases
-    const VectorXd& q = configurations;
-    const VectorXd& q_dot = velocity_configurations;
     return pose_jacobian_derivative(q,q_dot,  get_dim_configuration_space()-1);
 }
 

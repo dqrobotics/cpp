@@ -58,8 +58,8 @@ public:
     DQ_SerialManipulatorDH get_chain_as_serial_manipulator_dh(const int& to_ith_chain) const;
     DQ_HolonomicBase get_chain_as_holonomic_base(const int& to_ith_chain) const;
     MatrixXd raw_pose_jacobian_by_chain(const VectorXd& q, const int& to_ith_chain, const int& to_jth_link) const;
-    MatrixXd raw_pose_jacobian_derivative_by_chain(const VectorXd& configurations,
-                                                   const VectorXd& velocity_configurations,
+    MatrixXd raw_pose_jacobian_derivative_by_chain(const VectorXd& q,
+                                                   const VectorXd& q_dot,
                                                    const int& to_ith_chain,
                                                    const int& to_jth_link) const; //To be implemented.
 
@@ -68,11 +68,11 @@ public:
     DQ fkm(const VectorXd&, const int& to_ith_link) const override;
     MatrixXd pose_jacobian(const VectorXd& q, const int& to_ith_link) const override;
     MatrixXd pose_jacobian(const VectorXd& q) const override;
-    MatrixXd pose_jacobian_derivative(const VectorXd& configurations,
-                                      const VectorXd& velocity_configurations,
+    MatrixXd pose_jacobian_derivative(const VectorXd& q,
+                                      const VectorXd& q_dot,
                                       const int& to_ith_link) const override; //To be implemented.
-    MatrixXd pose_jacobian_derivative (const VectorXd& configurations,
-                                       const VectorXd& velocity_configurations) const override; //To be implemented.
+    MatrixXd pose_jacobian_derivative (const VectorXd& q,
+                                       const VectorXd& q_dot) const override; //To be implemented.
 };
 
 }
