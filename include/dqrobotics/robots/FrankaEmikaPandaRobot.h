@@ -25,6 +25,7 @@ class FrankaEmikaPandaRobot
 {
 public:
     static DQ_SerialManipulatorMDH kinematics();
+    //static DQ_SerialManipulatorMDH dynamics(); To be implemented
 };
 
 }

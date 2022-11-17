@@ -77,8 +77,12 @@ DQ _get_offset_flange()
 }
 
 /**
- * @brief _get_q_limits
- * @return
+ * @brief _get_q_limits returns the joint limits of the Franka Emika Panda robot
+ *                      as suggested by the manufacturer.
+ *
+ * source: https://frankaemika.github.io/docs/control_parameters.html
+ *
+ * @return a std::make_tuple(q_min_, q_max_) containing the joint limits.
  */
 std::tuple<const VectorXd, const VectorXd> _get_q_limits()
 {
@@ -89,8 +93,12 @@ std::tuple<const VectorXd, const VectorXd> _get_q_limits()
 
 
 /**
- * @brief _get_q_dot_limits
- * @return
+ * @brief _get_q_dot_limits returns the joint velocity limits of the Franka Emika Panda robot
+ *                          as suggested by the manufacturer.
+ *
+ * source: https://frankaemika.github.io/docs/control_parameters.html
+ *
+ * @return a std::make_tuple(q_min_dot_, q_max_dot_) containing the joint velocity limits.
  */
 std::tuple<const VectorXd, const VectorXd> _get_q_dot_limits()
 {
