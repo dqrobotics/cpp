@@ -93,5 +93,26 @@ MatrixXd DQ_SerialManipulatorDenso::raw_pose_jacobian(const VectorXd &q_vec, con
     return J;
 }
 
+/**
+ * @brief This method returns the first to_ith_link columns of the time derivative of the pose Jacobian.
+ *        The base displacement and the effector are not taken into account.
+ * @param q. VectorXd representing the robot joint configuration.
+ * @param q_dot. VectorXd representing the robot joint velocities.
+ * @param to_ith_link. The index to a link. This defines until which link the pose_jacobian_derivative
+ *                     will be calculated.
+ * @returns a MatrixXd representing the first to_ith_link columns of the desired Jacobian derivative.
+ *
+ */
+MatrixXd DQ_SerialManipulatorDenso::raw_pose_jacobian_derivative(const VectorXd &q, const VectorXd &q_dot, const int &to_ith_link) const
+{
+    _check_q_vec(q);
+    _check_q_vec(q_dot);
+    _check_to_ith_link(to_ith_link);
+
+    throw std::runtime_error(std::string("pose_jacobian_derivative is not implemented yet."));
+    return MatrixXd::Zero(1,1);
+}
+
+
 
 }
