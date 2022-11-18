@@ -46,9 +46,11 @@ public:
     DQ_SerialManipulatorDenso(const MatrixXd& denso_matrix);
 
     using DQ_SerialManipulator::raw_pose_jacobian;
+     using DQ_SerialManipulator::raw_pose_jacobian_derivative;
     using DQ_SerialManipulator::raw_fkm;
 
     MatrixXd raw_pose_jacobian(const VectorXd& q_vec, const int& to_ith_link) const override;
+    MatrixXd raw_pose_jacobian_derivative(const VectorXd& q, const VectorXd& q_dot, const int& to_ith_link) const override;
     DQ raw_fkm(const VectorXd &q_vec, const int &to_ith_link) const override;
 };
 
