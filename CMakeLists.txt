@@ -130,6 +130,7 @@ INSTALL(FILES
     include/dqrobotics/robots/ComauSmartSixRobot.h
     include/dqrobotics/robots/KukaLw4Robot.h
     include/dqrobotics/robots/KukaYoubotRobot.h
+    include/dqrobotics/robots/FrankaEmikaPandaRobot.h
     DESTINATION "include/dqrobotics/robots")
 
 # solvers headers
@@ -189,4 +190,5 @@ INSTALL(FILES
     src/robots/ComauSmartSixRobot.cpp
     src/robots/KukaLw4Robot.cpp
     src/robots/KukaYoubotRobot.cpp
+    src/robots/FrankaEmikaPandaRobot.cpp
     DESTINATION "src/dqrobotics/robots")
