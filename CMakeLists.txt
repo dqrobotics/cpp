@@ -70,6 +70,7 @@ ADD_LIBRARY(dqrobotics SHARED
     src/robots/ComauSmartSixRobot.cpp
     src/robots/KukaLw4Robot.cpp
     src/robots/KukaYoubotRobot.cpp
+    src/robots/FrankaEmikaPandaRobot.cpp
     )
 
 SET_TARGET_PROPERTIES(dqrobotics 
