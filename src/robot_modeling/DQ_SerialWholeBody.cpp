@@ -253,8 +253,7 @@ MatrixXd DQ_SerialWholeBody::pose_jacobian(const VectorXd &q) const
 //To be implemented.
 MatrixXd DQ_SerialWholeBody::raw_pose_jacobian_derivative_by_chain(const VectorXd &q, const VectorXd &q_dot, const int &to_ith_chain, const int &to_jth_link) const
 {
-    throw std::runtime_error(std::string("pose_jacobian_derivative_by_chain is not implemented yet."));
-    return MatrixXd::Zero(1,1);
+    throw std::runtime_error("pose_jacobian_derivative_by_chain is not implemented yet.");
 }
 
 /**

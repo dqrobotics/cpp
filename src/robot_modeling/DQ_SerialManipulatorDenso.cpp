@@ -105,12 +105,7 @@ MatrixXd DQ_SerialManipulatorDenso::raw_pose_jacobian(const VectorXd &q_vec, con
  */
 MatrixXd DQ_SerialManipulatorDenso::raw_pose_jacobian_derivative(const VectorXd &q, const VectorXd &q_dot, const int &to_ith_link) const
 {
-    _check_q_vec(q);
-    _check_q_vec(q_dot);
-    _check_to_ith_link(to_ith_link);
-
     throw std::runtime_error(std::string("pose_jacobian_derivative is not implemented yet."));
-    return MatrixXd::Zero(1,1);
 }
 
 

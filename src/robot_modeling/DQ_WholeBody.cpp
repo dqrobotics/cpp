@@ -183,8 +183,7 @@ void DQ_WholeBody::set_effector(const DQ &effector)
  */
 MatrixXd DQ_WholeBody::pose_jacobian_derivative(const VectorXd &q, const VectorXd &q_dot, const int &to_ith_link) const
 {
-    throw std::runtime_error(std::string("pose_jacobian_derivative is not implemented yet."));
-    return MatrixXd::Zero(1,1);
+    throw std::runtime_error("pose_jacobian_derivative is not implemented yet.");
 }
 
 
