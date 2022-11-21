@@ -115,7 +115,7 @@ DQ  DQ_SerialManipulator::fkm(const VectorXd& q_vec, const int& to_ith_link) con
     _check_q_vec(q_vec);
     _check_to_ith_link(to_ith_link);
 
-    DQ q = reference_frame_ * ( this->raw_fkm(q_vec, to_ith_link) ); //Take the base into account
+    DQ q = reference_frame_ * raw_fkm(q_vec, to_ith_link); //Take the base into account
 
     if(to_ith_link == get_dim_configuration_space() - 1)
         q = q * curr_effector_; //Take into account the end effector
@@ -138,7 +138,7 @@ MatrixXd  DQ_SerialManipulator::pose_jacobian(const VectorXd& q_vec, const int &
 
     MatrixXd J = raw_pose_jacobian(q_vec,to_ith_link);
 
-    if(to_ith_link==this->get_dim_configuration_space()-1)
+    if(to_ith_link==get_dim_configuration_space()-1)
     {
         J = hamiplus8(reference_frame_)*haminus8(curr_effector_)*J;
     }
@@ -154,7 +154,7 @@ MatrixXd DQ_SerialManipulator::pose_jacobian(const VectorXd &q_vec) const
 {
     _check_q_vec(q_vec);
 
-    return this->DQ_Kinematics::pose_jacobian(q_vec);
+    return DQ_Kinematics::pose_jacobian(q_vec);
 }
 
 
@@ -190,7 +190,7 @@ MatrixXd  DQ_SerialManipulator::pose_jacobian_derivative(const VectorXd &q, cons
     _check_to_ith_link(to_ith_link);
     MatrixXd J_dot = raw_pose_jacobian_derivative(q, q_dot, to_ith_link);
 
-    if(to_ith_link==this->get_dim_configuration_space()-1)
+    if(to_ith_link==get_dim_configuration_space()-1)
     {
         J_dot = hamiplus8(reference_frame_)*haminus8(curr_effector_)*J_dot;
     }
@@ -212,7 +212,7 @@ MatrixXd DQ_SerialManipulator::pose_jacobian_derivative(const VectorXd &q, const
 {
     _check_q_vec(q);
     _check_q_vec(q_dot);
-    return this->DQ_Kinematics::pose_jacobian_derivative(q, q_dot);
+    return DQ_Kinematics::pose_jacobian_derivative(q, q_dot);
 }
 
 }//namespace DQ_robotics

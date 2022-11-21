@@ -43,7 +43,7 @@ DQ_Kinematics::DQ_Kinematics():
  */
 void DQ_Kinematics::_check_to_ith_link(const int &to_ith_link) const
 {
-    if(to_ith_link >= this->get_dim_configuration_space() || to_ith_link < 0)
+    if(to_ith_link >= get_dim_configuration_space() || to_ith_link < 0)
     {
         throw std::runtime_error(std::string("Tried to access link index ") + std::to_string(to_ith_link) + std::string(" which is unnavailable."));
     }
