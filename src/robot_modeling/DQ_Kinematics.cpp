@@ -237,7 +237,7 @@ MatrixXd DQ_Kinematics::translation_jacobian(const MatrixXd &pose_jacobian, cons
  * @param pose The DQ representing the pose related to the pose Jacobian, as obtained from
  *        fkm().
  * @param q_dot The VectorXd representing the robot configuration velocities.
- * @return
+ * @return the MatrixXd representing the desired Jacobian derivative.
  */
 MatrixXd DQ_Kinematics::translation_jacobian_derivative (const MatrixXd& pose_jacobian,
                                                          const MatrixXd& pose_jacobian_derivative,
@@ -275,7 +275,7 @@ MatrixXd DQ_Kinematics::rotation_jacobian(const MatrixXd &pose_jacobian)
  * @brief rotation_jacobian_derivative() returns the time derivative of the rotation
  *        Jacobian.
  * @param pose_jacobian_derivative The MatrixXd representing the pose Jacobian derivative.
- * @return the MatrixXd representing the desired Jacobian.
+ * @return the MatrixXd representing the desired Jacobian derivative.
  */
 MatrixXd DQ_Kinematics::rotation_jacobian_derivative (const MatrixXd& pose_jacobian_derivative)
 {
