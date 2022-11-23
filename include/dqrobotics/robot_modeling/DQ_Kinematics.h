@@ -99,6 +99,12 @@ public:
                                                const DQ& plane_normal,
                                                const VectorXd &q_dot);
 
+    static MatrixXd line_jacobian_derivative (const MatrixXd& pose_jacobian,
+                                              const MatrixXd& pose_jacobian_derivative,
+                                              const DQ& pose,
+                                              const DQ& line_direction,
+                                              const VectorXd &q_dot);
+
     static MatrixXd point_to_point_distance_jacobian(const MatrixXd& translation_jacobian, const DQ& robot_point, const DQ& workspace_point);
     static double   point_to_point_residual         (const DQ& robot_point, const DQ& workspace_point, const DQ& workspace_point_derivative);
     static MatrixXd point_to_line_distance_jacobian (const MatrixXd& translation_jacobian, const DQ& robot_point, const DQ& workspace_line);
