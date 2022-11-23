@@ -353,12 +353,12 @@ MatrixXd DQ_Kinematics::plane_jacobian(const MatrixXd& pose_jacobian, const DQ& 
 
 
 /**
- * @brief DQ_Kinematics::plane_jacobian_derivative
- * @param pose_jacobian
- * @param pose_jacobian_derivative
- * @param pose
- * @param plane_normal
- * @param q_dot
+ * @brief plane_jacobian_derivative() returns the time derivative of the plane jacobian.
+ * @param pose_jacobian The pose Jacobian as obtained from pose_jacobian().
+ * @param pose_jacobian_derivative The MatrixXd representing the pose Jacobian derivative.
+ * @param pose The pose obtained from fkm() corresponding to pose_jacobian().
+ * @param plane_normal the plane normal w.r.t. the  pose reference frame. For example using i_, j_, and k_
+ * @param q_dot The VectorXd representing the robot configuration velocities.
  * @return
  */
 MatrixXd DQ_Kinematics::plane_jacobian_derivative (const MatrixXd& pose_jacobian,
@@ -372,6 +372,7 @@ MatrixXd DQ_Kinematics::plane_jacobian_derivative (const MatrixXd& pose_jacobian
     const MatrixXd  Jr = rotation_jacobian(pose_jacobian);
     const MatrixXd  Jt = translation_jacobian(pose_jacobian,pose);
     const DQ        r_dot = DQ(Jr*q_dot);
+    const DQ        t_dot = DQ(Jt*q_dot);
     const MatrixXd Jr_dot = rotation_jacobian_derivative(pose_jacobian_derivative);
     const MatrixXd Jnz_dot = (haminus4(plane_normal*conj(r_dot)) + hamiplus4(r_dot*plane_normal)*C4())*Jr +
                        (haminus4(plane_normal*conj(r)) + hamiplus4(r*plane_normal)*C4())*Jr_dot;
@@ -381,7 +382,7 @@ MatrixXd DQ_Kinematics::plane_jacobian_derivative (const MatrixXd& pose_jacobian
     const DQ        nz = r*(plane_normal)*conj(r);
     const DQ    nz_dot = DQ( Jnz*q_dot );
 
-    const DQ t_dot = DQ(Jt*q_dot);
+
     const MatrixXd Jt_dot = DQ_Kinematics::translation_jacobian_derivative(pose_jacobian, pose_jacobian_derivative, pose, q_dot);
 
     MatrixXd Jdz_dot = (vec4(nz_dot).transpose()*Jt + vec4(nz).transpose()*Jt_dot +
