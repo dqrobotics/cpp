@@ -351,6 +351,49 @@ MatrixXd DQ_Kinematics::plane_jacobian(const MatrixXd& pose_jacobian, const DQ& 
     return JPI;
 }
 
+
+/**
+ * @brief DQ_Kinematics::plane_jacobian_derivative
+ * @param pose_jacobian
+ * @param pose_jacobian_derivative
+ * @param pose
+ * @param plane_normal
+ * @param q_dot
+ * @return
+ */
+MatrixXd DQ_Kinematics::plane_jacobian_derivative (const MatrixXd& pose_jacobian,
+                                                   const MatrixXd& pose_jacobian_derivative,
+                                                   const DQ& pose,
+                                                   const DQ& plane_normal,
+                                                   const VectorXd &q_dot)
+{
+    const DQ        r = rotation(pose);
+    const DQ        t = translation(pose);
+    const MatrixXd  Jr = rotation_jacobian(pose_jacobian);
+    const MatrixXd  Jt = translation_jacobian(pose_jacobian,pose);
+    const DQ        r_dot = DQ(Jr*q_dot);
+    const MatrixXd Jr_dot = rotation_jacobian_derivative(pose_jacobian_derivative);
+    const MatrixXd Jnz_dot = (haminus4(plane_normal*conj(r_dot)) + hamiplus4(r_dot*plane_normal)*C4())*Jr +
+                       (haminus4(plane_normal*conj(r)) + hamiplus4(r*plane_normal)*C4())*Jr_dot;
+
+    const MatrixXd JPI = DQ_Kinematics::plane_jacobian(pose_jacobian, pose, plane_normal);
+    const MatrixXd Jnz = JPI.block(0,0,4,JPI.cols());
+    const DQ        nz = r*(plane_normal)*conj(r);
+    const DQ    nz_dot = DQ( Jnz*q_dot );
+
+    const DQ t_dot = DQ(Jt*q_dot);
+    const MatrixXd Jt_dot = DQ_Kinematics::translation_jacobian_derivative(pose_jacobian, pose_jacobian_derivative, pose, q_dot);
+
+    MatrixXd Jdz_dot = (vec4(nz_dot).transpose()*Jt + vec4(nz).transpose()*Jt_dot +
+                        vec4(t_dot).transpose()*Jnz + vec4(t).transpose()*Jnz_dot);
+
+
+    MatrixXd JPI_dot = MatrixXd::Zero(8,JPI.cols());
+    JPI_dot << Jnz_dot, Jdz_dot, MatrixXd::Zero(3, JPI_dot.cols());
+    return JPI_dot;
+
+}
+
 MatrixXd DQ_Kinematics::point_to_point_distance_jacobian(const MatrixXd& translation_jacobian, const DQ& robot_point, const DQ& workspace_point)
 {
     if(! is_pure_quaternion(robot_point))
