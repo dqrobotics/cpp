@@ -193,17 +193,17 @@ MatrixXd DQ_Kinematics::distance_jacobian_derivative (const MatrixXd& pose_jacob
                                                       const DQ& pose,
                                                       const VectorXd &q_dot)
 {
+    ///Translation
     const DQ t        = translation(pose);
-    const DQ t_dot = DQ(DQ_Kinematics::translation_jacobian(pose_jacobian, pose)*q_dot);
-    const MatrixXd Jt = DQ_Kinematics::translation_jacobian(pose_jacobian, pose);
-    const MatrixXd Jprim = DQ_Kinematics::rotation_jacobian(pose_jacobian);
-    const MatrixXd Jprim_dot = DQ_Kinematics::rotation_jacobian_derivative(pose_jacobian_derivative);
-    const MatrixXd Jdual =     pose_jacobian.block(4,0,4,pose_jacobian.cols());
-    const MatrixXd Jdual_dot = pose_jacobian_derivative.block(4,0,4,pose_jacobian_derivative.cols());
-    MatrixXd Jt_dot = DQ_Kinematics::translation_jacobian_derivative (pose_jacobian,
-                                                                      pose_jacobian_derivative,
-                                                                      pose,
-                                                                      q_dot);
+
+    ///Translation Jacobian
+    const MatrixXd Jt     = translation_jacobian(pose_jacobian, pose);
+
+    ///Translation Jacobian derivative
+    const MatrixXd Jt_dot = translation_jacobian_derivative (pose_jacobian, pose_jacobian_derivative, pose, q_dot);
+
+    ///Translation derivative
+    const DQ t_dot = DQ(Jt*q_dot);
     return 2*vec4(t_dot).transpose()*Jt + 2*vec4(t).transpose()*Jt_dot;
 }
 
@@ -244,9 +244,13 @@ MatrixXd DQ_Kinematics::translation_jacobian_derivative (const MatrixXd& pose_ja
                                                          const DQ& pose,
                                                          const VectorXd &q_dot)
 {
+    /// Aliases
     const DQ&       x  = pose;
-    const MatrixXd Jprim = DQ_Kinematics::rotation_jacobian(pose_jacobian);
-    const MatrixXd Jprim_dot = DQ_Kinematics::rotation_jacobian_derivative(pose_jacobian_derivative);
+
+    /// Requirements
+    const MatrixXd Jprim     = rotation_jacobian(pose_jacobian);
+    const MatrixXd Jprim_dot = rotation_jacobian_derivative(pose_jacobian_derivative);
+
     const MatrixXd Jdual =     pose_jacobian.block(4,0,4,pose_jacobian.cols());
     const MatrixXd Jdual_dot = pose_jacobian_derivative.block(4,0,4,pose_jacobian_derivative.cols());
     return 2*haminus4(DQ(C4()*Jprim*q_dot))*Jdual + 2*haminus4(x.P().conj())*Jdual_dot +
@@ -334,25 +338,39 @@ MatrixXd DQ_Kinematics::line_jacobian_derivative (const MatrixXd& pose_jacobian,
                                                   const DQ& line_direction,
                                                   const VectorXd &q_dot)
 {
+    ///Rotation
     const DQ r = rotation(pose);
-    const DQ t = translation(pose);
-    const DQ l = r*(line_direction)*conj(r);
-    const MatrixXd Jt = translation_jacobian(pose_jacobian,pose);
-    const MatrixXd Jr = rotation_jacobian(pose_jacobian);
-    const MatrixXd Jr_dot = rotation_jacobian_derivative(pose_jacobian_derivative);
-    const DQ       r_dot = DQ(Jr*q_dot);
-    const DQ       t_dot = DQ(Jt*q_dot);
-    const DQ l_dot = r_dot*(line_direction)*conj(r) + r*(line_direction)*conj(r_dot);
-    const MatrixXd Jt_dot = translation_jacobian_derivative(pose_jacobian, pose_jacobian_derivative, pose, q_dot);
 
-    const MatrixXd Jline = DQ_Kinematics::line_jacobian(pose_jacobian, pose, line_direction);
+    ///Translation
+    const DQ t = translation(pose);
+
+    ///Line direction w.r.t. base
+    const DQ l = r*(line_direction)*conj(r);
+
+    /// Requirements
+    const MatrixXd Jt     = translation_jacobian(pose_jacobian,pose);
+    const MatrixXd Jr     = rotation_jacobian(pose_jacobian);
+    const MatrixXd Jr_dot = rotation_jacobian_derivative(pose_jacobian_derivative);
+    const MatrixXd Jt_dot = translation_jacobian_derivative(pose_jacobian, pose_jacobian_derivative, pose, q_dot);
+    const MatrixXd Jline  = line_jacobian(pose_jacobian, pose, line_direction);
+
+    ///Rotation derivative
+    const DQ       r_dot  = DQ(Jr*q_dot);
+
+    ///Translation derivative
+    const DQ       t_dot  = DQ(Jt*q_dot);
+
+    ///Line direction derivative
+    const DQ       l_dot  = r_dot*(line_direction)*conj(r) + r*(line_direction)*conj(r_dot);
+
+    /// Line direction Jacobian
     const MatrixXd Jrx = Jline.block(0,0,4,Jline.cols());
 
-    //const MatrixXd Jrx = (haminus4(line_direction*conj(r)) + hamiplus4(r*line_direction)*C4())*Jr;
-
+    ///Line direction Jacobian derivative
     const MatrixXd Jrx_dot = (haminus4(line_direction*conj(r_dot)) + hamiplus4(r_dot*line_direction)*C4())*Jr +
                              (haminus4(line_direction*conj(r)) + hamiplus4(r*line_direction)*C4())*Jr_dot;
 
+    ///Line moment Jacobian derivative
     const MatrixXd Jmx_dot = crossmatrix4(l_dot).transpose()*Jt + crossmatrix4(l).transpose()*Jt_dot +
                              crossmatrix4(t_dot)*Jrx + crossmatrix4(t)*Jrx_dot;
     MatrixXd Jline_dot = MatrixXd::Zero(8, Jline.cols());
@@ -409,26 +427,41 @@ MatrixXd DQ_Kinematics::plane_jacobian_derivative (const MatrixXd& pose_jacobian
                                                    const DQ& plane_normal,
                                                    const VectorXd &q_dot)
 {
+    ///Rotation
     const DQ        r = rotation(pose);
+
+    ///Translation
     const DQ        t = translation(pose);
-    const MatrixXd  Jr = rotation_jacobian(pose_jacobian);
-    const MatrixXd  Jt = translation_jacobian(pose_jacobian,pose);
-    const DQ        r_dot = DQ(Jr*q_dot);
-    const DQ        t_dot = DQ(Jt*q_dot);
+
+    ///Requirements
+    const MatrixXd JPI    = plane_jacobian(pose_jacobian, pose, plane_normal);
+    const MatrixXd  Jr    = rotation_jacobian(pose_jacobian);
+    const MatrixXd  Jt    = translation_jacobian(pose_jacobian,pose);
     const MatrixXd Jr_dot = rotation_jacobian_derivative(pose_jacobian_derivative);
+    const MatrixXd Jt_dot = translation_jacobian_derivative(pose_jacobian, pose_jacobian_derivative, pose, q_dot);
+
+    ///Rotation derivative
+    const DQ        r_dot = DQ(Jr*q_dot);
+
+    ///Translation derivative
+    const DQ        t_dot = DQ(Jt*q_dot);
+
+    ///Plane normal Jacobian
+    const MatrixXd Jnz = JPI.block(0,0,4,JPI.cols());
+
+    ///Plane normal Jacobian derivative
     const MatrixXd Jnz_dot = (haminus4(plane_normal*conj(r_dot)) + hamiplus4(r_dot*plane_normal)*C4())*Jr +
                        (haminus4(plane_normal*conj(r)) + hamiplus4(r*plane_normal)*C4())*Jr_dot;
 
-    const MatrixXd JPI = DQ_Kinematics::plane_jacobian(pose_jacobian, pose, plane_normal);
-    const MatrixXd Jnz = JPI.block(0,0,4,JPI.cols());
+    ///Plane normal w.r.t base
     const DQ        nz = r*(plane_normal)*conj(r);
+
+    ///Plane normal (w.r.t base) derivative
     const DQ    nz_dot = DQ( Jnz*q_dot );
 
-
-    const MatrixXd Jt_dot = DQ_Kinematics::translation_jacobian_derivative(pose_jacobian, pose_jacobian_derivative, pose, q_dot);
-
-    MatrixXd Jdz_dot = (vec4(nz_dot).transpose()*Jt + vec4(nz).transpose()*Jt_dot +
-                        vec4(t_dot).transpose()*Jnz + vec4(t).transpose()*Jnz_dot);
+    ///Plane distance Jacobian derivative
+    const MatrixXd Jdz_dot = (vec4(nz_dot).transpose()*Jt + vec4(nz).transpose()*Jt_dot +
+                              vec4(t_dot).transpose()*Jnz + vec4(t).transpose()*Jnz_dot);
 
 
     MatrixXd JPI_dot = MatrixXd::Zero(8,JPI.cols());
