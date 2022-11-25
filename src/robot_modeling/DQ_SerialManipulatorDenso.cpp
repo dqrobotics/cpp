@@ -105,7 +105,36 @@ MatrixXd DQ_SerialManipulatorDenso::raw_pose_jacobian(const VectorXd &q_vec, con
  */
 MatrixXd DQ_SerialManipulatorDenso::raw_pose_jacobian_derivative(const VectorXd &q, const VectorXd &q_dot, const int &to_ith_link) const
 {
-    throw std::runtime_error(std::string("pose_jacobian_derivative is not implemented yet."));
+    _check_q_vec(q);
+    _check_q_vec(q_dot);
+    _check_to_ith_link(to_ith_link);
+
+    int n = to_ith_link+1;
+    DQ x_effector = raw_fkm(q,to_ith_link);
+    MatrixXd J    = raw_pose_jacobian(q,to_ith_link);
+    VectorXd vec_x_effector_dot = J*q_dot.head(n);
+    DQ x = DQ(1);
+    MatrixXd J_dot = MatrixXd::Zero(8,n);
+
+    for(int i=0;i<n;i++)
+    {
+        const DQ w = k_;
+        const DQ z = 0.5*x*w*conj(x);
+
+        VectorXd vec_zdot;
+        if(i==0)
+        {
+            vec_zdot = VectorXd::Zero(8,1);
+        }
+        else
+        {
+            vec_zdot = 0.5*(haminus8(w*conj(x)) + hamiplus8(x*w)*C8())*raw_pose_jacobian(q,i-1)*q_dot.head(i);
+        }
+        J_dot.col(i) = haminus8(x_effector)*vec_zdot + hamiplus8(z)*vec_x_effector_dot;
+        x = x*_denso2dh(q(i),i);
+    }
+
+    return J_dot;
 }
 
 
