@@ -132,6 +132,10 @@ public:
 
     DQ Adsharp(const DQ& dq2) const;
 
+    Matrix<double,4,3> Q4() const;
+
+    Matrix<double,8,6> Q8() const;
+
     std::string to_string() const;
 
     //Operators
@@ -218,6 +222,10 @@ DQ dot(const DQ& dq1, const DQ& dq2);
 DQ Ad(const DQ& dq1, const DQ& dq2);
 
 DQ Adsharp(const DQ& dq1, const DQ& dq2);
+
+Matrix<double,4,3> Q4(const DQ& dq);
+
+Matrix<double,8,6> Q8(const DQ& dq);
 
 bool is_unit(const DQ& dq);
 
