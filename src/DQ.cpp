@@ -20,6 +20,7 @@ Contributors:
 - Bruno Vilhena Adorno (adorno@ieee.org)
 - Murilo M. Marinho (murilo@nml.t.u-tokyo.ac.jp)
 - Mateus Rodrigues Martins (martinsrmateus@gmail.com)
+- Marcos da Silva Pereira (marcos.si.pereira@gmail.com)
 */
 
 #include <dqrobotics/DQ.h>
@@ -378,6 +379,16 @@ DQ Ad(const DQ& dq1, const DQ& dq2)
 DQ Adsharp(const DQ& dq1, const DQ& dq2)
 {
     return sharp(dq1)*dq2*conj(dq1);
+}
+
+Matrix<double,4,3> Q4(const DQ& dq) 
+{    
+    return dq.Q4();
+}
+
+Matrix<double,8,6> Q8(const DQ& dq) 
+{    
+    return dq.Q8();
 }
 
 /****************************************************************
@@ -1019,6 +1030,67 @@ DQ DQ::Adsharp(const DQ& dq2) const
 {
     return DQ_robotics::Adsharp(*this,dq2);
 }
+
+/** Return the partial derivative of the unit quaternion r with respect to log(r)
+ * \return A constant boost::numeric::ublas::matrix <double> (4,3).
+*/
+Matrix<double,4,3> DQ::Q4() const
+{
+    Vector4d r = this->vec4();
+    double phi = double(this->rotation_angle());
+    Vector3d n = this->rotation_axis().vec3();
+    double nx = n(0);
+    double ny = n(1);
+    double nz = n(2);
+
+    double theta;
+    if (phi == 0)
+    {
+        theta = 1;
+    }
+    else
+    {
+        theta = sin(phi/2.0)/(phi/2.0);
+    }
+    
+    double gamma = r(0) - theta;
+
+    Matrix<double,4,3> Q4(4,3);
+    Q4 << -r(1),                        -r(2),                       -r(3),
+          gamma*std::pow(nx,2)+theta,   gamma*nx*ny,                 gamma*nx*nz,
+          gamma*nx*ny,                  gamma*std::pow(ny,2)+theta,  gamma*ny*nz,
+          gamma*nz*nx,                  gamma*nz*ny,                 gamma*std::pow(nz,2)+theta;
+
+    return Q4;
+}
+
+/**
+ * Return the partial derivative of the unit dual quaternion x with respect to log(x)
+ * \return A constant boost::numeric::ublas::matrix <double> (8,6).
+*/
+Matrix<double,8,6> DQ::Q8() const
+{
+    if (!is_unit(*this))
+    {
+        throw(std::range_error("Bad translation() call: Not a unit dual quaternion"));
+    }
+
+    DQ r = this->rotation();
+    DQ p = this->translation();
+
+    MatrixXd Q = r.Q4();
+    MatrixXd Qp(4,3);
+    Qp << MatrixXd::Zero(1,3),
+          MatrixXd::Identity(3,3);
+
+    Matrix<double,8,6> Q8(8,6);
+
+    Q8 << Q, MatrixXd::Zero(4,3),
+          0.5*p.hamiplus4()*Q, r.haminus4()*Qp;
+
+    return Q8;
+}
+
 
 /**
 * Unit Dual Quaternion constructor.
