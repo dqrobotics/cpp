@@ -1031,8 +1031,12 @@ DQ DQ::Adsharp(const DQ& dq2) const
     return DQ_robotics::Adsharp(*this,dq2);
 }
 
-/** Return the partial derivative of the unit quaternion r with respect to log(r)
- * \return A constant boost::numeric::ublas::matrix <double> (4,3).
+/** 
+* @brief This method returns the partial derivative of a unit quaternion with respect to its logarithm.
+*        Eq. (22) of Savino et al (2020). Pose consensus based on dual quaternion algebra with application 
+*        to decentralized formation control of mobile manipulators.
+*        https://doi.org/10.1016/j.jfranklin.2019.09.045
+* @returns A matrix representing the desired partial derivative.
 */
 Matrix<double,4,3> DQ::Q4() const
 {
@@ -1064,15 +1068,18 @@ Matrix<double,4,3> DQ::Q4() const
     return Q4;
 }
 
-/**
- * Return the partial derivative of the unit dual quaternion x with respect to log(x)
- * \return A constant boost::numeric::ublas::matrix <double> (8,6).
+/** 
+* @brief This method returns the partial derivative of a unit dual quaternion with respect to its logarithm.
+*        Theorem 4 of Savino et al (2020). Pose consensus based on dual quaternion algebra with application 
+*        to decentralized formation control of mobile manipulators.
+*        https://doi.org/10.1016/j.jfranklin.2019.09.045
+* @returns Return the partial derivative of the unit dual quaternion x with respect to log(x).
 */
 Matrix<double,8,6> DQ::Q8() const
 {
     if (!is_unit(*this))
     {
-        throw(std::range_error("Bad translation() call: Not a unit dual quaternion"));
+        throw(std::range_error("Bad Q8() call: Not a unit dual quaternion"));
     }
 
     DQ r = this->rotation();
