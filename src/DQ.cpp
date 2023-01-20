@@ -17,10 +17,29 @@ This file is part of DQ Robotics.
     along with DQ Robotics.  If not, see <http://www.gnu.org/licenses/>.
 
 Contributors:
-- Bruno Vilhena Adorno (adorno@ieee.org)
-- Murilo M. Marinho (murilo@nml.t.u-tokyo.ac.jp)
-- Mateus Rodrigues Martins (martinsrmateus@gmail.com)
-- Marcos da Silva Pereira (marcos.si.pereira@gmail.com)
+1. Bruno Vilhena Adorno (adorno@ieee.org)
+    - Responsible for the original implementation of the DQ in Matlab
+    (https://github.com/dqrobotics/matlab/tree/master/%40DQ).
+
+    - Modified the '<<' operator, which is used in the std::cout method, 
+    to display dual quaternions as done in Matlab.
+    [bvadorno committed on May 2, 2020](f6abd0e)
+    https://github.com/dqrobotics/cpp/commit/f6abd0e83e50b78c90ccc66ab7c07f44b77c89df
+
+2. Murilo M. Marinho (murilo@nml.t.u-tokyo.ac.jp)
+    - Responsible for several modifications of the file since 2013 
+    (https://github.com/dqrobotics/cpp/commit/8e048752b48afa834a44f5828d7c42de009a47d4).
+    
+3. Mateus Rodrigues Martins (martinsrmateus@gmail.com)    
+    - Added CMEX interface files with Matlab. 
+    Corrected C8 definition in DQ_kinematics. 
+    Added Generalized Jacobian definition in DQ. 
+    [mateusmartins committed on Jan 3, 2013](9ccebb6)
+    https://github.com/dqrobotics/cpp/commit/9ccebb61e48da5a530ce19da851840d08a2e089b
+
+4. Marcos da Silva Pereira (marcos.si.pereira@gmail.com)
+    - Translated the Q4 and the Q8 methods from the MATLAB implementation in PR #56 
+    (https://github.com/dqrobotics/cpp/pull/56).
 */
 
 #include <dqrobotics/DQ.h>
