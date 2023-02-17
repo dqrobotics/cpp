@@ -1,5 +1,5 @@
 /**
-(C) Copyright 2011-2020 DQ Robotics Developers
+(C) Copyright 2011-2023 DQ Robotics Developers
 
 This file is part of DQ Robotics.
 
@@ -18,28 +18,27 @@ This file is part of DQ Robotics.
 
 Contributors:
 1. Bruno Vilhena Adorno (adorno@ieee.org)
-    - Responsible for the original implementation of the DQ in Matlab
-    (https://github.com/dqrobotics/matlab/tree/master/%40DQ).
+        - Responsible for the original implementation.
+          [bvadorno committed on Jul 20, 2012](7368f3e)
+          (https://github.com/dqrobotics/cpp/commit/7368f3ea3d557834661d723adde981250db0b87f).
 
-    - Modified the '<<' operator, which is used in the std::cout method, 
-    to display dual quaternions as done in Matlab.
-    [bvadorno committed on May 2, 2020](f6abd0e)
-    https://github.com/dqrobotics/cpp/commit/f6abd0e83e50b78c90ccc66ab7c07f44b77c89df
+2. Mateus Rodrigues Martins (martinsrmateus@gmail.com)
+        - Added new methods, and support for Boost library.
+          [mateusmartins committed on Jul 27, 2012]()
+          (https://github.com/dqrobotics/cpp/commit/7d96efb354ffa07a093d5cb3f34af2c7ce8e2d39).
 
-2. Murilo M. Marinho (murilo@nml.t.u-tokyo.ac.jp)
-    - Responsible for several modifications of the file since 2013 
-    (https://github.com/dqrobotics/cpp/commit/8e048752b48afa834a44f5828d7c42de009a47d4).
-    
-3. Mateus Rodrigues Martins (martinsrmateus@gmail.com)    
-    - Added CMEX interface files with Matlab. 
-    Corrected C8 definition in DQ_kinematics. 
-    Added Generalized Jacobian definition in DQ. 
-    [mateusmartins committed on Jan 3, 2013](9ccebb6)
-    https://github.com/dqrobotics/cpp/commit/9ccebb61e48da5a530ce19da851840d08a2e089b
+3. Murilo M. Marinho (murilo@nml.t.u-tokyo.ac.jp)
+       - Refactoring, and compliance with the new style. 
+         [murilomarinho committed on Dec 22, 2012](c7f4596)
+         (https://github.com/dqrobotics/cpp/commit/c7f459612bb47ab2151b64ed6820c9f6fb242fa6).
+
+       - Added support for Eigen library
+         [murilomarinho committed on Jan 31, 2013](1ec0bf0)
+         (https://github.com/dqrobotics/cpp/commit/1ec0bf096ff7b9f3f73ee0513f0a6f07c2a58f01).
 
 4. Marcos da Silva Pereira (marcos.si.pereira@gmail.com)
-    - Translated the Q4 and the Q8 methods from the MATLAB implementation in PR #56 
-    (https://github.com/dqrobotics/cpp/pull/56).
+        - Translated the Q4 and the Q8 methods from the MATLAB implementation in PR #56 
+          (https://github.com/dqrobotics/cpp/pull/56).
 */
 
 #include <dqrobotics/DQ.h>
@@ -1092,7 +1091,7 @@ Matrix<double,4,3> DQ::Q4() const
 *        Theorem 4 of Savino et al (2020). Pose consensus based on dual quaternion algebra with application 
 *        to decentralized formation control of mobile manipulators.
 *        https://doi.org/10.1016/j.jfranklin.2019.09.045
-* @returns Return the partial derivative of the unit dual quaternion x with respect to log(x).
+* @returns @returns A matrix representing the desired partial derivative.
 */
 Matrix<double,8,6> DQ::Q8() const
 {
