@@ -1,5 +1,5 @@
 /**
-(C) Copyright 2011-2022 DQ Robotics Developers
+(C) Copyright 2011-2023 DQ Robotics Developers
 
 This file is part of DQ Robotics.
 
@@ -17,9 +17,28 @@ This file is part of DQ Robotics.
     along with DQ Robotics.  If not, see <http://www.gnu.org/licenses/>.
 
 Contributors:
-- Bruno Vilhena Adorno     (adorno@ieee.org)
-- Murilo M. Marinho        (murilo@g.ecc.t.u-tokyo.ac.jp)
-- Mateus Rodrigues Martins (martinsrmateus@gmail.com)
+1. Bruno Vilhena Adorno (adorno@ieee.org)
+        - Responsible for the original implementation.
+          [bvadorno committed on Jul 20, 2012](7368f3e)
+          (https://github.com/dqrobotics/cpp/commit/7368f3ea3d557834661d723adde981250db0b87f).
+
+2. Mateus Rodrigues Martins (martinsrmateus@gmail.com)
+        - Added new methods, and support for Boost library.
+          [mateusmartins committed on Jul 27, 2012]()
+          (https://github.com/dqrobotics/cpp/commit/7d96efb354ffa07a093d5cb3f34af2c7ce8e2d39).
+
+3. Murilo M. Marinho (murilo@nml.t.u-tokyo.ac.jp)
+       - Refactoring, and compliance with the new style. 
+         [murilomarinho committed on Dec 22, 2012](c7f4596)
+         (https://github.com/dqrobotics/cpp/commit/c7f459612bb47ab2151b64ed6820c9f6fb242fa6).
+
+       - Added support for Eigen library
+         [murilomarinho committed on Jan 31, 2013](1ec0bf0)
+         (https://github.com/dqrobotics/cpp/commit/1ec0bf096ff7b9f3f73ee0513f0a6f07c2a58f01).
+
+4. Marcos da Silva Pereira (marcos.si.pereira@gmail.com)
+        - Translated the Q4 and the Q8 methods from the MATLAB implementation in PR #56 
+          (https://github.com/dqrobotics/cpp/pull/56).
 */
 #pragma once
 
