@@ -1091,7 +1091,7 @@ Matrix<double,4,3> DQ::Q4() const
 *        Theorem 4 of Savino et al (2020). Pose consensus based on dual quaternion algebra with application 
 *        to decentralized formation control of mobile manipulators.
 *        https://doi.org/10.1016/j.jfranklin.2019.09.045
-* @returns @returns A matrix representing the desired partial derivative.
+* @returns A matrix representing the desired partial derivative.
 */
 Matrix<double,8,6> DQ::Q8() const
 {
