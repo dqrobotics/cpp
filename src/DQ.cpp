@@ -1058,12 +1058,17 @@ DQ DQ::Adsharp(const DQ& dq2) const
 */
 Matrix<double,4,3> DQ::Q4() const
 {
-    Vector4d r = this->vec4();
-    double phi = double(this->rotation_angle());
-    Vector3d n = this->rotation_axis().vec3();
-    double nx = n(0);
-    double ny = n(1);
-    double nz = n(2);
+    if (!is_unit(*this))
+    {
+        throw(std::range_error("Bad Q4() call: Not a unit dual quaternion"));
+    }
+
+    const Vector4d r = this->vec4();
+    const double phi = double(this->rotation_angle());
+    const Vector3d n = this->rotation_axis().vec3();
+    const double nx = n(0);
+    const double ny = n(1);
+    const double nz = n(2);
 
     double theta;
     if (phi == 0)
@@ -1100,10 +1105,10 @@ Matrix<double,8,6> DQ::Q8() const
         throw(std::range_error("Bad Q8() call: Not a unit dual quaternion"));
     }
 
-    DQ r = this->rotation();
-    DQ p = this->translation();
+    const DQ r = this->rotation();
+    const DQ p = this->translation();
 
-    MatrixXd Q = r.Q4();
+    const MatrixXd Q = r.Q4();
     MatrixXd Qp(4,3);
     Qp << MatrixXd::Zero(1,3),
           MatrixXd::Identity(3,3);
