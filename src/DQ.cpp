@@ -1050,7 +1050,7 @@ DQ DQ::Adsharp(const DQ& dq2) const
 }
 
 /** 
-* @brief This method returns the partial derivative of a unit quaternion with respect to its logarithm.
+* @brief Given the unit quaternion r, return the partial derivative of vec4(r) with respect to vec3(log(r)).
 *        Eq. (22) of Savino et al (2020). Pose consensus based on dual quaternion algebra with application 
 *        to decentralized formation control of mobile manipulators.
 *        https://doi.org/10.1016/j.jfranklin.2019.09.045
@@ -1060,7 +1060,7 @@ Matrix<double,4,3> DQ::Q4() const
 {
     if (!is_unit(*this))
     {
-        throw(std::range_error("Bad Q4() call: Not a unit dual quaternion"));
+        throw(std::range_error("Bad Q4() call: Not a unit quaternion"));
     }
 
     const Vector4d r = this->vec4();
@@ -1092,7 +1092,7 @@ Matrix<double,4,3> DQ::Q4() const
 }
 
 /** 
-* @brief This method returns the partial derivative of a unit dual quaternion with respect to its logarithm.
+* @brief Given the unit dual quaternion x, Q8(x) returns the partial derivative of vec8(x) with respect to vec6(log(x)).
 *        Theorem 4 of Savino et al (2020). Pose consensus based on dual quaternion algebra with application 
 *        to decentralized formation control of mobile manipulators.
 *        https://doi.org/10.1016/j.jfranklin.2019.09.045
