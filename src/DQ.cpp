@@ -1058,7 +1058,7 @@ DQ DQ::Adsharp(const DQ& dq2) const
 */
 Matrix<double,4,3> DQ::Q4() const
 {
-    if (!is_unit(*this))
+    if (!is_unit(*this) || !is_quaternion(*this))
     {
         throw(std::range_error("Bad Q4() call: Not a unit quaternion"));
     }
