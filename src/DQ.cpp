@@ -1,5 +1,5 @@
 /**
-(C) Copyright 2011-2020 DQ Robotics Developers
+(C) Copyright 2011-2023 DQ Robotics Developers
 
 This file is part of DQ Robotics.
 
@@ -17,9 +17,28 @@ This file is part of DQ Robotics.
     along with DQ Robotics.  If not, see <http://www.gnu.org/licenses/>.
 
 Contributors:
-- Bruno Vilhena Adorno (adorno@ieee.org)
-- Murilo M. Marinho (murilo@nml.t.u-tokyo.ac.jp)
-- Mateus Rodrigues Martins (martinsrmateus@gmail.com)
+1. Bruno Vilhena Adorno (adorno@ieee.org)
+        - Responsible for the original implementation.
+          [bvadorno committed on Jul 20, 2012](7368f3e)
+          (https://github.com/dqrobotics/cpp/commit/7368f3ea3d557834661d723adde981250db0b87f).
+
+2. Mateus Rodrigues Martins (martinsrmateus@gmail.com)
+        - Added new methods, and support for Boost library.
+          [mateusmartins committed on Jul 27, 2012]()
+          (https://github.com/dqrobotics/cpp/commit/7d96efb354ffa07a093d5cb3f34af2c7ce8e2d39).
+
+3. Murilo M. Marinho (murilo@nml.t.u-tokyo.ac.jp)
+       - Refactoring, and compliance with the new style. 
+         [murilomarinho committed on Dec 22, 2012](c7f4596)
+         (https://github.com/dqrobotics/cpp/commit/c7f459612bb47ab2151b64ed6820c9f6fb242fa6).
+
+       - Added support for Eigen library
+         [murilomarinho committed on Jan 31, 2013](1ec0bf0)
+         (https://github.com/dqrobotics/cpp/commit/1ec0bf096ff7b9f3f73ee0513f0a6f07c2a58f01).
+
+4. Marcos da Silva Pereira (marcos.si.pereira@gmail.com)
+        - Translated the Q4 and the Q8 methods from the MATLAB implementation in PR #56 
+          (https://github.com/dqrobotics/cpp/pull/56).
 */
 
 #include <dqrobotics/DQ.h>
@@ -378,6 +397,16 @@ DQ Ad(const DQ& dq1, const DQ& dq2)
 DQ Adsharp(const DQ& dq1, const DQ& dq2)
 {
     return sharp(dq1)*dq2*conj(dq1);
+}
+
+Matrix<double,4,3> Q4(const DQ& dq) 
+{    
+    return dq.Q4();
+}
+
+Matrix<double,8,6> Q8(const DQ& dq) 
+{    
+    return dq.Q8();
 }
 
 /****************************************************************
@@ -1019,6 +1048,79 @@ DQ DQ::Adsharp(const DQ& dq2) const
 {
     return DQ_robotics::Adsharp(*this,dq2);
 }
+
+/** 
+* @brief Given the unit quaternion r, return the partial derivative of vec4(r) with respect to vec3(log(r)).
+*        Eq. (22) of Savino et al (2020). Pose consensus based on dual quaternion algebra with application 
+*        to decentralized formation control of mobile manipulators.
+*        https://doi.org/10.1016/j.jfranklin.2019.09.045
+* @returns A matrix representing the desired partial derivative.
+*/
+Matrix<double,4,3> DQ::Q4() const
+{
+    if (!is_unit(*this) || !is_quaternion(*this))
+    {
+        throw(std::range_error("Bad Q4() call: Not a unit quaternion"));
+    }
+
+    const Vector4d r = this->vec4();
+    const double phi = double(this->rotation_angle());
+    const Vector3d n = this->rotation_axis().vec3();
+    const double nx = n(0);
+    const double ny = n(1);
+    const double nz = n(2);
+
+    double theta;
+    if (phi == 0)
+    {
+        theta = 1;
+    }
+    else
+    {
+        theta = sin(phi/2.0)/(phi/2.0);
+    }
+    
+    double gamma = r(0) - theta;
+
+    Matrix<double,4,3> Q4(4,3);
+    Q4 << -r(1),                        -r(2),                       -r(3),
+          gamma*std::pow(nx,2)+theta,   gamma*nx*ny,                 gamma*nx*nz,
+          gamma*nx*ny,                  gamma*std::pow(ny,2)+theta,  gamma*ny*nz,
+          gamma*nz*nx,                  gamma*nz*ny,                 gamma*std::pow(nz,2)+theta;
+
+    return Q4;
+}
+
+/** 
+* @brief Given the unit dual quaternion x, Q8(x) returns the partial derivative of vec8(x) with respect to vec6(log(x)).
+*        Theorem 4 of Savino et al (2020). Pose consensus based on dual quaternion algebra with application 
+*        to decentralized formation control of mobile manipulators.
+*        https://doi.org/10.1016/j.jfranklin.2019.09.045
+* @returns A matrix representing the desired partial derivative.
+*/
+Matrix<double,8,6> DQ::Q8() const
+{
+    if (!is_unit(*this))
+    {
+        throw(std::range_error("Bad Q8() call: Not a unit dual quaternion"));
+    }
+
+    const DQ r = this->rotation();
+    const DQ p = this->translation();
+
+    const MatrixXd Q = r.Q4();
+    MatrixXd Qp(4,3);
+    Qp << MatrixXd::Zero(1,3),
+          MatrixXd::Identity(3,3);
+
+    Matrix<double,8,6> Q8(8,6);
+
+    Q8 << Q, MatrixXd::Zero(4,3),
+          0.5*p.hamiplus4()*Q, r.haminus4()*Qp;
+
+    return Q8;
+}
+
 
 /**
 * Unit Dual Quaternion constructor.
