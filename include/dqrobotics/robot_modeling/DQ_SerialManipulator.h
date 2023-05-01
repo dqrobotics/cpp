@@ -18,7 +18,7 @@ This file is part of DQ Robotics.
     along with DQ Robotics.  If not, see <http://www.gnu.org/licenses/>.
 
 Contributors:
-- Murilo M. Marinho        (murilo@nml.t.u-tokyo.ac.jp)
+- Murilo M. Marinho        (murilomarinho@ieee.org)
 - Mateus Rodrigues Martins (martinsrmateus@gmail.com)
 - Juan Jose Quiroz Omana   (juanjqo@g.ecc.u-tokyo.ac.jp)
 */

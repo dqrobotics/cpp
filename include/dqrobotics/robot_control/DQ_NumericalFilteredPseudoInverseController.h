@@ -24,7 +24,7 @@ This file is part of DQ Robotics.
     along with DQ Robotics.  If not, see <http://www.gnu.org/licenses/>.
 
 Contributors:
-- Murilo M. Marinho (murilo@g.ecc.u-tokyo.ac.jp)
+- Murilo M. Marinho (murilomarinho@ieee.org)
 */
 #include <dqrobotics/DQ.h>
 #include <dqrobotics/robot_control/DQ_PseudoinverseController.h>

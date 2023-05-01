@@ -27,7 +27,7 @@ Contributors:
           [mateusmartins committed on Jul 27, 2012]()
           (https://github.com/dqrobotics/cpp/commit/7d96efb354ffa07a093d5cb3f34af2c7ce8e2d39).
 
-3. Murilo M. Marinho (murilo@nml.t.u-tokyo.ac.jp)
+3. Murilo M. Marinho (murilomarinho@ieee.org)
        - Refactoring, and compliance with the new style. 
          [murilomarinho committed on Dec 22, 2012](c7f4596)
          (https://github.com/dqrobotics/cpp/commit/c7f459612bb47ab2151b64ed6820c9f6fb242fa6).
