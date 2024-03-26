@@ -644,7 +644,7 @@ MatrixXd DQ_Kinematics::line_to_line_distance_jacobian(const MatrixXd& line_jaco
     //Cross product Jacobian
     const MatrixXd Jcross        = 0.5*(haminus8(l_dq)-hamiplus8(l_dq))*line_jacobian;
     const MatrixXd Jcrossprimary = Jcross.block(0,0,4,DOFS);
-    const MatrixXd Jcrossdual    = Jcross.block(5,8,4,DOFS);
+    const MatrixXd Jcrossdual    = Jcross.block(4,0,4,DOFS);
     //Norm Jacobian
     const DQ Plzlcross                = P(cross(robot_line,l_dq));
     const DQ Dlzlcross                = D(cross(robot_line,l_dq));
