@@ -1,5 +1,5 @@
 /**
-(C) Copyright 2020-2022 DQ Robotics Developers
+(C) Copyright 2020-2023 DQ Robotics Developers
 
 This file is part of DQ Robotics.
 
@@ -17,7 +17,11 @@ This file is part of DQ Robotics.
     along with DQ Robotics.  If not, see <http://www.gnu.org/licenses/>.
 
 Contributors:
-- Murilo M. Marinho (murilomarinho@ieee.org)
+1. Murilo M. Marinho (murilomarinho@ieee.org)
+
+2. Juan Jose Quiroz Omana (juanjqogm@gmail.com)
+   - Fixed bug 61 (https://github.com/dqrobotics/cpp/issues/61) in pose_jacobian method.
+
 */
 
 #include<dqrobotics/robot_modeling/DQ_SerialWholeBody.h>
@@ -242,7 +246,7 @@ MatrixXd DQ_SerialWholeBody::pose_jacobian(const VectorXd &q, const int &to_ith_
     int to_jth_link;
     std::tie(to_ith_chain,to_jth_link) = get_chain_and_link_from_index(to_ith_link);
 
-    return raw_pose_jacobian_by_chain(q,to_ith_chain,to_jth_link);
+    return hamiplus8(get_reference_frame())*raw_pose_jacobian_by_chain(q,to_ith_chain,to_jth_link);
 }
 
 MatrixXd DQ_SerialWholeBody::pose_jacobian(const VectorXd &q) const
