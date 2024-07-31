@@ -1,6 +1,6 @@
 #pragma once
 /**
-(C) Copyright 2019-2022 DQ Robotics Developers
+(C) Copyright 2019-2024 DQ Robotics Developers
 
 This file is part of DQ Robotics.
 
@@ -18,7 +18,16 @@ This file is part of DQ Robotics.
     along with DQ Robotics.  If not, see <http://www.gnu.org/licenses/>.
 
 Contributors:
-- Murilo M. Marinho (murilomarinho@ieee.org)
+
+    1. Murilo M. Marinho (murilomarinho@ieee.org)
+       Responsible for the original implementation
+
+    2. Juan Jose Quiroz Omana
+       Fixed bug 59 (https://github.com/dqrobotics/python/issues/59)
+            - Initialized variables that are initialized in the Matlab implementation
+              of the class DQ_KinematicController.m.
+              Specifically, I initialized damping, gain, system_reached_stable_region_,
+              stability_threshold, stability_counter, and stability_counter_max.
 */
 
 #include <memory>
@@ -51,16 +60,16 @@ protected:
     DQ attached_primitive_;
     DQ target_primitive_;
 
-    double gain_;
-    double damping_;
+    double gain_{0};
+    double damping_{0};
 
-    bool system_reached_stable_region_;
+    bool system_reached_stable_region_{false};
     VectorXd last_control_signal_;
     VectorXd last_error_signal_;
 
-    double stability_threshold_;
-    int stability_counter_;
-    int stability_counter_max_;
+    double stability_threshold_{0};
+    int stability_counter_{0};
+    int stability_counter_max_{10};
 
     //For backwards compatibility reasons, to be removed
     DQ_Kinematics* _get_robot_ptr() const;
