@@ -60,16 +60,16 @@ protected:
     DQ attached_primitive_;
     DQ target_primitive_;
 
-    double gain_{0};
-    double damping_{0};
+    double gain_;
+    double damping_;
 
-    bool system_reached_stable_region_{false};
+    bool system_reached_stable_region_;
     VectorXd last_control_signal_;
     VectorXd last_error_signal_;
 
-    double stability_threshold_{0};
-    int stability_counter_{0};
-    int stability_counter_max_{10};
+    double stability_threshold_;
+    int stability_counter_;
+    int stability_counter_max_;
 
     //For backwards compatibility reasons, to be removed
     DQ_Kinematics* _get_robot_ptr() const;
