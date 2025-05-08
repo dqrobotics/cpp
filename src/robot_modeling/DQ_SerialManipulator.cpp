@@ -1,5 +1,5 @@
 /**
-(C) Copyright 2011-2020 DQ Robotics Developers
+(C) Copyright 2011-2025 DQ Robotics Developers
 
 This file is part of DQ Robotics.
 
@@ -17,9 +17,11 @@ This file is part of DQ Robotics.
     along with DQ Robotics.  If not, see <http://www.gnu.org/licenses/>.
 
 Contributors:
-- Murilo M. Marinho (murilomarinho@ieee.org)
-- Mateus Rodrigues Martins (martinsrmateus@gmail.com)
-- Juan Jose Quiroz Omana   (juanjqo@g.ecc.u-tokyo.ac.jp)
+1. Murilo M. Marinho        (murilomarinho@ieee.org)
+2. Mateus Rodrigues Martins (martinsrmateus@gmail.com)
+
+3. Juan Jose Quiroz Omana (juanjqogm@gmail.com)
+    - Added the enum class DQ_ParameterDH
 */
 
 #include <dqrobotics/robot_modeling/DQ_SerialManipulator.h>
