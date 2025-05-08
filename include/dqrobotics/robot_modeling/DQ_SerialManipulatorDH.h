@@ -27,6 +27,7 @@ Contributors:
 
 
 #include <dqrobotics/robot_modeling/DQ_SerialManipulator.h>
+#include <dqrobotics/robot_modeling/DQ_ParameterDH.h>
 
 namespace DQ_robotics
 {
