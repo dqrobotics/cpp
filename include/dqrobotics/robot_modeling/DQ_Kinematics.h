@@ -17,7 +17,12 @@ This file is part of DQ Robotics.
     along with DQ Robotics.  If not, see <http://www.gnu.org/licenses/>.
 
 Contributors:
-- Murilo M. Marinho (murilomarinho@ieee.org)
+1. Murilo M. Marinho (murilomarinho@ieee.org)
+    - Responsible for the original implementation.
+
+2. Juan Jose Quiroz Omana (juanjqogm@gmail.com)
+    - Added the enum class DQ_ParameterDH
+
 */
 
 #ifndef DQ_ROBOT_MODELLING_DQ_KINEMATICS_H
@@ -29,6 +34,8 @@ namespace DQ_robotics
 {
 class DQ_Kinematics
 {
+public:
+    enum class DQ_ParameterDH{THETA, D, A, ALPHA};
 protected:
     std::string name_;
 
