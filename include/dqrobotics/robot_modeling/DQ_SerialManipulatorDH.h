@@ -18,8 +18,11 @@ This file is part of DQ Robotics.
     along with DQ Robotics.  If not, see <http://www.gnu.org/licenses/>.
 
 Contributors:
-- Murilo M. Marinho (murilomarinho@ieee.org)
-- Juan Jose Quiroz Omana   (juanjqo@g.ecc.u-tokyo.ac.jp)
+1. Murilo M. Marinho (murilomarinho@ieee.org)
+    - Responsible for the original implementation.
+
+2. Juan Jose Quiroz Omana (juanjqogm@gmail.com)
+    - Added methods to get and set the DH parameters.
 */
 
 
@@ -36,6 +39,14 @@ protected:
     DQ _get_w(const int& ith) const;
     DQ _dh2dq(const double& q, const int& ith) const;
 public:
+    VectorXd get_parameters(const DQ_ParameterDH& parameter_type) const;
+    double   get_parameter(const DQ_ParameterDH& parameter_type,
+                           const int& to_ith_link) const;
+    void set_parameters(const DQ_ParameterDH& parameter_type,
+                        const VectorXd& vector_parameters);
+    void set_parameter(const DQ_ParameterDH& parameter_type,
+                       const int& to_ith_link,
+                       const double& parameter);
 
     // Deprecated on 22.04, will be removed on the next release.
     enum [[deprecated("Use ? instead.")]] JOINT_TYPES{ JOINT_ROTATIONAL=0, JOINT_PRISMATIC };

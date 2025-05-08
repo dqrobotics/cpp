@@ -99,6 +99,98 @@ DQ DQ_SerialManipulatorDH::_dh2dq(const double &q, const int &ith) const
                 );
 }
 
+/**
+ * @brief DQ_SerialManipulatorDH::get_parameters returns a vector containing the DH parameters.
+ * @param parameter_type Parameter type, which which corresponds to THETA, D, A, or ALPHA.
+ * @return A vector containing the desired DH parameters.
+ */
+VectorXd DQ_SerialManipulatorDH::get_parameters(const DQ_ParameterDH &parameter_type) const
+{
+    switch (parameter_type) {
+    case DQ_ParameterDH::THETA:
+        return  dh_matrix_.row(0);
+    case DQ_ParameterDH::D:
+        return  dh_matrix_.row(1);
+    case DQ_ParameterDH::A:
+        return  dh_matrix_.row(2);
+    case DQ_ParameterDH::ALPHA:
+        return  dh_matrix_.row(3);
+    }
+}
+
+/**
+ * @brief DQ_SerialManipulatorDH::get_parameter returns the DH parameter of the ith joint.
+ * @param parameter_type Parameter type, which which corresponds to THETA, D, A, or ALPHA.
+ * @param to_ith_link The joint number.
+ * @return The desired DH parameter.
+ */
+double DQ_SerialManipulatorDH::get_parameter(const DQ_ParameterDH &parameter_type,
+                                             const int &to_ith_link) const
+{
+    _check_to_ith_link(to_ith_link);
+    switch (parameter_type) {
+    case DQ_ParameterDH::THETA:
+        return  dh_matrix_(0, to_ith_link);
+    case DQ_ParameterDH::D:
+        return  dh_matrix_(1, to_ith_link);
+    case DQ_ParameterDH::A:
+        return  dh_matrix_(2, to_ith_link);
+    case DQ_ParameterDH::ALPHA:
+        return  dh_matrix_(3, to_ith_link);
+    }
+}
+
+/**
+ * @brief DQ_SerialManipulatorDH::set_parameters sets the DH parameters.
+ * @param parameter_type Parameter type, which which corresponds to THETA, D, A, or ALPHA.
+ * @param vector_parameters A vector containing the new parameters.
+ */
+void DQ_SerialManipulatorDH::set_parameters(const DQ_ParameterDH &parameter_type,
+                                            const VectorXd &vector_parameters)
+{
+    _check_q_vec(vector_parameters);
+    switch (parameter_type) {
+    case DQ_ParameterDH::THETA:
+        dh_matrix_.row(0) = vector_parameters;
+        break;
+    case DQ_ParameterDH::D:
+        dh_matrix_.row(1) =  vector_parameters;
+        break;
+    case DQ_ParameterDH::A:
+        dh_matrix_.row(2) =  vector_parameters;
+        break;
+    case DQ_ParameterDH::ALPHA:
+        dh_matrix_.row(3) =  vector_parameters;
+        break;
+    }
+}
+
+/**
+ * @brief DQ_SerialManipulatorDH::set_parameter sets the DH parameter of the ith joint.
+ * @param parameter_type Parameter type, which which corresponds to THETA, D, A, or ALPHA.
+ * @param to_ith_link The joint number.
+ * @param parameter The new parameter.
+ */
+void DQ_SerialManipulatorDH::set_parameter(const DQ_ParameterDH &parameter_type,
+                                           const int &to_ith_link, const double &parameter)
+{
+    _check_to_ith_link(to_ith_link);
+    switch (parameter_type) {
+    case DQ_ParameterDH::THETA:
+        dh_matrix_(0, to_ith_link) = parameter;
+        break;
+    case DQ_ParameterDH::D:
+        dh_matrix_(1, to_ith_link) = parameter;
+        break;
+    case DQ_ParameterDH::A:
+        dh_matrix_(2, to_ith_link) = parameter;
+        break;
+    case DQ_ParameterDH::ALPHA:
+        dh_matrix_(3, to_ith_link) = parameter;
+        break;
+    }
+}
+
 
 /**
  * @brief This protected method computes the dual quaternion related with the time derivative of the
