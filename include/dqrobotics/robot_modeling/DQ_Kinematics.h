@@ -1,5 +1,5 @@
 /**
-(C) Copyright 2011-2025 DQ Robotics Developers
+(C) Copyright 2019 DQ Robotics Developers
 
 This file is part of DQ Robotics.
 
@@ -17,8 +17,7 @@ This file is part of DQ Robotics.
     along with DQ Robotics.  If not, see <http://www.gnu.org/licenses/>.
 
 Contributors:
-1. Murilo M. Marinho (murilomarinho@ieee.org)
-    - Responsible for the original implementation.
+- Murilo M. Marinho (murilomarinho@ieee.org)
 */
 
 #ifndef DQ_ROBOT_MODELLING_DQ_KINEMATICS_H
