@@ -19,9 +19,6 @@ This file is part of DQ Robotics.
 Contributors:
 1. Murilo M. Marinho        (murilomarinho@ieee.org)
 2. Mateus Rodrigues Martins (martinsrmateus@gmail.com)
-
-3. Juan Jose Quiroz Omana (juanjqogm@gmail.com)
-    - Added the enum class DQ_ParameterDH
 */
 
 #include <dqrobotics/robot_modeling/DQ_SerialManipulator.h>
