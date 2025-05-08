@@ -18,9 +18,8 @@ This file is part of DQ Robotics.
     along with DQ Robotics.  If not, see <http://www.gnu.org/licenses/>.
 
 Contributors:
-- Murilo M. Marinho        (murilomarinho@ieee.org)
-- Mateus Rodrigues Martins (martinsrmateus@gmail.com)
-- Juan Jose Quiroz Omana   (juanjqo@g.ecc.u-tokyo.ac.jp)
+1. Murilo M. Marinho        (murilomarinho@ieee.org)
+2. Mateus Rodrigues Martins (martinsrmateus@gmail.com)
 */
 
 #include <dqrobotics/robot_modeling/DQ_Kinematics.h>
