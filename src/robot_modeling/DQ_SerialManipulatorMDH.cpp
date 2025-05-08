@@ -129,6 +129,8 @@ VectorXd DQ_SerialManipulatorMDH::get_parameters(const DQ_ParameterDH &parameter
         return  mdh_matrix_.row(2);
     case DQ_ParameterDH::ALPHA:
         return  mdh_matrix_.row(3);
+    default:
+        throw std::runtime_error("Wrong type of parameter");
     }
 }
 
@@ -151,6 +153,8 @@ double DQ_SerialManipulatorMDH::get_parameter(const DQ_ParameterDH &parameter_ty
         return  mdh_matrix_(2, to_ith_link);
     case DQ_ParameterDH::ALPHA:
         return  mdh_matrix_(3, to_ith_link);
+    default:
+        throw std::runtime_error("Wrong type of parameter");
     }
 }
 
