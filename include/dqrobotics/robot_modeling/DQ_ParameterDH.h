@@ -21,16 +21,63 @@ Contributors:
     - Responsible for the original implementation.
 */
 
+#include <unordered_map>
+#include <iostream>
 #pragma once
 
 namespace DQ_robotics
 {
-enum class DQ_ParameterDH
+class DQ_ParameterDH
 {
-    THETA,
-    D,
-    A,
-    ALPHA
+public:
+    enum PARAMETER{
+        THETA,
+        D,
+        A,
+        ALPHA
+    };
+private:
+    PARAMETER parameter_;
+    const std::unordered_map<std::string, PARAMETER>
+        map_ = {{"THETA", THETA},
+                {"D"    ,     D},
+                {"A"    ,     A},
+                {"ALPHA", ALPHA},
+                };
+
+    /**
+     * @brief _get_parameter sets the parameter member using a string as argument.
+     * @param parameter The desired parameter to be set. Example: "THETA", "D", "A", or "ALPHA".
+     */
+    void _set_parameter(const std::string& parameter)
+    {
+        try {
+            parameter_ = map_.at(parameter);
+        } catch (...) {
+            throw std::runtime_error("The parameter \""+ parameter+ "\" is not supported. Use THETA, D, A, or ALPHA");
+        }
+    }
+public:
+    DQ_ParameterDH() = default;
+    DQ_ParameterDH(const PARAMETER& parameter): parameter_{parameter}{};
+
+    // This definition enables switch cases and comparisons.
+    constexpr operator PARAMETER() const { return parameter_; }
+
+    // This constructor allows string parameters. This is done to keep the
+    // language compatibility between Matlab and Python/C++, as discussed in
+    //https://github.com/dqrobotics/cpp/pull/69
+    DQ_ParameterDH(const std::string& parameter){
+        _set_parameter(parameter);
+    }
+
+    // This constructor allows char parameters. This is done to keep the
+    // language compatibility between Matlab and Python/C++, as discussed in
+    //https://github.com/dqrobotics/cpp/pull/69
+    DQ_ParameterDH(const char* parameter_c){
+        _set_parameter(parameter_c);
+    }
+
 };
 }
 
