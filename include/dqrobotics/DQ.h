@@ -39,6 +39,13 @@ Contributors:
 4. Marcos da Silva Pereira (marcos.si.pereira@gmail.com)
         - Translated the Q4 and the Q8 methods from the MATLAB implementation in PR #56 
           (https://github.com/dqrobotics/cpp/pull/56).
+
+5. Frederico Fernandes Afonso Silva (frederico.silva@ieee.org)
+       - Deprecated the obsolete constructor with default double parameters,
+         added the new default constructor that takes no arguments, and refactored
+         for compliance.
+         [ffasilva committed on MM DD, 2025](COMMIT_NUMBER)
+         (LINK).
 */
 #pragma once
 
@@ -79,10 +86,14 @@ public:
     const static DQ E;
 
     //Constructors
+    DQ() noexcept;
     explicit DQ(VectorXd&& v);
     explicit DQ(const VectorXd& v);
 
-    explicit DQ(const double& q0=0.0,
+    [[deprecated("Consider explicitly initializing dual quaternions using the "
+                 "operators DQ::i_, DQ::j_, DQ::k_, DQ::E_. Alternatively, "
+                 "use the constructor DQ::DQ(const VectorXd& v) instead.")]]
+    explicit DQ(const double& q0,
                 const double& q1=0.0,
                 const double& q2=0.0,
                 const double& q3=0.0,
@@ -287,10 +298,10 @@ std::ostream& operator<<(std::ostream &os, const DQ& dq);
 Matrix<double,8,8> C8();
 Matrix<double,4,4> C4();
 
-const DQ E_ = DQ(0,0,0,0,1,0,0,0);
-const DQ i_ = DQ(0,1,0,0,0,0,0,0);
-const DQ j_ = DQ(0,0,1,0,0,0,0,0);
-const DQ k_ = DQ(0,0,0,1,0,0,0,0);
+const DQ i_((Matrix<double,8,1>() << 0,1,0,0,0,0,0,0).finished());
+const DQ j_((Matrix<double,8,1>() << 0,0,1,0,0,0,0,0).finished());
+const DQ k_((Matrix<double,8,1>() << 0,0,0,1,0,0,0,0).finished());
+const DQ E_((Matrix<double,8,1>() << 0,0,0,0,1,0,0,0).finished());
 
 /*************************************************************************
  ************** DUAL QUATERNIONS AND SCALAR OPERATOR TEMPLATES ***********

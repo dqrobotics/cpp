@@ -39,6 +39,13 @@ Contributors:
 4. Marcos da Silva Pereira (marcos.si.pereira@gmail.com)
         - Translated the Q4 and the Q8 methods from the MATLAB implementation in PR #56 
           (https://github.com/dqrobotics/cpp/pull/56).
+
+5. Frederico Fernandes Afonso Silva (frederico.silva@ieee.org)
+       - Deprecated the obsolete constructor with default double parameters,
+         added the new default constructor that takes no arguments, and refactored
+         for compliance.
+         [ffasilva committed on MM DD, 2025](COMMIT_NUMBER)
+         (LINK).
 */
 
 #include <dqrobotics/DQ.h>
@@ -50,10 +57,10 @@ Contributors:
 namespace DQ_robotics{
 
 //To comply with MATLAB
-const DQ DQ::i(0,1,0,0,0,0,0,0);
-const DQ DQ::j(0,0,1,0,0,0,0,0);
-const DQ DQ::k(0,0,0,1,0,0,0,0);
-const DQ DQ::E(0,0,0,0,1,0,0,0);
+const DQ DQ::i((Matrix<double,8,1>() << 0,1,0,0,0,0,0,0).finished());
+const DQ DQ::j((Matrix<double,8,1>() << 0,0,1,0,0,0,0,0).finished());
+const DQ DQ::k((Matrix<double,8,1>() << 0,0,0,1,0,0,0,0).finished());
+const DQ DQ::E((Matrix<double,8,1>() << 0,0,0,0,1,0,0,0).finished());
 
 /****************************************************************
 **************NAMESPACE ONLY FUNCTIONS***************************
@@ -423,6 +430,15 @@ double DQ::q_(const int a) const
     return q(a);
 }
 
+/**
+ * @brief Returns a dual quaternion with all its coefficients equal to zero.
+ * @return A dual quaternion with all its coefficients equal to zero.
+ */
+DQ::DQ() noexcept
+{
+    q = VectorXd::Zero(8);
+}
+
 DQ::DQ(VectorXd &&v)
 {
     switch (v.size())
@@ -526,7 +542,7 @@ DQ::DQ(const double& q0,const double& q1,const double& q2,const double& q3,const
 * \sa DQ(double q0,double q1,double q2,double q3).
 */
 DQ DQ::P() const{
-    return DQ(q(0),q(1),q(2),q(3));
+    return DQ((Matrix<double,8,1>() << q(0),q(1),q(2),q(3),0,0,0,0).finished());
 }
 
 
@@ -539,7 +555,7 @@ DQ DQ::P() const{
 * \sa DQ(double q0,double q1,double q2,double q3).
 */
 DQ DQ::D() const{
-    return DQ(q(4),q(5),q(6),q(7));
+    return DQ((Matrix<double,8,1>() << q(4),q(5),q(6),q(7),0,0,0,0).finished());
 }
 
 
@@ -548,7 +564,7 @@ DQ DQ::D() const{
 * Actually this function does the same as Re() changing only the way of calling, which is DQ::Re(dq_object).
 */
 DQ DQ::Re() const{
-    return DQ(q(0),0,0,0,q(4),0,0,0);
+    return DQ((Matrix<double,8,1>() << q(0),0,0,0,q(4),0,0,0).finished());
 }
 
 /**
@@ -560,7 +576,14 @@ DQ DQ::Re() const{
 * \sa DQ(double q0,double q1,double q2,double q3,double q4,double q5,double q6,double q7).
 */
 DQ DQ::Im() const{
-    return DQ(0,q(1),q(2),q(3),0,q(5),q(6),q(7));
+    return DQ((Matrix<double,8,1>() << 0,
+                                       q(1),
+                                       q(2),
+                                       q(3),
+                                       0,
+                                       q(5),
+                                       q(6),
+                                       q(7)).finished());
 }
 
 /**
@@ -572,7 +595,14 @@ DQ DQ::Im() const{
 * \sa DQ(double q0,double q1,double q2,double q3,double q4,double q5,double q6,double q7).
 */
 DQ DQ::conj() const{
-    return DQ(q(0),-q(1),-q(2),-q(3),q(4),-q(5),-q(6),-q(7));
+    return DQ((Matrix<double,8,1>() <<  q(0),
+                                       -q(1),
+                                       -q(2),
+                                       -q(3),
+                                        q(4),
+                                       -q(5),
+                                       -q(6),
+                                       -q(7)).finished());
 }
 
 /**
@@ -626,12 +656,18 @@ DQ DQ::inv() const{
     }
     //inverse calculation
     aux2 = aux * aux.conj(); //(dq norm)^2
-    DQ inv((1/aux2.q(0)),0,0,0,(-aux2.q(4)/(aux2.q(0)*aux2.q(0))),0,0,0);
+    DQ inv((Matrix<double,8,1>() << (1/aux2.q(0)),
+                                    0,
+                                    0,
+                                    0,
+                                    (-aux2.q(4)/(aux2.q(0)*aux2.q(0))),
+                                    0,
+                                    0,
+                                    0).finished());
     inv = (aux.conj() * inv);
 
     return inv;
 }
-
 
 /**
 * Returns a constant DQ object representing the translation part of the unit DQ object caller.
@@ -747,7 +783,14 @@ DQ DQ::log() const{
     // log calculation
     DQ p = (0.5 * this->rotation_angle()) * this->rotation_axis(); //primary
     DQ d = 0.5 * this->translation(); //dual
-    DQ log(p.q(0),p.q(1),p.q(2),p.q(3),d.q(0),d.q(1),d.q(2),d.q(3));
+    DQ log((Matrix<double,8,1>() << p.q(0),
+                                    p.q(1),
+                                    p.q(2),
+                                    p.q(3),
+                                    d.q(0),
+                                    d.q(1),
+                                    d.q(2),
+                                    d.q(3)).finished());
 
     return log;
 
@@ -778,7 +821,7 @@ DQ DQ::exp() const{
     if(phi != 0.0)
         prim = cos(phi) + (sin(phi)/phi)*this->P();
     else
-        prim = DQ(1.0);
+        prim = DQ((Matrix<double,8,1>() << 1,0,0,0,0,0,0,0).finished());
 
     exp = ( prim + E_*this->D()*prim );
 
@@ -1378,16 +1421,19 @@ const DQ operator *(const DQ& dq1, const DQ& dq2) noexcept
     const double& q6 = dq1.q(0)*qd2_d.q(2) - dq1.q(1)*qd2_d.q(3) + dq1.q(2)*qd2_d.q(0) + dq1.q(3)*qd2_d.q(1);
     const double& q7 = dq1.q(0)*qd2_d.q(3) + dq1.q(1)*qd2_d.q(2) - dq1.q(2)*qd2_d.q(1) + dq1.q(3)*qd2_d.q(0);
 
-    return DQ(
+    return DQ((Matrix<double,8,1>() <<
         dq1.q(0)*dq2.q(0) - dq1.q(1)*dq2.q(1) - dq1.q(2)*dq2.q(2) - dq1.q(3)*dq2.q(3),
         dq1.q(0)*dq2.q(1) + dq1.q(1)*dq2.q(0) + dq1.q(2)*dq2.q(3) - dq1.q(3)*dq2.q(2),
         dq1.q(0)*dq2.q(2) - dq1.q(1)*dq2.q(3) + dq1.q(2)*dq2.q(0) + dq1.q(3)*dq2.q(1),
         dq1.q(0)*dq2.q(3) + dq1.q(1)*dq2.q(2) - dq1.q(2)*dq2.q(1) + dq1.q(3)*dq2.q(0),
-        q4 + dq1_d.q(0)*dq2_p.q(0) - dq1_d.q(1)*dq2_p.q(1) - dq1_d.q(2)*dq2_p.q(2) - dq1_d.q(3)*dq2_p.q(3),
-        q5 + dq1_d.q(0)*dq2_p.q(1) + dq1_d.q(1)*dq2_p.q(0) + dq1_d.q(2)*dq2_p.q(3) - dq1_d.q(3)*dq2_p.q(2),
-        q6 + dq1_d.q(0)*dq2_p.q(2) - dq1_d.q(1)*dq2_p.q(3) + dq1_d.q(2)*dq2_p.q(0) + dq1_d.q(3)*dq2_p.q(1),
-        q7 + dq1_d.q(0)*dq2_p.q(3) + dq1_d.q(1)*dq2_p.q(2) - dq1_d.q(2)*dq2_p.q(1) + dq1_d.q(3)*dq2_p.q(0)
-    );
+        q4 + dq1_d.q(0)*dq2_p.q(0) - dq1_d.q(1)*dq2_p.q(1) -
+                   dq1_d.q(2)*dq2_p.q(2) - dq1_d.q(3)*dq2_p.q(3),
+        q5 + dq1_d.q(0)*dq2_p.q(1) + dq1_d.q(1)*dq2_p.q(0) +
+                   dq1_d.q(2)*dq2_p.q(3) - dq1_d.q(3)*dq2_p.q(2),
+        q6 + dq1_d.q(0)*dq2_p.q(2) - dq1_d.q(1)*dq2_p.q(3) +
+                   dq1_d.q(2)*dq2_p.q(0) + dq1_d.q(3)*dq2_p.q(1),
+        q7 + dq1_d.q(0)*dq2_p.q(3) + dq1_d.q(1)*dq2_p.q(2) -
+                   dq1_d.q(2)*dq2_p.q(1) + dq1_d.q(3)*dq2_p.q(0)).finished());;
 }
 
 // Operator (==) overload
