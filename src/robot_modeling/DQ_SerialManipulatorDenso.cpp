@@ -1,3 +1,33 @@
+/**
+(C) Copyright 2019-2025 DQ Robotics Developers
+
+This file is part of DQ Robotics.
+
+    DQ Robotics is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Lesser General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    DQ Robotics is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public License
+    along with DQ Robotics.  If not, see <http://www.gnu.org/licenses/>.
+
+Contributors:
+1. Murilo M. Marinho (murilomarinho@ieee.org)
+        - Responsible for the original implementation.
+
+2. Juan Jose Quiroz Omana   (juanjqo@g.ecc.u-tokyo.ac.jp)
+
+3. Frederico Fernandes Afonso Silva (frederico.silva@ieee.org)
+       - Refactored for compliance with the new default constructor DQ::DQ().
+         [ffasilva committed on MM DD, 2025](COMMIT_NUMBER)
+         (LINK).
+*/
+
 #include <dqrobotics/robot_modeling/DQ_SerialManipulatorDenso.h>
 namespace DQ_robotics
 {
@@ -64,7 +94,7 @@ DQ  DQ_SerialManipulatorDenso::raw_fkm(const VectorXd& q_vec, const int& to_ith_
     _check_q_vec(q_vec);
     _check_to_ith_link(to_ith_link);
 
-    DQ q(1);
+    DQ q = DQ((Matrix<double,8,1>() << 1,0,0,0,0,0,0,0).finished());
     int j = 0;
     for (int i = 0; i < (to_ith_link+1); i++) {
         q = q * _denso2dh(q_vec(i-j), i);
@@ -80,7 +110,7 @@ MatrixXd DQ_SerialManipulatorDenso::raw_pose_jacobian(const VectorXd &q_vec, con
     MatrixXd J = MatrixXd::Zero(8,to_ith_link+1);
     DQ x_effector = raw_fkm(q_vec,to_ith_link);
 
-    DQ x(1);
+    DQ x = DQ((Matrix<double,8,1>() << 1,0,0,0,0,0,0,0).finished());
 
     for(int i=0;i<to_ith_link+1;i++)
     {
@@ -113,7 +143,7 @@ MatrixXd DQ_SerialManipulatorDenso::raw_pose_jacobian_derivative(const VectorXd 
     DQ x_effector = raw_fkm(q,to_ith_link);
     MatrixXd J    = raw_pose_jacobian(q,to_ith_link);
     VectorXd vec_x_effector_dot = J*q_dot.head(n);
-    DQ x = DQ(1);
+    DQ x = DQ((Matrix<double,8,1>() << 1,0,0,0,0,0,0,0).finished());
     MatrixXd J_dot = MatrixXd::Zero(8,n);
 
     for(int i=0;i<n;i++)

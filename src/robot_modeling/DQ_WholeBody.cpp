@@ -17,7 +17,13 @@ This file is part of DQ Robotics.
     along with DQ Robotics.  If not, see <http://www.gnu.org/licenses/>.
 
 Contributors:
-- Murilo M. Marinho (murilomarinho@ieee.org)
+1. Murilo M. Marinho (murilomarinho@ieee.org)
+        - Responsible for the original implementation.
+
+2. Frederico Fernandes Afonso Silva (frederico.silva@ieee.org)
+       - Refactored for compliance with the new default constructor DQ::DQ().
+         [ffasilva committed on MM DD, 2025](COMMIT_NUMBER)
+         (LINK).
 */
 
 #include<dqrobotics/robot_modeling/DQ_WholeBody.h>
@@ -99,7 +105,7 @@ DQ DQ_WholeBody::raw_fkm(const VectorXd &q, const int &to_ith_chain) const
 {
     _check_to_ith_chain(to_ith_chain);
 
-    DQ pose(1);
+    DQ pose = DQ((Matrix<double,8,1>() << 1,0,0,0,0,0,0,0).finished());
 
     int q_counter = 0;
     for(int i=0;i<to_ith_chain+1;i++)

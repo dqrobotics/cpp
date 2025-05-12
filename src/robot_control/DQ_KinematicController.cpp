@@ -17,7 +17,13 @@ This file is part of DQ Robotics.
     along with DQ Robotics.  If not, see <http://www.gnu.org/licenses/>.
 
 Contributors:
-- Murilo M. Marinho (murilomarinho@ieee.org)
+1. Murilo M. Marinho (murilomarinho@ieee.org)
+        - Responsible for the original implementation.
+
+2. Frederico Fernandes Afonso Silva (frederico.silva@ieee.org)
+       - Refactored for compliance with the new default constructor DQ::DQ().
+         [ffasilva committed on MM DD, 2025](COMMIT_NUMBER)
+         (LINK).
 */
 
 #include <dqrobotics/robot_control/DQ_KinematicController.h>
@@ -54,8 +60,8 @@ DQ_KinematicController::DQ_KinematicController(const std::shared_ptr<DQ_Kinemati
 DQ_KinematicController::DQ_KinematicController():
     robot_(nullptr),
     control_objective_(ControlObjective::None),
-    attached_primitive_(0.0),
-    target_primitive_(0.0),
+    attached_primitive_(),
+    target_primitive_(),
     gain_(0.0),
     damping_(0),//Todo: change this inialization to use empty vector
     system_reached_stable_region_(false),//Todo: change this inialization to use empty vector

@@ -17,8 +17,15 @@ This file is part of DQ Robotics.
     along with DQ Robotics.  If not, see <http://www.gnu.org/licenses/>.
 
 Contributors:
-- Murilo M. Marinho (murilomarinho@ieee.org)
-- Juan Jose Quiroz Omana -  juanjqo@g.ecc.u-tokyo.ac.jp
+1. Murilo M. Marinho (murilomarinho@ieee.org)
+        - Responsible for the original implementation.
+
+2. Juan Jose Quiroz Omana -  juanjqo@g.ecc.u-tokyo.ac.jp
+
+3. Frederico Fernandes Afonso Silva (frederico.silva@ieee.org)
+       - Refactored for compliance with the new default constructor DQ::DQ().
+         [ffasilva committed on MM DD, 2025](COMMIT_NUMBER)
+         (LINK).
 */
 
 #include <dqrobotics/robot_modeling/DQ_SerialManipulatorMDH.h>
@@ -90,24 +97,23 @@ DQ DQ_SerialManipulatorMDH::_mdh2dq(const double &q, const int &ith) const
     const double cosine_of_half_alpha = cos(half_alpha);
 
     // Return the optimized standard mdh2dq calculation
-    return DQ(
-                cosine_of_half_alpha*cosine_of_half_theta,
-                sine_of_half_alpha*cosine_of_half_theta,
-                -sine_of_half_alpha*sine_of_half_theta, //MDH
-                cosine_of_half_alpha*sine_of_half_theta,
+    return DQ((Matrix<double,8,1>() <<
+        cosine_of_half_alpha*cosine_of_half_theta,
+        sine_of_half_alpha*cosine_of_half_theta,
+        -sine_of_half_alpha*sine_of_half_theta, //MDH
+        cosine_of_half_alpha*sine_of_half_theta,
 
-                -(a*sine_of_half_alpha*cosine_of_half_theta) /2.0 
-                - (d*cosine_of_half_alpha*sine_of_half_theta)/2.0,
+        -(a*sine_of_half_alpha*cosine_of_half_theta) /2.0 -
+                   (d*cosine_of_half_alpha*sine_of_half_theta)/2.0,
 
-                (a*cosine_of_half_alpha*cosine_of_half_theta)/2.0
-                 - (d*sine_of_half_alpha*sine_of_half_theta  )/2.0,
+        (a*cosine_of_half_alpha*cosine_of_half_theta)/2.0 -
+                   (d*sine_of_half_alpha*sine_of_half_theta  )/2.0,
 
-                -(a*cosine_of_half_alpha*sine_of_half_theta)  /2.0
-                 - (d*sine_of_half_alpha*cosine_of_half_theta)/2.0, //MDH
+        -(a*cosine_of_half_alpha*sine_of_half_theta)  /2.0 -
+                   (d*sine_of_half_alpha*cosine_of_half_theta)/2.0, //MDH
 
-                (d*cosine_of_half_alpha*cosine_of_half_theta)/2.0
-                 - (a*sine_of_half_alpha*sine_of_half_theta  )/2.0
-                );
+        (d*cosine_of_half_alpha*cosine_of_half_theta)/2.0 -
+                   (a*sine_of_half_alpha*sine_of_half_theta  )/2.0).finished());
 }
 
 /**
@@ -218,7 +224,7 @@ MatrixXd DQ_SerialManipulatorMDH::raw_pose_jacobian_derivative(const VectorXd &q
     MatrixXd J    = raw_pose_jacobian(q,to_ith_link);
     VectorXd vec_x_effector_dot = J*q_dot.head(n); //(to_ith_link);
 
-    DQ x = DQ(1);
+    DQ x = DQ((Matrix<double,8,1>() << 1,0,0,0,0,0,0,0).finished());
     MatrixXd J_dot = MatrixXd::Zero(8,n);
     int jth=0;
 
@@ -260,7 +266,7 @@ DQ  DQ_SerialManipulatorMDH::raw_fkm(const VectorXd& q_vec, const int& to_ith_li
     _check_q_vec(q_vec);
     _check_to_ith_link(to_ith_link);
 
-    DQ q(1);
+    DQ q = DQ((Matrix<double,8,1>() << 1,0,0,0,0,0,0,0).finished());
     int j = 0;
     for (int i = 0; i < (to_ith_link+1); i++) {
         q = q * _mdh2dq(q_vec(i-j), i);
@@ -288,7 +294,7 @@ MatrixXd DQ_SerialManipulatorMDH::raw_pose_jacobian(const VectorXd &q_vec, const
     MatrixXd J = MatrixXd::Zero(8,to_ith_link+1);
     DQ x_effector = raw_fkm(q_vec,to_ith_link);
 
-    DQ x(1);
+    DQ x = DQ((Matrix<double,8,1>() << 1,0,0,0,0,0,0,0).finished());
 
     for(int i=0;i<to_ith_link+1;i++)
     {
