@@ -58,22 +58,39 @@ private:
         }
     }
 public:
+    /**
+     * @brief DQ_ParameterDH Default constructor method.
+     */
     DQ_ParameterDH() = default;
+
+    /**
+     * @brief DQ_ParameterDH Constructor method
+     * @param parameter The desired DH parameter. Example: THETA, D, A, or ALPHA.
+     */
     DQ_ParameterDH(const PARAMETER& parameter): parameter_{parameter}{};
 
     // This definition enables switch cases and comparisons.
     constexpr operator PARAMETER() const { return parameter_; }
 
-    // This constructor allows string parameters. This is done to keep the
-    // language compatibility between Matlab and Python/C++, as discussed in
-    //https://github.com/dqrobotics/cpp/pull/69
+    /**
+     * @brief DQ_ParameterDH Constructor method that allows string parameters.
+     *                       This is done to keep the language compatibility between
+     *                       Matlab and Python/C++, as discussed in
+     *                       https://github.com/dqrobotics/cpp/pull/69
+     * @param parameter The desired DH parameter. Example: "THETA", "D", "A", or "ALPHA".
+     */
     DQ_ParameterDH(const std::string& parameter){
         _set_parameter(parameter);
     }
 
-    // This constructor allows char parameters. This is done to keep the
-    // language compatibility between Matlab and Python/C++, as discussed in
-    //https://github.com/dqrobotics/cpp/pull/69
+
+    /**
+     * @brief DQ_ParameterDH Constructor method that allows char parameters.
+     *                       This is done to keep the language compatibility between
+     *                       Matlab and Python/C++, as discussed in
+     *                       https://github.com/dqrobotics/cpp/pull/69
+     * @param parameter_c The desired DH parameter. Example: "THETA", "D", "A", or "ALPHA".
+     */
     DQ_ParameterDH(const char* parameter_c){
         _set_parameter(parameter_c);
     }
