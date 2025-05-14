@@ -29,7 +29,7 @@ namespace DQ_robotics
 class DQ_JointType
 {
 public:
-    enum TYPE{
+    enum JOINT_TYPE{
         REVOLUTE    = 0,
         PRISMATIC,
         SPHERICAL,
@@ -38,6 +38,23 @@ public:
         SIX_DOF,
         HELICAL
     };
+    // This definition enables switch cases and comparisons.
+    constexpr operator JOINT_TYPE() const { return joint_type_; }
+private:
+    JOINT_TYPE joint_type_;
+
+public:
+    /**
+     * @brief DQ_JointType Default constructor method.
+     */
+    DQ_JointType() = default;
+
+    /**
+     * @brief DQ_JointType Constructor method
+     * @param joint_type The joint type. Example: REVOLUTE, PRISMATIC,
+     *                   SPHERICAL, CYLINDRICAL, PLANAR, SIX_DOF, or HELICAL.
+     */
+    DQ_JointType(const JOINT_TYPE& joint_type): joint_type_{joint_type}{};
 };
 
 }
