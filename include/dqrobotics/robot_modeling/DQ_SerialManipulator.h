@@ -56,6 +56,7 @@ public:
     std::vector<DQ_JointType>   get_joint_types() const;
     void  set_joint_type(const DQ_JointType& joint_type, const int& ith_joint);
     void  set_joint_types(const std::vector<DQ_JointType>& joint_types);
+    void  set_joint_types(const VectorXd& joint_types);
 
     //Virtual
     virtual MatrixXd raw_pose_jacobian(const VectorXd& q_vec) const;

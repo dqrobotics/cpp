@@ -53,9 +53,25 @@ void DQ_SerialManipulator::_check_joint_types() const
 {
     std::vector<DQ_JointType> types = get_joint_types();
     std::vector<DQ_JointType> supported_types = get_supported_joint_types();
-    std::string msg = "Unsupported joint types.";
-    for (size_t i=0;i<types.size();i++)
-        for (size_t j=0;j<supported_types.size();j++)
+    std::string msg = "Unsupported joint types. Use valid joint types: ";
+    std::string msg_type;
+    std::string ps;
+    size_t k = supported_types.size();
+    size_t n = types.size();
+    for (size_t i=0;i<k;i++)
+    {
+        msg_type = std::string("DQ_JointType::"+supported_types.at(i).ToString());
+        if (i==k-1)
+            ps = std::string(". ");
+        else
+            ps = std::string(", ");
+
+        msg += msg_type + ps;
+    }
+
+
+    for (size_t i=0;i<n;i++)
+        for (size_t j=0;j<k;j++)
             if (types.at(i) != supported_types.at(j))
                 throw std::runtime_error(msg);
 }
@@ -156,6 +172,17 @@ void DQ_SerialManipulator::set_joint_type(const DQ_JointType &joint_type, const 
 void DQ_SerialManipulator::set_joint_types(const std::vector<DQ_JointType> &joint_types)
 {
     joint_types_ = joint_types;
+    _check_joint_types();
+}
+
+/**
+ * @brief DQ_SerialManipulator::set_joint_types sets the joint types.
+ * @param joint_types A vector containing the joint types.
+ */
+void DQ_SerialManipulator::set_joint_types(const VectorXd &joint_types)
+{
+    for (int i=0;i<joint_types.size();i++)
+        joint_types_.push_back(DQ_JointType(joint_types(i)));
     _check_joint_types();
 }
 
