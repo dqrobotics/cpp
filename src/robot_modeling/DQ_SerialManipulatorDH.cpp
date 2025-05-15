@@ -20,8 +20,9 @@ Contributors:
 1. Murilo M. Marinho (murilomarinho@ieee.org)
     - Responsible for the original implementation.
 
-2. Juan Jose Quiroz Omana (juanjqogm@gmail.com)
+2. Juan Jose Quiroz Omana (juanjose.quirozomana@manchester.ac.uk)
     - Added methods to get and set the DH parameters.
+    - Added the get_supported_joint_types() method.
 */
 
 #include <dqrobotics/robot_modeling/DQ_SerialManipulatorDH.h>
@@ -196,6 +197,15 @@ void DQ_SerialManipulatorDH::set_parameter(const DQ_ParameterDH &parameter_type,
         dh_matrix_(3, to_ith_link) = parameter;
         break;
     }
+}
+
+/**
+ * @brief DQ_SerialManipulatorDH::get_supported_joint_types gets the supported joint types.
+ * @return A vector containing the supported joint types.
+ */
+std::vector<DQ_JointType> DQ_SerialManipulatorDH::get_supported_joint_types() const
+{
+    return {DQ_JointType::REVOLUTE, DQ_JointType::PRISMATIC};
 }
 
 
