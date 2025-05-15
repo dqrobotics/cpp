@@ -23,6 +23,7 @@ Contributors:
 
 
 #pragma once
+#include <string>
 
 namespace DQ_robotics
 {
@@ -55,6 +56,64 @@ public:
      *                   SPHERICAL, CYLINDRICAL, PLANAR, SIX_DOF, or HELICAL.
      */
     DQ_JointType(const JOINT_TYPE& joint_type): joint_type_{joint_type}{};
+
+    /**
+     * @brief DQ_JointType Constructor method that allows integer arguments
+     * @param joint_type The joint type.
+     */
+    DQ_JointType(const int& joint_type){
+        switch (joint_type) {
+        case 0:
+            joint_type_ = REVOLUTE;
+            break;
+        case 1:
+            joint_type_ = PRISMATIC;
+            break;
+        case 2:
+            joint_type_ = SPHERICAL;
+            break;
+        case 3:
+            joint_type_ = CYLINDRICAL;
+            break;
+        case 4:
+            joint_type_ = PLANAR;
+            break;
+        case 5:
+            joint_type_ = SIX_DOF;
+            break;
+        case 6:
+            joint_type_ = HELICAL;
+            break;
+        default:
+            throw std::runtime_error("Invalid joint type");
+        }
+    }
+
+    /**
+     * @brief ToString converts the DQ_JointType to string.
+     * @return A string that corresponds with the joint type.
+     */
+    std::string ToString() const {
+        switch (joint_type_) {
+
+        case REVOLUTE:
+            return std::string("REVOLUTE");
+        case PRISMATIC:
+            return std::string("PRISMATIC");
+        case SPHERICAL:
+            return std::string("SPHERICAL");
+        case CYLINDRICAL:
+            return std::string("CYLINDRICAL");
+        case PLANAR:
+            return std::string("PLANAR");
+        case SIX_DOF:
+            return std::string("SIX_DOF");
+        case HELICAL:
+            return std::string("HELICAL");
+        default:
+            throw std::runtime_error("Invalid joint type");
+        }
+    }
 };
 
 }
