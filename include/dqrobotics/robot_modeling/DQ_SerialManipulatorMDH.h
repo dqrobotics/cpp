@@ -23,6 +23,7 @@ Contributors:
 
 2. Juan Jose Quiroz Omana (juanjqogm@gmail.com)
     - Added methods to get and set the DH parameters.
+    - Added the get_supported_joint_types() method.
 */
 
 #include <dqrobotics/robot_modeling/DQ_SerialManipulator.h>
@@ -48,13 +49,16 @@ public:
                        const int& to_ith_link,
                        const double& parameter);
 
+    std::vector<DQ_JointType> get_supported_joint_types()const override;
+
     // Deprecated on 22.04, will be removed on the next release.
-    enum [[deprecated("Use ? instead.")]] JOINT_TYPES{ JOINT_ROTATIONAL=0, JOINT_PRISMATIC };
-    [[deprecated("Use ? instead.")]] VectorXd get_thetas() const;
-    [[deprecated("Use ? instead.")]] VectorXd get_ds() const;
-    [[deprecated("Use ? instead.")]] VectorXd get_as() const;
-    [[deprecated("Use ? instead.")]] VectorXd get_alphas() const;
-    [[deprecated("Use ? instead.")]] VectorXd get_types() const;
+    enum [[deprecated("Use DQ_JointType instead.")]] JOINT_TYPES{ JOINT_ROTATIONAL=0, JOINT_PRISMATIC };
+
+    [[deprecated("Use get_parameters(DQ_ParameterDH::THETA) instead.")]] VectorXd get_thetas() const;
+    [[deprecated("Use get_parameters(DQ_ParameterDH::D) instead.")]]     VectorXd get_ds() const;
+    [[deprecated("Use get_parameters(DQ_ParameterDH::A) instead.")]]     VectorXd get_as() const;
+    [[deprecated("Use get_parameters(DQ_ParameterDH::ALPHA) instead.")]] VectorXd get_alphas() const;
+    [[deprecated("Use get_joint_types() instead.")]]                     VectorXd get_types() const;
 
     DQ_SerialManipulatorMDH()=delete;
     DQ_SerialManipulatorMDH(const MatrixXd& mdh_matrix);    
