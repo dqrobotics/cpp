@@ -58,6 +58,7 @@ DQ_SerialManipulatorMDH::DQ_SerialManipulatorMDH(const MatrixXd& mdh_matrix):
         throw(std::range_error("Bad DQ_SerialManipulatorDH(mdh_matrix) call: mdh_matrix should be 5xn"));
     }
     mdh_matrix_ = mdh_matrix;
+    set_joint_types(mdh_matrix.row(4));
 }
 
 /**
