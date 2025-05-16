@@ -36,6 +36,7 @@ DQ_SerialManipulatorDenso::DQ_SerialManipulatorDenso(const MatrixXd& denso_matri
         throw(std::range_error("Bad DQ_SerialManipulatorDenso(MatrixXd) call: denso_matrix should be 6xn"));
     }
     denso_matrix_ = denso_matrix;
+    set_joint_types(std::vector<DQ_JointType>(get_dim_configuration_space(), DQ_JointType::REVOLUTE));
 }
 
 DQ DQ_SerialManipulatorDenso::_denso2dh(const double &q, const int &ith) const
