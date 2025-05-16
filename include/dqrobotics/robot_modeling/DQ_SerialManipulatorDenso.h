@@ -38,7 +38,7 @@ protected:
 
     DQ _denso2dh(const double& q, const int& ith) const;
 public:
-    std::vector<DQ_JointType> get_supported_joint_types()const override;
+    std::vector<DQ_JointType> get_supported_joint_types() const override;
 
     // Deprecated on 22.04, will be removed on the next release.
     [[deprecated("Use ? instead.")]] VectorXd get_as() const;
