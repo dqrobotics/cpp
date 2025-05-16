@@ -71,9 +71,19 @@ void DQ_SerialManipulator::_check_joint_types() const
 
 
     for (size_t i=0;i<n;i++)
+    {
+        bool match = false;
         for (size_t j=0;j<k;j++)
-            if (types.at(i) != supported_types.at(j))
-                throw std::runtime_error(msg);
+        {
+            if (types.at(i) == supported_types.at(j))
+            {
+                match = true;
+                break;
+            }
+        }
+        if (match == false)
+            throw std::runtime_error(msg);
+    }
 }
 
 
