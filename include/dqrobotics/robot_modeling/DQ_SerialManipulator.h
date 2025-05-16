@@ -28,6 +28,7 @@ Contributors:
 
 #include <dqrobotics/robot_modeling/DQ_Kinematics.h>
 #include <dqrobotics/robot_modeling/DQ_JointType.h>
+#include <vector>
 
 namespace DQ_robotics
 {
