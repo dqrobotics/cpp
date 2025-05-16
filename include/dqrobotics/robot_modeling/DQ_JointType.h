@@ -47,18 +47,24 @@ private:
 public:
     /**
      * @brief DQ_JointType Default constructor method.
+     *        This class is based on Table 1 of  Silva, Quiroz-Omaña, and Adorno (2022).
+     *        Dynamics of Mobile Manipulators Using Dual Quaternion Algebra.
      */
     DQ_JointType() = default;
 
     /**
-     * @brief DQ_JointType Constructor method
+     * @brief DQ_JointType Constructor method.
+     *        This class is based on Table 1 of  Silva, Quiroz-Omaña, and Adorno (2022).
+     *        Dynamics of Mobile Manipulators Using Dual Quaternion Algebra.
      * @param joint_type The joint type. Example: REVOLUTE, PRISMATIC,
      *                   SPHERICAL, CYLINDRICAL, PLANAR, SIX_DOF, or HELICAL.
      */
     DQ_JointType(const JOINT_TYPE& joint_type): joint_type_{joint_type}{};
 
     /**
-     * @brief DQ_JointType Constructor method that allows integer arguments
+     * @brief DQ_JointType Constructor method that allows integer arguments.
+     *        This class is based on Table 1 of  Silva, Quiroz-Omaña, and Adorno (2022).
+     *        Dynamics of Mobile Manipulators Using Dual Quaternion Algebra
      * @param joint_type The joint type.
      */
     DQ_JointType(const int& joint_type){
