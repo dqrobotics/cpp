@@ -91,7 +91,7 @@ public:
 
     /**
      * @brief ToString converts the DQ_JointType to string.
-     * @return A string that corresponds with the joint type.
+     * @return A string that corresponds to the joint type.
      */
     std::string ToString() const {
         switch (joint_type_) {
