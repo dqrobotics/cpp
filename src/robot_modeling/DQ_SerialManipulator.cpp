@@ -60,7 +60,7 @@ void DQ_SerialManipulator::_check_joint_types() const
     size_t n = types.size();
     for (size_t i=0;i<k;i++)
     {
-        msg_type = std::string("DQ_JointType::"+supported_types.at(i).ToString());
+        msg_type = std::string("DQ_JointType::"+supported_types.at(i).to_string());
         if (i==k-1)
             ps = std::string(". ");
         else

@@ -96,10 +96,10 @@ public:
     }
 
     /**
-     * @brief ToString converts the DQ_JointType to string.
+     * @brief to_string() converts the DQ_JointType to string.
      * @return A string that corresponds to the joint type.
      */
-    std::string ToString() const {
+    std::string to_string() const {
         switch (joint_type_) {
 
         case REVOLUTE:
