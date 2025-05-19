@@ -18,15 +18,15 @@ This file is part of DQ Robotics.
 
 Contributors:
 1. Murilo M. Marinho (murilomarinho@ieee.org)
-        - Responsible for the original implementation.
+    - Responsible for the original implementation.
 
 2. Juan Jose Quiroz Omana (juanjqogm@gmail.com)
    - Fixed bug 61 (https://github.com/dqrobotics/cpp/issues/61) in pose_jacobian method.
 
 3. Frederico Fernandes Afonso Silva (frederico.silva@ieee.org)
-       - Refactored for compliance with the new default constructor DQ::DQ().
-         [ffasilva committed on MM DD, 2025](COMMIT_NUMBER)
-         (LINK).
+    - Refactored for compliance with the new default constructor DQ::DQ().
+     [ffasilva committed on May 19, 2025](PR #71)
+     (https://github.com/dqrobotics/cpp/pull/71).
 
 */
 

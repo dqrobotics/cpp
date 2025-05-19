@@ -22,8 +22,8 @@ Contributors:
 
 2. Frederico Fernandes Afonso Silva (frederico.silva@ieee.org)
        - Refactored for compliance with the new default constructor DQ::DQ().
-         [ffasilva committed on MM DD, 2025](COMMIT_NUMBER)
-         (LINK).
+         [ffasilva committed on May 19, 2025](PR #71)
+         (https://github.com/dqrobotics/cpp/pull/71).
 */
 
 #include <dqrobotics/robot_control/DQ_KinematicController.h>

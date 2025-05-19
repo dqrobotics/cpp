@@ -13,12 +13,12 @@ This file is part of DQ Robotics.
     along with DQ Robotics.  If not, see <http://www.gnu.org/licenses/>.
 Contributors:
 1. Juan Jose Quiroz Omana (juanjqo@g.ecc.u-tokyo.ac.jp)
-        - Responsible for the original implementation.
+    - Responsible for the original implementation.
 
 2. Frederico Fernandes Afonso Silva (frederico.silva@ieee.org)
-       - Refactored for compliance with the new default constructor DQ::DQ().
-         [ffasilva committed on MM DD, 2025](COMMIT_NUMBER)
-         (LINK).
+    - Refactored for compliance with the new default constructor DQ::DQ().
+     [ffasilva committed on MM DD, 2025](PR #71)
+     (https://github.com/dqrobotics/cpp/pull/71).
 */
 
 #include<dqrobotics/utils/DQ_Constants.h>

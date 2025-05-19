@@ -44,8 +44,8 @@ Contributors:
        - Deprecated the obsolete constructor with default double parameters,
          added the new default constructor that takes no arguments, and refactored
          for compliance.
-         [ffasilva committed on MM DD, 2025](COMMIT_NUMBER)
-         (LINK).
+         [ffasilva committed on May 19, 2025](PR #71)
+         (https://github.com/dqrobotics/cpp/pull/71).
 */
 #pragma once
 
