@@ -1,3 +1,29 @@
+/**
+(C) Copyright 2011-2025 DQ Robotics Developers
+
+This file is part of DQ Robotics.
+
+    DQ Robotics is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Lesser General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    DQ Robotics is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public License
+    along with DQ Robotics.  If not, see <http://www.gnu.org/licenses/>.
+
+Contributors:
+1. Murilo M. Marinho (murilomarinho@ieee.org)
+    - Responsible for the original implementation.
+
+2. Juan Jose Quiroz Omana (juanjose.quirozomana@manchester.ac.uk)
+    - Added the get_supported_joint_types() method.
+*/
+
 #include <dqrobotics/robot_modeling/DQ_SerialManipulatorDenso.h>
 namespace DQ_robotics
 {
@@ -10,6 +36,7 @@ DQ_SerialManipulatorDenso::DQ_SerialManipulatorDenso(const MatrixXd& denso_matri
         throw(std::range_error("Bad DQ_SerialManipulatorDenso(MatrixXd) call: denso_matrix should be 6xn"));
     }
     denso_matrix_ = denso_matrix;
+    set_joint_types(std::vector<DQ_JointType>(get_dim_configuration_space(), DQ_JointType::REVOLUTE));
 }
 
 DQ DQ_SerialManipulatorDenso::_denso2dh(const double &q, const int &ith) const
@@ -27,6 +54,15 @@ DQ DQ_SerialManipulatorDenso::_denso2dh(const double &q, const int &ith) const
     DQ q_beta  = cos(beta/2.)+j_*sin(beta/2.);
 
     return z_rot*q_t*q_alpha*q_beta;
+}
+
+/**
+ * @brief DQ_SerialManipulatorDenso::get_supported_joint_types gets the supported joint types.
+ * @return A vector containing the supported joint types.
+ */
+std::vector<DQ_JointType> DQ_SerialManipulatorDenso::get_supported_joint_types() const
+{
+    return {DQ_JointType::REVOLUTE};
 }
 
 VectorXd DQ_SerialManipulatorDenso::get_as() const

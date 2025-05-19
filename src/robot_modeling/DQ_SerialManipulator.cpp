@@ -18,7 +18,12 @@ This file is part of DQ Robotics.
 
 Contributors:
 1. Murilo M. Marinho        (murilomarinho@ieee.org)
+
 2. Mateus Rodrigues Martins (martinsrmateus@gmail.com)
+
+3. Juan Jose Quiroz Omana (juanjose.quirozomana@manchester.ac.uk)
+    - Added the joint_types member, and the following methods:
+      _check_joint_types(), and {set,get}_joint_{type, types}.
 */
 
 #include <dqrobotics/robot_modeling/DQ_SerialManipulator.h>
@@ -38,6 +43,47 @@ DQ_SerialManipulator::DQ_SerialManipulator(const int &dim_configuration_space):
     lower_q_dot_limit_.resize(dim_configuration_space);
     upper_q_dot_limit_.resize(dim_configuration_space);
     dim_configuration_space_ = dim_configuration_space;
+}
+
+/**
+ * @brief DQ_SerialManipulator::_check_joint_types throws an exception if the joint types are
+ *                           different from the supported joints.
+ */
+void DQ_SerialManipulator::_check_joint_types() const
+{
+    std::vector<DQ_JointType> types = get_joint_types();
+    std::vector<DQ_JointType> supported_types = get_supported_joint_types();
+    std::string msg = "Unsupported joint types. Use valid joint types: ";
+    std::string msg_type;
+    std::string ps;
+    size_t k = supported_types.size();
+    size_t n = types.size();
+    for (size_t i=0;i<k;i++)
+    {
+        msg_type = std::string("DQ_JointType::"+supported_types.at(i).to_string());
+        if (i==k-1)
+            ps = std::string(". ");
+        else
+            ps = std::string(", ");
+
+        msg += msg_type + ps;
+    }
+
+
+    for (size_t i=0;i<n;i++)
+    {
+        bool match = false;
+        for (size_t j=0;j<k;j++)
+        {
+            if (types.at(i) == supported_types.at(j))
+            {
+                match = true;
+                break;
+            }
+        }
+        if (match == false)
+            throw std::runtime_error(msg);
+    }
 }
 
 
@@ -95,6 +141,59 @@ VectorXd DQ_SerialManipulator::get_upper_q_dot_limit() const
 void DQ_SerialManipulator::set_upper_q_dot_limit(const VectorXd &upper_q_dot_limit)
 {
     upper_q_dot_limit_ = upper_q_dot_limit;
+}
+
+/**
+ * @brief DQ_SerialManipulator::get_joint_type returns the joint type of the ith joint.
+ * @param ith_joint The index to a joint.
+ * @return The desired ith joint type.
+ */
+DQ_JointType DQ_SerialManipulator::get_joint_type(const int &ith_joint) const
+{
+    _check_to_ith_link(ith_joint);
+    return joint_types_.at(ith_joint);
+}
+
+/**
+ * @brief DQ_SerialManipulator::get_joint_types returns a vector containing the joint types.
+ * @return The desired joint types.
+ */
+std::vector<DQ_JointType> DQ_SerialManipulator::get_joint_types() const
+{
+    return joint_types_;
+}
+
+/**
+ * @brief DQ_SerialManipulator::set_joint_type sets the joint type of the ith joint
+ * @param joint_type The joint_type.
+ * @param ith_joint The index to a joint.
+ */
+void DQ_SerialManipulator::set_joint_type(const DQ_JointType &joint_type, const int &ith_joint)
+{
+    _check_to_ith_link(ith_joint);
+    joint_types_.at(ith_joint) = joint_type;
+    _check_joint_types();
+}
+
+/**
+ * @brief DQ_SerialManipulator::set_joint_types sets the joint types.
+ * @param joint_types A vector containing the joint types.
+ */
+void DQ_SerialManipulator::set_joint_types(const std::vector<DQ_JointType> &joint_types)
+{
+    joint_types_ = joint_types;
+    _check_joint_types();
+}
+
+/**
+ * @brief DQ_SerialManipulator::set_joint_types sets the joint types.
+ * @param joint_types A vector containing the joint types.
+ */
+void DQ_SerialManipulator::set_joint_types(const VectorXd &joint_types)
+{
+    for (int i=0;i<joint_types.size();i++)
+        joint_types_.push_back(DQ_JointType(joint_types(i)));
+    _check_joint_types();
 }
 
 DQ  DQ_SerialManipulator::raw_fkm(const VectorXd& q_vec) const

@@ -20,8 +20,9 @@ Contributors:
 1. Murilo M. Marinho (murilomarinho@ieee.org)
     - Responsible for the original implementation.
 
-2. Juan Jose Quiroz Omana (juanjqogm@gmail.com)
+2. Juan Jose Quiroz Omana (juanjose.quirozomana@manchester.ac.uk)
     - Added methods to get and set the DH parameters.
+    - Added the get_supported_joint_types() method.
 */
 
 #include <dqrobotics/robot_modeling/DQ_SerialManipulatorMDH.h>
@@ -57,6 +58,7 @@ DQ_SerialManipulatorMDH::DQ_SerialManipulatorMDH(const MatrixXd& mdh_matrix):
         throw(std::range_error("Bad DQ_SerialManipulatorDH(mdh_matrix) call: mdh_matrix should be 5xn"));
     }
     mdh_matrix_ = mdh_matrix;
+    set_joint_types(mdh_matrix.row(4));
 }
 
 /**
@@ -208,6 +210,16 @@ void DQ_SerialManipulatorMDH::set_parameter(const DQ_ParameterDH &parameter_type
         break;
     }
 }
+
+/**
+ * @brief DQ_SerialManipulatorMDH::get_supported_joint_types gets the supported joint types.
+ * @return A vector containing the supported joint types.
+ */
+std::vector<DQ_JointType> DQ_SerialManipulatorMDH::get_supported_joint_types() const
+{
+    return {DQ_JointType::REVOLUTE, DQ_JointType::PRISMATIC};
+}
+
 
 /**
  * @brief This protected method computes the dual quaternion related with the time derivative of the
