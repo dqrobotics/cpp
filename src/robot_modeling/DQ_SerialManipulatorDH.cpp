@@ -20,8 +20,13 @@ Contributors:
 1. Murilo M. Marinho (murilomarinho@ieee.org)
     - Responsible for the original implementation.
 
-2. Juan Jose Quiroz Omana (juanjqogm@gmail.com)
+2. Juan Jose Quiroz Omana   (juanjqo@g.ecc.u-tokyo.ac.jp)
     - Added methods to get and set the DH parameters.
+
+3. Frederico Fernandes Afonso Silva (frederico.silva@ieee.org)
+   - Refactored for compliance with the new default constructor DQ::DQ().
+     [ffasilva committed on May 19, 2025](PR #71)
+     (https://github.com/dqrobotics/cpp/pull/71).
 */
 
 #include <dqrobotics/robot_modeling/DQ_SerialManipulatorDH.h>
@@ -90,16 +95,19 @@ DQ DQ_SerialManipulatorDH::_dh2dq(const double &q, const int &ith) const
     const double cosine_of_half_alpha = cos(half_alpha);
 
     // Return the optimized standard dh2dq calculation
-    return DQ(
-                cosine_of_half_alpha*cosine_of_half_theta,
-                sine_of_half_alpha*cosine_of_half_theta,
-                sine_of_half_alpha*sine_of_half_theta,
-                cosine_of_half_alpha*sine_of_half_theta,
-                -(a*sine_of_half_alpha*cosine_of_half_theta) /2.0 - (d*cosine_of_half_alpha*sine_of_half_theta)/2.0,
-                (a*cosine_of_half_alpha*cosine_of_half_theta)/2.0 - (d*sine_of_half_alpha*sine_of_half_theta  )/2.0,
-                (a*cosine_of_half_alpha*sine_of_half_theta)  /2.0 + (d*sine_of_half_alpha*cosine_of_half_theta)/2.0,
-                (d*cosine_of_half_alpha*cosine_of_half_theta)/2.0 - (a*sine_of_half_alpha*sine_of_half_theta  )/2.0
-                );
+    return DQ((Matrix<double,8,1>() <<
+        cosine_of_half_alpha*cosine_of_half_theta,
+        sine_of_half_alpha*cosine_of_half_theta,
+        sine_of_half_alpha*sine_of_half_theta,
+        cosine_of_half_alpha*sine_of_half_theta,
+        -(a*sine_of_half_alpha*cosine_of_half_theta) /2.0 -
+                   (d*cosine_of_half_alpha*sine_of_half_theta)/2.0,
+        (a*cosine_of_half_alpha*cosine_of_half_theta)/2.0 -
+                   (d*sine_of_half_alpha*sine_of_half_theta  )/2.0,
+        (a*cosine_of_half_alpha*sine_of_half_theta)  /2.0 +
+                   (d*sine_of_half_alpha*cosine_of_half_theta)/2.0,
+        (d*cosine_of_half_alpha*cosine_of_half_theta)/2.0 -
+                   (a*sine_of_half_alpha*sine_of_half_theta  )/2.0).finished());
 }
 
 /**
@@ -303,7 +311,7 @@ DQ  DQ_SerialManipulatorDH::raw_fkm(const VectorXd& q_vec, const int& to_ith_lin
     _check_q_vec(q_vec);
     _check_to_ith_link(to_ith_link);
 
-    DQ q(1);
+    DQ q = DQ((Matrix<double,8,1>() << 1,0,0,0,0,0,0,0).finished());
     int j = 0;
     for (int i = 0; i < (to_ith_link+1); i++) {
         q = q * _dh2dq(q_vec(i-j), i);
@@ -331,7 +339,7 @@ MatrixXd DQ_SerialManipulatorDH::raw_pose_jacobian(const VectorXd &q_vec, const 
     MatrixXd J = MatrixXd::Zero(8,to_ith_link+1);
     DQ x_effector = raw_fkm(q_vec,to_ith_link);
 
-    DQ x(1);
+    DQ x = DQ((Matrix<double,8,1>() << 1,0,0,0,0,0,0,0).finished());
 
     for(int i=0;i<to_ith_link+1;i++)
     {
@@ -364,7 +372,7 @@ MatrixXd DQ_SerialManipulatorDH::raw_pose_jacobian_derivative(const VectorXd &q,
     DQ x_effector = raw_fkm(q,to_ith_link);
     MatrixXd J    = raw_pose_jacobian(q,to_ith_link);
     VectorXd vec_x_effector_dot = J*q_dot.head(n);
-    DQ x = DQ(1);
+    DQ x = DQ((Matrix<double,8,1>() << 1,0,0,0,0,0,0,0).finished());
     MatrixXd J_dot = MatrixXd::Zero(8,n);
     int jth=0;
 

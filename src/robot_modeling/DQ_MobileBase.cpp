@@ -17,7 +17,13 @@ This file is part of DQ Robotics.
     along with DQ Robotics.  If not, see <http://www.gnu.org/licenses/>.
 
 Contributors:
-- Murilo M. Marinho (murilomarinho@ieee.org)
+1. Murilo M. Marinho (murilomarinho@ieee.org)
+        - Responsible for the original implementation.
+
+2. Frederico Fernandes Afonso Silva (frederico.silva@ieee.org)
+       - Refactored for compliance with the new default constructor DQ::DQ().
+         [ffasilva committed on May 19, 2025](PR #71)
+         (https://github.com/dqrobotics/cpp/pull/71).
 */
 
 #include<dqrobotics/robot_modeling/DQ_MobileBase.h>
@@ -27,7 +33,7 @@ namespace DQ_robotics
 
 DQ_MobileBase::DQ_MobileBase()
 {
-    frame_displacement_ = DQ(1);
+    frame_displacement_ = DQ((Matrix<double,8,1>() << 1,0,0,0,0,0,0,0).finished());
 }
 
 DQ DQ_MobileBase::frame_displacement()

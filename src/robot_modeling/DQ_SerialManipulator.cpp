@@ -17,8 +17,15 @@ This file is part of DQ Robotics.
     along with DQ Robotics.  If not, see <http://www.gnu.org/licenses/>.
 
 Contributors:
-1. Murilo M. Marinho        (murilomarinho@ieee.org)
+1. Murilo M. Marinho (murilomarinho@ieee.org)
+    - Responsible for the original implementation.
+
 2. Mateus Rodrigues Martins (martinsrmateus@gmail.com)
+
+3. Frederico Fernandes Afonso Silva (frederico.silva@ieee.org)
+   - Refactored for compliance with the new default constructor DQ::DQ().
+     [ffasilva committed on May 19, 2025](PR #71)
+     (https://github.com/dqrobotics/cpp/pull/71).
 */
 
 #include <dqrobotics/robot_modeling/DQ_SerialManipulator.h>
@@ -32,7 +39,7 @@ namespace DQ_robotics
 DQ_SerialManipulator::DQ_SerialManipulator(const int &dim_configuration_space):
     DQ_Kinematics()
 {
-    curr_effector_ = DQ(1);
+    curr_effector_ = DQ((Matrix<double,8,1>() << 1,0,0,0,0,0,0,0).finished());
     lower_q_limit_.resize(dim_configuration_space);
     upper_q_limit_.resize(dim_configuration_space);
     lower_q_dot_limit_.resize(dim_configuration_space);
