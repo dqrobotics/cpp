@@ -1,5 +1,5 @@
 /**
-(C) Copyright 2020-2022 DQ Robotics Developers
+(C) Copyright 2011-2025 DQ Robotics Developers
 
 This file is part of DQ Robotics.
 
@@ -18,14 +18,15 @@ This file is part of DQ Robotics.
 
 Contributors:
 1. Murilo M. Marinho (murilomarinho@ieee.org)
-        - Responsible for the original implementation.
+    - Responsible for the original implementation.
 
 2. Juan Jose Quiroz Omana   (juanjqo@g.ecc.u-tokyo.ac.jp)
+    - Added methods to get and set the DH parameters.
 
 3. Frederico Fernandes Afonso Silva (frederico.silva@ieee.org)
-       - Refactored for compliance with the new default constructor DQ::DQ().
-         [ffasilva committed on MM DD, 2025](COMMIT_NUMBER)
-         (LINK).
+   - Refactored for compliance with the new default constructor DQ::DQ().
+     [ffasilva committed on MM DD, 2025](COMMIT_NUMBER)
+     (LINK).
 */
 
 #include <dqrobotics/robot_modeling/DQ_SerialManipulatorDH.h>
@@ -107,6 +108,102 @@ DQ DQ_SerialManipulatorDH::_dh2dq(const double &q, const int &ith) const
                    (d*sine_of_half_alpha*cosine_of_half_theta)/2.0,
         (d*cosine_of_half_alpha*cosine_of_half_theta)/2.0 -
                    (a*sine_of_half_alpha*sine_of_half_theta  )/2.0).finished());
+}
+
+/**
+ * @brief DQ_SerialManipulatorDH::get_parameters returns a vector containing the DH parameters.
+ * @param parameter_type Parameter type, which which corresponds to THETA, D, A, or ALPHA.
+ * @return A vector containing the desired DH parameters.
+ */
+VectorXd DQ_SerialManipulatorDH::get_parameters(const DQ_ParameterDH &parameter_type) const
+{
+    switch (parameter_type) {
+    case DQ_ParameterDH::THETA:
+        return  dh_matrix_.row(0);
+    case DQ_ParameterDH::D:
+        return  dh_matrix_.row(1);
+    case DQ_ParameterDH::A:
+        return  dh_matrix_.row(2);
+    case DQ_ParameterDH::ALPHA:
+        return  dh_matrix_.row(3);
+    default:
+        throw std::runtime_error("Wrong type of parameter");
+    }
+}
+
+/**
+ * @brief DQ_SerialManipulatorDH::get_parameter returns the DH parameter of the ith joint.
+ * @param parameter_type Parameter type, which which corresponds to THETA, D, A, or ALPHA.
+ * @param to_ith_link The joint number.
+ * @return The desired DH parameter.
+ */
+double DQ_SerialManipulatorDH::get_parameter(const DQ_ParameterDH &parameter_type,
+                                             const int &to_ith_link) const
+{
+    _check_to_ith_link(to_ith_link);
+    switch (parameter_type) {
+    case DQ_ParameterDH::THETA:
+        return  dh_matrix_(0, to_ith_link);
+    case DQ_ParameterDH::D:
+        return  dh_matrix_(1, to_ith_link);
+    case DQ_ParameterDH::A:
+        return  dh_matrix_(2, to_ith_link);
+    case DQ_ParameterDH::ALPHA:
+        return  dh_matrix_(3, to_ith_link);
+    default:
+        throw std::runtime_error("Wrong type of parameter");
+    }
+}
+
+/**
+ * @brief DQ_SerialManipulatorDH::set_parameters sets the DH parameters.
+ * @param parameter_type Parameter type, which which corresponds to THETA, D, A, or ALPHA.
+ * @param vector_parameters A vector containing the new parameters.
+ */
+void DQ_SerialManipulatorDH::set_parameters(const DQ_ParameterDH &parameter_type,
+                                            const VectorXd &vector_parameters)
+{
+    _check_q_vec(vector_parameters);
+    switch (parameter_type) {
+    case DQ_ParameterDH::THETA:
+        dh_matrix_.row(0) = vector_parameters;
+        break;
+    case DQ_ParameterDH::D:
+        dh_matrix_.row(1) =  vector_parameters;
+        break;
+    case DQ_ParameterDH::A:
+        dh_matrix_.row(2) =  vector_parameters;
+        break;
+    case DQ_ParameterDH::ALPHA:
+        dh_matrix_.row(3) =  vector_parameters;
+        break;
+    }
+}
+
+/**
+ * @brief DQ_SerialManipulatorDH::set_parameter sets the DH parameter of the ith joint.
+ * @param parameter_type Parameter type, which which corresponds to THETA, D, A, or ALPHA.
+ * @param to_ith_link The joint number.
+ * @param parameter The new parameter.
+ */
+void DQ_SerialManipulatorDH::set_parameter(const DQ_ParameterDH &parameter_type,
+                                           const int &to_ith_link, const double &parameter)
+{
+    _check_to_ith_link(to_ith_link);
+    switch (parameter_type) {
+    case DQ_ParameterDH::THETA:
+        dh_matrix_(0, to_ith_link) = parameter;
+        break;
+    case DQ_ParameterDH::D:
+        dh_matrix_(1, to_ith_link) = parameter;
+        break;
+    case DQ_ParameterDH::A:
+        dh_matrix_(2, to_ith_link) = parameter;
+        break;
+    case DQ_ParameterDH::ALPHA:
+        dh_matrix_(3, to_ith_link) = parameter;
+        break;
+    }
 }
 
 

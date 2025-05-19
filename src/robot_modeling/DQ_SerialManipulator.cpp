@@ -1,5 +1,5 @@
 /**
-(C) Copyright 2011-2020 DQ Robotics Developers
+(C) Copyright 2011-2025 DQ Robotics Developers
 
 This file is part of DQ Robotics.
 
@@ -18,16 +18,14 @@ This file is part of DQ Robotics.
 
 Contributors:
 1. Murilo M. Marinho (murilomarinho@ieee.org)
-        - Responsible for the original implementation.
+    - Responsible for the original implementation.
 
 2. Mateus Rodrigues Martins (martinsrmateus@gmail.com)
 
-3. Juan Jose Quiroz Omana   (juanjqo@g.ecc.u-tokyo.ac.jp)
-
-4. Frederico Fernandes Afonso Silva (frederico.silva@ieee.org)
-       - Refactored for compliance with the new default constructor DQ::DQ().
-         [ffasilva committed on MM DD, 2025](COMMIT_NUMBER)
-         (LINK).
+3. Frederico Fernandes Afonso Silva (frederico.silva@ieee.org)
+   - Refactored for compliance with the new default constructor DQ::DQ().
+     [ffasilva committed on MM DD, 2025](COMMIT_NUMBER)
+     (LINK).
 */
 
 #include <dqrobotics/robot_modeling/DQ_SerialManipulator.h>

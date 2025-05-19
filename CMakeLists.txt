@@ -1,5 +1,7 @@
 # Updated 2025.05 to 3.10 since compatibility with CMake < 3.10 will be removed from a future version of CMake.
 CMAKE_MINIMUM_REQUIRED(VERSION 3.10)
+# https://cmake.org/cmake/help/latest/variable/BUILD_SHARED_LIBS.html
+option(BUILD_SHARED_LIBS "Build using shared libraries" ON)
 
 if(WIN32)
     set(CMAKE_TOOLCHAIN_FILE C:/vcpkg/scripts/buildsystems/vcpkg.cmake)
@@ -41,7 +43,7 @@ endif()
 # As of 2025.05, Not using GLOB_RECURSE as it's explicitly discouraged.
 # https://stackoverflow.com/questions/3201154/automatically-add-all-files-in-a-folder-to-a-target-using-cmake
 # https://cmake.org/cmake/help/latest/command/file.html#filesystem
-ADD_LIBRARY(dqrobotics SHARED 
+ADD_LIBRARY(dqrobotics 
     src/DQ.cpp
 
     src/internal/_dq_linesegment.cpp
