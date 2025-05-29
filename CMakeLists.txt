@@ -1,5 +1,5 @@
 # Updated 2025.05 to 3.10 since compatibility with CMake < 3.10 will be removed from a future version of CMake.
-CMAKE_MINIMUM_REQUIRED(VERSION 3.10)
+cmake_minimum_required(VERSION 3.10)
 # https://cmake.org/cmake/help/latest/variable/BUILD_SHARED_LIBS.html
 option(BUILD_SHARED_LIBS "Build using shared libraries" ON)
 
@@ -8,42 +8,13 @@ if(WIN32)
     set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 endif()
 
-PROJECT(dqrobotics)
+project(dqrobotics)
 set (CMAKE_CXX_STANDARD 11)
-
-INCLUDE_DIRECTORIES(include)
-
-if(UNIX AND NOT APPLE)
-    FIND_PACKAGE(Eigen3 REQUIRED)
-    INCLUDE_DIRECTORIES(${EIGEN3_INCLUDE_DIR})
-    ADD_COMPILE_OPTIONS(-Werror=return-type -Wall -Wextra -Wmissing-declarations -Wredundant-decls -Woverloaded-virtual)
-endif()
-
-if(APPLE)
-    INCLUDE_DIRECTORIES(
-        /usr/local/include/
-        /usr/local/include/eigen3
-        # Most recent versions of brew install here
-        /opt/homebrew/include
-        /opt/homebrew/include/eigen3)
-    ADD_COMPILE_OPTIONS(-Werror=return-type -Wall -Wextra -Wmissing-declarations -Wredundant-decls -Woverloaded-virtual)
-endif()
-
-if(WIN32)
-    ADD_DEFINITIONS(-D_USE_MATH_DEFINES) 
-    FIND_PACKAGE(Eigen3 CONFIG REQUIRED) 
-    INCLUDE_DIRECTORIES(${EIGEN3_INCLUDE_DIR}) 
-endif()
-
-
-################################################################
-# DEFINE AND INSTALL LIBRARY AND INCLUDE FOLDER
-################################################################
 
 # As of 2025.05, Not using GLOB_RECURSE as it's explicitly discouraged.
 # https://stackoverflow.com/questions/3201154/automatically-add-all-files-in-a-folder-to-a-target-using-cmake
 # https://cmake.org/cmake/help/latest/command/file.html#filesystem
-ADD_LIBRARY(dqrobotics 
+add_library(dqrobotics
     src/DQ.cpp
 
     src/internal/_dq_linesegment.cpp
@@ -79,12 +50,38 @@ ADD_LIBRARY(dqrobotics
     src/robots/FrankaEmikaPandaRobot.cpp
     )
 
-SET_TARGET_PROPERTIES(dqrobotics 
+target_include_directories(
+        include
+)
+
+if(UNIX AND NOT APPLE)
+    find_package(Eigen3 REQUIRED)
+    include_directories(${EIGEN3_INCLUDE_DIR})
+    add_compile_options(-Werror=return-type -Wall -Wextra -Wmissing-declarations -Wredundant-decls -Woverloaded-virtual)
+endif()
+
+if(APPLE)
+    include_directories(
+            /usr/local/include/
+            /usr/local/include/eigen3
+            # Most recent versions of brew install here
+            /opt/homebrew/include
+            /opt/homebrew/include/eigen3)
+    add_compile_options(-Werror=return-type -Wall -Wextra -Wmissing-declarations -Wredundant-decls -Woverloaded-virtual)
+endif()
+
+if(WIN32)
+    add_definitions(-D_USE_MATH_DEFINES)
+    find_package(Eigen3 CONFIG REQUIRED)
+    include_directories(${EIGEN3_INCLUDE_DIR})
+endif()
+
+set_target_properties(dqrobotics
     PROPERTIES PUBLIC_HEADER
     include/dqrobotics/DQ.h
     )
 
-INSTALL(TARGETS dqrobotics 
+install(TARGETS dqrobotics
 # https://stackoverflow.com/questions/21592361/cmake-install-is-not-installing-libraries-on-windows    
 	RUNTIME DESTINATION "bin"
     LIBRARY DESTINATION "lib"
@@ -96,7 +93,7 @@ INSTALL(TARGETS dqrobotics
 # INSTALL HEADERS IN SUBFOLDERS
 ################################################################
 
-INSTALL(DIRECTORY
+install(DIRECTORY
     include/
     DESTINATION "include")
 
@@ -104,6 +101,6 @@ INSTALL(DIRECTORY
 # INSTALL SOURCE FILES (So that the debugger can find them)
 ################################################################
 
-INSTALL(DIRECTORY
+install(DIRECTORY
     src/
     DESTINATION "src/dqrobotics")
