@@ -42,11 +42,7 @@ Contributors:
 */
 #pragma once
 
-#ifdef _WIN32
 #include <Eigen/Dense>
-#else
-#include <eigen3/Eigen/Dense>
-#endif
 
 #include <iostream>
 using namespace Eigen;

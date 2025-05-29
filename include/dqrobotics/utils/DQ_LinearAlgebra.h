@@ -21,12 +21,7 @@ Contributors:
 - Murilo M. Marinho (murilomarinho@ieee.org)
 */
 
-#ifdef _WIN32
 #include <Eigen/Dense>
-#else
-#include <eigen3/Eigen/Dense>
-#endif
-
 #include <tuple>
 
 using namespace Eigen;
