@@ -13,6 +13,9 @@ endif()
 
 project(dqrobotics)
 
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
 find_package(Eigen3 REQUIRED)
 
 # As of 2025.05, Not using GLOB_RECURSE as it's explicitly discouraged.
@@ -62,7 +65,9 @@ target_include_directories(dqrobotics PUBLIC
 
 if(UNIX)
     # WIN32 does not accept these flags
-    add_compile_options(-Werror=return-type -Wall -Wextra -Wmissing-declarations -Wredundant-decls -Woverloaded-virtual -fPIC)
+    target_compile_options(dqrobotics PUBLIC
+            -Werror=return-type -Wall -Wextra -Wmissing-declarations -Wredundant-decls -Woverloaded-virtual -fPIC
+    )
 endif()
 
 if(WIN32)
