@@ -2,29 +2,30 @@
 
 BUILDDIR = build_dir
 
-# secondly called by launchpad
-build:
-	mkdir $(BUILDDIR);
-	cd $(BUILDDIR); cmake -DCMAKE_CXX_FLAGS="-fdebug-prefix-map=$(shell pwd)/src/=/usr/src/dqrobotics/ -fdebug-prefix-map=$(shell pwd)/include/=/usr/include/" -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_INSTALL_PREFIX=../debian/tmp/usr ..
-	make -C $(BUILDDIR) 
-  #$(info ************  $(shell pwd) ************)
-
-# thirdly called by launchpad
-binary: binary-indep binary-arch
-
-binary-indep:
+# Apr 8, 2026. Added build-arch and build-indep for compliance with Ubuntu Resolute.
+build: build-indep build-arch
 	# nothing to be done
 
-binary-arch:
-	mkdir -p $(BUILDDIR)
+build-indep:
+	# nothing to be done
+
+build-arch:
+	mkdir -p $(BUILDDIR);
+	cd $(BUILDDIR); cmake -DCMAKE_CXX_FLAGS="-fdebug-prefix-map=$(shell pwd)/src/=/usr/src/dqrobotics/ -fdebug-prefix-map=$(shell pwd)/include/=/usr/include/" -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_INSTALL_PREFIX=../debian/tmp/usr ..
+	make -C $(BUILDDIR)
+
+binary: binary-indep binary-arch
+	# nothing to be done
+
+binary-indep: build-indep
+	# nothing to be done
+
+binary-arch: build-arch
 	cd $(BUILDDIR); cmake -P cmake_install.cmake
 	mkdir -p debian/tmp/DEBIAN
 	dpkg-gencontrol -plibdqrobotics
 	dpkg --build debian/tmp ..
 
-# firstly called by launchpad
 clean:
 	rm -f build
 	rm -rf $(BUILDDIR)
-
-.PHONY: binary binary-arch binary-indep clean

@@ -1,0 +1,5 @@
+services:
+  dqrobotics:
+    build:
+      context: ../../
+      dockerfile: docker/ubuntu_24_04/Dockerfile
