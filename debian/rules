@@ -16,6 +16,7 @@ binary-indep:
 	# nothing to be done
 
 binary-arch:
+	mkdir -p $(BUILDDIR)
 	cd $(BUILDDIR); cmake -P cmake_install.cmake
 	mkdir -p debian/tmp/DEBIAN
 	dpkg-gencontrol -plibdqrobotics
