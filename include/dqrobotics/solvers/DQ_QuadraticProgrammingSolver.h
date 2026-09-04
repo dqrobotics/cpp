@@ -27,13 +27,40 @@ using namespace Eigen;
 
 namespace DQ_robotics
 {
+/**
+ * @brief Abstract interface to quadratic-programming solvers used by DQ Robotics controllers.
+ *
+ * Concrete implementations solve optimization problems of the form
+ * min 0.5*u'*H*u + f'*u subject to A*u <= b and Aeq*u = beq.
+ *
+ * @see DQ_QuadraticProgrammingController
+ */
 class DQ_QuadraticProgrammingSolver
 {
 protected:
+    /**
+     * @brief Default constructor for solver interfaces.
+     */
     DQ_QuadraticProgrammingSolver() = default;
 public:
+    /**
+     * @brief Virtual destructor.
+     */
     virtual ~DQ_QuadraticProgrammingSolver() = default;
 
+    /**
+     * @brief Solves a quadratic program.
+     *
+     * Pure virtual interface contract implemented by concrete quadratic-programming solvers.
+     *
+     * @param H Symmetric matrix of the quadratic term.
+     * @param f Vector of the linear term.
+     * @param A Matrix of inequality constraints.
+     * @param b Vector of inequality-constraint bounds.
+     * @param Aeq Matrix of equality constraints.
+     * @param beq Vector of equality-constraint bounds.
+     * @return The optimal decision vector.
+     */
     virtual VectorXd solve_quadratic_program(const MatrixXd& H, const VectorXd& f, const MatrixXd& A, const VectorXd& b, const MatrixXd& Aeq, const VectorXd& beq)=0;
 };
 }

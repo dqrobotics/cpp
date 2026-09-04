@@ -21,13 +21,25 @@ Contributors:
 namespace DQ_robotics
 {
 
+/**
+ * @brief Provides the kinematic model of the Franka Emika Panda robot manipulator.
+ *
+ * This class exposes a ready-to-use model of the Franka Emika Panda arm using
+ * the geometric data encoded in the library implementation.
+ */
 class FrankaEmikaPandaRobot
 {
 public:
+    /**
+     * @brief Returns the kinematic model of the Franka Emika Panda robot,
+     * described using the modified Denavit-Hartenberg convention.
+     * @return A DQ_SerialManipulatorMDH instance representing the robot.
+     * @note The implementation also sets the manufacturer base and flange
+     * offsets, as well as the joint position and velocity limits.
+     */
     static DQ_SerialManipulatorMDH kinematics();
     //static DQ_SerialManipulatorMDH dynamics(); To be implemented
 };
 
 }
-
 

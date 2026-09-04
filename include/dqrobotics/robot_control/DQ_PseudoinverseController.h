@@ -26,16 +26,52 @@ Contributors:
 namespace DQ_robotics
 {
 
+/**
+ * @brief Implements a kinematic control law based on the Jacobian pseudoinverse and an Euclidean task-space error.
+ *
+ * This controller computes reference joint velocities from the task-space error using
+ * the Moore-Penrose pseudoinverse when the damping is zero, or a damped least-squares
+ * inverse when isotropic damping is enabled.
+ *
+ * @see DQ_KinematicController, DQ_NumericalFilteredPseudoinverseController
+ */
 class DQ_PseudoinverseController: public DQ_KinematicController
 {
 public:
     DQ_PseudoinverseController() = delete;
 
+    /**
+     * @brief Constructs a controller from a legacy raw robot pointer.
+     *
+     * @param robot Non-owning pointer to the robot kinematic model.
+     */
     [[deprecated("Use the smart pointer version instead")]]
     DQ_PseudoinverseController(DQ_Kinematics* robot);
+    /**
+     * @brief Constructs a controller from a shared robot pointer.
+     *
+     * @param robot Shared pointer to the robot kinematic model.
+     */
     DQ_PseudoinverseController(const std::shared_ptr<DQ_Kinematics>& robot);
 
+    /**
+     * @brief Computes the reference joint velocities that drive the task-space error to zero.
+     *
+     * @param q Vector containing the current joint configurations of the robot.
+     * @param task_reference Vector containing the desired value for the chosen control task.
+     * @return The reference joint velocities.
+     * @throws std::runtime_error If the controller was not configured with a valid control objective.
+     */
     VectorXd compute_setpoint_control_signal(const VectorXd& q, const VectorXd& task_reference) override;
+    /**
+     * @brief Computes the reference joint velocities for a time-varying task-space reference.
+     *
+     * @param q Vector containing the current joint configurations of the robot.
+     * @param task_reference Vector containing the desired value for the chosen control task.
+     * @param feed_forward Time derivative of the task reference expressed in task space.
+     * @return The reference joint velocities.
+     * @throws std::runtime_error If the controller was not configured with a valid control objective.
+     */
     VectorXd compute_tracking_control_signal(const VectorXd& q, const VectorXd& task_reference, const VectorXd& feed_forward) override;
 };
 

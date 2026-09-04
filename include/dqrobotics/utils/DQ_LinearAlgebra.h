@@ -29,10 +29,43 @@ using namespace Eigen;
 namespace DQ_robotics
 {
 
+/**
+ * @brief Computes the rank of a matrix using singular value decomposition.
+ *
+ * The tolerance matches the MATLAB-inspired rule used by this library,
+ * namely `max(rows, cols) * sigma_max * eps`, where `sigma_max` is the
+ * largest singular value of the matrix.
+ *
+ * @param matrix The input matrix.
+ * @return The number of singular values greater than the default tolerance.
+ * @see pinv, svd
+ */
 int rank(const MatrixXd& matrix);
 
+/**
+ * @brief Computes the Moore-Penrose pseudoinverse of a matrix.
+ *
+ * The pseudoinverse is obtained from a full singular value decomposition.
+ * Singular values smaller than the MATLAB-style tolerance
+ * `max(rows, cols) * sigma_max * eps` are treated as zero.
+ *
+ * @param matrix The input matrix.
+ * @return The pseudoinverse of the input matrix.
+ * @see rank, svd
+ */
 MatrixXd pinv(const MatrixXd& matrix);
 
+/**
+ * @brief Computes the singular value decomposition of a matrix.
+ *
+ * The returned tuple is ordered as `(U, S, V)` so the original matrix can be
+ * reconstructed as `matrix = U * S * V.adjoint()`.
+ *
+ * @param matrix The input matrix.
+ * @return A tuple containing the left singular vectors, the diagonal matrix of
+ * singular values, and the right singular vectors.
+ * @see pinv, rank
+ */
 std::tuple<MatrixXd,MatrixXd,MatrixXd> svd(const MatrixXd& matrix);
 
 }

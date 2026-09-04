@@ -32,22 +32,57 @@ using namespace Eigen;
 namespace DQ_robotics
 {
 
+/**
+ * @brief Abstract superclass used to define concrete kinematic controllers with algebraic constraints.
+ *
+ * This class extends DQ_KinematicController with equality and inequality constraints
+ * on the control input. Constrained controllers can store matrices and vectors that
+ * are later supplied to optimization-based control laws.
+ *
+ * @see DQ_KinematicController, DQ_QuadraticProgrammingController
+ */
 class DQ_KinematicConstrainedController: public DQ_KinematicController
 {
 protected:
+    /** @brief Matrix used in equality constraints of the form Aeq*u = beq. */
     MatrixXd equality_constraint_matrix_;
+    /** @brief Vector used in equality constraints of the form Aeq*u = beq. */
     VectorXd equality_constraint_vector_;
+    /** @brief Matrix used in inequality constraints of the form A*u <= b. */
     MatrixXd inequality_constraint_matrix_;
+    /** @brief Vector used in inequality constraints of the form A*u <= b. */
     VectorXd inequality_constraint_vector_;
 
+    /**
+     * @brief Constructs a constrained controller from a legacy raw robot pointer.
+     *
+     * @param robot Non-owning pointer to the robot kinematic model.
+     */
     [[deprecated("Use the smart pointer version instead")]]
     DQ_KinematicConstrainedController(DQ_Kinematics* robot);
+    /**
+     * @brief Constructs a constrained controller from a shared robot pointer.
+     *
+     * @param robot Shared pointer to the robot kinematic model.
+     */
     DQ_KinematicConstrainedController(const std::shared_ptr<DQ_Kinematics>& robot);
 public:
     //Remove default constructor
     DQ_KinematicConstrainedController()=delete;
 
+    /**
+     * @brief Sets the equality constraint passed to constrained control laws.
+     *
+     * @param B Equality-constraint matrix.
+     * @param b Equality-constraint vector.
+     */
     virtual void set_equality_constraint(const MatrixXd& B, const VectorXd& b);
+    /**
+     * @brief Sets the inequality constraint passed to constrained control laws.
+     *
+     * @param B Inequality-constraint matrix.
+     * @param b Inequality-constraint vector.
+     */
     virtual void set_inequality_constraint(const MatrixXd& B, const VectorXd& b);
 
 };
