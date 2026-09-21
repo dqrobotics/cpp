@@ -59,7 +59,7 @@ public:
      *
      * @param q Vector containing the current joint configurations of the robot.
      * @param task_reference Vector containing the desired value for the chosen control task.
-     * @return The reference joint velocities.
+     * @return The control signal that regulates the system to the desired setpoint.
      * @throws std::runtime_error If the controller was not configured with a valid control objective.
      */
     VectorXd compute_setpoint_control_signal(const VectorXd& q, const VectorXd& task_reference) override;
