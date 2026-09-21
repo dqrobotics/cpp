@@ -286,7 +286,7 @@ public:
      */
     virtual VectorXd compute_setpoint_control_signal(const VectorXd& q, const VectorXd& task_reference)=0;
     /**
-     * @brief Computes the reference joint velocities for a tracking task with feedforward.
+     * @brief Computes the control signal that tracks a time-varying trajectory
      *
      * Pure virtual interface contract implemented by concrete kinematic controllers.
      *
