@@ -214,6 +214,11 @@ public:
      *
      * This is a pure virtual interface contract and must be implemented by subclasses.
      *
+     * @note This function does not take into account any reference-frame or end-effector
+     * displacements, and is intended mostly for internal use by DQ_Kinematics and its
+     * subclasses. Most users should call pose_jacobian_derivative() instead, which applies
+     * those transformations.
+     *
      * @param q Vector containing the robot joint configurations.
      * @param q_dot Vector containing the robot joint velocities.
      * @param to_ith_link Index of the last link to be accounted for in the computation.
