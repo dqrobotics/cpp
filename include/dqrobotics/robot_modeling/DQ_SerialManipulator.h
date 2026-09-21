@@ -174,6 +174,11 @@ public:
      *
      * This concrete overload delegates to raw_pose_jacobian_derivative(q, q_dot, get_dim_configuration_space() - 1).
      *
+     * @note This function does not take into account any reference-frame or end-effector
+     * displacements, and is intended mostly for internal use by DQ_Kinematics and its
+     * subclasses. Most users should call pose_jacobian_derivative() instead, which applies
+     * those transformations.
+     *
      * @param q Vector containing the robot joint configurations.
      * @param q_dot Vector containing the robot joint velocities.
      * @return The derivative of the raw pose Jacobian.
