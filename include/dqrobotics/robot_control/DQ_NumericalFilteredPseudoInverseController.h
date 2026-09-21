@@ -77,7 +77,7 @@ public:
     DQ_NumericalFilteredPseudoinverseController(const std::shared_ptr<DQ_Kinematics>& robot);
 
     /**
-     * @brief Computes the reference joint velocities for a setpoint task using numerical filtered damping.
+     * @brief Computes the control signal for a setpoint task using numerical filtered damping.
      *
      * @param q Vector containing the current joint configurations of the robot.
      * @param task_reference Vector containing the desired value for the chosen control task.
