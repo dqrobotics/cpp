@@ -230,6 +230,10 @@ public:
      *
      * This is a pure virtual interface contract and must be implemented by subclasses.
      *
+     * @note This function does not take into account any reference-frame or end-effector
+     * displacements. It is an auxiliary function intended mostly for internal use, chiefly
+     * by the pose-Jacobian computations. Most users should call fkm() instead.
+     *
      * @param q_vec Vector containing the robot joint configurations.
      * @param to_ith_link Index of the last link to be accounted for in the computation.
      * @return The raw pose of the ith link, without reference-frame or end-effector transformations.
