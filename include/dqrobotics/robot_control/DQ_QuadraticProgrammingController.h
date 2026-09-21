@@ -82,7 +82,7 @@ public:
      * Pure virtual interface contract implemented by concrete quadratic-programming controllers.
      *
      * @param J Task Jacobian associated with the current control objective.
-     * @param task_error Task-space error, possibly combined with feedforward terms by the caller.
+     * @param task_error Task-space error.
      * @return The symmetric matrix H in the quadratic objective.
      */
     virtual MatrixXd compute_objective_function_symmetric_matrix(const MatrixXd& J, const VectorXd& task_error)=0;
