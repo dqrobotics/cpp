@@ -69,7 +69,7 @@ public:
      * @param q Vector containing the current joint configurations of the robot.
      * @param task_reference Vector containing the desired value for the chosen control task.
      * @param feed_forward Time derivative of the task reference expressed in task space.
-     * @return The reference joint velocities.
+     * @return The control signal that drives the task variable to track @p task_reference.
      * @throws std::runtime_error If the controller was not configured with a valid control objective.
      */
     VectorXd compute_tracking_control_signal(const VectorXd& q, const VectorXd& task_reference, const VectorXd& feed_forward) override;
