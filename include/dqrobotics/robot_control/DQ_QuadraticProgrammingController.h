@@ -102,7 +102,7 @@ public:
      *
      * @param q Vector containing the current joint configurations of the robot.
      * @param task_reference Vector containing the desired value for the chosen control task.
-     * @return The reference joint velocities obtained from the quadratic program.
+     * @return The control signal obtained from the quadratic program.
      * @throws std::runtime_error If the controller is unset or if incompatible task, Jacobian, or feedforward sizes are detected.
      */
     virtual VectorXd compute_setpoint_control_signal(const VectorXd&q, const VectorXd& task_reference) override;
