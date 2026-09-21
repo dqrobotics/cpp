@@ -27,9 +27,21 @@ Contributors:
 
 namespace DQ_robotics{
 
+/**
+ * @brief Provides the kinematic model of the AX-18 manipulator arm.
+ *
+ * This class exposes a ready-to-use model of the AX-18 arm based on the
+ * Denavit-Hartenberg parameters used in the MATLAB version of DQ Robotics.
+ */
 class Ax18ManipulatorRobot
 {
 public:
+    /**
+     * @brief Returns the kinematic model of the AX-18 manipulator arm.
+     * @return A DQ_SerialManipulatorDH instance representing the robot.
+     * @note The model is described using the standard Denavit-Hartenberg
+     * convention.
+     */
     static DQ_SerialManipulatorDH kinematics();
 };
 

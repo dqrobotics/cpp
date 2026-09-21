@@ -28,9 +28,23 @@ Contributors:
 namespace DQ_robotics
 {
 
+/**
+ * @brief Provides the whole-body kinematic model of the KUKA youBot mobile manipulator.
+ *
+ * The model is composed of a holonomic mobile base serially coupled to the
+ * robot's 5-DOF arm, following the MATLAB version of DQ Robotics.
+ */
 class KukaYoubotRobot
 {
 public:
+    /**
+     * @brief Returns the whole-body kinematic model of the KUKA youBot mobile manipulator.
+     * @return A DQ_SerialWholeBody instance representing the holonomic base and
+     * the serial arm.
+     * @note The arm parameters are described using the standard
+     * Denavit-Hartenberg convention, and the geometric dimensions follow KUKA's
+     * technical documentation.
+     */
     static DQ_SerialWholeBody kinematics();
 };
 

@@ -26,6 +26,12 @@ Contributors:
 namespace DQ_robotics
 {
 
+/**
+ * @brief The circular constant \f$\pi\f$.
+ *
+ * This constant exposes the value of `M_PI` inside the DQ Robotics namespace
+ * so angle-conversion routines use a consistent definition.
+ */
 constexpr double pi = M_PI;
 
 }

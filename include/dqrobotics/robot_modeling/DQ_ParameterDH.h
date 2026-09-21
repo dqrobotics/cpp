@@ -27,17 +27,29 @@ Contributors:
 
 namespace DQ_robotics
 {
+/**
+ * @brief Selects a Denavit-Hartenberg parameter by name.
+ *
+ * DQ_ParameterDH is a small wrapper used by the C++ API to refer to the
+ * rows of a DH or modified-DH matrix. It also accepts string-based
+ * construction to keep the interface aligned with other DQ Robotics bindings.
+ *
+ * @see DQ_SerialManipulatorDH, DQ_SerialManipulatorMDH
+ */
 class DQ_ParameterDH
 {
 public:
+    /** @brief Enumeration of supported Denavit-Hartenberg parameters. */
     enum PARAMETER{
-        THETA,
-        D,
-        A,
-        ALPHA
+        THETA, /**< Joint-angle parameter. */
+        D,     /**< Link offset parameter. */
+        A,     /**< Link-length parameter. */
+        ALPHA  /**< Link-twist parameter. */
     };
 private:
+    /** @brief Stored Denavit-Hartenberg parameter. */
     PARAMETER parameter_;
+    /** @brief Mapping from uppercase strings to supported Denavit-Hartenberg parameters. */
     const std::unordered_map<std::string, PARAMETER>
         map_ = {{"THETA", THETA},
                 {"D"    ,     D},
@@ -46,8 +58,10 @@ private:
                 };
 
     /**
-     * @brief _get_parameter sets the parameter member using a string as argument.
-     * @param parameter The desired parameter to be set. Example: "THETA", "D", "A", or "ALPHA".
+     * @brief Sets the stored parameter from a string.
+     *
+     * @param parameter Name of the desired parameter.
+     * @throws std::runtime_error If @p parameter is not one of THETA, D, A, or ALPHA.
      */
     void _set_parameter(const std::string& parameter)
     {
@@ -59,25 +73,32 @@ private:
     }
 public:
     /**
-     * @brief DQ_ParameterDH Default constructor method.
+     * @brief Default constructor.
      */
     DQ_ParameterDH() = default;
 
     /**
-     * @brief DQ_ParameterDH Constructor method
-     * @param parameter The desired DH parameter. Example: THETA, D, A, or ALPHA.
+     * @brief Constructs the selector from an enumeration value.
+     *
+     * @param parameter Desired DH parameter.
      */
     DQ_ParameterDH(const PARAMETER& parameter): parameter_{parameter}{};
 
-    // This definition enables switch cases and comparisons.
+    /**
+     * @brief Converts the object to its underlying enumeration value.
+     *
+     * @return The stored parameter enumeration.
+     */
     constexpr operator PARAMETER() const { return parameter_; }
 
     /**
-     * @brief DQ_ParameterDH Constructor method that allows string parameters.
-     *                       This is done to keep the language compatibility between
-     *                       Matlab and Python/C++, as discussed in
-     *                       https://github.com/dqrobotics/cpp/pull/69
-     * @param parameter The desired DH parameter. Example: "THETA", "D", "A", or "ALPHA".
+     * @brief Constructs the selector from a string.
+     *
+     * This constructor keeps the C++ interface compatible with string-based
+     * parameter selection used in other DQ Robotics language bindings.
+     *
+     * @param parameter Desired DH parameter as a string.
+     * @throws std::runtime_error If @p parameter is not one of THETA, D, A, or ALPHA.
      */
     DQ_ParameterDH(const std::string& parameter){
         _set_parameter(parameter);
@@ -85,11 +106,13 @@ public:
 
 
     /**
-     * @brief DQ_ParameterDH Constructor method that allows char parameters.
-     *                       This is done to keep the language compatibility between
-     *                       Matlab and Python/C++, as discussed in
-     *                       https://github.com/dqrobotics/cpp/pull/69
-     * @param parameter_c The desired DH parameter. Example: "THETA", "D", "A", or "ALPHA".
+     * @brief Constructs the selector from a C string.
+     *
+     * This constructor keeps the C++ interface compatible with string-based
+     * parameter selection used in other DQ Robotics language bindings.
+     *
+     * @param parameter_c Desired DH parameter as a C string.
+     * @throws std::runtime_error If @p parameter_c is not one of THETA, D, A, or ALPHA.
      */
     DQ_ParameterDH(const char* parameter_c){
         _set_parameter(parameter_c);
