@@ -107,7 +107,7 @@ public:
      */
     virtual VectorXd compute_setpoint_control_signal(const VectorXd&q, const VectorXd& task_reference) override;
     /**
-     * @brief Computes the reference joint velocities for a tracking task with feedforward.
+     * @brief Computes the control signal for a tracking task with feedforward.
      *
      * The optimization problem uses the stored equality and inequality constraints together
      * with the objective-function terms provided by the concrete subclass.
