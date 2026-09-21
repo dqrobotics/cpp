@@ -98,7 +98,7 @@ public:
     virtual VectorXd compute_objective_function_linear_component(const MatrixXd& J, const VectorXd& task_error)=0;
 
     /**
-     * @brief Computes the reference joint velocities for a setpoint task.
+     * @brief Computes the control signal for a setpoint task.
      *
      * @param q Vector containing the current joint configurations of the robot.
      * @param task_reference Vector containing the desired value for the chosen control task.
