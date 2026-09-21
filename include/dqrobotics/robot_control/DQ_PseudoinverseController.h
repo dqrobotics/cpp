@@ -55,7 +55,7 @@ public:
     DQ_PseudoinverseController(const std::shared_ptr<DQ_Kinematics>& robot);
 
     /**
-     * @brief Computes the reference joint velocities that drive the task-space error to zero.
+     * @brief Computes the control signal that regulates the closed-loop system to a setpoint.
      *
      * @param q Vector containing the current joint configurations of the robot.
      * @param task_reference Vector containing the desired value for the chosen control task.
