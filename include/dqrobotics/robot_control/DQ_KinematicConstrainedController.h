@@ -87,6 +87,13 @@ public:
     /**
      * @brief Sets the inequality constraint passed to constrained control laws.
      *
+     * Defines the inequality constraint B*u <= b, where u is the control input
+     * computed by the constrained control law.
+     *
+     * @note This constraint is not persistent: it is stored as-is and reused on every
+     * subsequent call to the control law until overwritten. To keep enforcing it,
+     * call this method again before each control-signal computation.
+     *
      * @param B Inequality-constraint matrix.
      * @param b Inequality-constraint vector.
      */
