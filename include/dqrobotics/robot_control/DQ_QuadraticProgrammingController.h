@@ -92,7 +92,7 @@ public:
      * Pure virtual interface contract implemented by concrete quadratic-programming controllers.
      *
      * @param J Task Jacobian associated with the current control objective.
-     * @param task_error Task-space error, possibly combined with feedforward terms by the caller.
+     * @param task_error Task-space error.
      * @return The linear component f in the quadratic objective.
      */
     virtual VectorXd compute_objective_function_linear_component(const MatrixXd& J, const VectorXd& task_error)=0;
