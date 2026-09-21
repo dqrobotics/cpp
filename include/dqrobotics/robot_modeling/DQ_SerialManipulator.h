@@ -160,6 +160,11 @@ public:
      *
      * This concrete overload delegates to raw_pose_jacobian(q_vec, get_dim_configuration_space() - 1).
      *
+     * @note This function does not take into account any reference-frame or end-effector
+     * displacements, and is intended mostly for internal use by DQ_Kinematics and its
+     * subclasses. Most users should call pose_jacobian() instead, which applies those
+     * transformations.
+     *
      * @param q_vec Vector containing the robot joint configurations.
      * @return The raw pose Jacobian, without reference-frame or end-effector transformations.
      */
