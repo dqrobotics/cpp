@@ -64,7 +64,7 @@ public:
      */
     VectorXd compute_setpoint_control_signal(const VectorXd& q, const VectorXd& task_reference) override;
     /**
-     * @brief Computes the reference joint velocities for a time-varying task-space reference.
+     * @brief Computes the control signal that tracks a time-varying trajectory.
      *
      * @param q Vector containing the current joint configurations of the robot.
      * @param task_reference Vector containing the desired value for the chosen control task.
