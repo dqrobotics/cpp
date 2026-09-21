@@ -52,8 +52,8 @@ public:
     /**
      * @brief Computes the squared distance between a point and a line.
      *
-     * The point must be given as a pure quaternion and the line as a unit Plucker
-     * line represented by a pure dual quaternion.
+     * The point must be given as a pure quaternion and the line as a unit-norm
+     * pure dual quaternion.
      *
      * @param point The pure quaternion representing the point.
      * @param line The dual quaternion representing the line.
