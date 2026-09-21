@@ -184,6 +184,10 @@ public:
      *
      * This concrete overload delegates to raw_fkm(q_vec, get_dim_configuration_space() - 1).
      *
+     * @note This function does not take into account any reference-frame or end-effector
+     * displacements. It is an auxiliary function intended mostly for internal use, chiefly
+     * by the pose-Jacobian computations. Most users should call fkm() instead.
+     *
      * @param q_vec Vector containing the robot joint configurations.
      * @return The pose of the last link before applying the reference frame and the end effector.
      */
