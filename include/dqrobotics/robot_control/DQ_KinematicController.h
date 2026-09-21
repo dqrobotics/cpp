@@ -276,7 +276,7 @@ public:
      */
     virtual ~DQ_KinematicController()=default;
     /**
-     * @brief Computes the reference joint velocities for a setpoint task.
+     * @brief Computes the control signal for a setpoint task.
      *
      * Pure virtual interface contract implemented by concrete kinematic controllers.
      *
