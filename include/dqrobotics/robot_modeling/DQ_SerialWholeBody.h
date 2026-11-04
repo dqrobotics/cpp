@@ -1,5 +1,5 @@
 /**
-(C) Copyright 2020-2022 DQ Robotics Developers
+(C) Copyright 2011-2026 DQ Robotics Developers
 
 This file is part of DQ Robotics.
 
@@ -65,6 +65,18 @@ protected:
      * @throws std::runtime_error If either index is outside the valid range.
      */
     void _check_to_jth_link_of_ith_chain(const int& to_ith_chain, const int& to_jth_link) const;
+    /**
+     *
+     * @param q Combined configuration vector of the serial whole-body model.
+     * @param to_ith_chain Index of the last chain to be accounted for.
+     * @param to_jth_link Link index inside the last chain. Used only if @p partial_chain is true.
+     * @param partial_chain True to stop at @p to_jth_link, false to go up to the end of @p to_ith_chain.
+     * @return Raw pose Jacobian.
+     */
+    MatrixXd _raw_pose_jacobian_by_chain(const VectorXd& q,
+                                         const int& to_ith_chain,
+                                         const int& to_jth_link,
+                                         const bool& partial_chain) const;
 public:
     /** @brief Deleted default constructor. */
     DQ_SerialWholeBody()=delete;
@@ -170,6 +182,14 @@ public:
      * @return Raw pose Jacobian up to the requested chain and link.
      */
     MatrixXd raw_pose_jacobian_by_chain(const VectorXd& q, const int& to_ith_chain, const int& to_jth_link) const;
+    /**
+     * @brief Computes the raw pose Jacobian up to the end of a specific chain.
+     *
+     * @param q Combined configuration vector of the serial whole-body model.
+     * @param to_ith_chain Index of the last chain to be accounted for.
+     * @return Raw pose Jacobian up to the end of @p to_ith_chain.
+     */
+    MatrixXd raw_pose_jacobian_by_chain(const VectorXd& q, const int& to_ith_chain) const;
     /**
      * @brief Computes the raw time derivative of the pose Jacobian up to a specific link inside a specific chain.
      *

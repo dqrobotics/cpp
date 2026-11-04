@@ -1,5 +1,5 @@
 /**
-(C) Copyright 2020-2023 DQ Robotics Developers
+(C) Copyright 2011-2026 DQ Robotics Developers
 
 This file is part of DQ Robotics.
 
@@ -21,6 +21,7 @@ Contributors:
 
 2. Juan Jose Quiroz Omana (juanjqogm@gmail.com)
    - Fixed bug 61 (https://github.com/dqrobotics/cpp/issues/61) in pose_jacobian method.
+   - Fixed bug 75 (https://github.com/dqrobotics/cpp/issues/75) in pose_jacobian method.
 
 */
 
@@ -190,54 +191,78 @@ DQ DQ_SerialWholeBody::raw_fkm_by_chain(const VectorXd &q, const int &to_ith_cha
     return raw_fkm_by_chain(q,to_ith_chain,chain_[to_ith_chain]->get_dim_configuration_space()-1);
 }
 
+MatrixXd DQ_SerialWholeBody::_raw_pose_jacobian_by_chain(const VectorXd &q,
+                                                         const int &to_ith_chain,
+                                                         const int &to_jth_link,
+                                                         const bool &partial_chain) const
+{
+    const int n = to_ith_chain+1; //Size of the partial or total chain
+    const DQ x_0_to_n = partial_chain ? raw_fkm_by_chain(q,to_ith_chain,to_jth_link)
+                                      : raw_fkm_by_chain(q,to_ith_chain);
+    int q_counter = 0;
+
+    std::vector<MatrixXd> J_vector;
+    int cols = 0;
+    for(int i=0;i<n;i++)
+    {
+        const int dim = chain_.at(i)->get_dim_configuration_space();
+        const VectorXd q_iplus1 = q.segment(q_counter,dim);
+        q_counter += dim;
+
+        const DQ x_0_to_iplus1 = (partial_chain && i == n-1) ? x_0_to_n : raw_fkm_by_chain(q,i);
+        const DQ x_iplus1_to_n = conj(x_0_to_iplus1)*x_0_to_n;
+
+        if(partial_chain && i == n-1)
+        {
+            DQ x_0_to_i;
+            if(i > 0)
+            {
+                int link_chain;
+                int link;
+                std::tie(link_chain,link) = get_chain_and_link_from_index(i-1);
+                if(std::dynamic_pointer_cast<DQ_HolonomicBase>(chain_.at(link_chain)))
+                    x_0_to_i = raw_fkm_by_chain(q,link_chain);
+                else
+                    x_0_to_i = raw_fkm_by_chain(q,link_chain,link);
+            }
+            else if(auto serial_manipulator = std::dynamic_pointer_cast<DQ_SerialManipulator>(chain_.at(0)))
+                x_0_to_i = serial_manipulator->get_reference_frame();
+            else
+                x_0_to_i = chain_.at(0)->fkm(q_iplus1);
+            J_vector.push_back(hamiplus8(x_0_to_i)*haminus8(x_iplus1_to_n)*chain_.at(i)->pose_jacobian(q_iplus1,to_jth_link));
+        }
+        else
+        {
+            const DQ x_0_to_i = (i == 0) ? DQ(1) : raw_fkm_by_chain(q,i-1);
+            J_vector.push_back(hamiplus8(x_0_to_i)*haminus8(x_iplus1_to_n)*chain_.at(i)->pose_jacobian(q_iplus1));
+        }
+        cols += J_vector.at(i).cols();
+    }
+
+    MatrixXd J_pose(8,cols);
+    int col_counter = 0;
+    for(const MatrixXd& J : J_vector)
+    {
+        J_pose.middleCols(col_counter,J.cols()) = J;
+        col_counter += J.cols();
+    }
+    return J_pose;
+}
+
 MatrixXd DQ_SerialWholeBody::raw_pose_jacobian_by_chain(const VectorXd &q, const int &to_ith_chain, const int &to_jth_link) const
 {
     _check_q_vec(q);
     _check_to_jth_link_of_ith_chain(to_ith_chain, to_jth_link);
 
-    int n = to_ith_chain+1; //Size of the partial or total chain
-    DQ x_0_to_n = raw_fkm_by_chain(q,to_ith_chain,to_jth_link);
-    int q_counter = 0;
+    return _raw_pose_jacobian_by_chain(q,to_ith_chain,to_jth_link,true);
+}
 
-    //Not the best implementation but similar to MATLAB
-    std::vector<MatrixXd> J_vector;
-    for(int i=0;i<n;i++)
-    {
-        int dim = chain_[i]->get_dim_configuration_space();
-        // Addressing the to_jth_link
+MatrixXd DQ_SerialWholeBody::raw_pose_jacobian_by_chain(const VectorXd &q, const int &to_ith_chain) const
+{
+    _check_q_vec(q);
+    _check_to_ith_chain(to_ith_chain);
 
-        const DQ x_0_to_iplus1 = raw_fkm_by_chain(q,i);
-        const DQ x_iplus1_to_n = conj(x_0_to_iplus1)*x_0_to_n;
-
-        const VectorXd q_iplus1 = q.segment(q_counter,dim);
-        q_counter += dim;
-
-        if(i==0)
-        {
-            J_vector.push_back(haminus8(x_iplus1_to_n)*chain_[i]->pose_jacobian(q_iplus1,dim-1));
-        }
-        else
-        {
-            if(i==n-1) //To address the last index in the chain, or partial chains
-                J_vector.push_back(hamiplus8(raw_fkm_by_chain(q,i-1))*haminus8(x_iplus1_to_n)*chain_[i]->pose_jacobian(q_iplus1,to_jth_link));
-            else
-                J_vector.push_back(hamiplus8(raw_fkm_by_chain(q,i-1))*haminus8(x_iplus1_to_n)*chain_[i]->pose_jacobian(q_iplus1,dim-1));
-        }
-    }
-
-    MatrixXd J_pose(8,q_counter);
-    int col_counter = 0;
-    for(int i=0;i<n;i++)
-    {
-        int q_counter = chain_[i]->get_dim_configuration_space();
-        MatrixXd current_J = J_vector[i];
-        for(int j=0;j<q_counter;j++)
-        {
-            J_pose.col(col_counter)=current_J.col(j);
-            col_counter+=1;
-        }
-    }
-    return J_pose;
+    return _raw_pose_jacobian_by_chain(q,to_ith_chain,chain_.at(to_ith_chain)->get_dim_configuration_space()-1,false);
 }
 
 MatrixXd DQ_SerialWholeBody::pose_jacobian(const VectorXd &q, const int &to_ith_link) const
@@ -251,7 +276,7 @@ MatrixXd DQ_SerialWholeBody::pose_jacobian(const VectorXd &q, const int &to_ith_
 
 MatrixXd DQ_SerialWholeBody::pose_jacobian(const VectorXd &q) const
 {
-    return pose_jacobian(q, get_dim_configuration_space()-1);
+    return hamiplus8(get_reference_frame())*raw_pose_jacobian_by_chain(q,chain_.size()-1);
 }
 
 //To be implemented.
