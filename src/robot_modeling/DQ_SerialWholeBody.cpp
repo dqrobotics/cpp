@@ -214,8 +214,6 @@ MatrixXd DQ_SerialWholeBody::_raw_pose_jacobian_by_chain(const VectorXd &q,
 
         if(partial_chain && i == n-1)
         {
-            //As in MATLAB, which uses fkm(q,i) with i as a link index. This is a known bug,
-            //kept on purpose so that both versions match. MATLAB's DQ_HolonomicBase::fkm ignores the link index.
             DQ x_0_to_i;
             if(i > 0)
             {

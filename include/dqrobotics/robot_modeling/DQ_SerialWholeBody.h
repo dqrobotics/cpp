@@ -66,7 +66,6 @@ protected:
      */
     void _check_to_jth_link_of_ith_chain(const int& to_ith_chain, const int& to_jth_link) const;
     /**
-     * @brief Same as pose_jacobian_by_chain() in MATLAB, without the reference frame.
      *
      * @param q Combined configuration vector of the serial whole-body model.
      * @param to_ith_chain Index of the last chain to be accounted for.
