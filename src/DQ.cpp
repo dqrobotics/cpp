@@ -41,8 +41,8 @@ Contributors:
           (https://github.com/dqrobotics/cpp/pull/56).
 
 5. Juan Jose Quiroz Omana (juanjqogm@gmail.com)
-        - Fixed rotation_axis() for rotation angles close to 2*pi, using the same guard as the MATLAB
-          implementation, in PR #<PR> (https://github.com/dqrobotics/cpp/pull/<PR>).
+        - Fixed rotation_axis() to match the MATLAB implementation in PR #77
+          (https://github.com/dqrobotics/cpp/pull/77).
 */
 
 #include <dqrobotics/DQ.h>
