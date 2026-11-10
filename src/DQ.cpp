@@ -1,5 +1,5 @@
 /**
-(C) Copyright 2011-2023 DQ Robotics Developers
+(C) Copyright 2011-2026 DQ Robotics Developers
 
 This file is part of DQ Robotics.
 
@@ -39,6 +39,10 @@ Contributors:
 4. Marcos da Silva Pereira (marcos.si.pereira@gmail.com)
         - Translated the Q4 and the Q8 methods from the MATLAB implementation in PR #56 
           (https://github.com/dqrobotics/cpp/pull/56).
+
+5. Juan Jose Quiroz Omana (juanjqogm@gmail.com)
+        - Fixed rotation_axis() for rotation angles close to 2*pi, using the same guard as the MATLAB
+          implementation, in PR #<PR> (https://github.com/dqrobotics/cpp/pull/<PR>).
 */
 
 #include <dqrobotics/DQ.h>
@@ -46,6 +50,7 @@ Contributors:
 #include <stdexcept> //for range_error
 #include <vector>
 #include <cmath>
+#include <limits>
 
 namespace DQ_robotics{
 
@@ -689,7 +694,7 @@ DQ DQ::rotation_axis() const{
     }
 
     double phi = rotation_angle()/2.0;
-    if(phi == 0.0)
+    if (sin(phi) <= std::numeric_limits<double>::epsilon())
         return k_; // DQ(0,0,0,1). This is only a convention;
     else
     {
