@@ -235,15 +235,17 @@ DQ pinv(const DQ& dq)
 }
 
 /**
-* Decompositional multiplication.
-*
-* @param dq1 a DQ.
-* @param dq2 a DQ.
-* @return Returns a constant DQ object representing the result of decompositional multiplication between two dq1 and dq2.
-*/
+ * @brief Returns the decompositional multiplication between @p dq1 and @p dq2,
+ * that is, `T(dq1)*T(dq2)*P(dq1)*P(dq2)` (the group operation of CMI(3)). See
+ * Definition 1 of Adorno, B. V., & Fraisse, P. (2017). The cross-motion invariant
+ * group and its application to kinematics. IMA Journal of Mathematical Control and
+ * Information, 34(4), 1359-1378. https://doi.org/10.1093/imamci/dnw032
+ * @param dq1 The first unit dual quaternion.
+ * @param dq2 The second unit dual quaternion.
+ */
 DQ dec_mult(const DQ& dq1, const DQ& dq2)
 {
-    DQ dec_mult = dq2.tplus()*dq1.tplus()*dq2.P()*dq1.P();
+    DQ dec_mult = dq1.tplus()*dq2.tplus()*dq1.P()*dq2.P();
     return dec_mult;
 }
 

@@ -409,9 +409,13 @@ inline DQ T(const DQ& dq){return tplus(dq);}
 DQ pinv(const DQ& dq);
 
 /**
- * @brief Returns the decompositional multiplication between @p dq1 and @p dq2.
- * @param dq1 The first dual quaternion.
- * @param dq2 The second dual quaternion.
+ * @brief Returns the decompositional multiplication between @p dq1 and @p dq2,
+ * that is, `T(dq1)*T(dq2)*P(dq1)*P(dq2)` (the group operation of CMI(3)). See
+ * Definition 1 of Adorno, B. V., & Fraisse, P. (2017). The cross-motion invariant
+ * group and its application to kinematics. IMA Journal of Mathematical Control and
+ * Information, 34(4), 1359-1378. https://doi.org/10.1093/imamci/dnw032
+ * @param dq1 The first unit dual quaternion.
+ * @param dq2 The second unit dual quaternion.
  */
 DQ dec_mult(const DQ& dq1, const DQ& dq2);
 
