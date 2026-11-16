@@ -649,17 +649,17 @@ inline const DQ operator-(const DQ& dq, const Scalar& s) noexcept
 
 template <typename Scalar, typename = typename std::enable_if<std::is_arithmetic<Scalar>::value>::type>
 /**
- * @brief operator - between a DQ and a Scalar.
+ * @brief operator - between a Scalar and a DQ.
  * @param s any Scalar (as defined by std::is_arithmetic, bools are purposedly removed using static_assert.)
  * @param dq a DQ.
- * @return the difference between the DQ and the Scalar.
+ * @return the difference between the Scalar and the DQ.
  */
 inline const DQ operator-(const Scalar& s, const DQ& dq) noexcept
 {
     static_assert(!std::is_same<bool,Scalar>(),"Operations between DQs and bools are not supported.");
 
-    DQ ret(dq);
-    ret.q(0)-=s;
+    DQ ret(-dq);
+    ret.q(0)+=s;
     return ret;
 }
 
