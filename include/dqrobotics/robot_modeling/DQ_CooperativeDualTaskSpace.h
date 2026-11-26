@@ -48,7 +48,6 @@ namespace DQ_robotics
 class DQ_CooperativeDualTaskSpace
 {
 private:
-    //Deprecated together with the raw pointer constructor but without the C++14 attribute as it is too noisy.
     /** @brief Legacy non-owning pointer to the first robot model kept for backwards compatibility. */
     DQ_Kinematics* robot1_;
     /** @brief Legacy non-owning pointer to the second robot model kept for backwards compatibility. */
