@@ -1397,6 +1397,26 @@ const DQ operator *(const DQ& dq1, const DQ& dq2) noexcept
     );
 }
 
+/**
+ * @brief Decompositional multiplication between unit dual quaternions @p dq1 and @p dq2,
+ * which corresponds to the group operation of CMI(3) (alternatively, use dec_mult(dq1, dq2)).
+ *
+ * Given `dq1 = r_1 + DQ::E*0.5*p_1*r_1` and `dq2 = r_2 + DQ::E*0.5*p_2*r_2`,
+ * `dq1 % dq2 = T(dq1)*T(dq2)*P(dq1)*P(dq2)`, where `T(dq1) = 1 + DQ::E*0.5*p_1` and
+ * `P(dq1) = r_1`. Analogously, `T(dq2) = 1 + DQ::E*0.5*p_2` and `P(dq2) = r_2`.
+ *
+ * See Definition 1 of Adorno, B. V., & Fraisse, P. (2017). The cross-motion invariant
+ * group and its application to kinematics. IMA Journal of Mathematical Control and
+ * Information, 34(4), 1359-1378. https://doi.org/10.1093/imamci/dnw032
+ * @param dq1 The first unit dual quaternion.
+ * @param dq2 The second unit dual quaternion.
+ * @see dec_mult()
+ */
+const DQ operator %(const DQ& dq1, const DQ& dq2)
+{
+    return dec_mult(dq1, dq2);
+}
+
 // Operator (==) overload
 
 /**
