@@ -1,5 +1,5 @@
 /**
-(C) Copyright 2019 DQ Robotics Developers
+(C) Copyright 2011-2026 DQ Robotics Developers
 
 This file is part of DQ Robotics.
 
@@ -17,7 +17,12 @@ This file is part of DQ Robotics.
     along with DQ Robotics.  If not, see <http://www.gnu.org/licenses/>.
 
 Contributors:
-- Murilo M. Marinho        (murilomarinho@ieee.org)
+
+1. Murilo M. Marinho (murilomarinho@ieee.org)
+    - Responsible for the original implementation.
+
+2. Juan Jose Quiroz Omana (juanjqogm@gmail.com)
+    - Added support for smart pointers 
 */
 
 #ifndef DQ_COOPERATIVEDUALTASKSPACE_H
@@ -25,6 +30,7 @@ Contributors:
 
 #include<dqrobotics/DQ.h>
 #include<dqrobotics/robot_modeling/DQ_Kinematics.h>
+#include <memory>
 
 namespace DQ_robotics
 {
@@ -42,10 +48,30 @@ namespace DQ_robotics
 class DQ_CooperativeDualTaskSpace
 {
 private:
-    /** @brief Pointer to the first robot model. */
+    //Deprecated together with the raw pointer constructor but without the C++14 attribute as it is too noisy.
+    /** @brief Legacy non-owning pointer to the first robot model kept for backwards compatibility. */
     DQ_Kinematics* robot1_;
-    /** @brief Pointer to the second robot model. */
+    /** @brief Legacy non-owning pointer to the second robot model kept for backwards compatibility. */
     DQ_Kinematics* robot2_;
+
+    /** @brief Shared pointer to the first robot model.*/
+    std::shared_ptr<DQ_Kinematics> robot1_sptr_;
+
+    /** @brief Shared pointer to the second robot model.*/
+    std::shared_ptr<DQ_Kinematics> robot2_sptr_;
+
+    /**
+     * @brief Returns the active pointer to the first robot model.
+     *
+     * @return Pointer to the first robot model.
+     */
+    DQ_Kinematics* _get_robot1_ptr() const;
+    /**
+     * @brief Returns the active pointer to the second robot model.
+     *
+     * @return Pointer to the second robot model.
+     */
+    DQ_Kinematics* _get_robot2_ptr() const;
 
 public:
     //Remove default constructor
@@ -60,7 +86,19 @@ public:
      * @param robot1 Pointer to the first robot model.
      * @param robot2 Pointer to the second robot model.
      */
+    [[deprecated("Use the smart pointer version instead")]]
     DQ_CooperativeDualTaskSpace(DQ_Kinematics* robot1, DQ_Kinematics* robot2);
+
+    /**
+     * @brief Constructs a cooperative dual task-space system from two robot models.
+     *
+     * The object shares the ownership of the provided pointers.
+     *
+     * @param robot1 Shared pointer to the first robot model.
+     * @param robot2 Shared pointer to the second robot model.
+     */
+    DQ_CooperativeDualTaskSpace(const std::shared_ptr<DQ_Kinematics>& robot1,
+                                const std::shared_ptr<DQ_Kinematics>& robot2);
 
     /**
      * @brief Returns the pose of the first end effector.

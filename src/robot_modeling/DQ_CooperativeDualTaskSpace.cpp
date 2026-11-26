@@ -1,5 +1,5 @@
 /**
-(C) Copyright 2019 DQ Robotics Developers
+(C) Copyright 2011-2026 DQ Robotics Developers
 
 This file is part of DQ Robotics.
 
@@ -17,7 +17,12 @@ This file is part of DQ Robotics.
     along with DQ Robotics.  If not, see <http://www.gnu.org/licenses/>.
 
 Contributors:
-- Murilo M. Marinho (murilomarinho@ieee.org)
+
+1. Murilo M. Marinho (murilomarinho@ieee.org)
+    - Responsible for the original implementation.
+
+2. Juan Jose Quiroz Omana (juanjqogm@gmail.com)
+    - Added support for smart pointers
 */
 
 #include<dqrobotics/robot_modeling/DQ_CooperativeDualTaskSpace.h>
@@ -25,30 +30,51 @@ Contributors:
 namespace DQ_robotics
 {
 
-DQ_CooperativeDualTaskSpace::DQ_CooperativeDualTaskSpace(DQ_Kinematics *robot1, DQ_Kinematics *robot2)
+DQ_Kinematics *DQ_CooperativeDualTaskSpace::_get_robot1_ptr() const
 {
-    robot1_ = robot1;
-    robot2_ = robot2;
+    return robot1_sptr_ ? robot1_sptr_.get() : robot1_;
+}
+
+DQ_Kinematics *DQ_CooperativeDualTaskSpace::_get_robot2_ptr() const
+{
+    return robot2_sptr_ ? robot2_sptr_.get() : robot2_;
+}
+
+DQ_CooperativeDualTaskSpace::DQ_CooperativeDualTaskSpace(DQ_Kinematics *robot1, DQ_Kinematics *robot2):
+    robot1_(robot1),
+    robot2_(robot2)
+{
+
+}
+
+DQ_CooperativeDualTaskSpace::DQ_CooperativeDualTaskSpace(const std::shared_ptr<DQ_Kinematics> &robot1,
+                                                         const std::shared_ptr<DQ_Kinematics> &robot2):
+    robot1_(nullptr),
+    robot2_(nullptr),
+    robot1_sptr_(robot1),
+    robot2_sptr_(robot2)
+{
+
 }
 
 DQ DQ_CooperativeDualTaskSpace::pose1(const VectorXd &theta)
 {
-    return robot1_->fkm(theta.head(robot1_->get_dim_configuration_space()));
+    return _get_robot1_ptr()->fkm(theta.head(_get_robot1_ptr()->get_dim_configuration_space()));
 }
 
 DQ DQ_CooperativeDualTaskSpace::pose2(const VectorXd &theta)
 {
-    return robot2_->fkm(theta.tail(robot2_->get_dim_configuration_space()));
+    return _get_robot2_ptr()->fkm(theta.tail(_get_robot2_ptr()->get_dim_configuration_space()));
 }
 
 MatrixXd DQ_CooperativeDualTaskSpace::pose_jacobian1(const VectorXd &theta)
 {
-    return robot1_->pose_jacobian(theta.head(robot1_->get_dim_configuration_space()));
+    return _get_robot1_ptr()->pose_jacobian(theta.head(_get_robot1_ptr()->get_dim_configuration_space()));
 }
 
 MatrixXd DQ_CooperativeDualTaskSpace::pose_jacobian2(const VectorXd &theta)
 {
-    return robot2_->pose_jacobian(theta.tail(robot2_->get_dim_configuration_space()));
+    return _get_robot2_ptr()->pose_jacobian(theta.tail(_get_robot2_ptr()->get_dim_configuration_space()));
 }
 
 DQ DQ_CooperativeDualTaskSpace::relative_pose(const VectorXd &theta)
@@ -88,10 +114,10 @@ MatrixXd DQ_CooperativeDualTaskSpace::absolute_pose_jacobian(const VectorXd &the
     MatrixXd Jxr2(8,Jrr2.cols());
     Jxr2 << Jrr2, 0.25*(haminus4(pow(xr.P(),0.5))*Jtr + hamiplus4(translation(xr))*Jrr2);
 
-    MatrixXd temp(8,robot1_->get_dim_configuration_space()+robot2_->get_dim_configuration_space());
-    temp << MatrixXd::Zero(8,robot1_->get_dim_configuration_space()),Jx2;
+    MatrixXd temp(8,_get_robot1_ptr()->get_dim_configuration_space()+_get_robot2_ptr()->get_dim_configuration_space());
+    temp << MatrixXd::Zero(8,_get_robot1_ptr()->get_dim_configuration_space()),Jx2;
 
-    MatrixXd Jxa(8,robot1_->get_dim_configuration_space()+robot2_->get_dim_configuration_space());
+    MatrixXd Jxa(8,_get_robot1_ptr()->get_dim_configuration_space()+_get_robot2_ptr()->get_dim_configuration_space());
     Jxa << haminus8(pow(xr,0.5))*(temp) + hamiplus8(x2)*Jxr2;
 
     return Jxa;
